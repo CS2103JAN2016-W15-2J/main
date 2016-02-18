@@ -26,13 +26,24 @@ public class GraphicUserInterface extends Application {
 	
 	private static final String COLOR_HEX_CODE_WHITE = "#ffffff";
 	
+	private static final String COMMAND_ADD = "add";
+	private static final String COMMAND_EDIT = "edit";
+	private static final String COMMAND_RENAME = "rename";
+	private static final String COMMAND_DONE = "done";
+	private static final String COMMAND_DELETE = "delete";
+	private static final String COMMAND_UNDO = "undo";
+	private static final String COMMAND_SEARCH = "search";
+	
+	private static final String UNINITIALIZED_STRING = "";
+	
 	private static final double WINDOW_MIN_WIDTH = 700.0;
 	private static final double WINDOW_MIN_HEIGHT = 450.0;
 	private static int PADDING_HORIZONTAL = 10;
 	private static int PADDING_VERTICAL = 15;
 	private static int SPACING_BETWEEN_COMPONENTS = 10;
 	
-	private static final List<String> commands = Arrays.asList("", "add", "edit", "rename", "done", "delete", "undo", "search");
+	private static final List<String> commands = Arrays.asList(UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, 
+			COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH);
 	
 	@Override
 	public void start(Stage stage) {
