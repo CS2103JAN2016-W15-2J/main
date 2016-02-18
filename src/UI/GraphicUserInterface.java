@@ -17,14 +17,15 @@ import javafx.stage.Stage;
 
 public class GraphicUserInterface extends Application {
 	
-	private static String APPLICATION_NAME = "TrackNote";
+	private static final String APPLICATION_NAME = "TrackNote";
 	
-	private static String BUTTON_SUBMIT_COMMAND = "enter";
+	private static final String BUTTON_SUBMIT_COMMAND = "enter";
 	
-	private static String COLOR_HEX_CODE_WHITE = "#ffffff";
+	private static final String COLOR_HEX_CODE_WHITE = "#ffffff";
 	
-	private static int HORIZONTAL_PADDING = 10;
-	private static int VERTICAL_PADDING = 15;
+	private static int PADDING_HORIZONTAL = 10;
+	private static int PADDING_VERTICAL = 15;
+	private static int SPACING_BETWEEN_COMPONENTS = 10;
 	
 	@Override
 	public void start(Stage stage) {
@@ -45,8 +46,8 @@ public class GraphicUserInterface extends Application {
 	
 	private HBox getCommandLineContainer() {
 		HBox commandLineContainer = new HBox();
-		commandLineContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
-		commandLineContainer.setSpacing(10);
+		commandLineContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+		commandLineContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
 		commandLineContainer.setStyle("-fx-background-color: #1e2123 ;");
 		
 		TextField commandLine = new TextField();
@@ -90,8 +91,8 @@ public class GraphicUserInterface extends Application {
 	
 	public HBox setEventsContainer() {
 		HBox eventsContainer = new HBox();
-		eventsContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
-		eventsContainer.setSpacing(10);
+		eventsContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+		eventsContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
 		eventsContainer.setStyle("-fx-background-color: #26292c;");
 
 		ListView<String> list = new ListView<String>();
@@ -113,8 +114,8 @@ public class GraphicUserInterface extends Application {
 	
 	public HBox setFloatContainer() {
 		HBox floatContainer = new HBox();
-		floatContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
-		floatContainer.setSpacing(10);
+		floatContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+		floatContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
 		floatContainer.setStyle("-fx-background-color: #26292c;");
 
 		ListView<String> list = new ListView<String>();
