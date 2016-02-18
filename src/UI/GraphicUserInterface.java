@@ -11,14 +11,34 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class GraphicUserInterface extends Application {
-		
+	
+	private static String APPLICATION_NAME = "TrackNote";
+	
+	private static String BUTTON_SUBMIT_COMMAND = "enter";
+	
+	private static String COLOR_HEX_CODE_WHITE = "#ffffff";
+	
+	private static int HORIZONTAL_PADDING = 10;
+	private static int VERTICAL_PADDING = 15;
+	
 	@Override
 	public void start(Stage stage) {
 		BorderPane frame = new BorderPane();
 		Scene scene = new Scene(frame);
+			
+		frame.setBottom(getCommandLineContainer());
 		
+		// Set and show scene
+		stage.setTitle(APPLICATION_NAME);
+		stage.setScene(scene);
+		stage.show();
+		
+		stage.setMaximized(true);
+	}
+	
+	private HBox getCommandLineContainer() {
 		HBox commandLineContainer = new HBox();
-		commandLineContainer.setPadding(new Insets(10, 15, 10, 15));
+		commandLineContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
 		commandLineContainer.setSpacing(10);
 		commandLineContainer.setStyle("-fx-background-color: #1e2123 ;");
 		
@@ -26,17 +46,11 @@ public class GraphicUserInterface extends Application {
 		commandLine.setStyle("-fx-background-color: #313437; " + "-fx-text-inner-color: #ffffff;");
 		HBox.setHgrow(commandLine, Priority.ALWAYS);
 		
-		Button enterButton = new Button("enter");
+		Button enterButton = new Button(BUTTON_SUBMIT_COMMAND);
 		enterButton.setStyle("-fx-background-color: #313437; " + "-fx-font-weight: bold;" + "-fx-text-fill: #ffffff;");
 		
 		commandLineContainer.getChildren().addAll(commandLine, enterButton);
-		frame.setBottom(commandLineContainer);
 		
-		// Set and show scene
-		stage.setTitle("TrackNote");
-		stage.setScene(scene);
-		stage.show();
-		
-		stage.setMaximized(true);
+		return commandLineContainer;
 	}
 }
