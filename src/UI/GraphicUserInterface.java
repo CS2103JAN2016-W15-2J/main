@@ -38,6 +38,12 @@ public class GraphicUserInterface extends Application {
 	
 	private static final String UNINITIALIZED_STRING = "";
 	
+	private static final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
+	private static final String PROPERTY_FONT_WEIGHT = "-fx-font-weight: %1$s;";
+	private static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
+	private static final String PROPERTY_TEXT_INNER_COLOR = "-fx-text-inner-color: %1$s;";
+	private static final String PROPERTY_TEXT_FILL = "-fx-text-fill: %1$s;";
+	
 	private static final double WINDOW_MIN_WIDTH = 700.0;
 	private static final double WINDOW_MIN_HEIGHT = 450.0;
 	private static int PADDING_HORIZONTAL = 10;
@@ -80,11 +86,11 @@ public class GraphicUserInterface extends Application {
 		HBox commandLineContainer = new HBox();
 		commandLineContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
 		commandLineContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
-		commandLineContainer.setStyle("-fx-background-color: #1e2123 ;");
+		commandLineContainer.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#1e2123"));
 		
 		TextField commandLine = new TextField();
 		commandLine.setText(DEFAULT_COMMAND);
-		commandLine.setStyle("-fx-background-color: #313437; " + "-fx-text-inner-color: #ffffff;");
+		commandLine.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437") + String.format(PROPERTY_TEXT_INNER_COLOR, COLOR_HEX_CODE_WHITE));
 		HBox.setHgrow(commandLine, Priority.ALWAYS);
 		commandLine.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -112,7 +118,7 @@ public class GraphicUserInterface extends Application {
 		textFieldToFocusOnStart = commandLine;
 		
 		Button enterButton = new Button(BUTTON_SUBMIT_COMMAND);
-		enterButton.setStyle("-fx-background-color: #313437; " + "-fx-font-weight: bold;" + "-fx-text-fill: #ffffff;");
+		enterButton.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437") + String.format(PROPERTY_FONT_WEIGHT, "bold") + String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE));
 		enterButton.setOnAction(e -> retrieveCommand(commandLine));
 		
 		commandLineContainer.getChildren().addAll(commandLine, enterButton);
@@ -205,7 +211,7 @@ public class GraphicUserInterface extends Application {
 		HBox eventsContainer = new HBox();
 		eventsContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
 		eventsContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
-		eventsContainer.setStyle("-fx-background-color: #26292c;");
+		eventsContainer.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
 
 		ListView<String> list = new ListView<String>();
 		ObservableList<String> items = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App",
@@ -228,7 +234,7 @@ public class GraphicUserInterface extends Application {
 		HBox floatContainer = new HBox();
 		floatContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
 		floatContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
-		floatContainer.setStyle("-fx-background-color: #26292c;");
+		floatContainer.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
 
 		ListView<String> list = new ListView<String>();
 
