@@ -1,10 +1,13 @@
 package UI;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -28,6 +31,8 @@ public class GraphicUserInterface extends Application {
 		BorderPane frame = new BorderPane();
 		Scene scene = new Scene(frame);
 			
+		frame.setCenter(setEventsContainer());
+		frame.setRight(setFloatContainer());
 		frame.setBottom(getCommandLineContainer());
 		
 		// Set and show scene
@@ -80,6 +85,48 @@ public class GraphicUserInterface extends Application {
 		// TODO
 		System.out.println(command);
 		commandLine.clear();
+	}
+	
+	
+	public HBox setEventsContainer() {
+		HBox eventsContainer = new HBox();
+		eventsContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
+		eventsContainer.setSpacing(10);
+		eventsContainer.setStyle("-fx-background-color: #26292c;");
+
+		ListView<String> list = new ListView<String>();
+		ObservableList<String> items = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App",
+				"chocolate", "salmon", "gold", "coral", "darkorchid", "darkgoldenrod", "lightsalmon", "black",
+				"rosybrown", "blue", "blueviolet", "brown", "chocolate", "salmon", "gold", "coral", "darkorchid",
+				"darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black",
+				"rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod",
+				"lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown",
+				"blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "blueviolet", "brown");
+		list.setItems(items);
+
+		HBox.setHgrow(list, Priority.ALWAYS);
+
+		eventsContainer.getChildren().addAll(list);
+
+		return eventsContainer;
+	}
+	
+	public HBox setFloatContainer() {
+		HBox floatContainer = new HBox();
+		floatContainer.setPadding(new Insets(HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING));
+		floatContainer.setSpacing(10);
+		floatContainer.setStyle("-fx-background-color: #26292c;");
+
+		ListView<String> list = new ListView<String>();
+
+		ObservableList<String> items = FXCollections.observableArrayList("Single", "Double", "Suite");
+		list.setItems(items);
+
+		HBox.setHgrow(list, Priority.ALWAYS);
+
+		floatContainer.getChildren().addAll(list);
+
+		return floatContainer;
 	}
 	
 	public static void main(String[] argv) {
