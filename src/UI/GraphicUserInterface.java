@@ -26,6 +26,8 @@ public class GraphicUserInterface extends Application {
 	
 	private static final String COLOR_HEX_CODE_WHITE = "#ffffff";
 	
+	private static final double WINDOW_MIN_WIDTH = 700.0;
+	private static final double WINDOW_MIN_HEIGHT = 450.0;
 	private static int PADDING_HORIZONTAL = 10;
 	private static int PADDING_VERTICAL = 15;
 	private static int SPACING_BETWEEN_COMPONENTS = 10;
@@ -47,6 +49,8 @@ public class GraphicUserInterface extends Application {
 		stage.show();
 		
 		stage.setMaximized(true);
+		stage.setMinWidth(WINDOW_MIN_WIDTH);
+		stage.setMinHeight(WINDOW_MIN_HEIGHT);
 	}
 	
 	private HBox getCommandLineContainer() {
