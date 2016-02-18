@@ -34,6 +34,8 @@ public class GraphicUserInterface extends Application {
 	private static final String COMMAND_UNDO = "undo";
 	private static final String COMMAND_SEARCH = "search";
 	
+	private static final String DEFAULT_COMMAND = COMMAND_ADD + " ";
+	
 	private static final String UNINITIALIZED_STRING = "";
 	
 	private static final double WINDOW_MIN_WIDTH = 700.0;
@@ -46,6 +48,8 @@ public class GraphicUserInterface extends Application {
 			COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH);
 	
 	private String lastModifiedCommand = UNINITIALIZED_STRING;
+	private TextField textFieldToFocusOnStart = null;
+	
 	
 	@Override
 	public void start(Stage stage) {
@@ -61,6 +65,8 @@ public class GraphicUserInterface extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
+		focusOnTextField();
+		
 		stage.setMaximized(true);
 		stage.setMinWidth(WINDOW_MIN_WIDTH);
 		stage.setMinHeight(WINDOW_MIN_HEIGHT);
@@ -73,6 +79,7 @@ public class GraphicUserInterface extends Application {
 		commandLineContainer.setStyle("-fx-background-color: #1e2123 ;");
 		
 		TextField commandLine = new TextField();
+		commandLine.setText(DEFAULT_COMMAND);
 		commandLine.setStyle("-fx-background-color: #313437; " + "-fx-text-inner-color: #ffffff;");
 		HBox.setHgrow(commandLine, Priority.ALWAYS);
 		commandLine.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -98,6 +105,8 @@ public class GraphicUserInterface extends Application {
 			}
 		});
 		
+		textFieldToFocusOnStart = commandLine;
+		
 		Button enterButton = new Button(BUTTON_SUBMIT_COMMAND);
 		enterButton.setStyle("-fx-background-color: #313437; " + "-fx-font-weight: bold;" + "-fx-text-fill: #ffffff;");
 		enterButton.setOnAction(e -> retrieveCommand(commandLine));
@@ -118,9 +127,22 @@ public class GraphicUserInterface extends Application {
 		// TODO
 		System.out.println(command);
 		commandLine.clear();
+		commandLine.setText(DEFAULT_COMMAND);
+		commandLine.positionCaret(DEFAULT_COMMAND.length() + 1);
+		clearLastModifiedCommand();
 	}
 	
-	public void getNextCommand(TextField commandLine) {
+	private boolean focusOnTextField() {
+		if (textFieldToFocusOnStart != null) {
+			textFieldToFocusOnStart.requestFocus();
+			textFieldToFocusOnStart.end();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private void getNextCommand(TextField commandLine) {
 		String originalCommand = commandLine.getText();
 		String command = originalCommand.trim().toLowerCase();
 
@@ -136,9 +158,11 @@ public class GraphicUserInterface extends Application {
 			String newCommand = commands.get(position + 1);
 			commandLine.setText(newCommand + " ");
 		}
+		
+		commandLine.end();
 	}
 	
-	public void getPrevCommand(TextField commandLine) {
+	private void getPrevCommand(TextField commandLine) {
 		String originalCommand = commandLine.getText();
 		String command = originalCommand.trim().toLowerCase();
 
@@ -157,6 +181,8 @@ public class GraphicUserInterface extends Application {
 			String newCommand = commands.get(position - 1);
 			commandLine.setText(newCommand + " ");
 		}
+		
+		commandLine.end();
 	}
 	
 	private void clearLastModifiedCommand() {
