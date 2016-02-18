@@ -1,10 +1,12 @@
 package UI;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -45,13 +47,39 @@ public class GraphicUserInterface extends Application {
 		TextField commandLine = new TextField();
 		commandLine.setStyle("-fx-background-color: #313437; " + "-fx-text-inner-color: #ffffff;");
 		HBox.setHgrow(commandLine, Priority.ALWAYS);
+		commandLine.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent key) {
+				switch (key.getCode()) {
+					case ENTER:
+						retrieveCommand(commandLine);
+						break;
+					default:
+						break;
+				}
+			}
+		});
 		
 		Button enterButton = new Button(BUTTON_SUBMIT_COMMAND);
 		enterButton.setStyle("-fx-background-color: #313437; " + "-fx-font-weight: bold;" + "-fx-text-fill: #ffffff;");
+		enterButton.setOnAction(e -> retrieveCommand(commandLine));
 		
 		commandLineContainer.getChildren().addAll(commandLine, enterButton);
 		
 		return commandLineContainer;
+	}
+	
+	private void retrieveCommand(TextField commandLine) {
+		// Retrieve command from text field
+		String command = commandLine.getText();
+		// Ignore if command is empty
+		if(command == null || command.isEmpty()) {
+			return;
+		}
+		
+		// TODO
+		System.out.println(command);
+		commandLine.clear();
 	}
 	
 	public static void main(String[] argv) {
