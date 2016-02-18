@@ -53,4 +53,8 @@ public class GraphicUserInterface extends Application {
 		
 		return commandLineContainer;
 	}
+	
+	public static void main(String[] argv) {
+		launch(argv);
+	}
 }
