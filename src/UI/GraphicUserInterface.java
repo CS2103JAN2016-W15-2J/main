@@ -1,5 +1,8 @@
 package UI;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,6 +29,8 @@ public class GraphicUserInterface extends Application {
 	private static int PADDING_HORIZONTAL = 10;
 	private static int PADDING_VERTICAL = 15;
 	private static int SPACING_BETWEEN_COMPONENTS = 10;
+	
+	private static final List<String> commands = Arrays.asList("", "add", "edit", "rename", "done", "delete", "undo", "search");
 	
 	@Override
 	public void start(Stage stage) {
@@ -60,6 +65,16 @@ public class GraphicUserInterface extends Application {
 					case ENTER:
 						retrieveCommand(commandLine);
 						break;
+					case UP:
+						if (key.isControlDown()) {
+							getPrevCommand(commandLine);
+							break;
+						}
+					case DOWN:
+						if (key.isControlDown()) {
+							getNextCommand(commandLine);
+							break;
+						}
 					default:
 						break;
 				}
@@ -88,8 +103,37 @@ public class GraphicUserInterface extends Application {
 		commandLine.clear();
 	}
 	
+	public void getNextCommand(TextField commandLine) {
+		String originalCommand = commandLine.getText();
+		String command = originalCommand.trim().toLowerCase();
+
+		int position = commands.lastIndexOf(command);
+
+		if (position == -1 || position == commands.size() - 1) {
+			String newCommand = commands.get(0);
+			commandLine.setText(newCommand + " ");
+		} else {
+			String newCommand = commands.get(position + 1);
+			commandLine.setText(newCommand + " ");
+		}
+	}
 	
-	public HBox setEventsContainer() {
+	public void getPrevCommand(TextField commandLine) {
+		String originalCommand = commandLine.getText();
+		String command = originalCommand.trim().toLowerCase();
+
+		int position = commands.lastIndexOf(command);
+
+		if (position == -1 || position == 0) {
+			String newCommand = commands.get(commands.size() - 1);
+			commandLine.setText(newCommand + " ");
+		} else {
+			String newCommand = commands.get(position - 1);
+			commandLine.setText(newCommand + " ");
+		}
+	}
+	
+	private HBox setEventsContainer() {
 		HBox eventsContainer = new HBox();
 		eventsContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
 		eventsContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
@@ -112,7 +156,7 @@ public class GraphicUserInterface extends Application {
 		return eventsContainer;
 	}
 	
-	public HBox setFloatContainer() {
+	private HBox setFloatContainer() {
 		HBox floatContainer = new HBox();
 		floatContainer.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
 		floatContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
