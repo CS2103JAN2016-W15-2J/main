@@ -47,6 +47,10 @@ public class GraphicUserInterface extends Application {
 	private static final List<String> commands = Arrays.asList(UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, 
 			COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH);
 	
+	private static final int INDEX_FIRST_COMMAND = 0;
+	private static final int INDEX_LAST_COMMAND = (commands.size() - 1);
+	private static final int INDEX_MODIFIED_COMMAND = -1;
+	
 	private String lastModifiedCommand = UNINITIALIZED_STRING;
 	private TextField textFieldToFocusOnStart = null;
 	
@@ -147,12 +151,12 @@ public class GraphicUserInterface extends Application {
 		String command = originalCommand.trim().toLowerCase();
 
 		int position = commands.lastIndexOf(command);
-
-		if (position == -1) {
+		
+		if (position == INDEX_MODIFIED_COMMAND) {
 			String newCommand = commands.get(0);
-			commandLine.setText(newCommand + " ");
+			commandLine.setText(newCommand);
 			setLastModifiedCommand(originalCommand);
-		} else if (position == commands.size() - 1) {
+		} else if (position == INDEX_LAST_COMMAND) {
 			commandLine.setText(getLastModifiedCommand());
 		} else {
 			String newCommand = commands.get(position + 1);
@@ -168,18 +172,18 @@ public class GraphicUserInterface extends Application {
 
 		int position = commands.lastIndexOf(command);
 
-		if (position == -1) {
-			String newCommand = commands.get(commands.size() - 1);
+		if (position == INDEX_MODIFIED_COMMAND) {
+			String newCommand = commands.get(INDEX_LAST_COMMAND);
 			commandLine.setText(newCommand + " ");
 			setLastModifiedCommand(originalCommand);
-		} else if (position == 0 && !getLastModifiedCommand().isEmpty()) {
+		} else if (position == INDEX_FIRST_COMMAND && !getLastModifiedCommand().isEmpty()) {
 			commandLine.setText(getLastModifiedCommand());
-		} else if(position == 0 && getLastModifiedCommand().isEmpty()) {
-			String newCommand = commands.get(commands.size() - 1);
+		} else if(position == INDEX_FIRST_COMMAND && getLastModifiedCommand().isEmpty()) {
+			String newCommand = commands.get(INDEX_LAST_COMMAND);
 			commandLine.setText(newCommand + " ");
 		} else {
-			String newCommand = commands.get(position - 1);
-			commandLine.setText(newCommand + " ");
+			String newCommand = (position == 1) ? (commands.get(position - 1)) : (commands.get(position - 1) + " ");
+			commandLine.setText(newCommand);
 		}
 		
 		commandLine.end();
