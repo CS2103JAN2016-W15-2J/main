@@ -45,6 +45,8 @@ public class GraphicUserInterface extends Application {
 	private static final List<String> commands = Arrays.asList(UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, 
 			COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH);
 	
+	private String lastModifiedCommand = UNINITIALIZED_STRING;
+	
 	@Override
 	public void start(Stage stage) {
 		BorderPane frame = new BorderPane();
@@ -124,9 +126,12 @@ public class GraphicUserInterface extends Application {
 
 		int position = commands.lastIndexOf(command);
 
-		if (position == -1 || position == commands.size() - 1) {
+		if (position == -1) {
 			String newCommand = commands.get(0);
 			commandLine.setText(newCommand + " ");
+			setLastModifiedCommand(originalCommand);
+		} else if (position == commands.size() - 1) {
+			commandLine.setText(getLastModifiedCommand());
 		} else {
 			String newCommand = commands.get(position + 1);
 			commandLine.setText(newCommand + " ");
@@ -139,13 +144,31 @@ public class GraphicUserInterface extends Application {
 
 		int position = commands.lastIndexOf(command);
 
-		if (position == -1 || position == 0) {
+		if (position == -1) {
+			String newCommand = commands.get(commands.size() - 1);
+			commandLine.setText(newCommand + " ");
+			setLastModifiedCommand(originalCommand);
+		} else if (position == 0 && !getLastModifiedCommand().isEmpty()) {
+			commandLine.setText(getLastModifiedCommand());
+		} else if(position == 0 && getLastModifiedCommand().isEmpty()) {
 			String newCommand = commands.get(commands.size() - 1);
 			commandLine.setText(newCommand + " ");
 		} else {
 			String newCommand = commands.get(position - 1);
 			commandLine.setText(newCommand + " ");
 		}
+	}
+	
+	private void clearLastModifiedCommand() {
+		lastModifiedCommand = UNINITIALIZED_STRING;
+	}
+
+	private void setLastModifiedCommand(String commandLine) {
+		lastModifiedCommand = commandLine;
+	}
+
+	private String getLastModifiedCommand() {
+		return lastModifiedCommand;
 	}
 	
 	private HBox setEventsContainer() {
