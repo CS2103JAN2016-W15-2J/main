@@ -36,5 +36,7 @@ public class GraphicUserInterface extends Application {
 		stage.setTitle("TrackNote");
 		stage.setScene(scene);
 		stage.show();
+		
+		stage.setMaximized(true);
 	}
 }
