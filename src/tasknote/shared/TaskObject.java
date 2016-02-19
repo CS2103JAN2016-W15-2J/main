@@ -1,3 +1,5 @@
+package tasknote.shared;
+
 import java.util.GregorianCalendar;
 
 public class TaskObject {
