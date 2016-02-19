@@ -246,4 +246,21 @@ public class TaskObject {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+	
+	/**
+	 * @return the string for printing for debugging
+	 */
+	public String toString(){
+		return "task name = " + taskName
+				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
+				+ "\nGregorianCalendar = " + taskObjectCalendar
+				+ "\nTime = " + dateHour + " " + dateMinute
+				+ "\nDuration = " + duration
+				+ "\nlocation = " + location
+				+ "\nNotify Time = " + notifyTime
+				+ "\nisNotified = " + isNotified
+				+ "\ntasColor = " + taskColor
+				+ "\ntaskType = " + taskType
+				+ "\nisMarkedDone = " + isMarkedDone + "\n";
+	}
 }
