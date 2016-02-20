@@ -1,43 +1,22 @@
 package tasknote.storage;
 
-import tasknote.shared.*;
+import tasknote.shared.TaskObject;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Storage{
-	
-	private final static String fileName = "taskContents.txt";
-	
-	/* classes relevant to create/open/read/write from the text file. */
-	private static File textFile;
+	private FileManipulation fileManipulator;
 	
 	public Storage(){
-		createFile();
-		if(isFileNotExist()){
-			createNewFile();
-		}else{
-			
-		}
-	}
-	
-	private void createFile(){
-		textFile = new File(fileName);
-	}
-	
-	private boolean isFileNotExist(){
-		return !textFile.exists();
-	}
-	
-	private void createNewFile(){
-		
+		fileManipulator = new FileManipulation();
 	}
 	
 	public ArrayList<TaskObject> loadTasks(){
-		return null;
+		return fileManipulator.getTasks();
 	}
 	
-	public ArrayList<TaskObject> writeTasks(){
-		return null;
+	public void writeTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
+		fileManipulator.writeTasks(overrideTasks);
 	}
 }
