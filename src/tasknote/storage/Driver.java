@@ -1,4 +1,5 @@
 package tasknote.storage;
+
 import java.util.ArrayList;
 
 import tasknote.shared.*;
@@ -8,7 +9,7 @@ public class Driver{
 		Storage storage = new Storage();
 		ArrayList<TaskObject> list = storage.loadTasks();
 		for(int i=0; i<list.size(); ++i){
-			System.out.println(list);
+			System.out.println(list.get(i));
 		}
 	}
 }
