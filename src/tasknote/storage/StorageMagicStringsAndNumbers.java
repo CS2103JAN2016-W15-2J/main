@@ -22,6 +22,8 @@ public class StorageMagicStringsAndNumbers{
 														+ "taskColor:"
 														+ "taskType:"
 														+ "isMarkedDone:" };
+	private final static String SPACE = " ";
+	private final static String NEWLINE = "\n";
 	/**
 	 * file name
 	 */
@@ -31,6 +33,7 @@ public class StorageMagicStringsAndNumbers{
 	 * Magic Integers
 	 */
 	private final static int SUM_OF_TASKOBJECT_ITEMS = 14;
+	private final static int TOTAL_LINES_TO_READ = 28;
 	private final static int TASK_NUMBER_TO_TRIGGER_READ_AND_WRITE = 1;
 	private final static int BUFFERSIZE = 32768;
 	private final static int ZERO = 0;
@@ -41,8 +44,20 @@ public class StorageMagicStringsAndNumbers{
 		return STRING_TASKOBJECT[index];
 	}
 	
+	public String getSpace(){
+		return SPACE;
+	}
+	
+	public String getNewLine(){
+		return NEWLINE;
+	}
+	
 	public int getTaskNumberToTriggerObjectReadAndWrite(){
 		return TASK_NUMBER_TO_TRIGGER_READ_AND_WRITE;
+	}
+	
+	public int getTotalLinesToRead(){
+		return TOTAL_LINES_TO_READ;
 	}
 	
 	public int getBufferSize(){

@@ -2,12 +2,15 @@ package tasknote.storage;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
 public class FileManipulation{
@@ -49,32 +52,73 @@ public class FileManipulation{
 	 * to return to logic
 	 *
 	 * @param 
-	 * @param 
+	 * @throws IOException (implies reader got error)
+	 * @throws TaskListIOException (implies file contents got error)
 	 *
 	 */
-	public ArrayList<TaskObject> getTasks(){
-		String string = "";
-		return storageManipulator.convertStringToList(string);
+	public ArrayList<TaskObject> getTasks() throws IOException,TaskListIOException{
+		ArrayList<TaskObject> returnTaskList = new ArrayList<TaskObject>();
+		String[] objectRead = new String[magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite()];
+		BufferedReader fileReader = new BufferedReader(new FileReader(textFile));
+		loopToGetFullTaskList(returnTaskList, objectRead, fileReader);
+		fileReader.close();
+		return returnTaskList;
+	}
+
+	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList, String[] objectRead,
+			BufferedReader fileReader) throws IOException,TaskListIOException{
+		try{
+			while(true){
+				for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite(); ++index){
+				objectRead[index] = fileReader.readLine();
+				}
+				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
+			}
+		}catch(ClassNotFoundException cnfe){
+				cnfe.printStackTrace();
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}
 	}
 	
 	/**
 	 * This method get ArrayList/<TaskObject/> from logic and write into file
 	 *
 	 * @param 
-	 * @param 
-	 * @throws IOException 
+	 * @param overrideTasks
+	 * @throws TaskListIOException (implies something wrong with writing)
 	 *
 	 */
-	public boolean writeTasks(ArrayList<TaskObject> overrideTasks) throws IOException{
-		String stringToFile = storageManipulator.convertListToString(overrideTasks);
-		writeToFile(stringToFile);
-		return true;
+	public void writeTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
+		for(int index = magicValuesRetriever.getZero(); index < overrideTasks.size(); ++index){
+			String stringToWriteToFile = storageManipulator.convertTaskObjectToString(overrideTasks.get(index));
+			writeToFile(stringToWriteToFile);
+		}
 	}
 	
-	private boolean writeToFile(String stringToFile) throws IOException {
-		// TODO Auto-generated method stub
-		throw new IOException();
-		return false;
+	private void writeToFile(String stringToFile) throws TaskListIOException{
+		try{
+			//initialize
+			byte[] bufferMemory = stringToFile.getBytes();
+			int totalNumberOfBytesToWrite = bufferMemory.length;
+			int maxWriteLength = magicValuesRetriever.getBufferSize();
+			BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile,true));
+			
+			loopWriteOneObjectToFile(bufferMemory, totalNumberOfBytesToWrite, maxWriteLength, fileWriter);
+			
+			fileWriter.close();
+		}catch(IOException ioe){
+			throw new TaskListIOException();
+		}
+	}
+
+	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
+			BufferedOutputStream fileWriter) throws IOException{
+		while(isPositive(totalNumberOfBytesToWrite)){
+			fileWriter.write(bufferMemory,magicValuesRetriever.getZero(),maxWriteLength);
+			fileWriter.flush();
+			totalNumberOfBytesToWrite-=maxWriteLength;
+		}
 	}
 
 	/**

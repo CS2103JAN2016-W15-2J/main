@@ -1,6 +1,7 @@
 package tasknote.storage;
 
 import tasknote.shared.TaskObject;
+import tasknote.shared.TaskListIOException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Storage{
 		fileManipulator = new FileManipulation();
 	}
 	
-	public ArrayList<TaskObject> loadTasks(){
+	public ArrayList<TaskObject> loadTasks() throws IOException, TaskListIOException{
 		return fileManipulator.getTasks();
 	}
 	
