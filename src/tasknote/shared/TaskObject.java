@@ -263,6 +263,7 @@ public class TaskObject {
 				+ "\ntasColor = " + taskColor
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
+	}
 
 	/**
 	 * @return the taskID
