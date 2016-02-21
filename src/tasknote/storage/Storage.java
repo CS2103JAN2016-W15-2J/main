@@ -17,7 +17,7 @@ public class Storage{
 		return fileManipulator.getTasks();
 	}
 	
-	public void writeTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
+	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
 		fileManipulator.writeTasks(overrideTasks);
 	}
 }
