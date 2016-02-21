@@ -26,7 +26,7 @@ public class StorageConversion{
 	 */
 	public TaskObject convertStringToTaskObject(String[] linesInTask) throws ClassNotFoundException, IOException{
 		TaskObject returnObject = new TaskObject();
-		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite(); ++index){
+		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
 			storeItemIntoTaskObject(index, linesInTask[index], returnObject);
 		}
 		return returnObject;
@@ -39,39 +39,46 @@ public class StorageConversion{
 		}else{
 			content = string.split(magicValuesRetriever.getTaskObjectTitle(index));
 		}
+		if(content.length == 1){
+			return;
+		}
 		switch(index){
 			case 0:
 				returnObject.setTaskName(content[1].trim());
 				break;
 			case 1:
-				ObjectInputStream objectReader = new ObjectInputStream(new ByteArrayInputStream(content[1].trim().getBytes()));
-				GregorianCalendar tempCalendarObject = (GregorianCalendar) objectReader.readObject();
-				returnObject.setTaskObjectCalendar(tempCalendarObject);
-				objectReader.close();
+				if(content[1].trim().equals("null")){
+					break;
+				}else{
+					ObjectInputStream objectReader = new ObjectInputStream(new ByteArrayInputStream(content[1].getBytes()));
+					GregorianCalendar tempCalendarObject = (GregorianCalendar) objectReader.readObject();
+					returnObject.setTaskObjectCalendar(tempCalendarObject);
+					objectReader.close();
+				}
 				break;
 			case 2:
-				returnObject.setDateDay(Integer.parseInt(content[1]));
+				returnObject.setDateDay(Integer.parseInt(content[1].trim()));
 				break;
 			case 3:
-				returnObject.setDateMonth(Integer.parseInt(content[1]));
+				returnObject.setDateMonth(Integer.parseInt(content[1].trim()));
 				break;
 			case 4:
-				returnObject.setDateYear(Integer.parseInt(content[1]));
+				returnObject.setDateYear(Integer.parseInt(content[1].trim()));
 				break;
 			case 5:
-				returnObject.setDateHour(Integer.parseInt(content[1]));
+				returnObject.setDateHour(Integer.parseInt(content[1].trim()));
 				break;
 			case 6:
-				returnObject.setDateMinute(Integer.parseInt(content[1]));
+				returnObject.setDateMinute(Integer.parseInt(content[1].trim()));
 				break;
 			case 7:
-				returnObject.setDuration(Integer.parseInt(content[1]));
+				returnObject.setDuration(Integer.parseInt(content[1].trim()));
 				break;
 			case 8:
 				returnObject.setLocation(content[1].trim());
 				break;
 			case 9:
-				returnObject.setNotifyTime(Long.parseLong(content[1]));
+				returnObject.setNotifyTime(Long.parseLong(content[1].trim()));
 				break;
 			case 10:
 				if(content[1].trim().equalsIgnoreCase("true")){
@@ -106,7 +113,7 @@ public class StorageConversion{
 	public String convertTaskObjectToString(TaskObject task){
 		StringBuffer convertedString = new StringBuffer("");
 		
-		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite(); ++index){
+		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
 			convertedString.append(extractItemFromTaskObject(index, task));
 		}
 		

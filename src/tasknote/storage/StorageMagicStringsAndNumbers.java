@@ -9,19 +9,19 @@ public class StorageMagicStringsAndNumbers{
 	 * Magic Strings
 	 */
 	private final static String[] STRING_TASKOBJECT = { "taskName:"
-														+ "taskObjectCalendar:"
-														+ "dateDay:"
-														+ "dateMonth:"
-														+ "dateYear:"
-														+ "dateHour:"
-														+ "dateMinute:"
-														+ "duration:"
-														+ "location:"
-														+ "notifyTime:"
-														+ "isNotified:"
-														+ "taskColor:"
-														+ "taskType:"
-														+ "isMarkedDone:" };
+														, "taskObjectCalendar:"
+														, "dateDay:"
+														, "dateMonth:"
+														, "dateYear:"
+														, "dateHour:"
+														, "dateMinute:"
+														, "duration:"
+														, "location:"
+														, "notifyTime:"
+														, "isNotified:"
+														, "taskColor:"
+														, "taskType:"
+														, "isMarkedDone:" };
 	private final static String SPACE = " ";
 	private final static String NEWLINE = "\n";
 	/**

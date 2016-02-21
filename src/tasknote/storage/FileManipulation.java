@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
@@ -58,26 +57,31 @@ public class FileManipulation{
 	 */
 	public ArrayList<TaskObject> getTasks() throws IOException,TaskListIOException{
 		ArrayList<TaskObject> returnTaskList = new ArrayList<TaskObject>();
-		String[] objectRead = new String[magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite()];
 		BufferedReader fileReader = new BufferedReader(new FileReader(textFile));
-		loopToGetFullTaskList(returnTaskList, objectRead, fileReader);
+		loopToGetFullTaskList(returnTaskList, fileReader);
 		fileReader.close();
 		return returnTaskList;
 	}
 
-	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList, String[] objectRead,
-			BufferedReader fileReader) throws IOException,TaskListIOException{
+	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList,
+			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
 		try{
 			while(true){
-				for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTaskNumberToTriggerObjectReadAndWrite(); ++index){
-				objectRead[index] = fileReader.readLine();
+				String[] objectRead = new String[magicValuesRetriever.getTotalTitles()];
+				for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
+					objectRead[index] = fileReader.readLine();
+					if(objectRead[index] == null){
+						throw new NullPointerException();
+					}
 				}
 				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
 			}
 		}catch(ClassNotFoundException cnfe){
-				cnfe.printStackTrace();
+			cnfe.printStackTrace();
 		}catch(IOException ioe){
 			ioe.printStackTrace();
+		}catch(NullPointerException npe){
+			
 		}
 	}
 	
@@ -114,11 +118,10 @@ public class FileManipulation{
 
 	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
 			BufferedOutputStream fileWriter) throws IOException{
-		while(isPositive(totalNumberOfBytesToWrite)){
-			fileWriter.write(bufferMemory,magicValuesRetriever.getZero(),maxWriteLength);
+		//while(isPositive(totalNumberOfBytesToWrite)){
+			fileWriter.write(bufferMemory,magicValuesRetriever.getZero(),bufferMemory.length);
 			fileWriter.flush();
-			totalNumberOfBytesToWrite-=maxWriteLength;
-		}
+		//}
 	}
 
 	/**
