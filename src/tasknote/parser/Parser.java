@@ -105,7 +105,7 @@ public class Parser {
 		// other words excluding the first one
 		// We initialise all the possible data types that
 		// would be relevant for creating the TaskObject
-		String taskName = null;
+		String taskName = "";
 		long taskID = -1;
 		
 		GregorianCalendar taskObjectCalendar = null;
@@ -136,7 +136,7 @@ public class Parser {
 		
 		// Finally, we construct the TaskObject from all
 		// the data fields that have been set
-		TaskObject newTaskObject = new TaskObject();
+		TaskObject newTaskObject = new TaskObject(taskName);
 		//newTaskObject.set
 		
 		return null;

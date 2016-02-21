@@ -7,8 +7,6 @@ public class TaskObject {
 	private String taskName;
 	private int taskID;
 	
-	private GregorianCalendar taskObjectCalendar;
-	
 	private int dateDay;
 	private int dateMonth;
 	private int dateYear;
@@ -16,6 +14,8 @@ public class TaskObject {
 	private int dateMinute;
 	
 	private int duration;
+	
+	private GregorianCalendar taskObjectCalendar;
 	
 	private String location;
 	
@@ -27,11 +27,9 @@ public class TaskObject {
 	
 	private boolean isMarkedDone;
 	
-	public TaskObject() {
+	public TaskObject(String taskName) {
 		
-		setTaskName("");
-		
-		setTaskObjectCalendar(null);
+		setTaskName(taskName);
 		
 		setDateDay(0);
 		setDateMonth(0);
@@ -40,6 +38,8 @@ public class TaskObject {
 		setDateMinute(0);
 		
 		setDuration(0);
+		
+		setTaskObjectCalendar(new GregorianCalendar());
 		
 		setLocation("");
 		
@@ -56,7 +56,7 @@ public class TaskObject {
 	 * @return the taskName
 	 */
 	public String getTaskName() {
-		return taskName;
+		return this.taskName;
 	}
 
 	/**
@@ -65,12 +65,26 @@ public class TaskObject {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+	
+	/**
+	 * @return the taskID
+	 */
+	public int getTaskID() {
+		return this.taskID;
+	}
+
+	/**
+	 * @param taskID the taskID to set
+	 */
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
+	}
 
 	/**
 	 * @return the date
 	 */
 	public int getDateDay() {
-		return dateDay;
+		return this.dateDay;
 	}
 
 	/**
@@ -84,7 +98,7 @@ public class TaskObject {
 	 * @return the location
 	 */
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 
 	/**
@@ -98,7 +112,7 @@ public class TaskObject {
 	 * @return the notifyTime
 	 */
 	public long getNotifyTime() {
-		return notifyTime;
+		return this.notifyTime;
 	}
 
 	/**
@@ -112,7 +126,7 @@ public class TaskObject {
 	 * @return the isNotified
 	 */
 	public boolean getIsNotified() {
-		return isNotified;
+		return this.isNotified;
 	}
 
 	/**
@@ -126,7 +140,7 @@ public class TaskObject {
 	 * @return the taskColor
 	 */
 	public String getTaskColor() {
-		return taskColor;
+		return this.taskColor;
 	}
 
 	/**
@@ -140,7 +154,7 @@ public class TaskObject {
 	 * @return the taskType
 	 */
 	public String getTaskType() {
-		return taskType;
+		return this.taskType;
 	}
 
 	/**
@@ -154,7 +168,7 @@ public class TaskObject {
 	 * @return the markedDone
 	 */
 	public boolean getIsMarkedDone() {
-		return isMarkedDone;
+		return this.isMarkedDone;
 	}
 
 	/**
@@ -168,7 +182,7 @@ public class TaskObject {
 	 * @return the taskObjectCalendar
 	 */
 	public GregorianCalendar getTaskObjectCalendar() {
-		return taskObjectCalendar;
+		return this.taskObjectCalendar;
 	}
 
 	/**
@@ -182,7 +196,7 @@ public class TaskObject {
 	 * @return the dateMonth
 	 */
 	public int getDateMonth() {
-		return dateMonth;
+		return this.dateMonth;
 	}
 
 	/**
@@ -196,7 +210,7 @@ public class TaskObject {
 	 * @return the dateYear
 	 */
 	public int getDateYear() {
-		return dateYear;
+		return this.dateYear;
 	}
 
 	/**
@@ -210,7 +224,7 @@ public class TaskObject {
 	 * @return the dateHour
 	 */
 	public int getDateHour() {
-		return dateHour;
+		return this.dateHour;
 	}
 
 	/**
@@ -224,7 +238,7 @@ public class TaskObject {
 	 * @return the dateMinute
 	 */
 	public int getDateMinute() {
-		return dateMinute;
+		return this.dateMinute;
 	}
 
 	/**
@@ -238,7 +252,7 @@ public class TaskObject {
 	 * @return the duration
 	 */
 	public int getDuration() {
-		return duration;
+		return this.duration;
 	}
 
 	/**
@@ -263,19 +277,5 @@ public class TaskObject {
 				+ "\ntasColor = " + taskColor
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
-	}
-
-	/**
-	 * @return the taskID
-	 */
-	public int getTaskID() {
-		return taskID;
-	}
-
-	/**
-	 * @param taskID the taskID to set
-	 */
-	public void setTaskID(int taskID) {
-		this.taskID = taskID;
 	}
 }
