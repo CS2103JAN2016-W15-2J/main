@@ -99,16 +99,12 @@ public class Parser {
 		// regex to split the entire string into words
 		String[] userCommandWords = trimmedUserCommand.split(REGEX_WHITESPACE);
 		
-
 		// Since the first word must be the user command
 		// then our main concern should be with all the
 		// other words excluding the first one
 		// We initialise all the possible data types that
 		// would be relevant for creating the TaskObject
-		String taskName = "";
-		long taskID = -1;
-		
-		GregorianCalendar taskObjectCalendar = null;
+		StringBuilder taskName = new StringBuilder();
 		
 		int dateDay = -1;
 		int dateMonth = -1;
@@ -136,10 +132,147 @@ public class Parser {
 		
 		// Finally, we construct the TaskObject from all
 		// the data fields that have been set
-		TaskObject newTaskObject = new TaskObject(taskName);
-		//newTaskObject.set
 		
-		return null;
+		String current_action = "name";
+		StringBuilder temporaryPhrase = new StringBuilder();
+		
+		for (int i = 0; i < userCommandDataLength; i++) {
+			
+			String currentWord = userCommandWords[i + 1];
+			
+			if (current_action.equalsIgnoreCase("time point")) {
+				
+				int currentWordLength = currentWord.length();
+				
+				if (currentWordLength > 4) {
+					taskName.append(temporaryPhrase);
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+					current_action = "name";
+				} else if (currentWordLength > 2) {
+					
+					String lastTwoCharacters = currentWord.substring(currentWordLength - 2, 
+																	 currentWordLength);
+					
+					char secondLastCharacter = lastTwoCharacters.charAt(0);
+					char lastCharacter = lastTwoCharacters.charAt(1);
+					
+					if (lastTwoCharacters.equalsIgnoreCase("pm")) {
+						
+						String expectedTime = currentWord.substring(0,  currentWordLength - 2);
+						
+						try {
+							dateHour = Integer.parseInt(expectedTime) + 12;
+							
+						} catch (NumberFormatException e) {
+							taskName.append(temporaryPhrase);
+							current_action = "name";
+						} finally {
+							temporaryPhrase.delete(0, temporaryPhrase.length());
+						}
+						
+					} else if (lastTwoCharacters.equalsIgnoreCase("am")) {
+						
+						String expectedTime = currentWord.substring(0,  currentWordLength - 2);
+						
+						try {
+							dateHour = Integer.parseInt(expectedTime);
+							
+						} catch (NumberFormatException e) {
+							taskName.append(temporaryPhrase);
+							current_action = "name";
+						} finally {
+							temporaryPhrase.delete(0, temporaryPhrase.length());
+						}
+						
+					} else if (secondLastCharacter >= '0' && secondLastCharacter <= '5' && 
+							   lastCharacter >= '0' && lastCharacter <= '9') {
+						try {
+							dateHour = Integer.parseInt(currentWord.substring(0, currentWordLength - 2));
+							dateMinute = Integer.parseInt(currentWord.substring(currentWordLength - 2, 
+									 											currentWordLength));
+						} catch (NumberFormatException e) {
+							taskName.append(temporaryPhrase);
+							current_action = "name";
+						} finally {
+							temporaryPhrase.delete(0, temporaryPhrase.length());
+						}
+						
+					} else {
+						taskName.append(temporaryPhrase);
+						temporaryPhrase.delete(0, temporaryPhrase.length());
+						current_action = "name";
+					}
+					
+				} else {
+					
+					try {
+						dateHour = Integer.parseInt(currentWord);
+						
+					} catch (NumberFormatException e) {
+						taskName.append(temporaryPhrase);
+						current_action = "name";
+					} finally {
+						temporaryPhrase.delete(0, temporaryPhrase.length());
+					}
+					
+				}
+				
+			}
+			
+			if (currentWord.equalsIgnoreCase("by")) {
+				
+				if (current_action.equalsIgnoreCase("name")) {
+					taskName.append(temporaryPhrase);
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+				}
+				
+				temporaryPhrase.append(currentWord);
+				temporaryPhrase.append(" ");
+				current_action = "time point";
+			} else if (currentWord.equalsIgnoreCase("at")) {
+				
+				if (current_action.equalsIgnoreCase("name")) {
+					taskName.append(temporaryPhrase);
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+				}
+				
+				temporaryPhrase.append(currentWord);
+				temporaryPhrase.append(" ");
+				current_action = "location";
+			} else if (currentWord.equalsIgnoreCase("on")) {
+				
+				if (current_action.equalsIgnoreCase("name")) {
+					taskName.append(temporaryPhrase);
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+				}
+				
+				temporaryPhrase.append(currentWord);
+				temporaryPhrase.append(" ");
+				current_action = "date";
+			} else if (currentWord.equalsIgnoreCase("in")) {
+				
+				if (current_action.equalsIgnoreCase("name")) {
+					taskName.append(temporaryPhrase);
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+				}
+				
+				temporaryPhrase.append(currentWord);
+				temporaryPhrase.append(" ");
+				current_action = "countdown";
+			} else {
+				
+				if (current_action.equalsIgnoreCase("name")) {
+					taskName.append(currentWord);
+					taskName.append(" ");
+				}
+			}
+		}
+		
+		TaskObject newTaskObject = new TaskObject(taskName.toString().trim());
+		newTaskObject.setDateHour(dateHour);
+		newTaskObject.setDateMinute(dateMinute);
+		
+		return newTaskObject;
 	}
 
 	public static ArrayList<Integer> deletedObjects(String userCommand) {

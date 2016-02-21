@@ -2,7 +2,7 @@ package tasknote.shared;
 
 import java.util.GregorianCalendar;
 
-public class TaskObject {
+public class TaskObject implements Comparable{
 	
 	private String taskName;
 	private int taskID;
@@ -31,11 +31,11 @@ public class TaskObject {
 		
 		setTaskName(taskName);
 		
-		setDateDay(0);
-		setDateMonth(0);
-		setDateYear(0);
-		setDateHour(0);
-		setDateMinute(0);
+		setDateDay(-1);
+		setDateMonth(-1);
+		setDateYear(-1);
+		setDateHour(-1);
+		setDateMinute(-1);
 		
 		setDuration(0);
 		
@@ -277,5 +277,35 @@ public class TaskObject {
 				+ "\ntasColor = " + taskColor
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public boolean equals(Object comparingObject) {
+		if (!(comparingObject instanceof TaskObject)) {
+			return false;
+		}
+		
+		TaskObject comparingTaskObject = (TaskObject) comparingObject;
+		
+		if (!comparingTaskObject.getTaskName().equals(this.getTaskName())) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getDateHour() != this.getDateHour()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getDateMinute() != this.getDateMinute()) {
+			return false;
+		}
+		
+		// TODO
+		
+		return true;
 	}
 }
