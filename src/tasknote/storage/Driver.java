@@ -14,7 +14,7 @@ public class Driver{
 			test.add(temp);
 			test.add(new TaskObject());
 			Storage storage = new Storage();
-			storage.writeTasks(test);
+			storage.saveTasks(test);
 			
 			ArrayList<TaskObject> list = storage.loadTasks();
 			System.out.println("#number of items: " + list.size());

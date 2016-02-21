@@ -50,10 +50,14 @@ public class StorageConversion{
 				if(content[1].trim().equals("null")){
 					break;
 				}else{
-					ObjectInputStream objectReader = new ObjectInputStream(new ByteArrayInputStream(content[1].getBytes()));
-					GregorianCalendar tempCalendarObject = (GregorianCalendar) objectReader.readObject();
-					returnObject.setTaskObjectCalendar(tempCalendarObject);
-					objectReader.close();
+					/**
+					 * stub portion for now: TODO
+					 */
+					//ObjectInputStream objectReader = new ObjectInputStream(new ByteArrayInputStream(content[1].getBytes()));
+					//GregorianCalendar tempCalendarObject = (GregorianCalendar) objectReader.readObject();
+					//returnObject.setTaskObjectCalendar(tempCalendarObject);
+					//objectReader.close();
+					returnObject.setTaskObjectCalendar(new GregorianCalendar());
 				}
 				break;
 			case 2:
