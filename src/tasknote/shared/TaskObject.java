@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 public class TaskObject {
 	
 	private String taskName;
+	private int taskID;
 	
 	private GregorianCalendar taskObjectCalendar;
 	
@@ -262,5 +263,18 @@ public class TaskObject {
 				+ "\ntasColor = " + taskColor
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
+
+	/**
+	 * @return the taskID
+	 */
+	public int getTaskID() {
+		return taskID;
+	}
+
+	/**
+	 * @param taskID the taskID to set
+	 */
+	public void setTaskID(int taskID) {
+		this.taskID = taskID;
 	}
 }
