@@ -14,9 +14,9 @@ public class TaskNoteControl {
 	 * after each user operation
 	 */
 	private static final String MESSAGE_ADD_SUCCESSFUL = "Added Successfully: %d. %s";
-	private static final String MESSAGE_ADD_FAILURE = "Add Failed";
+	private static final String MESSAGE_ADD_UNSUCCESSFUL = "Add Failed";
 	private static final String MESSAGE_DELETE_SUCCESSFUL = "Deleted %d task(s) Successfuly";
-	private static final String MESSAGE_DELETE_FAILURE = "Deletion Failed";
+	private static final String MESSAGE_DELETE_UNSUCCESSFUL = "Deletion Failed";
 	private static final String MESSAGE_SEARCH_UNSUCCESSFUL = "No tasks contain the entered search string";
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
 	
@@ -64,7 +64,7 @@ public class TaskNoteControl {
 	 * 
 	 * @param List of Tasks to be displayed to the User
 	 */
-	public static void refreshDisplay(ArrayList<TaskObject> list){
+	private static void refreshDisplay(ArrayList<TaskObject> list){
 		displayList = new ArrayList<TaskObject>();
 		for(int i = 0; i < list.size(); i++){
 			displayList.add(list.get(i));
@@ -103,7 +103,7 @@ public class TaskNoteControl {
 			response = WARNING_INVALID_COMMAND;
 			break;
 		case EXIT:
-			System.exit(1);
+			System.exit(0);
 		default:
 			throw new Error("Unrecognized command type");
 		}
@@ -117,7 +117,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeAdd(String userCommand){
+	private static String executeAdd(String userCommand){
 		TaskObject addObject = Parser.parseAdd(userCommand);
 		String response = addTask(addObject);
 		return response;
@@ -130,7 +130,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeDelete(String userCommand){
+	private static String executeDelete(String userCommand){
 		deleteIds.clear();
 		//TODO: Parser
 		//deleteIds = Parser.parseDelete(userCommand);
@@ -145,7 +145,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeSearch(String userCommand){
+	private static String executeSearch(String userCommand){
 		searchIds.clear();
 		searchList.clear();
 		//TODO: Parser
@@ -162,7 +162,7 @@ public class TaskNoteControl {
 	 * @param task object
 	 * @return Status of Operation
 	 */
-	public static String addTask(TaskObject object){
+	private static String addTask(TaskObject object){
 		boolean isSuccess = true;
 		try{
 			taskList.add(object);
@@ -180,7 +180,7 @@ public class TaskNoteControl {
 	 * @param Id of the Task stored in ArrayList
 	 * @return Status of the operation
 	 */
-	public static String deleteTask(ArrayList<Integer> deleteIds){
+	private static String deleteTask(ArrayList<Integer> deleteIds){
 		boolean isSuccess = true;
 		try{
 			deleteFromTaskList(deleteIds);
@@ -189,10 +189,10 @@ public class TaskNoteControl {
 		}catch(Exception e){
 			isSuccess = false;
 		}
-		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, new TaskObject());
+		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
 	}
 	
-	public static void deleteFromTaskList(ArrayList<Integer> deleteIds){
+	private static void deleteFromTaskList(ArrayList<Integer> deleteIds){
 		for(int i = 0; i < deleteIds.size(); i++){
 			TaskObject task = displayList.get(i);
 			int index = taskList.indexOf(task);
@@ -208,7 +208,7 @@ public class TaskNoteControl {
 	 * @return status of the operation if search is unsuccessful; 
 	 * 		 	Otherwise empty string
 	 */
-	public static String getSearchResults(){
+	private static String getSearchResults(){
 		boolean isSuccess = true;
 		try{
 			for(int i = 0; i < searchIds.size(); i++){
@@ -226,7 +226,7 @@ public class TaskNoteControl {
 	 * 
 	 * @param Task List
 	 */
-	public static void sortAndSave(ArrayList<TaskObject> taskList){
+	private static void sortAndSave(ArrayList<TaskObject> taskList){
 		sortByDate(taskList);
 		//TODO: Storage 
 		//Storage.saveTasks(taskList);
@@ -238,7 +238,7 @@ public class TaskNoteControl {
 	 * 
 	 * @param list to be sorted
 	 */
-	public static void sortByDate(ArrayList<TaskObject> list){
+	private static void sortByDate(ArrayList<TaskObject> list){
 		//TODO
 	}
 	
@@ -251,7 +251,7 @@ public class TaskNoteControl {
 	 * 
 	 * @return Feedback to the User
 	 */
-	public static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject task){
+	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject task){
 		
 		switch(commandType) {
 		case ADD:
@@ -260,13 +260,13 @@ public class TaskNoteControl {
 				String taskName = task.getTaskName();
 				return String.format(MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
 			}else{
-				return MESSAGE_ADD_FAILURE; 
+				return MESSAGE_ADD_UNSUCCESSFUL; 
 			}
 		case DELETE:
 			if(isSuccess){
 				return String.format(MESSAGE_DELETE_SUCCESSFUL, deleteIds.size());
 			}else{
-				return MESSAGE_DELETE_FAILURE; 
+				return MESSAGE_DELETE_UNSUCCESSFUL; 
 			}
 		case SEARCH:
 			if(isSuccess){
