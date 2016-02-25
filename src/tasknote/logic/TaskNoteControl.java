@@ -19,6 +19,8 @@ public class TaskNoteControl {
 	private static final String MESSAGE_DELETE_UNSUCCESSFUL = "Deletion Failed";
 	private static final String MESSAGE_SEARCH_UNSUCCESSFUL = "No tasks contain the entered search string";
 	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
+	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated";
+	private static final String MESSAGE_UPDATE_UNSUCCESSFUL = "Update Failed";
 	
 	/* These are the warnings that will be displayed if the user does 
 	 * not enter valid commands
@@ -95,8 +97,7 @@ public class TaskNoteControl {
 			refreshDisplay(searchList);
 			break;
 		case UPDATE:
-			//TODO
-			//response = executeUpdate(userCommand);
+			response = executeUpdate(userCommand);
 			refreshDisplay(taskList);
 			break;
 		case INVALID:
@@ -155,6 +156,23 @@ public class TaskNoteControl {
 	}
 	
 	/**
+	 * This operation gets the task ID of the task to be updated 
+	 * and the updated Task object from the parser and replaces 
+	 * the old object in the TaskList
+	 * 
+	 * @param User Command
+	 * @return Status of Operation
+	 */
+	private static String executeUpdate(String userCommand){
+		//TODO: Parser
+		//int updateTaskId = Parser.getUpdateTaskId(userCommand);
+		//TaskObject updatedTaskObject = Parser.parseUpdate(userCommand);
+		//String response = updateTask(updateTaskId, updatedTaskObject);
+		String response = "";
+		return response;
+	}
+	
+	/**
 	 * This operation adds a taskObject to the ArrayList 
 	 * of TaskObjects, sorts it based on Date and Time and 
 	 * saves it in the Storage
@@ -205,8 +223,7 @@ public class TaskNoteControl {
 	 * based on the given IDs from the ArrayList of TaskObjects.
 	 * 
 	 * @param userCommand
-	 * @return status of the operation if search is unsuccessful; 
-	 * 		 	Otherwise empty string
+	 * @return status of the operation
 	 */
 	private static String getSearchResults(){
 		boolean isSuccess = true;
@@ -218,6 +235,25 @@ public class TaskNoteControl {
 			isSuccess = false;
 		}
 		return showFeedback(COMMAND_TYPE.SEARCH, isSuccess, null);
+	}
+	
+	/**
+	 * This operation removes the old task from the taskList, adds
+	 * the updated task into the taskList, sorts and saves the list
+	 * 
+	 * @param userCommand
+	 * @return status of the operation
+	 */
+	private static String updateTask(int updateTaskId, TaskObject updatedTaskObject){
+		boolean isSuccess = true;
+		try{
+			taskList.remove(updateTaskId);
+			taskList.add(updatedTaskObject);
+			sortAndSave(taskList);
+		}catch(Exception e){
+			isSuccess = false;
+		}
+		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
 	
 	/**
@@ -275,11 +311,12 @@ public class TaskNoteControl {
 				return MESSAGE_SEARCH_UNSUCCESSFUL;
 			}
 		case UPDATE:
-			//TODO
 			if(isSuccess && task != null){
-				//TODO
+				//TODO: Feedback which fields were updated
+				return String.format(MESSAGE_UPDATE_SUCCESSFUL);
 			}else{
-				//TODO 
+				//TODO
+				return MESSAGE_UPDATE_UNSUCCESSFUL;
 			}
 		default:
 			throw new Error("Unrecognized command type");
