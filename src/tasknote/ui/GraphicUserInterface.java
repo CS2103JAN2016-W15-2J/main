@@ -1,5 +1,6 @@
 package tasknote.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import tasknote.logic.TaskNoteControl;
+import tasknote.shared.TaskObject;
 
 public class GraphicUserInterface extends Application {
 	
@@ -60,11 +63,18 @@ public class GraphicUserInterface extends Application {
 	private String lastModifiedCommand = UNINITIALIZED_STRING;
 	private TextField textFieldToFocusOnStart = null;
 	
+	private HBox globalEventsContainer;
+	private HBox globalFloatsContainer;
+	private ObservableList<String> globalEventList;
+	
 	
 	@Override
 	public void start(Stage stage) {
 		BorderPane frame = new BorderPane();
 		Scene scene = new Scene(frame);
+		
+		// TODO Let's begin upon loading
+		TaskNoteControl.loadTasks();
 			
 		frame.setCenter(setEventsContainer());
 		frame.setRight(setFloatContainer());
@@ -135,7 +145,11 @@ public class GraphicUserInterface extends Application {
 		}
 		
 		// TODO
-		System.out.println(command);
+		String feedback = TaskNoteControl.executeCommand(command);
+		ArrayList<String> taskList = convertArrayOfTask(TaskNoteControl.getDisplayList());
+		globalEventList.setAll(taskList);
+		
+		
 		commandLine.clear();
 		commandLine.setText(DEFAULT_COMMAND);
 		commandLine.positionCaret(DEFAULT_COMMAND.length() + 1);
@@ -213,20 +227,22 @@ public class GraphicUserInterface extends Application {
 		eventsContainer.setSpacing(SPACING_BETWEEN_COMPONENTS);
 		eventsContainer.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
 
-		ListView<String> list = new ListView<String>();
-		ObservableList<String> items = FXCollections.observableArrayList("Single", "Double", "Suite", "Family App",
-				"chocolate", "salmon", "gold", "coral", "darkorchid", "darkgoldenrod", "lightsalmon", "black",
-				"rosybrown", "blue", "blueviolet", "brown", "chocolate", "salmon", "gold", "coral", "darkorchid",
-				"darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black",
-				"rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod",
-				"lightsalmon", "black", "rosybrown", "blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown",
-				"blue", "darkgoldenrod", "lightsalmon", "black", "rosybrown", "blue", "blueviolet", "brown");
+	    // TODO
+        ArrayList<String> taskList = convertArrayOfTask(TaskNoteControl.getDisplayList());
+		
+        ListView<String> list = new ListView<String>();
+		ObservableList<String> items = FXCollections.observableArrayList(taskList);
+		
+		
 		list.setItems(items);
 
 		HBox.setHgrow(list, Priority.ALWAYS);
 
 		eventsContainer.getChildren().addAll(list);
 
+		globalEventsContainer = eventsContainer;
+		globalEventList = items;
+		
 		return eventsContainer;
 	}
 	
@@ -244,8 +260,20 @@ public class GraphicUserInterface extends Application {
 		HBox.setHgrow(list, Priority.ALWAYS);
 
 		floatContainer.getChildren().addAll(list);
+		
+		globalFloatsContainer = floatContainer;
 
 		return floatContainer;
+	}
+	
+	private ArrayList<String> convertArrayOfTask(ArrayList<TaskObject> taskList) {
+	    ArrayList<String> convertedArray = new ArrayList<String>();
+	    
+	    for(TaskObject to : taskList) {
+	        convertedArray.add(to.toString());
+	    }
+	    
+	    return convertedArray;
 	}
 	
 	public static void main(String[] argv) {
