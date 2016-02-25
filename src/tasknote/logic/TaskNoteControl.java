@@ -4,30 +4,11 @@ import tasknote.parser.Parser;
 import tasknote.storage.Storage;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.Constants;
 
 import java.util.ArrayList;
 
 public class TaskNoteControl {
-	
-	/* 
-	 * These are the String Constants that will be displayed before or
-	 * after each user operation
-	 */
-	private static final String MESSAGE_ADD_SUCCESSFUL = "Added Successfully: %d. %s";
-	private static final String MESSAGE_ADD_UNSUCCESSFUL = "Add Failed";
-	private static final String MESSAGE_DELETE_SUCCESSFUL = "Deleted %d task(s) Successfuly";
-	private static final String MESSAGE_DELETE_UNSUCCESSFUL = "Deletion Failed";
-	private static final String MESSAGE_SEARCH_UNSUCCESSFUL = "No tasks contain the entered search string";
-	private static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
-	private static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated";
-	private static final String MESSAGE_UPDATE_UNSUCCESSFUL = "Update Failed";
-	
-	/* These are the warnings that will be displayed if the user does 
-	 * not enter valid commands
-	 */
-	private static final String WARNING_NULL_COMMAND = "Command type string cannot be null!";
-	private static final String WARNING_INVALID_COMMAND = "Invalid Command. Please try again.";
-	private static final String WARNING_INVALID_DELETE_INDEX = "Invalid Deletion Index. Please try again.";
 	
 	/* 
 	 * These are the various lists that will be used to store the TaskObjects,
@@ -101,7 +82,7 @@ public class TaskNoteControl {
 			refreshDisplay(taskList);
 			break;
 		case INVALID:
-			response = WARNING_INVALID_COMMAND;
+			response = Constants.WARNING_INVALID_COMMAND;
 			break;
 		case EXIT:
 			System.exit(0);
@@ -294,29 +275,29 @@ public class TaskNoteControl {
 			if(isSuccess && task != null){
 				int taskIndex = taskList.indexOf(task);
 				String taskName = task.getTaskName();
-				return String.format(MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
+				return String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
 			}else{
-				return MESSAGE_ADD_UNSUCCESSFUL; 
+				return Constants.MESSAGE_ADD_UNSUCCESSFUL; 
 			}
 		case DELETE:
 			if(isSuccess){
-				return String.format(MESSAGE_DELETE_SUCCESSFUL, deleteIds.size());
+				return String.format(Constants.MESSAGE_DELETE_SUCCESSFUL, deleteIds.size());
 			}else{
-				return MESSAGE_DELETE_UNSUCCESSFUL; 
+				return Constants.MESSAGE_DELETE_UNSUCCESSFUL; 
 			}
 		case SEARCH:
 			if(isSuccess){
-				return String.format(MESSAGE_SEARCH_SUCCESSFUL, searchIds.size());
+				return String.format(Constants.MESSAGE_SEARCH_SUCCESSFUL, searchIds.size());
 			}else{
-				return MESSAGE_SEARCH_UNSUCCESSFUL;
+				return Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
 			}
 		case UPDATE:
 			if(isSuccess && task != null){
 				//TODO: Feedback which fields were updated
-				return String.format(MESSAGE_UPDATE_SUCCESSFUL);
+				return String.format(Constants.MESSAGE_UPDATE_SUCCESSFUL);
 			}else{
 				//TODO
-				return MESSAGE_UPDATE_UNSUCCESSFUL;
+				return Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
 			}
 		default:
 			throw new Error("Unrecognized command type");
