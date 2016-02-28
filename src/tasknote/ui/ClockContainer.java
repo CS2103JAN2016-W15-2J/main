@@ -80,6 +80,8 @@ public class ClockContainer extends GridPane {
          GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
          GridPane.setConstraints(_monthAndDateLabel, 1, 0);
          GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
+         
+         setLabelsToCurrentTime();
     }
 
     /*
@@ -90,21 +92,25 @@ public class ClockContainer extends GridPane {
                 new KeyFrame(Duration.seconds(INTERVAL_SECOND_ANIMATION), new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
-                        _currentTime.setTimeInMillis(System.currentTimeMillis());
-                        String monthString = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
-                        String dayOfWeek = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase());
-                        String dayString = pad(2, WHITESPACE, String.valueOf(_currentTime.get(Calendar.DAY_OF_MONTH)));
-                        String hourString = pad(2, '0', _currentTime.get(Calendar.HOUR) == 0 ? "12" : String.valueOf(_currentTime.get(Calendar.HOUR)));
-                        String minuteString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.MINUTE)));
-                        String secondString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.SECOND)));
-                        String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
-                        _dayOfWeekLabel.setText(dayOfWeek);
-                        _monthAndDateLabel.setText(monthString + WHITESPACE + dayString);
-                        _hourMinuteAndSecondLabel.setText(hourString + TIME_DELIMITER + minuteString + TIME_DELIMITER + secondString + WHITESPACE + ampmString);
+                        setLabelsToCurrentTime();
                     }
                 }), new KeyFrame(Duration.seconds(INTERVAL_SECOND_ANIMATION)));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+    }
+    
+    private void setLabelsToCurrentTime() {
+        _currentTime.setTimeInMillis(System.currentTimeMillis());
+        String monthString = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
+        String dayOfWeek = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase());
+        String dayString = pad(2, WHITESPACE, String.valueOf(_currentTime.get(Calendar.DAY_OF_MONTH)));
+        String hourString = pad(2, '0', _currentTime.get(Calendar.HOUR) == 0 ? "12" : String.valueOf(_currentTime.get(Calendar.HOUR)));
+        String minuteString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.MINUTE)));
+        String secondString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.SECOND)));
+        String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+        _dayOfWeekLabel.setText(dayOfWeek);
+        _monthAndDateLabel.setText(monthString + WHITESPACE + dayString);
+        _hourMinuteAndSecondLabel.setText(hourString + TIME_DELIMITER + minuteString + TIME_DELIMITER + secondString + WHITESPACE + ampmString);
     }
 
     private static String pad(int fieldWidth, char paddingCharacter, String originalString) {

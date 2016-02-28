@@ -34,8 +34,7 @@ public class GuiController extends Application {
         
         frame.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
         
-        // TODO Ensure that _sidebarContainer loads prior to showing of stage.
-        //frame.setLeft(_sidebarContainer);
+        frame.setLeft(_sidebarContainer);
         frame.setCenter(_tasksContainer);
         frame.setRight(_floatingTasksContainer);
         frame.setBottom(_commandLineContainer);
