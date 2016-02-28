@@ -34,42 +34,60 @@ public class ClockContainer extends GridPane {
     private static Label _dayOfWeekLabel = new Label();
 
     private ClockContainer() {
-        // Only one instance of ClockContainer is permitted
+     // Only one instance of ClockContainer is permitted
     }
 
+    /**
+     * getInstance() allows user to get an instance of 
+     * ClockContainer.
+     * 
+     * @return       The one instance of ClockContainer.
+     */
     public static ClockContainer getInstance() {
-    	if (_timerContainer == null) {
-    	    _timerContainer = new ClockContainer();
-    	    _timerContainer.setupTimer();
-    	}
-    
-    	return _timerContainer;
+        if (_timerContainer == null) {
+            _timerContainer = new ClockContainer();
+            _timerContainer.setupClockContainer();
+        }
+
+        return _timerContainer;
     }
 
-    private void setupTimer() {
-        this.setHgap(SPACING_BETWEEN_COMPONENTS);
-
-        setupLabelStyle();
-
-        GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
-        GridPane.setConstraints(_monthAndDateLabel, 1, 0);
-        GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
+    /*
+     * As per name, set up clock container.
+     */
+    private void setupClockContainer() {
+        setClockContainerPresentation();
+        setLabelsPresentation();
 
         _timerContainer.getChildren().addAll(_monthAndDateLabel, _hourMinuteAndSecondLabel, _dayOfWeekLabel);
 
-        _timerContainer.bindToTime();
+        setLabelAnimation();
+    }
+    
+    private void setClockContainerPresentation() {
+        this.setHgap(SPACING_BETWEEN_COMPONENTS);
     }
 
-    private void setupLabelStyle() {
-        _monthAndDateLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-	                               + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
-        _hourMinuteAndSecondLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-	                                      + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
-        _dayOfWeekLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-	                            + String.format(PROPERTY_FONT_SIZE, 25) + "-fx-font-weight: bold;");
+    /*
+     * Set up the presentation of the labels in ClockContainer.
+     */
+    private void setLabelsPresentation() {
+         _monthAndDateLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
+                       + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
+         _hourMinuteAndSecondLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
+                           + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
+         _dayOfWeekLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
+                    + String.format(PROPERTY_FONT_SIZE, 25) + "-fx-font-weight: bold;");
+         
+         GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
+         GridPane.setConstraints(_monthAndDateLabel, 1, 0);
+         GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
     }
 
-    private void bindToTime() {
+    /*
+     * Set up the labels to update every second.
+     */
+    private void setLabelAnimation() {
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(INTERVAL_SECOND_ANIMATION), new EventHandler<ActionEvent>() {
                     @Override
@@ -92,10 +110,10 @@ public class ClockContainer extends GridPane {
     }
 
     private static String pad(int fieldWidth, char paddingCharacter, String originalString) {
-    	int maximumLengthOfString = Math.min(fieldWidth, originalString.length());
-    	originalString = originalString.substring(0, maximumLengthOfString);
-    	String paddedString = String.format("%" + fieldWidth + "s", originalString).replace(WHITESPACE, paddingCharacter);
-    
-    	return paddedString;
+        int maximumLengthOfString = Math.min(fieldWidth, originalString.length());
+        originalString = originalString.substring(0, maximumLengthOfString);
+        String paddedString = String.format("%" + fieldWidth + "s", originalString).replace(WHITESPACE, paddingCharacter);
+        
+        return paddedString;
     }
 }

@@ -40,10 +40,19 @@ public class TasksContainer extends HBox {
         return _tasksContainer;
     }
     
+    /**
+     * getTasksList() allows user to get the observable
+     * list contained within TasksContainer.
+     * 
+     * @return          The ObservableList in TasksContainer.
+     */
     public ObservableList<TaskObject> getTasksList() {
         return _tasksList;
     }
     
+    /*
+     * As per name, set up tasks container.
+     */
     private void setupTasksContainer() {
         setTasksContainerPresentation();
         setTaskListPresentation();
@@ -53,17 +62,26 @@ public class TasksContainer extends HBox {
         this.getChildren().addAll(_observableListRepresentation);
     }
     
+    /*
+     * Set up the presentation of the tasks container.
+     */
     private void setTasksContainerPresentation() {
         this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
         this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
     }
     
+    /*
+     * Set up the presentation of the (observable) list containing all the tasks.
+     */
     private void setTaskListPresentation() {
         _observableListRepresentation.setItems(_tasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
     
+    /*
+     * Set up the behaviour of the (observable) list.
+     */
     private void setTaskListBehaviour() {
         _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
             @Override

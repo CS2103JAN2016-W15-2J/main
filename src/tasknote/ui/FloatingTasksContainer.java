@@ -36,10 +36,19 @@ public class FloatingTasksContainer extends HBox {
         return _floatingTasksContainer;
     }
     
+    /**
+     * getFloatingTasksList() allows user to get the observable
+     * list contained within FloatingTasksContainer.
+     * 
+     * @return          The ObservableList in FloatingTasksContainer.
+     */
     public ObservableList<String> getFloatingTasksList() {
         return _floatingTasksList;
     }
     
+    /*
+     * As per name, set up floating tasks container.
+     */
     private void setupFloatingTasksContainer() {
         setFloatingTasksContainerPresentation();
         setFloatingTasksListPresentation();
@@ -47,12 +56,19 @@ public class FloatingTasksContainer extends HBox {
         this.getChildren().addAll(_observableListRepresentation);
     }
     
+    /*
+     * Set up the presentation of the floating tasks container.
+     */
     private void setFloatingTasksContainerPresentation() {
         this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
         this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
     }
     
+    /*
+     * Set up the presentation of the (observable) list containing all the
+     * floating tasks.
+     */
     private void setFloatingTasksListPresentation() {
         _observableListRepresentation.setItems(_floatingTasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);

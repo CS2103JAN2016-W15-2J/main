@@ -50,7 +50,6 @@ public class CommandLineContainer extends HBox {
     private TextField _commandLine = new TextField();
     private Button _enterButton = new Button();
 
-    
     private CommandLineContainer() {
         // Only one instance of CommandLineContainer is permitted
     }
@@ -88,7 +87,7 @@ public class CommandLineContainer extends HBox {
     }
     
     /*
-     * As per name, set up the command line container.
+     * As per name, set up command line container.
      */
     private void setupCommandLineContainer() {
         setCommandLineContainerPresentation();
