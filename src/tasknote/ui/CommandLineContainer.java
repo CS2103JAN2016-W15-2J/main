@@ -1,5 +1,22 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.COLOR_HEX_CODE_WHITE;
+import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
+import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
+import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
+import static tasknote.ui.GuiConstant.PROPERTY_TEXT_FILL;
+import static tasknote.ui.GuiConstant.PROPERTY_TEXT_INNER_COLOR;
+import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
+import static tasknote.ui.GuiConstant.COMMAND_ADD;
+import static tasknote.ui.GuiConstant.COMMAND_EDIT;
+import static tasknote.ui.GuiConstant.COMMAND_RENAME;
+import static tasknote.ui.GuiConstant.COMMAND_DONE;
+import static tasknote.ui.GuiConstant.COMMAND_DELETE;
+import static tasknote.ui.GuiConstant.COMMAND_UNDO;
+import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
+import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,16 +31,6 @@ import javafx.scene.layout.Priority;
 public class CommandLineContainer extends HBox {
     private final String BUTTON_SUBMIT_COMMAND = "enter";
     
-    private final String COMMAND_ADD = "add";
-    private final String COMMAND_EDIT = "edit";
-    private final String COMMAND_RENAME = "rename";
-    private final String COMMAND_DONE = "done";
-    private final String COMMAND_DELETE = "delete";
-    private final String COMMAND_UNDO = "undo";
-    private final String COMMAND_SEARCH = "search";
-    
-    private final String DEFAULT_COMMAND = COMMAND_ADD + " ";
-    
     private final String UNINITIALIZED_STRING = "";
     
     private final List<String> commands = Arrays.asList(UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, 
@@ -34,17 +41,6 @@ public class CommandLineContainer extends HBox {
     private final int INDEX_MODIFIED_COMMAND = -1;
     
     private String lastModifiedCommand = UNINITIALIZED_STRING;
-    
-    private final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
-    private final String PROPERTY_FONT_WEIGHT = "-fx-font-weight: %1$s;";
-    private final String PROPERTY_TEXT_INNER_COLOR = "-fx-text-inner-color: %1$s;";
-    private final String PROPERTY_TEXT_FILL = "-fx-text-fill: %1$s;";
-    
-    private final String COLOR_HEX_CODE_WHITE = "#ffffff";
-    
-    private int PADDING_HORIZONTAL = 10;
-    private int PADDING_VERTICAL = 15;
-    private int SPACING_BETWEEN_COMPONENTS = 10;
 
     private static CommandLineContainer _commandLineContainer = null;
     private TextField _commandLine = new TextField();

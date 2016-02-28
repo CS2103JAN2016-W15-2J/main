@@ -1,5 +1,10 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.COLOR_HEX_CODE_WHITE;
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
+import static tasknote.ui.GuiConstant.PROPERTY_TEXT_FILL;
+import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
+
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -13,18 +18,11 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 public class ClockContainer extends GridPane {
-
     private static final char WHITESPACE = ' ';
     private static final String TIME_DELIMITER = ":";
 
-    private static final String COLOR_HEX_CODE_WHITE = "#ffffff";
-
-    private static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
-    private static final String PROPERTY_TEXT_FILL = "-fx-text-fill: %1$s;";
-
     private static final int INTERVAL_SECOND_ANIMATION = 1;
-
-    private static int SPACING_BETWEEN_COMPONENTS = 10;
+    
     private static int FONT_SIZE = 20;
 
     private static final Calendar _currentTime = Calendar.getInstance();

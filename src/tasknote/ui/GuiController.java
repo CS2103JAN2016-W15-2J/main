@@ -1,5 +1,7 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -11,11 +13,6 @@ import tasknote.shared.TaskObject;
 
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TrackNote";
-    
-    private static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
-    
-    private final static String COMMAND_ADD = "add";
-    private final static String DEFAULT_COMMAND = COMMAND_ADD + " ";
     
     private final double WINDOW_MIN_WIDTH = 700.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;

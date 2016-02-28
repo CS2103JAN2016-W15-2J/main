@@ -1,5 +1,10 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
+import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
+import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
+import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -8,12 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 public class FloatingTasksContainer extends HBox {
-    private final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
-    
-    private int PADDING_HORIZONTAL = 10;
-    private int PADDING_VERTICAL = 15;
-    private int SPACING_BETWEEN_COMPONENTS = 10;
-    
     private static FloatingTasksContainer _floatingTasksContainer = null;
     private ListView<String> _observableListRepresentation = new ListView<String>();
     private ObservableList<String> _floatingTasksList = FXCollections.observableArrayList();
