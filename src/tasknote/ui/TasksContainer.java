@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import tasknote.shared.TaskObject;
 
 public class TasksContainer extends HBox {
     private final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
@@ -18,8 +19,8 @@ public class TasksContainer extends HBox {
     private int SPACING_BETWEEN_COMPONENTS = 10;
     
     private static TasksContainer _tasksContainer = null;
-    private ListView<String> _observableListRepresentation = new ListView<String>();
-    private ObservableList<String> _tasksList = FXCollections.observableArrayList();
+    private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
+    private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
@@ -39,7 +40,7 @@ public class TasksContainer extends HBox {
         return _tasksContainer;
     }
     
-    public ObservableList<String> getTasksList() {
+    public ObservableList<TaskObject> getTasksList() {
         return _tasksList;
     }
     
@@ -64,17 +65,26 @@ public class TasksContainer extends HBox {
     }
     
     private void setTaskListBehaviour() {
-        _observableListRepresentation.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+        _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
             @Override
-            public ListCell<String> call(ListView<String>param) {
-                return new ListCell<String>() {
+            public ListCell<TaskObject> call(ListView<TaskObject>param) {
+                return new ListCell<TaskObject>() {
                     @Override
-                    public void updateItem(String item, boolean empty) {
+                    public void updateItem(TaskObject item, boolean empty) {
                         super.updateItem(item, empty);
                         if (!isEmpty()) {
-                            if(item.contains("[Overdue]")) 
-                                this.setTextFill(Color.RED);
-                            setText(item);
+                            String color = item.getTaskColor();
+                            
+                            switch(color) {
+                                case "RED":
+                                    this.setTextFill(Color.RED);
+                                    break;
+                                default:
+                                    this.setTextFill(Color.BLACK);
+                                    break;
+                            }
+                            
+                            setText(item.toString());
                         }
                     }
                 };

@@ -14,9 +14,6 @@ import tasknote.shared.TaskObject;
 public class GuiController extends Application {
 	private final String APPLICATION_NAME = "TrackNote";
 	
-	//TODO Remove before submission
-	private final static boolean DEBUG_FLAG = false;
-	
 	private static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
 	
 	private final static String COMMAND_ADD = "add";
@@ -29,7 +26,7 @@ public class GuiController extends Application {
 	private static TextField _commandLine = _commandLineContainer.getCommandLine();
 	
 	private static TasksContainer _tasksContainer = TasksContainer.getInstance();
-	private static ObservableList<String> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
+	private static ObservableList<TaskObject> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
 
 	private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
 	private static ObservableList<String> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
@@ -85,22 +82,7 @@ public class GuiController extends Application {
     }
 	
 	private static void displayUpdatedTaskList() {
-	    ArrayList<String> taskList = convertArrayOfTask(TaskNoteControl.getDisplayList());
-	    _tasksListToBeDisplayed.setAll(taskList);
-	}
-	
-	private static ArrayList<String> convertArrayOfTask(ArrayList<TaskObject> taskList) {
-	    ArrayList<String> convertedArray = new ArrayList<String>();
-	    if(DEBUG_FLAG) {
-    	    for(TaskObject task : taskList) {
-    	        convertedArray.add(task.toString());
-    	    }
-	    } else {
-	        for(TaskObject task : taskList) {
-	            convertedArray.add(task.formatted());
-            }
-	    }
-	    return convertedArray;
+	    _tasksListToBeDisplayed.setAll(TaskNoteControl.getDisplayList());
 	}
 	
 	public static void main(String[] argv) {
