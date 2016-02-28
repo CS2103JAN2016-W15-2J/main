@@ -17,6 +17,8 @@ public class GuiController extends Application {
 	//TODO Remove before submission
 	private final static boolean DEBUG_FLAG = false;
 	
+	private static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
+	
 	private final static String COMMAND_ADD = "add";
 	private final static String DEFAULT_COMMAND = COMMAND_ADD + " ";
 	
@@ -35,7 +37,9 @@ public class GuiController extends Application {
 	public void start(Stage stage) {
 		BorderPane frame = new BorderPane();
 		Scene scene = new Scene(frame);
-
+		
+		frame.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
+		
         // frame.setLeft(getSideBarContainer());
 		frame.setCenter(_tasksContainer);
 		frame.setRight(_floatingTasksContainer);
