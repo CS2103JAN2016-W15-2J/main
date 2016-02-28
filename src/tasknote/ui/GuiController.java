@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
 
-public class GraphicUserInterface extends Application {
+public class GuiController extends Application {
 	
 	private static final String APPLICATION_NAME = "TrackNote";
 	
