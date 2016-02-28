@@ -67,7 +67,7 @@ public class GuiController extends Application {
         
         commandLine.clear();
         commandLine.setText(DEFAULT_COMMAND);
-        commandLine.positionCaret(DEFAULT_COMMAND.length() + 1);
+        commandLine.end();
         _commandLineContainer.clearLastModifiedCommand();
     }
     
