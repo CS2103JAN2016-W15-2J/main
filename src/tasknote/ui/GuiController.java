@@ -15,7 +15,7 @@ public class GuiController extends Application {
 	private final String APPLICATION_NAME = "TrackNote";
 	
 	//TODO Remove before submission
-	private final static boolean DEBUG_FLAG = true;
+	private final static boolean DEBUG_FLAG = false;
 	
 	private final static String COMMAND_ADD = "add";
 	private final static String DEFAULT_COMMAND = COMMAND_ADD + " ";
@@ -88,12 +88,12 @@ public class GuiController extends Application {
 	private static ArrayList<String> convertArrayOfTask(ArrayList<TaskObject> taskList) {
 	    ArrayList<String> convertedArray = new ArrayList<String>();
 	    if(DEBUG_FLAG) {
-    	    for(TaskObject to : taskList) {
-    	        convertedArray.add(to.toString());
+    	    for(TaskObject task : taskList) {
+    	        convertedArray.add(task.toString());
     	    }
 	    } else {
-	        for(TaskObject to : taskList) {
-                //Set alternative
+	        for(TaskObject task : taskList) {
+	            convertedArray.add(task.formatted());
             }
 	    }
 	    return convertedArray;

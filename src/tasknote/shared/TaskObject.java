@@ -278,6 +278,43 @@ public class TaskObject implements Comparable{
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
 	}
+	
+    /**
+     * @return The string for display on UI
+     * @@author MunKeat
+     */
+	public String formatted() {
+	    // Draft for formatted
+	    String formattedString = "Task: " + taskName;
+	    String date;
+	    String time;
+	    
+	    if(dateDay != -1 && dateMonth != -1 && dateYear != -1) {
+	        date = (dateDay + "/" + dateMonth + "/" + dateYear);
+	    } else {
+	        date = "-";
+	    }
+	    
+	    if(dateHour != -1 && dateMinute != -1) {
+	        time = (dateHour + ":" + dateMinute);
+	    } else {
+	        time = "-";
+	    }
+	    
+	    if(date.equals("-") && time.equals("-")) {
+	        // Do nothing
+	    } else {
+	        formattedString += "\n";
+	        formattedString += "Date / Time: " + date + " / " + time;
+	    }
+	    
+	    if(location != null && !location.isEmpty()) {
+            formattedString += "\n";
+            formattedString += "Location: " + location;
+	    }
+	    
+	    return formattedString;
+	}
 
 	@Override
 	public int compareTo(Object arg0) {
