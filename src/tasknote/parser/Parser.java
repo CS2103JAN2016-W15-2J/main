@@ -284,5 +284,29 @@ public class Parser {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public static ArrayList<Integer> parseDelete(String userCommand) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(0);
+		return list;
+	}
+	
+	public static ArrayList<Integer> parseSearch(String userCommand) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.add(0);
+		return list;
+	}
+	
+	public static TaskObject parseUpdate(String userCommand) {
+		// TODO Auto-generated method stub
+		return new TaskObject("meet tutor at 2pm");
+	}
+	
+	public static int getUpdateTaskId(String userCommand) {
+		// TODO Auto-generated method stub
+		return 1;
+	}
 
 }
