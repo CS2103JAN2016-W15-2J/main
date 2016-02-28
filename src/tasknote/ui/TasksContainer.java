@@ -3,9 +3,14 @@ package tasknote.ui;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 
 public class TasksContainer extends HBox {
     private final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
@@ -44,6 +49,8 @@ public class TasksContainer extends HBox {
         setTasksContainerPresentation();
         setTaskListPresentation();
         
+        setTaskListBehaviour();
+        
         this.getChildren().addAll(_observableListRepresentation);
     }
     
@@ -56,5 +63,24 @@ public class TasksContainer extends HBox {
     private void setTaskListPresentation() {
         _observableListRepresentation.setItems(_tasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
+    }
+    
+    private void setTaskListBehaviour() {
+        _observableListRepresentation.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String>param) {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!isEmpty()) {
+                            if(item.contains("[Overdue]")) 
+                                this.setTextFill(Color.RED);
+                            setText(item);
+                        }
+                    }
+                };
+            }
+        });
     }
 }
