@@ -24,7 +24,8 @@ public class GuiController extends Application {
     private static ObservableList<TaskObject> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
 
     private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
-    private static ObservableList<String> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
+    
+    private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
     
     @Override
     public void start(Stage stage) {
@@ -33,7 +34,8 @@ public class GuiController extends Application {
         
         frame.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
         
-        // frame.setLeft(getSideBarContainer());
+        // TODO Ensure that _sidebarContainer loads prior to showing of stage.
+        //frame.setLeft(_sidebarContainer);
         frame.setCenter(_tasksContainer);
         frame.setRight(_floatingTasksContainer);
         frame.setBottom(_commandLineContainer);
