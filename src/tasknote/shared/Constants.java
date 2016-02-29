@@ -26,5 +26,13 @@ public class Constants {
 	 * requested before and user requested action is performed 
 	 */
 	public static final String ERROR_FEEDBACK = "Error: Feedback requested before action execution";
+	
+	/*
+	 * These are strings that are used for taskStatus in TaskObject
+	 */
+	public static final String STRING_TASKSTATUS_DEFAULT = "TASK_DEFAULT";
+	public static final String STRING_TASKSTATUS_OUTSTANDING = "TASK_OUTSTANDING";
+	public static final String STRING_TASKSTATUS_COMPLETED = "TASK_COMPLETED";
+	public static final String STRING_TASKSTATUS_INVALID_STORAGE = "TASK_INVALID_STORAGE";
 
 }
