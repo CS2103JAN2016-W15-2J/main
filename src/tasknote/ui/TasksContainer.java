@@ -87,13 +87,11 @@ public class TasksContainer extends HBox {
             public ListCell<TaskObject> call(ListView<TaskObject>param) {
                 return new ListCell<TaskObject>() {
                     @Override
-                    public void updateItem(TaskObject item, boolean empty) {
-                        super.updateItem(item, empty);
+                    public void updateItem(TaskObject task, boolean empty) {
+                        super.updateItem(task, empty);
                         if (!isEmpty()) {
-                            String color = item.getTaskColor();
-                            
-                            switch(color) {
-                                case "RED":
+                            switch(task.getTaskStatus()) {
+                                case TASK_OUTSTANDING:
                                     this.setTextFill(Color.RED);
                                     break;
                                 default:
@@ -101,7 +99,7 @@ public class TasksContainer extends HBox {
                                     break;
                             }
                             
-                            setText(item.toString());
+                            setText(task.toString());
                         }
                     }
                 };

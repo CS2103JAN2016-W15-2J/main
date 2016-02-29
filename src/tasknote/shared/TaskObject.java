@@ -2,8 +2,12 @@ package tasknote.shared;
 
 import java.util.GregorianCalendar;
 
-public class TaskObject implements Comparable{
+public class TaskObject implements Comparable {
 	
+    public static enum TASK_STATUS {
+        TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_INVALID_STORAGE
+    };
+    
 	private String taskName;
 	private int taskID;
 	
@@ -22,7 +26,7 @@ public class TaskObject implements Comparable{
 	private long notifyTime;
 	private boolean isNotified;
 	
-	private String taskColor;
+	private TASK_STATUS taskStatus;
 	private String taskType;
 	
 	private boolean isMarkedDone;
@@ -46,7 +50,7 @@ public class TaskObject implements Comparable{
 		setNotifyTime(0);
 		setIsNotified(false);
 		
-		setTaskColor("Red");
+		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
 		setTaskType("floating");
 		
 		setIsMarkedDone(false);
@@ -137,17 +141,17 @@ public class TaskObject implements Comparable{
 	}
 
 	/**
-	 * @return the taskColor
+	 * @return the taskStatus
 	 */
-	public String getTaskColor() {
-		return this.taskColor;
+	public TASK_STATUS getTaskStatus() {
+		return this.taskStatus;
 	}
 
 	/**
-	 * @param taskColor the taskColor to set
+	 * @param taskStatus the taskStatus to set
 	 */
-	public void setTaskColor(String taskColor) {
-		this.taskColor = taskColor;
+	public void setTaskStatus(TASK_STATUS taskStatus) {
+		this.taskStatus = taskStatus;
 	}
 
 	/**
@@ -274,7 +278,7 @@ public class TaskObject implements Comparable{
 				+ "\nlocation = " + location
 				+ "\nNotify Time = " + notifyTime
 				+ "\nisNotified = " + isNotified
-				+ "\ntasColor = " + taskColor
+				+ "\ntaskStatus = " + taskStatus
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone + "\n";
 	}

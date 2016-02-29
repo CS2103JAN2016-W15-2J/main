@@ -92,7 +92,7 @@ public class StorageConversion{
 				}
 				break;
 			case 11:
-				returnObject.setTaskColor(content[1].trim());
+				returnObject.setTaskStatus(content[1].trim());
 				break;
 			case 12:
 				returnObject.setTaskType(content[1].trim());
@@ -163,7 +163,7 @@ public class StorageConversion{
 				tempBuffer.append(task.getIsNotified());
 				break;
 			case 11:
-				tempBuffer.append(task.getTaskColor());
+				tempBuffer.append(task.getTaskStatus());
 				break;
 			case 12:
 				tempBuffer.append(task.getTaskType());
