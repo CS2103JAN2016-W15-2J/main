@@ -50,7 +50,8 @@ public class FileManipulation{
 	 * This method reads from file and converts it into ArrayList/<TaskObject/>
 	 * to return to logic
 	 *
-	 * @param 
+	 * @param
+	 * @return ArrayList<TaskObject>
 	 * @throws IOException (implies reader got error)
 	 * @throws TaskListIOException (implies file contents got error)
 	 *

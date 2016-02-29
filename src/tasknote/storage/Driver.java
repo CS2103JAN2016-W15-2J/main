@@ -11,6 +11,11 @@ public class Driver{
 		try{
 			TaskObject temp = new TaskObject();
 			temp.setTaskObjectCalendar(new GregorianCalendar(2015, 2, 21, 14, 41, 0));
+			temp.setDateYear(2015);
+			temp.setDateMonth(2);
+			temp.setDateDay(21);
+			temp.setDateHour(14);
+			temp.setDateMinute(41);
 			test.add(temp);
 			test.add(new TaskObject());
 			Storage storage = new Storage();
