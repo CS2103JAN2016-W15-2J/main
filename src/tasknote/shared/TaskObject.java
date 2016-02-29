@@ -31,6 +31,33 @@ public class TaskObject implements Comparable {
 	
 	private boolean isMarkedDone;
 	
+	/**
+	 * For Storage
+	 */
+	public TaskObject(){
+		setTaskName(taskName);
+		
+		setDateDay(-1);
+		setDateMonth(-1);
+		setDateYear(-1);
+		setDateHour(-1);
+		setDateMinute(-1);
+		
+		setDuration(0);
+		
+		setTaskObjectCalendar(new GregorianCalendar());
+		
+		setLocation("");
+		
+		setNotifyTime(0);
+		setIsNotified(false);
+		
+		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
+		setTaskType("floating");
+		
+		setIsMarkedDone(false);
+	}
+	
 	public TaskObject(String taskName) {
 		
 		setTaskName(taskName);
@@ -152,6 +179,28 @@ public class TaskObject implements Comparable {
 	 */
 	public void setTaskStatus(TASK_STATUS taskStatus) {
 		this.taskStatus = taskStatus;
+	}
+	
+	/**
+	 * @param string of taskStatus to set
+	 */
+	public void setTaskStatus(String taskStatus){
+		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_DEFAULT)){
+			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
+			return;
+		}
+		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING)){
+			this.taskStatus = TASK_STATUS.TASK_OUTSTANDING;
+			return;
+		}
+		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED)){
+			this.taskStatus = TASK_STATUS.TASK_COMPLETED;
+			return;
+		}
+		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_INVALID_STORAGE)){
+			this.taskStatus = TASK_STATUS.TASK_INVALID_STORAGE;
+			return;
+		}
 	}
 
 	/**
@@ -280,7 +329,10 @@ public class TaskObject implements Comparable {
 				+ "\nisNotified = " + isNotified
 				+ "\ntaskStatus = " + taskStatus
 				+ "\ntaskType = " + taskType
-				+ "\nisMarkedDone = " + isMarkedDone + "\n";
+				+ "\nisMarkedDone = " + isMarkedDone
+				+ "\nFirstDayOfWeek = " +  taskObjectCalendar.getFirstDayOfWeek()
+				+ "\nTimeZoneID = " + taskObjectCalendar.getTimeZone().getID()
+				+ "\nisDayLightTimeOn = " + taskObjectCalendar.getTimeZone().observesDaylightTime() + "\n";
 	}
 	
     /**
