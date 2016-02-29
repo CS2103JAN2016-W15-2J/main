@@ -275,11 +275,6 @@ public class Parser {
 		return newTaskObject;
 	}
 
-	public static ArrayList<Integer> deletedObjects(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public static TaskObject getTaskObject(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
@@ -287,16 +282,35 @@ public class Parser {
 	
 	public static ArrayList<Integer> parseDelete(String userCommand) {
 		// TODO Auto-generated method stub
+		
+		String[] splitCommand = userCommand.split(REGEX_WHITESPACE);
+		int idCount = splitCommand.length - 1;
+		
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		list.add(0);
+	
+		for (int i = 1; i < idCount; i++) {
+			
+			String nextCommand = splitCommand[i];
+			
+			try {
+				
+				int nextID = Integer.parseInt(nextCommand);
+				
+				list.add(nextID);
+				
+			} catch (NumberFormatException e) {
+				// No Exceptions handling supported yet
+				//TODO
+			}
+		}
+		
 		return list;
 	}
 	
 	public static ArrayList<Integer> parseSearch(String userCommand) {
 		// TODO Auto-generated method stub
-		ArrayList<Integer> list = new ArrayList<Integer>();
-		list.add(0);
-		return list;
+		
+		return parseDelete(userCommand);
 	}
 	
 	public static TaskObject parseUpdate(String userCommand) {
