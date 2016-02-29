@@ -18,6 +18,12 @@ public class TaskNote {
 	private static ArrayList<TaskObject> displayList;
 	
 	/*
+	 * This is the storage object that will be used to load tasks into the 
+	 * taskList and it will be called to save the tasks after each user operation
+	 */
+	private static Storage storage = new Storage();
+	
+	/*
 	 * These integers are used to store the number of results 
 	 * retrieved upon user's search (searchIdSize) and the number 
 	 * of tasks to be deleted (deleteIdSize)
@@ -38,8 +44,8 @@ public class TaskNote {
 	 */
 	public void loadTasks(){
 		try{
-			//TODO: Storage
-			//taskList = Storage.loadTasks();
+			storage = new Storage();
+			taskList = storage.loadTasks();
 		}catch(Exception e){
 			taskList = new ArrayList<TaskObject>();
 		}
@@ -120,8 +126,7 @@ public class TaskNote {
 		deleteIdSize = deleteIds.size();
 		try{
 			deleteFromTaskList(deleteIds);
-			//TODO: Storage
-			//Storage.saveTasks(taskList);
+			storage.saveTasks(taskList);
 		}catch(Exception e){
 			isSuccess = false;
 		}
@@ -185,8 +190,7 @@ public class TaskNote {
 	private static void sortAndSave(ArrayList<TaskObject> taskList) throws Exception{
 		try{
 			sortByDate(taskList);
-			//TODO: Storage
-			//Storage.saveTasks(taskList);
+			storage.saveTasks(taskList);
 		}catch(Exception e){
 			throw e;
 		}
