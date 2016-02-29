@@ -100,6 +100,10 @@ public class TasksContainer extends HBox {
                             }
                             
                             setText(task.toString());
+                        } else {
+                            // Prevent duplicate for a single entry
+                            setText(null);
+                            setGraphic(null);
                         }
                     }
                 };
