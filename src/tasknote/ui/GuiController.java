@@ -27,6 +27,8 @@ public class GuiController extends Application {
     
     private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
     
+    private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
+    
     @Override
     public void start(Stage stage) {
         BorderPane frame = new BorderPane();
@@ -40,7 +42,6 @@ public class GuiController extends Application {
         frame.setBottom(_commandLineContainer);
         
         // TODO
-        TaskNoteControl.loadTasks();
         displayUpdatedTaskList();
         
         stage.setTitle(APPLICATION_NAME);
@@ -62,10 +63,9 @@ public class GuiController extends Application {
         }
         
         // TODO
-        String feedback = TaskNoteControl.executeCommand(command);
+        String feedback = _tasknoteControl.executeCommand(command);
         displayUpdatedTaskList();
         
-        commandLine.clear();
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
         _commandLineContainer.clearLastModifiedCommand();
@@ -79,7 +79,7 @@ public class GuiController extends Application {
     }
     
     private static void displayUpdatedTaskList() {
-        _tasksListToBeDisplayed.setAll(TaskNoteControl.getDisplayList());
+        _tasksListToBeDisplayed.setAll(_tasknoteControl.getDisplayList());
     }
     
     public static void main(String[] argv) {
