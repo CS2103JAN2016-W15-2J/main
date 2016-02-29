@@ -86,7 +86,8 @@ public class TaskNoteControl {
 	}
 	
 	public static String executeSearch(String userCommand){
-		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand);
+		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
+		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
 		searchTask = new SearchTask(taskNote, searchIds);
 		searchTask.execute();
 		searchTask.refreshDisplay();
@@ -96,7 +97,9 @@ public class TaskNoteControl {
 	
 	public static String executeUpdate(String userCommand){
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
-		TaskObject updatedTaskObject = Parser.parseUpdate(userCommand);
+		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
+		TaskObject oldTaskObject = displayList.get(updateTaskId);
+		TaskObject updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject);
 		updateTask = new UpdateTask(taskNote, updateTaskId, updatedTaskObject);
 		updateTask.execute();
 		updateTask.refreshDisplay();
