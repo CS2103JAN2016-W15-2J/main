@@ -65,7 +65,13 @@ public class Parser {
 		// If none of the COMMAND_TYPE matches, the
 		// INVALID COMMAND_TYPE is returned instead
 		if (userCommandWord.equalsIgnoreCase(COMMAND_ADD)) {
+			
+			//TODO invalid
+			TaskObject newTaskObject = Parser.parseAdd(userCommandWord);
+			
+			
 			return COMMAND_TYPE.ADD;
+			
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DELETE)) {
 			return COMMAND_TYPE.DELETE;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
@@ -224,7 +230,7 @@ public class Parser {
 				
 				if (currentWord.equalsIgnoreCase(KEYWORD_BY) || currentWord.equalsIgnoreCase(KEYWORD_FROM) ||
 					currentWord.equalsIgnoreCase(KEYWORD_TO) || currentWord.equalsIgnoreCase(KEYWORD_ON) ||
-					i == userCommandDataLength - 1) {
+					i == userCommandDataLength) {
 					
 					location = temporaryPhrase.toString();
 					temporaryPhrase.delete(0, temporaryPhrase.length());
@@ -338,8 +344,42 @@ public class Parser {
 	public static TaskObject parseUpdate(String userCommand, TaskObject oldTaskObject) {
 		// TODO Auto-generated method stub
 		
+		// Update <id> <update words>
+		String[] splitUserCommand = userCommand.split(REGEX_WHITESPACE);
+		
+		int userCommandLength = splitUserCommand.length;
+		
+		for (int i = 2; i < userCommandLength; i++) {
+			
+			String currentWord = splitUserCommand[userCommandLength];
+			
+			if (currentWord.equalsIgnoreCase(KEYWORD_AT)) {
+				oldTaskObject.setLocation("");
+			} else if (currentWord.equalsIgnoreCase(KEYWORD_BY)) {
+				//TODO
+			} else if (currentWord.equalsIgnoreCase(KEYWORD_FROM)) {
+				//TODO
+			} else if (currentWord.equalsIgnoreCase(KEYWORD_TO)) {
+				// TODO
+			} else if (currentWord.equalsIgnoreCase(KEYWORD_ON)) {
+				oldTaskObject.setDateHour(-1);
+				oldTaskObject.setDateMinute(-1);
+			}
+		}
+		
 		TaskObject newTaskObject = Parser.parseAdd(userCommand);
-		return null;
+		
+		if (oldTaskObject.getLocation().isEmpty()) {
+			oldTaskObject.setLocation(newTaskObject.getLocation());
+		}
+		if (oldTaskObject.getDateHour() == -1) {
+			oldTaskObject.setDateHour(newTaskObject.getDateHour());
+		}
+		if (oldTaskObject.getDateMinute() == -1) {
+			oldTaskObject.setDateMinute(newTaskObject.getDateMinute());
+		}
+		
+		return oldTaskObject;
 		
 	}
 	
