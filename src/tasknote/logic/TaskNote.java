@@ -169,15 +169,25 @@ public class TaskNote {
 	 * @return status of the operation
 	 */
 	public String updateTask(int updateTaskId, TaskObject updatedTaskObject){
-		boolean isSuccess = true;
-		try{
-			taskList.remove(updateTaskId);
-			taskList.add(updatedTaskObject);
-			sortAndSave(taskList);
-		}catch(Exception e){
-			isSuccess = false;
+		boolean isSuccess = verifyTaskId(updateTaskId);
+		if(isSuccess){
+			try{
+				taskList.remove(updateTaskId);
+				taskList.add(updatedTaskObject);
+				sortAndSave(taskList);
+			}catch(Exception e){
+				isSuccess = false;
+			}
 		}
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
+	}
+	
+	public boolean verifyTaskId(int updateTaskId){
+		boolean isValid = true;
+		if(updateTaskId >= displayList.size() || updateTaskId < displayList.size()){
+			isValid = false;
+		}
+		return isValid;
 	}
 
 	/**
