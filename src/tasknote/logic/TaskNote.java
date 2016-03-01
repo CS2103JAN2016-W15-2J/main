@@ -169,7 +169,7 @@ public class TaskNote {
 	 * @return status of the operation
 	 */
 	public String updateTask(int updateTaskId, TaskObject updatedTaskObject){
-		boolean isSuccess = verifyTaskId(updateTaskId);
+		boolean isSuccess = isValidTaskId(updateTaskId);
 		if(isSuccess){
 			try{
 				taskList.remove(updateTaskId);
@@ -182,7 +182,7 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
 	
-	public boolean verifyTaskId(int updateTaskId){
+	public boolean isValidTaskId(int updateTaskId){
 		boolean isValid = true;
 		if(updateTaskId >= displayList.size() || updateTaskId < displayList.size()){
 			isValid = false;
