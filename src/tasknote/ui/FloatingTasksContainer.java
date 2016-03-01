@@ -8,14 +8,18 @@ import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
+import tasknote.shared.TaskObject;
 
 public class FloatingTasksContainer extends HBox {
     private static FloatingTasksContainer _floatingTasksContainer = null;
-    private ListView<String> _observableListRepresentation = new ListView<String>();
-    private ObservableList<String> _floatingTasksList = FXCollections.observableArrayList();
+    private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
+    private ObservableList<TaskObject> _floatingTasksList = FXCollections.observableArrayList();
     
     private FloatingTasksContainer() {
         // Only one instance of FloatingTasksContainer is permitted
@@ -41,7 +45,7 @@ public class FloatingTasksContainer extends HBox {
      * 
      * @return          The ObservableList in FloatingTasksContainer.
      */
-    public ObservableList<String> getFloatingTasksList() {
+    public ObservableList<TaskObject> getFloatingTasksList() {
         return _floatingTasksList;
     }
     
@@ -51,6 +55,8 @@ public class FloatingTasksContainer extends HBox {
     private void setupFloatingTasksContainer() {
         setFloatingTasksContainerPresentation();
         setFloatingTasksListPresentation();
+        
+        setFloatListBehaviour();
         
         this.getChildren().addAll(_observableListRepresentation);
     }
@@ -70,6 +76,37 @@ public class FloatingTasksContainer extends HBox {
      */
     private void setFloatingTasksListPresentation() {
         _observableListRepresentation.setItems(_floatingTasksList);
+        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
+    }
+    
+    private void setFloatListBehaviour() {
+        _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
+            @Override
+            public ListCell<TaskObject> call(ListView<TaskObject>param) {
+                return new ListCell<TaskObject>() {
+                    @Override
+                    public void updateItem(TaskObject task, boolean empty) {
+                        super.updateItem(task, empty);
+                        setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
+                        if (!isEmpty()) {
+                            switch(task.getTaskStatus()) {
+                                case TASK_OUTSTANDING:
+                                    this.setTextFill(Color.RED);
+                                    break;
+                                default:
+                                    this.setTextFill(Color.WHITE);
+                                    break;
+                            }
+                            setText(task.formatted());
+                        } else {
+                            // Prevent duplicate for a single entry
+                            setText(null);
+                            setGraphic(null);
+                        }
+                    }
+                };
+            }
+        });
     }
 }
