@@ -25,6 +25,10 @@ public class FileManipulation{
 		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 		storageManipulator = new StorageConversion();
 		initializeFile();
+		createFileIfNotExist();
+	}
+
+	private void createFileIfNotExist() {
 		if(isFileNotExist()){
 			createNewFile();
 		}
@@ -69,12 +73,7 @@ public class FileManipulation{
 		try{
 			while(true){
 				String[] objectRead = new String[magicValuesRetriever.getTotalTitles()];
-				for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
-					objectRead[index] = fileReader.readLine();
-					if(objectRead[index] == null){
-						throw new NullPointerException();
-					}
-				}
+				iterateOnceToStoreOneObject(fileReader, objectRead);
 				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
 			}
 		}catch(ClassNotFoundException cnfe){
@@ -84,6 +83,23 @@ public class FileManipulation{
 		}catch(NullPointerException npe){
 			
 		}
+	}
+
+	private void iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException {
+		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
+			objectRead[index] = fileReader.readLine();
+			throwNullPointerExceptionIfNoMoreLinesToRead(objectRead, index);
+		}
+	}
+
+	private void throwNullPointerExceptionIfNoMoreLinesToRead(String[] objectRead, int index) {
+		if(isNullObject(objectRead, index)){
+			throw new NullPointerException();
+		}
+	}
+
+	private boolean isNullObject(String[] objectRead, int index) {
+		return objectRead[index] == null;
 	}
 	
 	/**
@@ -119,10 +135,8 @@ public class FileManipulation{
 
 	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
 			BufferedOutputStream fileWriter) throws IOException{
-		//while(isPositive(totalNumberOfBytesToWrite)){
 			fileWriter.write(bufferMemory,magicValuesRetriever.getZero(),bufferMemory.length);
 			fileWriter.flush();
-		//}
 	}
 
 	/**
