@@ -223,7 +223,8 @@ public class Parser {
 			if (current_action.equalsIgnoreCase("location")) {
 				
 				if (currentWord.equalsIgnoreCase(KEYWORD_BY) || currentWord.equalsIgnoreCase(KEYWORD_FROM) ||
-						currentWord.equalsIgnoreCase(KEYWORD_TO) || currentWord.equalsIgnoreCase(KEYWORD_ON)) {
+					currentWord.equalsIgnoreCase(KEYWORD_TO) || currentWord.equalsIgnoreCase(KEYWORD_ON) ||
+					i == userCommandDataLength - 1) {
 					
 					location = temporaryPhrase.toString();
 					temporaryPhrase.delete(0, temporaryPhrase.length());
@@ -336,7 +337,10 @@ public class Parser {
 	
 	public static TaskObject parseUpdate(String userCommand, TaskObject oldTaskObject) {
 		// TODO Auto-generated method stub
-		return new TaskObject("meet tutor at 2pm");
+		
+		TaskObject newTaskObject = Parser.parseAdd(userCommand);
+		return null;
+		
 	}
 	
 	public static int getUpdateTaskId(String userCommand) {
@@ -345,7 +349,7 @@ public class Parser {
 		
 		try {
 			
-			String givenID = splitUserCommand[0];
+			String givenID = splitUserCommand[1];
 			
 			int returnValue = Integer.parseInt(givenID);
 			
