@@ -29,6 +29,7 @@ public class Parser {
 	// Here are the regex that are used by the
 	// parser for parsing all user commands
 	private static final String REGEX_WHITESPACE = " ";
+	private static final String REGEX_QUOTATION = "\"";
 
 	/**
 	 * This method accepts an entire String passed from the user through his
@@ -219,6 +220,18 @@ public class Parser {
 				
 			}
 			
+			if (current_action.equalsIgnoreCase("location")) {
+				
+				if (currentWord.equalsIgnoreCase(KEYWORD_BY) || currentWord.equalsIgnoreCase(KEYWORD_FROM) ||
+						currentWord.equalsIgnoreCase(KEYWORD_TO) || currentWord.equalsIgnoreCase(KEYWORD_ON)) {
+					
+					location = temporaryPhrase.toString();
+					temporaryPhrase.delete(0, temporaryPhrase.length());
+				} else {
+					temporaryPhrase.append(currentWord);
+				}
+			}
+			
 			if (currentWord.equalsIgnoreCase("by")) {
 				
 				if (current_action.equalsIgnoreCase("name")) {
@@ -259,6 +272,11 @@ public class Parser {
 				temporaryPhrase.append(currentWord);
 				temporaryPhrase.append(" ");
 				current_action = "countdown";
+			} else if (current_action.startsWith(REGEX_QUOTATION)) {
+				
+				
+			} else if (current_action.endsWith(REGEX_QUOTATION)) {
+				
 			} else {
 				
 				if (current_action.equalsIgnoreCase("name")) {
@@ -319,8 +337,21 @@ public class Parser {
 	}
 	
 	public static int getUpdateTaskId(String userCommand) {
-		// TODO Auto-generated method stub
-		return 1;
+		
+		String[] splitUserCommand = userCommand.split(REGEX_WHITESPACE);
+		
+		try {
+			
+			String givenID = splitUserCommand[0];
+			
+			int returnValue = Integer.parseInt(givenID);
+			
+			return returnValue;
+		} catch (NumberFormatException e) {
+			
+			return -1;
+		}
+		
 	}
 
 }
