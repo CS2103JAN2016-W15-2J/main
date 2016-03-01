@@ -1,7 +1,13 @@
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
+import static tasknote.ui.GuiConstant.COMMAND_UNDO;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
+import static tasknote.ui.GuiConstant.commands;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -16,6 +22,12 @@ public class GuiController extends Application {
     
     private final double WINDOW_MIN_WIDTH = 700.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
+    
+    private final static List<String> listOfCommands = new ArrayList<String>(commands);
+    static {
+        // Pre-processing of listOfCommands
+        listOfCommands.remove(COMMAND_UNDO);
+    }
 
     private static CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
     private static TextField _commandLine = _commandLineContainer.getCommandLine();
@@ -58,7 +70,9 @@ public class GuiController extends Application {
     public static void retrieveCommand(TextField commandLine) {
         String command = commandLine.getText();
         
-        if(command == null || command.isEmpty()) {
+        if(listOfCommands.contains(command.trim())) {
+            // Commands that contain ONLY (single) keywords 
+            // are meaningless, and will not be executed.
             return;
         }
         
