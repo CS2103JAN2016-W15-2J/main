@@ -68,6 +68,7 @@ public class TasksContainer extends HBox {
         this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
         this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
+        // this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c") + String.format("-fx-font-family: \"%1$s\";", "Consolas"));
     }
     
     /*
@@ -75,6 +76,7 @@ public class TasksContainer extends HBox {
      */
     private void setTaskListPresentation() {
         _observableListRepresentation.setItems(_tasksList);
+        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
     
@@ -89,17 +91,17 @@ public class TasksContainer extends HBox {
                     @Override
                     public void updateItem(TaskObject task, boolean empty) {
                         super.updateItem(task, empty);
+                        setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
                         if (!isEmpty()) {
                             switch(task.getTaskStatus()) {
                                 case TASK_OUTSTANDING:
                                     this.setTextFill(Color.RED);
                                     break;
                                 default:
-                                    this.setTextFill(Color.BLACK);
+                                    this.setTextFill(Color.WHITE);
                                     break;
                             }
-                            
-                            setText(task.toString());
+                            setText(task.formatted());
                         } else {
                             // Prevent duplicate for a single entry
                             setText(null);
