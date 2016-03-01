@@ -232,6 +232,7 @@ public class Parser {
 				}
 			}
 			
+			
 			if (currentWord.equalsIgnoreCase("by")) {
 				
 				if (current_action.equalsIgnoreCase("name")) {
@@ -290,6 +291,8 @@ public class Parser {
 		newTaskObject.setDateHour(dateHour);
 		newTaskObject.setDateMinute(dateMinute);
 		
+		newTaskObject.setLocation(location);
+		
 		return newTaskObject;
 	}
 
@@ -325,13 +328,13 @@ public class Parser {
 		return list;
 	}
 	
-	public static ArrayList<Integer> parseSearch(String userCommand) {
+	public static ArrayList<Integer> parseSearch(String userCommand, ArrayList<TaskObject> displayList) {
 		// TODO Auto-generated method stub
 		
 		return parseDelete(userCommand);
 	}
 	
-	public static TaskObject parseUpdate(String userCommand) {
+	public static TaskObject parseUpdate(String userCommand, TaskObject oldTaskObject) {
 		// TODO Auto-generated method stub
 		return new TaskObject("meet tutor at 2pm");
 	}
