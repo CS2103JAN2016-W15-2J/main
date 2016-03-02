@@ -57,29 +57,27 @@ public class TaskNoteControlTest {
 		command = "add Kids Marathon 2 on Saturday";
 		feedback = tnc.executeCommand(command);
 		
-		//TODO: Parser
 		command = "delete 0";
 		feedback = tnc.executeCommand(command);
 		output = "Deleted 1 task(s) Successfully";
 		Assert.assertEquals(output, feedback);
 		
-		//TODO: Parser
 		command = "  delete    99";
 		feedback = tnc.executeCommand(command);
 		output = "Deletion Failed";
-		//Assert.assertEquals(output, feedback);
+		Assert.assertEquals(output, feedback);
 
-		//TODO: Parser
+		//TODO: Parser Check for length list
 		command = "  delete    ";
 		feedback = tnc.executeCommand(command);
 		output = "Deletion Failed";
 		//Assert.assertEquals(output, feedback);
 		
 		//TODO: Parser
-		command = "  delete 0, 1, 2";
+		command = "  delete 0 1 2";
 		feedback = tnc.executeCommand(command);
 		output = "Deleted 3 task(s) Successfully";
-		//Assert.assertEquals(output, feedback);
+		Assert.assertEquals(output, feedback);
 		
 		//TODO: Parser
 		command = "  delete 0, 2-4";

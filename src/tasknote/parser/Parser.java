@@ -317,8 +317,8 @@ public class Parser {
 	public static ArrayList<Integer> parseDelete(String userCommand) {
 		// TODO Auto-generated method stub
 		
-		String[] splitCommand = userCommand.split(REGEX_WHITESPACE);
-		int idCount = splitCommand.length - 1;
+		String[] splitCommand = userCommand.trim().split(REGEX_WHITESPACE);
+		int idCount = splitCommand.length;
 		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 	
@@ -397,7 +397,7 @@ public class Parser {
 			
 			String givenID = splitUserCommand[1];
 			
-			int returnValue = Integer.parseInt(givenID);
+			int returnValue = Integer.parseInt(givenID) - 1;
 			
 			return returnValue;
 		} catch (NumberFormatException e) {
