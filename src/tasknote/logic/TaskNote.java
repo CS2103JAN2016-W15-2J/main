@@ -122,17 +122,36 @@ public class TaskNote {
 	 * @return Status of the operation
 	 */
 	public String deleteTask(ArrayList<Integer> deleteIds){
-		boolean isSuccess = true;
 		deleteIdSize = deleteIds.size();
-		try{
-			deleteFromTaskList(deleteIds);
-			storage.saveTasks(taskList);
-		}catch(Exception e){
-			isSuccess = false;
+		boolean isSuccess = isValidIdList(deleteIds);
+		if(isSuccess){
+			try{
+				deleteFromTaskList(deleteIds);
+				storage.saveTasks(taskList);
+			}catch(Exception e){
+				isSuccess = false;
+			}
 		}
 		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
 	}
-
+	
+	public boolean isValidIdList(ArrayList<Integer> idList){
+		boolean isValid = true;
+		if(deleteIdSize > 0){
+			for(int i = 0; i < idList.size(); i++){
+				int taskId = idList.get(i);
+				if(!isValidTaskId(taskId)){
+					isValid = false;
+					break;
+				}
+			}
+		}else{
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	//TODO: Check if all IDs to be deleted are valid before deleting
 	public static void deleteFromTaskList(ArrayList<Integer> deleteIds){
 		for(int i = 0; i < deleteIds.size(); i++){
 			TaskObject task = displayList.get(deleteIds.get(i));
