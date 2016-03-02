@@ -86,7 +86,7 @@ public class FileManipulation{
 	}
 
 	private void iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException {
-		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
 			objectRead[index] = fileReader.readLine();
 			throwNullPointerExceptionIfNoMoreLinesToRead(objectRead, index);
 		}
@@ -111,7 +111,7 @@ public class FileManipulation{
 	 *
 	 */
 	public void writeTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
-		for(int index = magicValuesRetriever.getZero(); index < overrideTasks.size(); ++index){
+		for(int index = 0; index < overrideTasks.size(); ++index){
 			String stringToWriteToFile = storageManipulator.convertTaskObjectToString(overrideTasks.get(index));
 			writeToFile(stringToWriteToFile);
 		}
@@ -135,7 +135,7 @@ public class FileManipulation{
 
 	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
 			BufferedOutputStream fileWriter) throws IOException{
-			fileWriter.write(bufferMemory,magicValuesRetriever.getZero(),bufferMemory.length);
+			fileWriter.write(bufferMemory,0,bufferMemory.length);
 			fileWriter.flush();
 	}
 
@@ -183,7 +183,7 @@ public class FileManipulation{
 		int length = inputStream.read(bufferMemory);
 
 		while (isPositive(length)) {
-			outputStream.write(bufferMemory, magicValuesRetriever.getZero(), length);
+			outputStream.write(bufferMemory, 0, length);
 			length = inputStream.read(bufferMemory);
 		}
 	}
@@ -197,7 +197,7 @@ public class FileManipulation{
 	}
 
 	private boolean isPositive(int length){
-		return length > magicValuesRetriever.getZero();
+		return length > 0;
 	}
 
 	private void closeStream(BufferedInputStream inStream, BufferedOutputStream outStream){

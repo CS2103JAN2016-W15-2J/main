@@ -27,7 +27,7 @@ public class StorageConversion{
 	public TaskObject convertStringToTaskObject(String[] linesInTask) throws ClassNotFoundException, IOException{
 		TaskObject returnObject = new TaskObject();
 		
-		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
 			storeItemIntoTaskObject(index, linesInTask[index], returnObject);
 		}
 		setGregorianCalendar(returnObject, getGregorianCalendarFromTask(returnObject));
@@ -170,7 +170,7 @@ public class StorageConversion{
 
 	private void setTaskStatus(TaskObject returnObject, String[] content) {
 		String taskStatus = content[1].trim();
-		for(int indexEnum = magicValuesRetriever.getZero(); indexEnum < magicValuesRetriever.getTotalTaskStatus(); ++indexEnum){
+		for(int indexEnum = 0; indexEnum < magicValuesRetriever.getTotalTaskStatus(); ++indexEnum){
 			if(taskStatus.equalsIgnoreCase(magicValuesRetriever.getTaskStatus(indexEnum))){
 				returnObject.setTaskStatus(magicValuesRetriever.getTaskStatus(indexEnum));
 			}
@@ -243,7 +243,7 @@ public class StorageConversion{
 		GregorianCalendar taskCalendar = getGregorianCalendarFromTask(task);
 		TimeZone taskTimeZone = taskCalendar.getTimeZone();
 		
-		for(int index = magicValuesRetriever.getZero(); index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
 			convertedString.append(extractItemFromTaskObject(index, task, taskCalendar, taskTimeZone));
 		}
 		

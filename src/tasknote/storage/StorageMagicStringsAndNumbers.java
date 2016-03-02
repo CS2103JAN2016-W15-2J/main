@@ -47,7 +47,6 @@ public class StorageMagicStringsAndNumbers{
 	private final static int SUM_OF_TASKOBJECT_ITEMS = 17;
 	private final static int SUM_OF_TASK_STATUS = 4;
 	private final static int BUFFERSIZE = 32768;
-	private final static int ZERO = 0;
 	private final static int LOCALE_US = 1;
 	private final static int LOCALE_GB = 2;
 	
@@ -93,10 +92,6 @@ public class StorageMagicStringsAndNumbers{
 	
 	public int getBufferSize(){
 		return BUFFERSIZE;
-	}
-	
-	public int getZero(){
-		return ZERO;
 	}
 	
 	public int getTotalTitles(){
