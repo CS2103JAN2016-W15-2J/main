@@ -328,7 +328,7 @@ public class Parser {
 			
 			try {
 				
-				int nextID = Integer.parseInt(nextCommand);
+				int nextID = Integer.parseInt(nextCommand) - 1;
 				
 				list.add(nextID);
 				
