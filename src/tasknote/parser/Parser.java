@@ -234,6 +234,12 @@ public class Parser {
 					
 					location = temporaryPhrase.toString();
 					temporaryPhrase.delete(0, temporaryPhrase.length());
+					
+					if (i != userCommandDataLength) {
+						current_action = "name";
+						i--;	
+					}
+					
 				} else {
 					temporaryPhrase.append(currentWord);
 				}
