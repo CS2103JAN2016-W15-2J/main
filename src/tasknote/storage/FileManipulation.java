@@ -208,4 +208,9 @@ public class FileManipulation{
 			// do nothing
 		}
 	}
+	
+	public void cleanFile() throws IOException{
+		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile));
+		fileWriter.close();
+	}
 }

@@ -40,7 +40,7 @@ public class Storage{
 	/**
 	 * 
 	 */
-	public void cleanFile(){
-		
+	public void cleanFile() throws IOException{
+		fileManipulator.cleanFile();
 	}
 }
