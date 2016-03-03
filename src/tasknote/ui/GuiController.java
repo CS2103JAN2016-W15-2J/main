@@ -45,8 +45,11 @@ public class GuiController extends Application {
     
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
     
+    private static Stage _primaryWindow = null;
+    
     @Override
     public void start(Stage stage) {
+        _primaryWindow = stage;
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
         
@@ -88,6 +91,7 @@ public class GuiController extends Application {
         
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
+        Notification.newMessage(_primaryWindow, feedback);
         displayUpdatedTaskList();
         
         commandLine.setText(DEFAULT_COMMAND);
