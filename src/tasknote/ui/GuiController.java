@@ -37,6 +37,7 @@ public class GuiController extends Application {
     private static ObservableList<TaskObject> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
 
     private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
+    private static ObservableList<TaskObject> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
     
     private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
     
@@ -94,7 +95,20 @@ public class GuiController extends Application {
     }
     
     private static void displayUpdatedTaskList() {
-        _tasksListToBeDisplayed.setAll(_tasknoteControl.getDisplayList());
+        ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
+        ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
+        
+        for(TaskObject task: displayList) {
+            if(task.getTaskType().equals("floating")) {
+                floatsList.add(task);
+            } else {
+                tasksList.add(task);
+            }
+        }
+        
+        _tasksListToBeDisplayed.setAll(tasksList);
+        _floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
     public static void main(String[] argv) {
