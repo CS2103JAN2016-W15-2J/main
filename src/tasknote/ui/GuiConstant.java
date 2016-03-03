@@ -1,13 +1,5 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.COMMAND_ADD;
-import static tasknote.ui.GuiConstant.COMMAND_DELETE;
-import static tasknote.ui.GuiConstant.COMMAND_DONE;
-import static tasknote.ui.GuiConstant.COMMAND_EDIT;
-import static tasknote.ui.GuiConstant.COMMAND_RENAME;
-import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
-import static tasknote.ui.GuiConstant.COMMAND_UNDO;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

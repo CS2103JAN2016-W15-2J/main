@@ -20,10 +20,11 @@ import tasknote.shared.TaskObject;
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TrackNote";
     
-    private final double WINDOW_MIN_WIDTH = 700.0;
+    private final double WINDOW_MIN_WIDTH = 900.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
     
     private final static List<String> listOfCommands = new ArrayList<String>(commands);
+    
     static {
         // Pre-processing of listOfCommands
         listOfCommands.remove(COMMAND_UNDO);
