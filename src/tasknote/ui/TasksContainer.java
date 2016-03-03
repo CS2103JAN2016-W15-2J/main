@@ -29,8 +29,7 @@ public class TasksContainer extends HBox {
     private static final String TASK_DATETIME_LABEL = "Date/Time: ";
     private static final String TASK_LOCATION_LABEL = "Location: ";
     
-    private final static Color LIGHT_BLUE = Color.rgb(170,220
-            ,240);
+    private final static Color LIGHT_BLUE = Color.rgb(170,220,240);
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted

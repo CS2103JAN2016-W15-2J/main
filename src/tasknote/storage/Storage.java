@@ -32,8 +32,10 @@ public class Storage{
 	 * 
 	 * @param overrideTasks
 	 * @throws TaskListIOException
+	 * @throws IOException 
 	 */
-	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException{
+	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException, IOException{
+	    cleanFile();
 		fileManipulator.writeTasks(overrideTasks);
 	}
 	
