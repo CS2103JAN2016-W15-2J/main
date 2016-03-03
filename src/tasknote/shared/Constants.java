@@ -34,5 +34,10 @@ public class Constants {
 	public static final String STRING_TASKSTATUS_OUTSTANDING = "TASK_OUTSTANDING";
 	public static final String STRING_TASKSTATUS_COMPLETED = "TASK_COMPLETED";
 	public static final String STRING_TASKSTATUS_INVALID_STORAGE = "TASK_INVALID_STORAGE";
+	
+	/* These are the integer constants used in the program 
+	 * while executing specific user operations
+	 */
+	public static int EMPTY_LIST_SIZE = 0;
 
 }
