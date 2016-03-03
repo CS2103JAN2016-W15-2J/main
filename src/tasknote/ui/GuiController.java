@@ -1,7 +1,8 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
+import static tasknote.ui.GuiConstant.COMMAND_EXIT;
 import static tasknote.ui.GuiConstant.COMMAND_UNDO;
+import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.commands;
 
@@ -73,6 +74,11 @@ public class GuiController extends Application {
         String command = commandLine.getText();
         
         if(listOfCommands.contains(command.trim())) {
+            
+            if(command.trim().equals(COMMAND_EXIT)) {
+                System.exit(0);
+            }
+            
             // Commands that contain ONLY (single) keywords 
             // are meaningless, and will not be executed.
             return;
