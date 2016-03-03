@@ -66,6 +66,11 @@ public class TaskNoteControlTest {
 		feedback = tnc.executeCommand(command);
 		output = "Deletion Failed";
 		Assert.assertEquals(output, feedback);
+		
+		command = "  delete    1 3 99";
+		feedback = tnc.executeCommand(command);
+		output = "Deletion Failed";
+		Assert.assertEquals(output, feedback);
 
 		//TODO: Parser Check for length list
 		command = "  delete    ";
