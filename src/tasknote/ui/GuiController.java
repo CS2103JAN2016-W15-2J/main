@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -76,7 +77,8 @@ public class GuiController extends Application {
         if(listOfCommands.contains(command.trim())) {
             
             if(command.trim().equals(COMMAND_EXIT)) {
-                System.exit(0);
+                Platform.exit();
+                //System.exit(0);
             }
             
             // Commands that contain ONLY (single) keywords 
