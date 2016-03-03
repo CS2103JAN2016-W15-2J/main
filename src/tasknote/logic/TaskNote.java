@@ -203,7 +203,7 @@ public class TaskNote {
 	
 	public boolean isValidTaskId(int updateTaskId){
 		boolean isValid = true;
-		if(updateTaskId >= displayList.size() || updateTaskId < displayList.size()){
+		if(updateTaskId >= displayList.size() || updateTaskId < Constants.EMPTY_LIST_SIZE){
 			isValid = false;
 		}
 		return isValid;
