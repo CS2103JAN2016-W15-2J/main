@@ -201,9 +201,9 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
 	
-	public boolean isValidTaskId(int updateTaskId){
+	public boolean isValidTaskId(int taskId){
 		boolean isValid = true;
-		if(updateTaskId >= displayList.size() || updateTaskId < Constants.EMPTY_LIST_SIZE){
+		if(taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE){
 			isValid = false;
 		}
 		return isValid;
