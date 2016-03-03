@@ -90,15 +90,7 @@ public class FloatingTasksContainer extends HBox {
                         super.updateItem(task, empty);
                         setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
                         if (!isEmpty()) {
-                            switch(task.getTaskStatus()) {
-                                case TASK_OUTSTANDING:
-                                    this.setTextFill(Color.RED);
-                                    break;
-                                default:
-                                    this.setTextFill(Color.WHITE);
-                                    break;
-                            }
-                            setText(task.formatted());
+                            setGraphic(TasksContainer.getFormattedText(task));
                         } else {
                             // Prevent duplicate for a single entry
                             setText(null);

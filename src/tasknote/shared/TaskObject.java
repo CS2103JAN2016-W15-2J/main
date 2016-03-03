@@ -336,40 +336,31 @@ public class TaskObject implements Comparable {
 	}
 	
     /**
-     * @return The string for display on UI
+     * @return Get formatted date. If date is not set, will return empty string.
      * @@author MunKeat
      */
-	public String formatted() {
-	    // Draft for formatted
-	    String formattedString = "Task: " + taskName;
-	    String date;
-	    String time;
+	public String getFormattedDate() {
+	    String taskDate = "";
 	    
-	    if(dateDay != -1 && dateMonth != -1 && dateYear != -1) {
-	        date = (dateDay + "/" + dateMonth + "/" + dateYear);
-	    } else {
-	        date = "-";
-	    }
-	    
-	    if(dateHour != -1 && dateMinute != -1) {
-	        time = (dateHour + ":" + dateMinute);
-	    } else {
-	        time = "-";
-	    }
-	    
-	    if(date.equals("-") && time.equals("-")) {
-	        // Do nothing
-	    } else {
-	        formattedString += "\n";
-	        formattedString += "Date / Time: " + date + " / " + time;
-	    }
-	    
-	    if(location != null && !location.isEmpty()) {
-            formattedString += "\n";
-            formattedString += "Location: " + location;
-	    }
-	    
-	    return formattedString;
+        if(dateDay != -1 && dateMonth != -1 && dateYear != -1) {
+            taskDate = (dateDay + "-" + dateMonth + "-" + dateYear);
+        } 
+        
+        return taskDate;
+	}
+	
+    /**
+     * @return Get formatted time. If time is not set, will return empty string.
+     * @@author MunKeat
+     */
+	public String getFormattedTime() {
+        String taskTime = "";
+        
+        if(dateMinute != -1 && dateHour != -1) {
+            taskTime = (dateHour + ":" + dateMinute);
+        } 
+        
+        return taskTime;
 	}
 
 	@Override

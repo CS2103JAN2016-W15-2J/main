@@ -4,6 +4,7 @@ import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
 import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,14 +13,24 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import tasknote.shared.TaskObject;
+import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class TasksContainer extends HBox {
     
     private static TasksContainer _tasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
+    
+    private static final String TASK_NAME_LABEL = "Task: ";
+    private static final String TASK_DATETIME_LABEL = "Date/Time: ";
+    private static final String TASK_LOCATION_LABEL = "Location: ";
+    
+    private final static Color LIGHT_BLUE = Color.rgb(170,220
+            ,240);
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
@@ -93,15 +104,7 @@ public class TasksContainer extends HBox {
                         super.updateItem(task, empty);
                         setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
                         if (!isEmpty()) {
-                            switch(task.getTaskStatus()) {
-                                case TASK_OUTSTANDING:
-                                    this.setTextFill(Color.RED);
-                                    break;
-                                default:
-                                    this.setTextFill(Color.WHITE);
-                                    break;
-                            }
-                            setText(task.formatted());
+                            setGraphic(getFormattedText(task));
                         } else {
                             // Prevent duplicate for a single entry
                             setText(null);
@@ -111,5 +114,92 @@ public class TasksContainer extends HBox {
                 };
             }
         });
+    }
+    
+    public static TextFlow getFormattedText(TaskObject task) {
+        String newline = System.lineSeparator();
+        
+        TASK_STATUS taskStatus = task.getTaskStatus();
+        Text taskNameValue = new Text(task.getTaskName() + newline);
+        Text taskDateTimeValue = null;
+        Text taskLocationValue = null;
+        
+        String taskDate = task.getFormattedDate();
+        String taskTime = task.getFormattedTime();
+        String taskLocation = task.getLocation();
+        
+        if(!taskDate.isEmpty() || !taskTime.isEmpty()) {
+            
+            if(taskDate.isEmpty()) {
+                taskDate = "-";
+            } else if (taskTime.isEmpty()) {
+                taskTime = "-";
+            }
+            
+            taskDateTimeValue = new Text(taskDate + " / " + taskTime + newline);
+        }
+        
+        if(taskLocation == null || !taskLocation.isEmpty()) {
+            taskLocationValue = new Text(taskLocation + newline);
+        }
+        
+        return colorise(taskStatus, taskNameValue, taskDateTimeValue, taskLocationValue);
+    }
+    
+    private static TextFlow colorise(TASK_STATUS status, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue) {
+        TextFlow colorisedText = new TextFlow();
+        Text taskNameLabel = new Text(TASK_NAME_LABEL);
+        Text taskDateTimeLabel = new Text(TASK_DATETIME_LABEL);
+        Text taskLocationLabel = new Text(TASK_LOCATION_LABEL);
+        
+        switch(status) {
+            case TASK_OUTSTANDING:
+                taskNameLabel.setFill(Color.RED);
+                taskNameValue.setFill(Color.RED);
+                if(taskDateTimeValue != null) {
+                    taskDateTimeLabel.setFill(Color.RED);
+                    taskDateTimeValue.setFill(Color.RED);
+                }
+                if(taskLocationValue != null) {
+                    taskLocationLabel.setFill(Color.RED);
+                    taskLocationValue.setFill(Color.RED);
+                }
+                break;
+            case TASK_COMPLETED:
+                taskNameLabel.setFill(Color.GRAY);
+                taskNameValue.setFill(Color.GRAY);
+                if(taskDateTimeValue != null) {
+                    taskDateTimeLabel.setFill(Color.GRAY);
+                    taskDateTimeValue.setFill(Color.GRAY);
+                }
+                if(taskLocationValue != null) {
+                    taskLocationLabel.setFill(Color.GRAY);
+                    taskLocationValue.setFill(Color.GRAY);
+                }
+                break;
+            case TASK_DEFAULT:
+            default:
+                taskNameLabel.setFill(Color.ORANGE);
+                taskNameValue.setFill(Color.WHITE);
+                if(taskDateTimeValue != null) {
+                    taskDateTimeLabel.setFill(Color.ORANGE);
+                    taskDateTimeValue.setFill(Color.WHITE);
+                }
+                if(taskLocationValue != null) {
+                    taskLocationLabel.setFill(LIGHT_BLUE);
+                    taskLocationValue.setFill(Color.WHITE);
+                }
+                break;
+        }
+        
+        colorisedText.getChildren().addAll(taskNameLabel, taskNameValue);
+        
+        if(taskDateTimeValue != null) {
+            colorisedText.getChildren().addAll(taskDateTimeLabel, taskDateTimeValue);
+        } else if (taskLocationValue != null) {
+            colorisedText.getChildren().addAll(taskLocationLabel, taskLocationValue);
+        }
+        
+        return colorisedText;
     }
 }
