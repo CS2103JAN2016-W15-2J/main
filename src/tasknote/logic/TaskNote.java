@@ -208,6 +208,23 @@ public class TaskNote {
 		}
 		return isValid;
 	}
+	
+	/**
+	 * This operation sets the completion status of the task to be true
+	 *
+	 * @param Task Object
+	 * @return status of the operation
+	 */
+	public String markTaskAsCompleted(TaskObject taskObject){
+		boolean isSuccess = true;
+		try{
+			taskObject.setIsMarkedDone(isSuccess);
+			sortAndSave(taskList);
+		}catch(Exception e){
+			isSuccess = false;
+		}
+		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+	}
 
 	/**
 	 * This operation sorts the list of Tasks and
@@ -281,6 +298,13 @@ public class TaskNote {
 			}else{
 				//TODO
 				return Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
+			}
+		case DONE:
+			if(isSuccess && task != null){
+				String taskName = task.getTaskName();
+				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
+			}else{
+				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
 			}
 		default:
 			throw new Error("Unrecognized command type");

@@ -4,6 +4,7 @@ import tasknote.logic.Commands.AddTask;
 import tasknote.logic.Commands.DeleteTask;
 import tasknote.logic.Commands.SearchTask;
 import tasknote.logic.Commands.UpdateTask;
+import tasknote.logic.Commands.CompleteTask;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
@@ -18,6 +19,7 @@ public class TaskNoteControl {
 	public static DeleteTask deleteTask;
 	public static SearchTask searchTask;
 	public static UpdateTask updateTask;
+	public static CompleteTask completeTask;
 	
 	
 	public TaskNoteControl() {
@@ -72,7 +74,7 @@ public class TaskNoteControl {
 			response = executeRedo(userCommand);
 			break;
 		case DONE:
-			//TODO
+			//TODO: parser
 			response = executeMarkAsComplete(userCommand);
 			break;
 		case CHANGE_FILE_PATH:
@@ -143,6 +145,7 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public static String executeUpdate(String userCommand){
+		//TODO:Parser - change method name to getTaskId
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		TaskObject oldTaskObject = displayList.get(updateTaskId);
@@ -183,8 +186,20 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public static String executeMarkAsComplete(String userCommand){
-		//TODO
-		return "";
+		//TODO:Parser - change method name to getTaskId
+		int updateTaskId = Parser.getUpdateTaskId(userCommand);
+		TaskObject taskObject;
+		if(taskNote.isValidTaskId(updateTaskId)){
+			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
+			taskObject = displayList.get(updateTaskId);
+		}else{
+			taskObject = null;
+		}
+		completeTask = new CompleteTask(taskNote, taskObject);
+		completeTask.execute();
+		completeTask.refreshDisplay();
+		String response = completeTask.getFeedBack();
+		return response;
 	}
 	
 	/**
