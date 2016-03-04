@@ -1,0 +1,153 @@
+taskName: Task1
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: event
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: Task2
+dateDay: 24
+dateMonth: 2
+dateYear: 2016
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: NUS
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: event
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: Task3
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: Raffles MRT Station
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: Task4
+dateDay: 23
+dateMonth: 10
+dateYear: 2016
+dateHour: 10
+dateMinute: 30
+duration: 0
+location: Joe's House
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: Task5
+dateDay: 1
+dateMonth: 1
+dateYear: 2015
+dateHour: 10
+dateMinute: 10
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_COMPLETED
+taskType: event
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: Task6
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: l
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: monster
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 
+taskName: 
+dateDay: -1
+dateMonth: -1
+dateYear: -1
+dateHour: -1
+dateMinute: -1
+duration: 0
+location: 
+notifyTime: 0
+isNotified: false
+taskStatus: TASK_DEFAULT
+taskType: floating
+isMarkedDone: false
+firstDayOfWeek: Sunday
+timeZoneID: Asia/Singapore
+isDayLightTimeOn: false
+ 

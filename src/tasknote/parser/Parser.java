@@ -16,6 +16,7 @@ public class Parser {
 	private static final String COMMAND_DONE = "done";
 	private static final String COMMAND_DELETE = "delete";
 	private static final String COMMAND_UNDO = "undo";
+	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_SEARCH = "search";
 
 	// Here are the valid keywords accepted by
@@ -76,8 +77,10 @@ public class Parser {
 			return COMMAND_TYPE.DELETE;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
 			return COMMAND_TYPE.SEARCH;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EXIT)) {
+			return COMMAND_TYPE.EXIT;
 		} else {
-			return COMMAND_TYPE.INVALID;
+		    return COMMAND_TYPE.INVALID;
 		}
 	}
 
