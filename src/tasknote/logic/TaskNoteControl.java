@@ -30,7 +30,8 @@ public class TaskNoteControl {
 	}
 	
 	/**
-	 * This operation executes the user command
+	 * This operation gets the command type and executes 
+	 * the requested action
 	 *
 	 * @param User Command
 	 * @return Status of Operation
@@ -40,7 +41,13 @@ public class TaskNoteControl {
 		String feedback = executeAction(commandType, userCommand);
 		return feedback;
 	}
-
+	
+	/**
+	 * This operation executes the user command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeAction(COMMAND_TYPE commandType, String userCommand){
 		String response;
 		switch (commandType) {
@@ -83,6 +90,12 @@ public class TaskNoteControl {
 		return response;
 	}
 	
+	/**
+	 * This operation executes the User's Add command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeAdd(String userCommand){
 		TaskObject taskObject = Parser.parseAdd(userCommand);
 		addTask = new AddTask(taskNote, taskObject);
@@ -92,6 +105,12 @@ public class TaskNoteControl {
 		return response;
 	}
 	
+	/**
+	 * This operation executes the User's Delete command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeDelete(String userCommand){
 		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
 		deleteTask = new DeleteTask(taskNote, deleteIds);
@@ -101,6 +120,12 @@ public class TaskNoteControl {
 		return response;
 	}
 	
+	/**
+	 * This operation executes the User's Search command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeSearch(String userCommand){
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
@@ -111,6 +136,12 @@ public class TaskNoteControl {
 		return response;
 	}
 	
+	/**
+	 * This operation executes the User's Update command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeUpdate(String userCommand){
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
@@ -123,21 +154,46 @@ public class TaskNoteControl {
 		return response;
 	}
 	
+	/**
+	 * This operation executes the User's Undo command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeUndo(String userCommand){
 		//TODO
 		return "";
 	}
 	
+	/**
+	 * This operation executes the User's Redo command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeRedo(String userCommand){
 		//TODO
 		return "";
 	}
 	
+	/**
+	 * This operation executes the User's Mark As Completed command
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeMarkAsComplete(String userCommand){
 		//TODO
 		return "";
 	}
 	
+	/**
+	 * This operation executes the User's request to change 
+	 * the directory the task file exists in
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
 	public static String executeChangeFilePath(String userCommand){
 		//TODO
 		return "";
