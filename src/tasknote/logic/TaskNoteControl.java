@@ -58,23 +58,19 @@ public class TaskNoteControl {
 			break;
 		case UNDO:
 			//TODO
-			//response = executeUndo(userCommand);
-			response = "";
+			response = executeUndo(userCommand);
 			break;
 		case REDO:
 			//TODO
-			//response = executeRedo(userCommand);
-			response = "";
+			response = executeRedo(userCommand);
 			break;
 		case DONE:
 			//TODO
-			//response = executeMarkAsComplete(userCommand);
-			response = "";
+			response = executeMarkAsComplete(userCommand);
 			break;
 		case CHANGE_FILE_PATH:
 			//TODO
-			//response = executeChangeFilePath(userCommand);
-			response = "";
+			response = executeChangeFilePath(userCommand);
 			break;
 		case INVALID:
 			response = Constants.WARNING_INVALID_COMMAND;
@@ -126,4 +122,25 @@ public class TaskNoteControl {
 		String response = updateTask.getFeedBack();
 		return response;
 	}
+	
+	public static String executeUndo(String userCommand){
+		//TODO
+		return "";
+	}
+	
+	public static String executeRedo(String userCommand){
+		//TODO
+		return "";
+	}
+	
+	public static String executeMarkAsComplete(String userCommand){
+		//TODO
+		return "";
+	}
+	
+	public static String executeChangeFilePath(String userCommand){
+		//TODO
+		return "";
+	}
+	
 }
