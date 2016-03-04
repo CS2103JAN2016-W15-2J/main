@@ -56,6 +56,26 @@ public class TaskNoteControl {
 		case UPDATE:
 			response = executeUpdate(userCommand);
 			break;
+		case UNDO:
+			//TODO
+			//response = executeUndo(userCommand);
+			response = "";
+			break;
+		case REDO:
+			//TODO
+			//response = executeRedo(userCommand);
+			response = "";
+			break;
+		case DONE:
+			//TODO
+			//response = executeMarkAsComplete(userCommand);
+			response = "";
+			break;
+		case CHANGE_FILE_PATH:
+			//TODO
+			//response = executeChangeFilePath(userCommand);
+			response = "";
+			break;
 		case INVALID:
 			response = Constants.WARNING_INVALID_COMMAND;
 			break;
