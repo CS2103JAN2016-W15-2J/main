@@ -14,6 +14,8 @@ public class Constants {
 	public static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
 	public static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated";
 	public static final String MESSAGE_UPDATE_UNSUCCESSFUL = "Update Failed";
+	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed successfully";
+	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Failed to mark Task \"%s\" as complete";
 	
 	/* These are the warnings that will be displayed if the user does 
 	 * not enter valid commands
