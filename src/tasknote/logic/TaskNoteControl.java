@@ -147,9 +147,14 @@ public class TaskNoteControl {
 	public static String executeUpdate(String userCommand){
 		//TODO:Parser - change method name to getTaskId
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
-		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-		TaskObject oldTaskObject = displayList.get(updateTaskId);
-		TaskObject updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject);
+		TaskObject updatedTaskObject;
+		if(taskNote.isValidTaskId(updateTaskId)){
+			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
+			TaskObject oldTaskObject = displayList.get(updateTaskId);
+			updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject);
+		}else{
+			updatedTaskObject = null;
+		}
 		updateTask = new UpdateTask(taskNote, updateTaskId, updatedTaskObject);
 		updateTask.execute();
 		updateTask.refreshDisplay();

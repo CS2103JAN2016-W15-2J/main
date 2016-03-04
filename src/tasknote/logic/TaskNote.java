@@ -189,7 +189,7 @@ public class TaskNote {
 	 */
 	public String updateTask(int updateTaskId, TaskObject updatedTaskObject){
 		boolean isSuccess = isValidTaskId(updateTaskId);
-		if(isSuccess){
+		if(isSuccess && updatedTaskObject != null){
 			try{
 				taskList.remove(updateTaskId);
 				taskList.add(updatedTaskObject);
