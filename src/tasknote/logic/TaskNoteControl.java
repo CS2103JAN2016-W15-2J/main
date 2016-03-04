@@ -187,11 +187,11 @@ public class TaskNoteControl {
 	 */
 	public static String executeMarkAsComplete(String userCommand){
 		//TODO:Parser - change method name to getTaskId
-		int updateTaskId = Parser.getUpdateTaskId(userCommand);
+		int taskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject taskObject;
-		if(taskNote.isValidTaskId(updateTaskId)){
+		if(taskNote.isValidTaskId(taskId)){
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-			taskObject = displayList.get(updateTaskId);
+			taskObject = displayList.get(taskId);
 		}else{
 			taskObject = null;
 		}
