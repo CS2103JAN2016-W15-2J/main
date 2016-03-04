@@ -25,12 +25,6 @@ public class TasksContainer extends HBox {
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
     
-    private static final String TASK_NAME_LABEL = "Task: ";
-    private static final String TASK_DATETIME_LABEL = "Date/Time: ";
-    private static final String TASK_LOCATION_LABEL = "Location: ";
-    
-    private final static Color LIGHT_BLUE = Color.rgb(170,220,240);
-    
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
     }
@@ -127,15 +121,10 @@ public class TasksContainer extends HBox {
         String taskTime = task.getFormattedTime();
         String taskLocation = task.getLocation();
         
-        if(!taskDate.isEmpty() || !taskTime.isEmpty()) {
-            
-            if(taskDate.isEmpty()) {
-                taskDate = "-";
-            } else if (taskTime.isEmpty()) {
-                taskTime = "-";
-            }
-            
-            taskDateTimeValue = new Text(taskDate + " / " + taskTime + newline);
+        if(!taskDate.isEmpty() && !taskTime.isEmpty()) {
+            taskDateTimeValue = new Text(taskDate + ", " + taskTime + newline);            
+        } else if (!taskDate.isEmpty() && taskTime.isEmpty()){
+            taskDateTimeValue = new Text(taskDate + newline);  
         }
         
         if(taskLocation == null || !taskLocation.isEmpty()) {
@@ -147,56 +136,45 @@ public class TasksContainer extends HBox {
     
     private static TextFlow colorise(TASK_STATUS status, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue) {
         TextFlow colorisedText = new TextFlow();
-        Text taskNameLabel = new Text(TASK_NAME_LABEL);
-        Text taskDateTimeLabel = new Text(TASK_DATETIME_LABEL);
-        Text taskLocationLabel = new Text(TASK_LOCATION_LABEL);
         
         switch(status) {
             case TASK_OUTSTANDING:
-                taskNameLabel.setFill(Color.RED);
                 taskNameValue.setFill(Color.RED);
                 if(taskDateTimeValue != null) {
-                    taskDateTimeLabel.setFill(Color.RED);
                     taskDateTimeValue.setFill(Color.RED);
                 }
                 if(taskLocationValue != null) {
-                    taskLocationLabel.setFill(Color.RED);
                     taskLocationValue.setFill(Color.RED);
                 }
                 break;
             case TASK_COMPLETED:
-                taskNameLabel.setFill(Color.GRAY);
                 taskNameValue.setFill(Color.GRAY);
                 if(taskDateTimeValue != null) {
-                    taskDateTimeLabel.setFill(Color.GRAY);
                     taskDateTimeValue.setFill(Color.GRAY);
                 }
                 if(taskLocationValue != null) {
-                    taskLocationLabel.setFill(Color.GRAY);
                     taskLocationValue.setFill(Color.GRAY);
                 }
                 break;
             case TASK_DEFAULT:
             default:
-                taskNameLabel.setFill(Color.ORANGE);
-                taskNameValue.setFill(Color.WHITE);
+                taskNameValue.setFill(Color.ORANGE);
                 if(taskDateTimeValue != null) {
-                    taskDateTimeLabel.setFill(Color.ORANGE);
                     taskDateTimeValue.setFill(Color.WHITE);
                 }
                 if(taskLocationValue != null) {
-                    taskLocationLabel.setFill(LIGHT_BLUE);
                     taskLocationValue.setFill(Color.WHITE);
                 }
                 break;
         }
         
-        colorisedText.getChildren().addAll(taskNameLabel, taskNameValue);
+        colorisedText.getChildren().addAll(taskNameValue);
         
         if(taskDateTimeValue != null) {
-            colorisedText.getChildren().addAll(taskDateTimeLabel, taskDateTimeValue);
-        } else if (taskLocationValue != null) {
-            colorisedText.getChildren().addAll(taskLocationLabel, taskLocationValue);
+            colorisedText.getChildren().addAll(taskDateTimeValue);
+        } 
+        if (taskLocationValue != null) {
+            colorisedText.getChildren().addAll(taskLocationValue);
         }
         
         return colorisedText;
