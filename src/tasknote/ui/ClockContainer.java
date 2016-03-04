@@ -1,5 +1,6 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.COLOR_HEX_CODE_WHITE;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.PROPERTY_TEXT_FILL;
@@ -75,7 +76,7 @@ public class ClockContainer extends GridPane {
          _hourMinuteAndSecondLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
                            + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
          _dayOfWeekLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                    + String.format(PROPERTY_FONT_SIZE, 25) + "-fx-font-weight: bold;");
+                    + String.format(PROPERTY_FONT_SIZE, 25) + String.format(PROPERTY_FONT_WEIGHT, "bold"));
          
          GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
          GridPane.setConstraints(_monthAndDateLabel, 1, 0);

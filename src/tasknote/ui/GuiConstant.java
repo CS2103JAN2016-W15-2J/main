@@ -28,6 +28,7 @@ public abstract class GuiConstant {
             COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH, COMMAND_EXIT));
     
     public static final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
+    public static final String PROPERTY_BACKGROUND_RADIUS = "-fx-background-radius: %1$d;";
     public static final String PROPERTY_FONT_WEIGHT = "-fx-font-weight: %1$s;";
     public static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
     public static final String PROPERTY_TEXT_INNER_COLOR = "-fx-text-inner-color: %1$s;";

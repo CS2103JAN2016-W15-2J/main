@@ -1,13 +1,10 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.COMMAND_UNDO;
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
-import static tasknote.ui.GuiConstant.commands;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
