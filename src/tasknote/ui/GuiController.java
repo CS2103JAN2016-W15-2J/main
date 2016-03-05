@@ -72,7 +72,7 @@ public class GuiController extends Application {
         
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
-        Notification.newMessage(_primaryWindow, feedback);
+        Notification.setNotification(_primaryWindow, feedback);
         displayUpdatedTaskList();
         
         commandLine.setText(DEFAULT_COMMAND);
