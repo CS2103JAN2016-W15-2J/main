@@ -1,8 +1,7 @@
 package tasknote.shared;
 
-import static org.junit.Assert.*;
-
-import javax.management.InvalidAttributeValueException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 

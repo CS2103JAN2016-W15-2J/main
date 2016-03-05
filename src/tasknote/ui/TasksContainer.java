@@ -1,5 +1,6 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
 import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
@@ -24,6 +25,8 @@ public class TasksContainer extends HBox {
     private static TasksContainer _tasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
+    
+    private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
@@ -113,6 +116,7 @@ public class TasksContainer extends HBox {
         String newline = System.lineSeparator();
         
         TASK_STATUS taskStatus = task.getTaskStatus();
+        Text taskIndex = null;
         Text taskNameValue = new Text(task.getTaskName() + newline);
         Text taskDateTimeValue = null;
         Text taskLocationValue = null;
@@ -120,6 +124,11 @@ public class TasksContainer extends HBox {
         String taskDate = task.getFormattedDate();
         String taskTime = task.getFormattedTime();
         String taskLocation = task.getLocation();
+        
+        if(task.getTaskID() > 0) {
+            taskIndex = new Text(task.getTaskID() + ". ");
+            taskIndex.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold"));
+        }
         
         if(!taskDate.isEmpty() && !taskTime.isEmpty()) {
             taskDateTimeValue = new Text(taskDate + ", " + taskTime + newline);            
@@ -131,11 +140,15 @@ public class TasksContainer extends HBox {
             taskLocationValue = new Text(taskLocation + newline);
         }
         
-        return colorise(taskStatus, taskNameValue, taskDateTimeValue, taskLocationValue);
+        return colorise(taskStatus, taskIndex, taskNameValue, taskDateTimeValue, taskLocationValue);
     }
     
-    private static TextFlow colorise(TASK_STATUS status, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue) {
+    private static TextFlow colorise(TASK_STATUS status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue) {
         TextFlow colorisedText = new TextFlow();
+        
+        if(taskIndex != null) {
+            taskIndex.setFill(LIGHT_GRAY);
+        }
         
         switch(status) {
             case TASK_OUTSTANDING:
@@ -168,6 +181,9 @@ public class TasksContainer extends HBox {
                 break;
         }
         
+        if(taskIndex != null) {
+            colorisedText.getChildren().addAll(taskIndex);
+        } 
         colorisedText.getChildren().addAll(taskNameValue);
         
         if(taskDateTimeValue != null) {

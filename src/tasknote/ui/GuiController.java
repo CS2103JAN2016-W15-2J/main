@@ -89,6 +89,11 @@ public class GuiController extends Application {
     
     private static void displayUpdatedTaskList() {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        
+        for(int index = 0; index < displayList.size(); index++) {
+            displayList.get(index).setTaskID(index + 1);
+        }
+        
         ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
