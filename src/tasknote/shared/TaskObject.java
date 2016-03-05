@@ -2,11 +2,18 @@ package tasknote.shared;
 
 import java.util.GregorianCalendar;
 
+import javax.management.InvalidAttributeValueException;
+
 public class TaskObject implements Comparable {
-	
+    public String[] monthInString = {"", "January", "February", "March", "April",
+            "May", "June", "July", "August", "September", "October", "November", "December"
+    };
+    
     public static enum TASK_STATUS {
         TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_INVALID_STORAGE
     };
+    
+    public final int DEFAULT_DATETIME_VALUE = -1;
     
 	private String taskName;
 	private int taskID;
@@ -37,11 +44,11 @@ public class TaskObject implements Comparable {
 	public TaskObject(){
 		setTaskName(taskName);
 		
-		setDateDay(-1);
-		setDateMonth(-1);
-		setDateYear(-1);
-		setDateHour(-1);
-		setDateMinute(-1);
+		setDateDay(DEFAULT_DATETIME_VALUE);
+		setDateMonth(DEFAULT_DATETIME_VALUE);
+		setDateYear(DEFAULT_DATETIME_VALUE);
+		setDateHour(DEFAULT_DATETIME_VALUE);
+		setDateMinute(DEFAULT_DATETIME_VALUE);
 		
 		setDuration(0);
 		
@@ -62,11 +69,11 @@ public class TaskObject implements Comparable {
 		
 		setTaskName(taskName);
 		
-		setDateDay(-1);
-		setDateMonth(-1);
-		setDateYear(-1);
-		setDateHour(-1);
-		setDateMinute(-1);
+		setDateDay(DEFAULT_DATETIME_VALUE);
+		setDateMonth(DEFAULT_DATETIME_VALUE);
+		setDateYear(DEFAULT_DATETIME_VALUE);
+		setDateHour(DEFAULT_DATETIME_VALUE);
+		setDateMinute(DEFAULT_DATETIME_VALUE);
 		
 		setDuration(0);
 		
@@ -342,8 +349,11 @@ public class TaskObject implements Comparable {
 	public String getFormattedDate() {
 	    String taskDate = "";
 	    
-        if(dateDay != -1 && dateMonth != -1 && dateYear != -1) {
-            taskDate = (dateDay + "-" + dateMonth + "-" + dateYear);
+        if(dateDay != DEFAULT_DATETIME_VALUE && dateMonth != DEFAULT_DATETIME_VALUE && dateYear != DEFAULT_DATETIME_VALUE) {
+            assert(0 <= dateDay && dateDay <= 31);
+            assert(0 <= dateMonth && dateMonth <= 12);
+            
+            taskDate = (dateDay + " " + monthInString[dateMonth] + " " + dateYear);
         } 
         
         return taskDate;
@@ -356,11 +366,63 @@ public class TaskObject implements Comparable {
 	public String getFormattedTime() {
         String taskTime = "";
         
-        if(dateMinute != -1 && dateHour != -1) {
-            taskTime = (dateHour + ":" + dateMinute);
+        if(dateMinute != DEFAULT_DATETIME_VALUE && dateHour != DEFAULT_DATETIME_VALUE) {
+            assert(0 <= dateMinute && dateMinute <= 59);
+            assert(0 <= dateHour && dateHour <= 23);
+            
+            if(dateHour < 12) {
+                String hourString = String.format("%02d", dateHour);
+                String minuteString = String.format("%02d", dateMinute);
+                taskTime = (minuteString + ":" + hourString + "am");
+            } else {
+                String hourString = String.format("%02d", (dateHour - 12));
+                String minuteString = String.format("%02d", dateMinute);
+                taskTime = (hourString + ":" + minuteString + "pm");
+            }
         } 
         
         return taskTime;
+	}
+	
+    /**
+     * @return If all task attributes are set correctly.
+     * @throws Exception will only be thrown when any attribute strongly violates permitted value.
+     * @@author MunKeat
+     */
+	public boolean isTaskConsistent() throws Exception {
+	    // TODO WIP
+        if(getTaskName() == null) {
+            throw new InvalidAttributeValueException("Task Name cannot be null!");
+        } else if (getTaskName().isEmpty()) {
+            throw new InvalidAttributeValueException("Task Name cannot be empty!");
+        }
+        
+        // First, let's look at the date/time attributes
+        if(dateMonth != DEFAULT_DATETIME_VALUE && (0 > dateMonth || dateMonth > 12)) {
+            throw new InvalidAttributeValueException("Task month is set incorrectly.");
+        } else if (dateDay != DEFAULT_DATETIME_VALUE && (0 > dateDay || dateDay > 31)) {
+            throw new InvalidAttributeValueException("Task day is set incorrectly.");
+        } else if (dateHour != DEFAULT_DATETIME_VALUE && (0 > dateHour || dateHour > 23)) {
+            throw new InvalidAttributeValueException("Task hour is set incorrectly.");
+        } else if (dateMinute != DEFAULT_DATETIME_VALUE && (0 > dateMinute || dateMinute > 59)) {
+            throw new InvalidAttributeValueException("Task minute is set incorrectly.");
+        }
+        
+        switch(getTaskType().trim()) {
+            case "floating": 
+                if(!getFormattedTime().isEmpty() || !getFormattedTime().isEmpty()) {
+                    return false;
+                } else if (getDuration() > 0) {
+                    return false;
+                }
+                break;
+            default:
+                break;
+        }
+        
+        // TODO Add other test. WIP, as other possible types are unknown. 
+        
+        return true;
 	}
 
 	@Override
