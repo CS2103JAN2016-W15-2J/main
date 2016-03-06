@@ -123,7 +123,7 @@ public class FileManipulation{
 			byte[] bufferMemory = stringToFile.getBytes();
 			int totalNumberOfBytesToWrite = bufferMemory.length;
 			int maxWriteLength = magicValuesRetriever.getBufferSize();
-			BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile));
+			BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile,true));
 			
 			loopWriteOneObjectToFile(bufferMemory, totalNumberOfBytesToWrite, maxWriteLength, fileWriter);
 			
