@@ -26,7 +26,6 @@ public class Driver{
 			for(int i=0; i<list.size(); ++i){
 				System.out.println("item #" + i + ":\n" + list.get(i));
 			}
-			storage.cleanFile();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
