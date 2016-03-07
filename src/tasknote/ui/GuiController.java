@@ -16,7 +16,7 @@ import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
 
 public class GuiController extends Application {
-    private final String APPLICATION_NAME = "TrackNote";
+    private final String APPLICATION_NAME = "TaskNote";
     
     private final double WINDOW_MIN_WIDTH = 900.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;

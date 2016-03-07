@@ -31,10 +31,16 @@ public class Notification {
     private final static String DEFAULT_NOTIFICATION_TITLE = "Notification";
 
     private Notification() {
-        // TODO
+        // Prevent instantiation of Notification
     }
     
-    // TODO Start here
+    /**
+     * Create a notification.
+     * 
+     * @param primaryStage      Enter the primary state used - that is, the "owner" of the notification.
+     * @param title             Set the title of the notification.
+     * @param message           Set the content of the notification.
+     */
     public static void setNotification(Stage primaryStage, String title, String message) {
         Popup notificationContainer = new Popup();
         VBox notificationContent = setupNotificationContent(notificationContainer, title, message);
@@ -42,6 +48,13 @@ public class Notification {
         runFadeAnimation(notificationContainer, notificationContent);
     }
     
+    /**
+     * Create a notification. 
+     * However, in this case, the title is omitted, which will result in "Notification" being used as title.
+     * 
+     * @param primaryStage      Enter the primary state used - that is, the "owner" of the notification.
+     * @param message           Set the content of the notification.
+     */
     public static void setNotification(Stage primaryStage, String message) {
         setNotification(primaryStage, null, message);
     }
