@@ -3,6 +3,7 @@ package tasknote.ui;
 import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
 import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
+import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
 import javafx.collections.FXCollections;
@@ -76,7 +77,8 @@ public class FloatingTasksContainer extends HBox {
      */
     private void setFloatingTasksListPresentation() {
         _observableListRepresentation.setItems(_floatingTasksList);
-        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
+        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437")
+                + String.format(PROPERTY_BACKGROUND_RADIUS, 5));
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
     

@@ -1,5 +1,6 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
 import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
@@ -27,6 +28,7 @@ public class TasksContainer extends HBox {
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
     
     private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
+    private static final Color RED = Color.rgb(255, 100, 100);
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
@@ -83,7 +85,8 @@ public class TasksContainer extends HBox {
      */
     private void setTaskListPresentation() {
         _observableListRepresentation.setItems(_tasksList);
-        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
+        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437")
+                + String.format(PROPERTY_BACKGROUND_RADIUS, 5));
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
     
@@ -145,22 +148,24 @@ public class TasksContainer extends HBox {
     
     private static TextFlow colorise(TASK_STATUS status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue) {
         TextFlow colorisedText = new TextFlow();
-        
-        if(taskIndex != null) {
-            taskIndex.setFill(LIGHT_GRAY);
-        }
-        
+
         switch(status) {
             case TASK_OUTSTANDING:
-                taskNameValue.setFill(Color.RED);
+                if(taskIndex != null) {
+                    taskIndex.setFill(RED);
+                }
+                taskNameValue.setFill(RED);
                 if(taskDateTimeValue != null) {
-                    taskDateTimeValue.setFill(Color.RED);
+                    taskDateTimeValue.setFill(RED);
                 }
                 if(taskLocationValue != null) {
-                    taskLocationValue.setFill(Color.RED);
+                    taskLocationValue.setFill(RED);
                 }
                 break;
             case TASK_COMPLETED:
+                if(taskIndex != null) {
+                    taskIndex.setFill(Color.GRAY);
+                }
                 taskNameValue.setFill(Color.GRAY);
                 if(taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.GRAY);
@@ -171,6 +176,9 @@ public class TasksContainer extends HBox {
                 break;
             case TASK_DEFAULT:
             default:
+                if(taskIndex != null) {
+                    taskIndex.setFill(LIGHT_GRAY);
+                }
                 taskNameValue.setFill(Color.ORANGE);
                 if(taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.WHITE);
