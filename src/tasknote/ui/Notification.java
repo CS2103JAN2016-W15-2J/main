@@ -13,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -63,6 +64,7 @@ public class Notification {
     private static void setNotificationContainerBehaviour(Popup notificationContainer, VBox notificationContent, Stage primaryStage) {
         notificationContainer.setHideOnEscape(false);
         notificationContainer.getContent().add(notificationContent);
+        notificationContainer.setAutoFix(true);
         notificationContainer.centerOnScreen();
         notificationContainer.show(primaryStage);
     }
@@ -76,12 +78,12 @@ public class Notification {
         
         HBox titleContent = getNotificationTitle(titleMessage, exitButton);
         
-        setupNotificationContentPresentation(notificationContent);
-        setupTitleMessagePresentation(titleMessage);
-        setupExitButtonPresentation(exitButton);
-        setupAlertMessagePresentation(alertMessage);
+        setNotificationContentPresentation(notificationContent);
+        setTitleMessagePresentation(titleMessage);
+        setExitButtonPresentation(exitButton);
+        setAlertMessagePresentation(alertMessage);
         
-        setupExitButtonBehaviour(exitButton, notificationContainer);
+        setExitButtonBehaviour(exitButton, notificationContainer);
         
         notificationContent.getChildren().addAll(titleContent, separator, alertMessage);
         
@@ -107,7 +109,15 @@ public class Notification {
         return titleContent;
     }
     
-    private static void setupNotificationContentPresentation(VBox notificationContent) {
+    private static void setNotificationContentPresentation(VBox notificationContent) {
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setRadius(5.0);
+        dropShadow.setOffsetX(3.0);
+        dropShadow.setOffsetY(3.0);
+        dropShadow.setColor(Color.rgb(18,19,21));
+        
+        notificationContent.setEffect(dropShadow);
+        
         notificationContent.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#1e2123")
                 + String.format(PROPERTY_BACKGROUND_RADIUS, 10));
         notificationContent.setMinWidth(MINIMUM_NOTIFICATION_WIDTH);
@@ -115,18 +125,18 @@ public class Notification {
         notificationContent.setPadding(new Insets(20, 20, 20, 20));
     }
     
-    private static void setupTitleMessagePresentation(Text titleMessage) {
+    private static void setTitleMessagePresentation(Text titleMessage) {
         titleMessage.setFill(Color.WHITE);
         titleMessage.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold")
                 + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
     }
     
-    private static void setupExitButtonPresentation(Text exitButton) {
+    private static void setExitButtonPresentation(Text exitButton) {
         exitButton.setFill(Color.GRAY);
         exitButton.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
     }
     
-    private static void setupExitButtonBehaviour(Text exitButton, Popup notificationContainer) {
+    private static void setExitButtonBehaviour(Text exitButton, Popup notificationContainer) {
         exitButton.setOnMouseEntered((new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -151,7 +161,7 @@ public class Notification {
         }));
     }
     
-    private static void setupAlertMessagePresentation(Text alertMessage) {
+    private static void setAlertMessagePresentation(Text alertMessage) {
         alertMessage.setFill(Color.WHITE);
         alertMessage.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_CONTENT));
     }

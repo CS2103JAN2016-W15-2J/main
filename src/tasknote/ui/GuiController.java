@@ -45,6 +45,7 @@ public class GuiController extends Application {
         
         frame.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_APPLICATION));
         
+        frame.setTop(MainMenuContainer.getInstance());
         frame.setLeft(_sidebarContainer);
         frame.setCenter(_tasksContainer);
         frame.setRight(_floatingTasksContainer);
