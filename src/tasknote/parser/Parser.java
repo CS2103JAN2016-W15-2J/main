@@ -2,6 +2,7 @@ package tasknote.parser;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
@@ -347,7 +348,26 @@ public class Parser {
 	public static ArrayList<Integer> parseSearch(String userCommand, ArrayList<TaskObject> displayList) {
 		// TODO Auto-generated method stub
 		
-		return parseDelete(userCommand);
+		// Magic number: Search is of length 7
+		String searchString = userCommand.trim().substring(7, userCommand.length());
+		
+		Iterator taskObjectIterator = displayList.iterator();
+		
+		ArrayList<Integer> allSelectedTaskIDs = new ArrayList<>();
+		
+		while (taskObjectIterator.hasNext()) {
+			
+			TaskObject currentTaskObject = (TaskObject) taskObjectIterator.next();
+			
+			String currentTaskName = currentTaskObject.getTaskName();
+			
+			if (currentTaskName.contains(searchString)) {
+				
+				allSelectedTaskIDs.add(currentTaskObject.getTaskID());
+			}
+		}
+		
+		return allSelectedTaskIDs;
 	}
 	
 	public static TaskObject parseUpdate(String userCommand, TaskObject oldTaskObject) {
