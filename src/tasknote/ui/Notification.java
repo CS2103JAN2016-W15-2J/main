@@ -1,6 +1,5 @@
 package tasknote.ui;
 
-import static javafx.stage.PopupWindow.AnchorLocation.WINDOW_BOTTOM_LEFT;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
@@ -60,9 +59,9 @@ public class Notification {
     }
     
     private static void setupNotificationContainerBehaviour(Popup notificationContainer, VBox notificationContent, Stage primaryStage) {
-        notificationContainer.setAnchorLocation(WINDOW_BOTTOM_LEFT);
         notificationContainer.setHideOnEscape(false);
         notificationContainer.getContent().add(notificationContent);
+        notificationContainer.centerOnScreen();
         notificationContainer.show(primaryStage);
     }
     
