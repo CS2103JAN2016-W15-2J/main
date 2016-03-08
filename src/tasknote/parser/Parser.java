@@ -355,16 +355,23 @@ public class Parser {
 		
 		ArrayList<Integer> allSelectedTaskIDs = new ArrayList<>();
 		
+		int i = 0;
+		
 		while (taskObjectIterator.hasNext()) {
 			
 			TaskObject currentTaskObject = (TaskObject) taskObjectIterator.next();
 			
-			String currentTaskName = currentTaskObject.getTaskName();
+			String currentTaskName = currentTaskObject.getTaskName();	
 			
 			if (currentTaskName.contains(searchString)) {
 				
-				allSelectedTaskIDs.add(currentTaskObject.getTaskID());
+				System.out.println(currentTaskName);
+				System.out.println(currentTaskObject.getTaskID());
+				
+				allSelectedTaskIDs.add(i);
 			}
+			
+			i++;
 		}
 		
 		return allSelectedTaskIDs;
