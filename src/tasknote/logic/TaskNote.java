@@ -81,6 +81,14 @@ public class TaskNote {
 	public ArrayList<TaskObject> getDisplayList(){
 		return displayList;
 	}
+	
+	/**
+	 * This operation reinitializes the Search List to a new list
+	 * 
+	 */
+	public void reIntializeSearchList(){
+		searchList = new ArrayList<TaskObject>();
+	}
 
 	/**
 	 * This operation refreshes the list of task to be
