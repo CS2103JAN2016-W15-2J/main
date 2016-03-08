@@ -52,6 +52,7 @@ public class TaskNoteControl {
 	 */
 	public static String executeAction(COMMAND_TYPE commandType, String userCommand){
 		String response;
+		taskNote.reIntializeSearchList();
 		switch (commandType) {
 		case ADD:
 			response = executeAdd(userCommand);
