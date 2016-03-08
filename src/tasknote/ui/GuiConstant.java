@@ -30,7 +30,7 @@ public abstract class GuiConstant {
     public static final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
     public static final String PROPERTY_BACKGROUND_RADIUS = "-fx-background-radius: %1$d;";
     public static final String PROPERTY_FONT_WEIGHT = "-fx-font-weight: %1$s;";
-    public static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpx;";
+    public static final String PROPERTY_FONT_SIZE = "-fx-font-size: %1$dpt;";
     public static final String PROPERTY_TEXT_INNER_COLOR = "-fx-text-inner-color: %1$s;";
     public static final String PROPERTY_TEXT_FILL = "-fx-text-fill: %1$s;";
     

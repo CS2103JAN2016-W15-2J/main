@@ -20,6 +20,7 @@ public class GuiController extends Application {
     
     private final double WINDOW_MIN_WIDTH = 900.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
+    private static int FONT_SIZE_APPLICATION = 12;
 
     private static CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
     private static TextField _commandLine = _commandLineContainer.getCommandLine();
@@ -42,7 +43,7 @@ public class GuiController extends Application {
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
         
-        frame.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
+        frame.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_APPLICATION));
         
         frame.setLeft(_sidebarContainer);
         frame.setCenter(_tasksContainer);
@@ -72,7 +73,7 @@ public class GuiController extends Application {
         
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
-        //Notification.setNotification(_primaryWindow, feedback);
+        Notification.setupNotification(_primaryWindow, feedback);
         displayUpdatedTaskList();
         
         commandLine.setText(DEFAULT_COMMAND);

@@ -24,7 +24,8 @@ public class ClockContainer extends GridPane {
 
     private static final int INTERVAL_SECOND_ANIMATION = 1;
     
-    private static int FONT_SIZE = 20;
+    private static int FONT_SIZE_DAYDATE = 16;
+    private static int FONT_SIZE_DAY_OF_WEEK = 25;
 
     private static final Calendar _currentTime = Calendar.getInstance();
     private static ClockContainer _timerContainer = null;
@@ -72,11 +73,11 @@ public class ClockContainer extends GridPane {
      */
     private void setLabelsPresentation() {
          _monthAndDateLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                       + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
+                       + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAYDATE));
          _hourMinuteAndSecondLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                           + String.format(PROPERTY_FONT_SIZE, FONT_SIZE));
+                           + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAYDATE));
          _dayOfWeekLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                    + String.format(PROPERTY_FONT_SIZE, 25) + String.format(PROPERTY_FONT_WEIGHT, "bold"));
+                    + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAY_OF_WEEK) + String.format(PROPERTY_FONT_WEIGHT, "bold"));
          
          GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
          GridPane.setConstraints(_monthAndDateLabel, 1, 0);

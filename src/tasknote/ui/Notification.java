@@ -27,6 +27,8 @@ import javafx.util.Duration;
 public class Notification {
     private final static int DURATION_IN_SECOND_NOTIFICATION = 5;
     private final static int MINIMUM_NOTIFICATION_WIDTH = 400;
+    private static int FONT_SIZE_NOTIFICATION_TITLE = 12;
+    private static int FONT_SIZE_NOTIFICATION_CONTENT = 12;
     private final static String DEFAULT_NOTIFICATION_TITLE = "Notification";
 
     private Notification() {
@@ -40,10 +42,10 @@ public class Notification {
      * @param title             Set the title of the notification.
      * @param message           Set the content of the notification.
      */
-    public static void setNotification(Stage primaryStage, String title, String message) {
+    public static void setupNotification(Stage primaryStage, String title, String message) {
         Popup notificationContainer = new Popup();
         VBox notificationContent = setupNotificationContent(notificationContainer, title, message);
-        setupNotificationContainerBehaviour(notificationContainer, notificationContent, primaryStage);
+        setNotificationContainerBehaviour(notificationContainer, notificationContent, primaryStage);
         runFadeAnimation(notificationContainer, notificationContent);
     }
     
@@ -54,11 +56,11 @@ public class Notification {
      * @param primaryStage      Enter the primary state used - that is, the "owner" of the notification.
      * @param message           Set the content of the notification.
      */
-    public static void setNotification(Stage primaryStage, String message) {
-        setNotification(primaryStage, null, message);
+    public static void setupNotification(Stage primaryStage, String message) {
+        setupNotification(primaryStage, null, message);
     }
     
-    private static void setupNotificationContainerBehaviour(Popup notificationContainer, VBox notificationContent, Stage primaryStage) {
+    private static void setNotificationContainerBehaviour(Popup notificationContainer, VBox notificationContent, Stage primaryStage) {
         notificationContainer.setHideOnEscape(false);
         notificationContainer.getContent().add(notificationContent);
         notificationContainer.centerOnScreen();
@@ -116,12 +118,12 @@ public class Notification {
     private static void setupTitleMessagePresentation(Text titleMessage) {
         titleMessage.setFill(Color.WHITE);
         titleMessage.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold")
-                + String.format(PROPERTY_FONT_SIZE, 18));
+                + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
     }
     
     private static void setupExitButtonPresentation(Text exitButton) {
         exitButton.setFill(Color.GRAY);
-        exitButton.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
+        exitButton.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
     }
     
     private static void setupExitButtonBehaviour(Text exitButton, Popup notificationContainer) {
@@ -130,7 +132,7 @@ public class Notification {
             public void handle(MouseEvent mouseEvent) {
                 exitButton.setFill(Color.WHITE);
                 exitButton.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold")
-                        + String.format(PROPERTY_FONT_SIZE, 15));
+                        + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
             }
         }));
         exitButton.setOnMouseExited((new EventHandler<MouseEvent>() {
@@ -138,7 +140,7 @@ public class Notification {
             public void handle(MouseEvent mouseEvent) {
                 exitButton.setFill(Color.GRAY);
                 exitButton.setStyle(String.format(PROPERTY_FONT_WEIGHT, "normal")
-                        + String.format(PROPERTY_FONT_SIZE, 15));
+                        + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
             }
         }));
         exitButton.setOnMouseClicked((new EventHandler<MouseEvent>() {
@@ -151,7 +153,7 @@ public class Notification {
     
     private static void setupAlertMessagePresentation(Text alertMessage) {
         alertMessage.setFill(Color.WHITE);
-        alertMessage.setStyle(String.format(PROPERTY_FONT_SIZE, 15));
+        alertMessage.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_CONTENT));
     }
     
     private static void runFadeAnimation(Popup popupNotification, Pane pane) {
