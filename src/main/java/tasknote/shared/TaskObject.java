@@ -236,6 +236,9 @@ public class TaskObject implements Comparable {
 	 */
 	public void setIsMarkedDone(boolean isMarkedDone) {
 		this.isMarkedDone = isMarkedDone;
+		if(isMarkedDone) {
+		    this.taskStatus = TASK_STATUS.TASK_COMPLETED;
+		}
 	}
 
 	/**
