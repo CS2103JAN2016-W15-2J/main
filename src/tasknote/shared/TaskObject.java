@@ -16,7 +16,7 @@ public class TaskObject implements Comparable {
     public final int DEFAULT_DATETIME_VALUE = -1;
     
 	private String taskName;
-	private int taskID;
+	private int taskID; // for your debugging purposes
 	
 	private int dateDay;
 	private int dateMonth;
@@ -34,7 +34,7 @@ public class TaskObject implements Comparable {
 	private boolean isNotified;
 	
 	private TASK_STATUS taskStatus;
-	private String taskType;
+	private String taskType; // for my debugging purposes
 	
 	private boolean isMarkedDone;
 	
@@ -324,6 +324,8 @@ public class TaskObject implements Comparable {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+	
+	
 	
 	/**
 	 * @return the string for printing for debugging

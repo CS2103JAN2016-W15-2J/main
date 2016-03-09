@@ -1,6 +1,8 @@
 package tasknote.parser;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 
@@ -177,6 +179,7 @@ public class Parser {
 						
 						try {
 							dateHour = Integer.parseInt(expectedTime) + 12;
+							dateMinute = 0;
 							
 						} catch (NumberFormatException e) {
 							taskName.append(temporaryPhrase);
@@ -191,6 +194,7 @@ public class Parser {
 						
 						try {
 							dateHour = Integer.parseInt(expectedTime);
+							dateMinute = 0;
 							
 						} catch (NumberFormatException e) {
 							taskName.append(temporaryPhrase);
@@ -313,6 +317,12 @@ public class Parser {
 		newTaskObject.setDateMinute(dateMinute);
 		
 		newTaskObject.setLocation(location);
+		
+		GregorianCalendar forDateHack = new GregorianCalendar();
+		
+		newTaskObject.setDateDay(forDateHack.get(Calendar.DAY_OF_MONTH));
+		newTaskObject.setDateMonth(forDateHack.get(Calendar.MONTH));
+		newTaskObject.setDateYear(forDateHack.get(Calendar.YEAR));
 		
 		return newTaskObject;
 	}
