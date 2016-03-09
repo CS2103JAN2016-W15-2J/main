@@ -200,7 +200,7 @@ public class TaskNote {
 		if(isSuccess && updatedTaskObject != null){
 			try{
 				taskList.remove(updateTaskId);
-				taskList.add(updatedTaskObject);
+				taskList.add(updateTaskId, updatedTaskObject);
 				sortAndSave(taskList);
 			}catch(Exception e){
 				isSuccess = false;
