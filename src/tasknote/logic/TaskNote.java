@@ -153,7 +153,7 @@ public class TaskNote {
 					break;
 				}
 			}
-		}else{
+		} else{
 			isValid = false;
 		}
 		return isValid;

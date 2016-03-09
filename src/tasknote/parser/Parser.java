@@ -74,6 +74,8 @@ public class Parser {
 			
 			return COMMAND_TYPE.ADD;
 			
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EDIT)) {
+			return COMMAND_TYPE.UPDATE;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DELETE)) {
 			return COMMAND_TYPE.DELETE;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
@@ -389,23 +391,40 @@ public class Parser {
 		
 		for (int i = 2; i < userCommandLength; i++) {
 			
-			String currentWord = splitUserCommand[userCommandLength];
+			String currentWord = splitUserCommand[i];
+			String nextWord = "";
 			
-			if (currentWord.equalsIgnoreCase(KEYWORD_AT)) {
-				oldTaskObject.setLocation("");
-			} else if (currentWord.equalsIgnoreCase(KEYWORD_BY)) {
-				//TODO
-			} else if (currentWord.equalsIgnoreCase(KEYWORD_FROM)) {
-				//TODO
-			} else if (currentWord.equalsIgnoreCase(KEYWORD_TO)) {
-				// TODO
-			} else if (currentWord.equalsIgnoreCase(KEYWORD_ON)) {
-				oldTaskObject.setDateHour(-1);
-				oldTaskObject.setDateMinute(-1);
+			if (i + 1 < userCommandLength) {
+				nextWord = splitUserCommand[i + 1];
 			}
+			
+			if (!(nextWord.equalsIgnoreCase(KEYWORD_AT) || 
+					nextWord.equalsIgnoreCase(KEYWORD_FROM) ||
+				    nextWord.equalsIgnoreCase(KEYWORD_TO) || 
+				    nextWord.equalsIgnoreCase(KEYWORD_BY) ||
+				    nextWord.equalsIgnoreCase(KEYWORD_ON) ||
+				    nextWord.equalsIgnoreCase(""))) {
+				
+				if (currentWord.equalsIgnoreCase(KEYWORD_AT)) {
+					oldTaskObject.setLocation("");
+				} else if (currentWord.equalsIgnoreCase(KEYWORD_BY)) {
+					//TODO
+				} else if (currentWord.equalsIgnoreCase(KEYWORD_FROM)) {
+					//TODO
+				} else if (currentWord.equalsIgnoreCase(KEYWORD_TO)) {
+					// TODO
+				} else if (currentWord.equalsIgnoreCase(KEYWORD_ON)) {
+					oldTaskObject.setDateHour(-1);
+					oldTaskObject.setDateMinute(-1);
+				}
+			}
+			
 		}
 		
-		TaskObject newTaskObject = Parser.parseAdd(userCommand);
+		// MAGIC STRING TODO 
+		TaskObject newTaskObject = Parser.parseAdd(userCommand.substring(5));
+		
+		oldTaskObject.setTaskName(newTaskObject.getTaskName());
 		
 		if (oldTaskObject.getLocation().isEmpty()) {
 			oldTaskObject.setLocation(newTaskObject.getLocation());
@@ -423,7 +442,7 @@ public class Parser {
 	
 	public static int getUpdateTaskId(String userCommand) {
 		
-		String[] splitUserCommand = userCommand.split(REGEX_WHITESPACE);
+		String[] splitUserCommand = userCommand.trim().split(REGEX_WHITESPACE);
 		
 		try {
 			

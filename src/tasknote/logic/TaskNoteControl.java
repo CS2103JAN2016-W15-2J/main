@@ -149,6 +149,7 @@ public class TaskNoteControl {
 		//TODO:Parser - change method name to getTaskId
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject updatedTaskObject;
+		
 		if(taskNote.isValidTaskId(updateTaskId)){
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			TaskObject oldTaskObject = displayList.get(updateTaskId);
@@ -156,6 +157,7 @@ public class TaskNoteControl {
 		}else{
 			updatedTaskObject = null;
 		}
+		
 		updateTask = new UpdateTask(taskNote, updateTaskId, updatedTaskObject);
 		updateTask.execute();
 		updateTask.refreshDisplay();
