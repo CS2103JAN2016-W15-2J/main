@@ -1,10 +1,10 @@
 package tasknote.logic;
 
-import tasknote.logic.Commands.AddTask;
-import tasknote.logic.Commands.DeleteTask;
-import tasknote.logic.Commands.SearchTask;
-import tasknote.logic.Commands.UpdateTask;
-import tasknote.logic.Commands.CompleteTask;
+import tasknote.logic.Commands.AddCommand;
+import tasknote.logic.Commands.DeleteCommand;
+import tasknote.logic.Commands.SearchCommand;
+import tasknote.logic.Commands.UpdateCommand;
+import tasknote.logic.Commands.CompleteCommand;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 public class TaskNoteControl {
 	
 	public static TaskNote taskNote;
-	public static AddTask addTask;
-	public static DeleteTask deleteTask;
-	public static SearchTask searchTask;
-	public static UpdateTask updateTask;
-	public static CompleteTask completeTask;
+	public static AddCommand addTask;
+	public static DeleteCommand deleteTask;
+	public static SearchCommand searchTask;
+	public static UpdateCommand updateTask;
+	public static CompleteCommand completeTask;
 	
 	
 	public TaskNoteControl() {
@@ -101,7 +101,7 @@ public class TaskNoteControl {
 	 */
 	public static String executeAdd(String userCommand){
 		TaskObject taskObject = Parser.parseAdd(userCommand);
-		addTask = new AddTask(taskNote, taskObject);
+		addTask = new AddCommand(taskNote, taskObject);
 		addTask.execute();
 		addTask.refreshDisplay();
 		String response = addTask.getFeedBack();
@@ -116,7 +116,7 @@ public class TaskNoteControl {
 	 */
 	public static String executeDelete(String userCommand){
 		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
-		deleteTask = new DeleteTask(taskNote, deleteIds);
+		deleteTask = new DeleteCommand(taskNote, deleteIds);
 		deleteTask.execute();
 		deleteTask.refreshDisplay();
 		String response = deleteTask.getFeedBack();
@@ -132,7 +132,7 @@ public class TaskNoteControl {
 	public static String executeSearch(String userCommand){
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
-		searchTask = new SearchTask(taskNote, searchIds);
+		searchTask = new SearchCommand(taskNote, searchIds);
 		searchTask.execute();
 		searchTask.refreshDisplay();
 		String response = searchTask.getFeedBack();
@@ -158,7 +158,7 @@ public class TaskNoteControl {
 			updatedTaskObject = null;
 		}
 		
-		updateTask = new UpdateTask(taskNote, updateTaskId, updatedTaskObject);
+		updateTask = new UpdateCommand(taskNote, updateTaskId, updatedTaskObject);
 		updateTask.execute();
 		updateTask.refreshDisplay();
 		String response = updateTask.getFeedBack();
@@ -203,7 +203,7 @@ public class TaskNoteControl {
 		}else{
 			taskObject = null;
 		}
-		completeTask = new CompleteTask(taskNote, taskObject);
+		completeTask = new CompleteCommand(taskNote, taskObject);
 		completeTask.execute();
 		completeTask.refreshDisplay();
 		String response = completeTask.getFeedBack();

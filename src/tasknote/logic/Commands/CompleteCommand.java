@@ -4,30 +4,24 @@ import tasknote.logic.TaskNote;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 
-import java.util.ArrayList;
-
-public class SearchTask implements Command {
+public class CompleteCommand implements Command  {
 	
 	private TaskNote taskNote;
-	private ArrayList<Integer> searchIds;
+	private TaskObject taskObject;
 	private String statusOfOperation;
 
-	public SearchTask(TaskNote taskNote, ArrayList<Integer> searchIds) {
-		this.searchIds = searchIds;
+	public CompleteCommand(TaskNote taskNote, TaskObject taskObject) {
+		this.taskObject = taskObject;
 		this.taskNote = taskNote;
 		statusOfOperation = new String();
 	}
-
-	public void execute() {
-		statusOfOperation = taskNote.getSearchResults(searchIds);
-	}
 	
-	public ArrayList<TaskObject> getSearchResults(){
-		return taskNote.getSearchList();
+	public void execute() {
+		statusOfOperation = taskNote.markTaskAsCompleted(taskObject);
 	}
 
 	public void refreshDisplay() {
-		taskNote.refreshDisplay(getSearchResults());
+		taskNote.refreshDisplay(taskNote.getTaskList());
 	}
 
 	public String getFeedBack() {
@@ -36,4 +30,6 @@ public class SearchTask implements Command {
 		}
 		return statusOfOperation;
 	}
+	
+
 }

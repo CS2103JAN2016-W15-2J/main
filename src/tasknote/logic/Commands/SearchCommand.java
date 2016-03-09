@@ -4,26 +4,30 @@ import tasknote.logic.TaskNote;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 
-public class UpdateTask implements Command {
+import java.util.ArrayList;
+
+public class SearchCommand implements Command {
 	
 	private TaskNote taskNote;
-	private int updateTaskId;
-	private TaskObject updatedTaskObject;
+	private ArrayList<Integer> searchIds;
 	private String statusOfOperation;
 
-	public UpdateTask(TaskNote taskNote, int updateTaskId, TaskObject updatedTaskObject) {
-		this.updateTaskId = updateTaskId;
-		this.updatedTaskObject = updatedTaskObject;
+	public SearchCommand(TaskNote taskNote, ArrayList<Integer> searchIds) {
+		this.searchIds = searchIds;
 		this.taskNote = taskNote;
 		statusOfOperation = new String();
 	}
 
 	public void execute() {
-		statusOfOperation = taskNote.updateTask(updateTaskId, updatedTaskObject);
+		statusOfOperation = taskNote.getSearchResults(searchIds);
 	}
 	
+	public ArrayList<TaskObject> getSearchResults(){
+		return taskNote.getSearchList();
+	}
+
 	public void refreshDisplay() {
-		taskNote.refreshDisplay(taskNote.getTaskList());
+		taskNote.refreshDisplay(getSearchResults());
 	}
 
 	public String getFeedBack() {

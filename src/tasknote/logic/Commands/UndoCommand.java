@@ -4,24 +4,22 @@ import tasknote.logic.TaskNote;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 
-public class CompleteTask implements Command  {
+public class UndoCommand implements Command {
 	
 	private TaskNote taskNote;
 	private TaskObject taskObject;
 	private String statusOfOperation;
 
-	public CompleteTask(TaskNote taskNote, TaskObject taskObject) {
-		this.taskObject = taskObject;
-		this.taskNote = taskNote;
+	public UndoCommand() {
 		statusOfOperation = new String();
 	}
 	
 	public void execute() {
-		statusOfOperation = taskNote.markTaskAsCompleted(taskObject);
+		// statusOfOperation = taskNote.addTask(taskObject);
 	}
 
 	public void refreshDisplay() {
-		taskNote.refreshDisplay(taskNote.getTaskList());
+		//taskNote.refreshDisplay(taskNote.getTaskList());
 	}
 
 	public String getFeedBack() {
@@ -30,6 +28,5 @@ public class CompleteTask implements Command  {
 		}
 		return statusOfOperation;
 	}
-	
 
 }

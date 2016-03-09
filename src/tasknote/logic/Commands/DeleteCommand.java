@@ -6,13 +6,13 @@ import tasknote.shared.Constants;
 import java.util.ArrayList;
 
 
-public class DeleteTask implements Command {
+public class DeleteCommand implements Command {
 	
 	private TaskNote taskNote;
 	private ArrayList<Integer> deleteIds;
 	private String statusOfOperation;
 
-	public DeleteTask(TaskNote taskNote, ArrayList<Integer> deleteIds) {
+	public DeleteCommand(TaskNote taskNote, ArrayList<Integer> deleteIds) {
 		this.deleteIds = deleteIds;
 		this.taskNote = taskNote;
 		statusOfOperation = new String();
