@@ -80,7 +80,9 @@ public class Parser {
 			return COMMAND_TYPE.SEARCH;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EXIT)) {
 			return COMMAND_TYPE.EXIT;
-		} else {
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
+			return COMMAND_TYPE.DONE;
+		}else {
 		    return COMMAND_TYPE.INVALID;
 		}
 	}
