@@ -82,7 +82,7 @@ public class Parser {
 			return COMMAND_TYPE.EXIT;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
 			return COMMAND_TYPE.DONE;
-		}else {
+		} else {
 		    return COMMAND_TYPE.INVALID;
 		}
 	}
