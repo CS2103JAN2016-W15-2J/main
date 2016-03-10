@@ -19,7 +19,7 @@ public class SearchCommand implements Command {
 	}
 
 	public void execute() {
-		statusOfOperation = taskNote.getSearchResults(searchIds);
+		statusOfOperation = taskNote.searchTasks(searchIds);
 	}
 	
 	public ArrayList<TaskObject> getSearchResults(){

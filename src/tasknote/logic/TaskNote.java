@@ -175,7 +175,7 @@ public class TaskNote {
 	 * @param userCommand
 	 * @return status of the operation
 	 */
-	public String getSearchResults(ArrayList<Integer> searchIds){
+	public String searchTasks(ArrayList<Integer> searchIds){
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
 		try{
