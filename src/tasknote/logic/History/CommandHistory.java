@@ -7,6 +7,8 @@ import tasknote.shared.TaskObject;
 
 public class CommandHistory {
 	
+	private static Stack<CommandObject> undoStack;
+	
 	/*
 	 * These are the COMMAND TYPES for the possible User Commands that 
 	 * Undo function can be used on
@@ -21,7 +23,10 @@ public class CommandHistory {
 	 */
 	private static final int numPrecedingObjects = 2;
 	
-	private static Stack<CommandObject> undoStack = new Stack<CommandObject>();
+	
+	public CommandHistory() {
+		undoStack = new Stack<CommandObject>();
+	}
 	
 	/**
 	 * This operation adds the inverse of the User's 
@@ -54,8 +59,16 @@ public class CommandHistory {
 		pushCommandAdd(newTaskObject);
 		pushCommandDelete(oldTaskObject);
 		CommandObject undoObject = new CommandObject(undoUpdateCommand, null);
-		undoObject.setPrecedingTasks(numPrecedingObjects);
+		undoObject.setPrecedingObjects(numPrecedingObjects);
 		undoStack.push(undoObject);
+	}
+	
+	public CommandObject peekLastCommand() {
+		return undoStack.peek();
+	}
+	
+	public CommandObject popLastCommand() {
+		return undoStack.pop();
 	}
 	
 	public boolean isUndoStackEmpty() {

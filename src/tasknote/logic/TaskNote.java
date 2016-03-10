@@ -4,139 +4,150 @@ import tasknote.storage.Storage;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.Constants;
+import tasknote.logic.History.CommandHistory;
+import tasknote.logic.History.CommandObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class TaskNote {
 
 	/*
 	 * These are the various lists that will be used to store the TaskObjects,
-	 * Search IDs of Tasks and Search results which will then be displayed to user
+	 * Search IDs of Tasks and Search results which will then be displayed to
+	 * user
 	 */
 	private static ArrayList<TaskObject> taskList;
 	private static ArrayList<TaskObject> searchList;
 	private static ArrayList<TaskObject> displayList;
-	
+
+	private static CommandHistory history;
+
 	/*
-	 * This is the storage object that will be used to load tasks into the 
-	 * taskList and it will be called to save the tasks after each user operation
+	 * This is the storage object that will be used to load tasks into the
+	 * taskList and it will be called to save the tasks after each user
+	 * operation
 	 */
 	private static Storage storage = new Storage();
-	
+
 	/*
-	 * These integers are used to store the number of results 
-	 * retrieved upon user's search (searchIdSize) and the number 
-	 * of tasks to be deleted (deleteIdSize)
+	 * These integers are used to store the number of results retrieved upon
+	 * user's search (searchIdSize) and the number of tasks to be deleted
+	 * (deleteIdSize)
 	 */
 	private static int searchIdSize;
 	private static int deleteIdSize;
-	
+
 	public TaskNote() {
 		taskList = new ArrayList<TaskObject>();
 		searchList = new ArrayList<TaskObject>();
 		displayList = new ArrayList<TaskObject>();
+		history = new CommandHistory();
 	}
-	
+
 	/**
-	 * This operation loads the tasks from the storage
-	 * after each time the application is opened
+	 * This operation loads the tasks from the storage after each time the
+	 * application is opened
 	 *
 	 */
-	public void loadTasks(){
-		try{
+	public void loadTasks() {
+		try {
 			storage = new Storage();
 			taskList = storage.loadTasks();
-		}catch(Exception e){
+		} catch (Exception e) {
 			taskList = new ArrayList<TaskObject>();
 		}
 		refreshDisplay(taskList);
 	}
-	
+
 	/**
-	 * This operation returns the taskList containing 
-	 * Task Objects
+	 * This operation returns the taskList containing Task Objects
 	 * 
 	 * @return List of Tasks
 	 */
-	public ArrayList<TaskObject> getTaskList(){
+	public ArrayList<TaskObject> getTaskList() {
 		return taskList;
 	}
-	
+
 	/**
-	 * This operation returns the Search List containing 
-	 * Task Objects that matched the User's search
+	 * This operation returns the Search List containing Task Objects that
+	 * matched the User's search
 	 * 
 	 * @return List of Tasks that matched User's search
 	 */
-	public ArrayList<TaskObject> getSearchList(){
+	public ArrayList<TaskObject> getSearchList() {
 		return searchList;
 	}
 
 	/**
-	 * This method is called by UI after each User Operation
-	 * to display the list of tasks to the User
+	 * This method is called by UI after each User Operation to display the list
+	 * of tasks to the User
 	 *
 	 * @return List of Tasks to be displayed to the User
 	 */
-	public ArrayList<TaskObject> getDisplayList(){
+	public ArrayList<TaskObject> getDisplayList() {
 		return displayList;
 	}
-	
+
 	/**
 	 * This operation reinitializes the Search List to a new list
 	 * 
 	 */
-	public void reIntializeSearchList(){
+	public void reIntializeSearchList() {
 		searchList = new ArrayList<TaskObject>();
 	}
 
 	/**
-	 * This operation refreshes the list of task to be
-	 * displayed to the user after each user operation
+	 * This operation refreshes the list of task to be displayed to the user
+	 * after each user operation
 	 *
-	 * @param List of Tasks to be displayed to the User
+	 * @param List
+	 *            of Tasks to be displayed to the User
 	 */
-	public void refreshDisplay(ArrayList<TaskObject> list){
+	public void refreshDisplay(ArrayList<TaskObject> list) {
 		displayList = new ArrayList<TaskObject>();
-		for(int i = 0; i < list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			displayList.add(list.get(i));
 		}
 	}
 
 	/**
-	 * This operation adds a taskObject to the ArrayList
-	 * of TaskObjects, sorts it based on Date and Time and
-	 * saves it in the Storage
+	 * This operation adds a taskObject to the ArrayList of TaskObjects, sorts
+	 * it based on Date and Time and saves it in the Storage
 	 *
-	 * @param task object
+	 * @param task
+	 *            object
 	 * @return Status of Operation
 	 */
-	public String addTask(TaskObject object){
+	public String addTask(TaskObject taskObject) {
 		boolean isSuccess = true;
-		try{
-			taskList.add(object);
+		try {
+			taskList.add(taskObject);
 			sortAndSave(taskList);
-		}catch(Exception e){
+			history.pushCommandAdd(taskObject);
+		} catch (Exception e) {
 			isSuccess = false;
 		}
-		return showFeedback(COMMAND_TYPE.ADD, isSuccess, object);
+		return showFeedback(COMMAND_TYPE.ADD, isSuccess, taskObject);
 	}
 
 	/**
-	 * This operation deletes a task in the ArrayList of
-	 * TaskObjects and saves it in the Storage
+	 * This operation deletes a task in the ArrayList of TaskObjects and saves
+	 * it in the Storage
 	 *
-	 * @param Id of the Task stored in ArrayList
+	 * @param Id
+	 *            of the Task stored in ArrayList
 	 * @return Status of the operation
 	 */
-	public String deleteTask(ArrayList<Integer> deleteIds){
+	public String deleteTask(ArrayList<Integer> deleteIds) {
 		deleteIdSize = deleteIds.size();
 		boolean isSuccess = isValidIdList(deleteIds);
-		if(isSuccess){
-			try{
+		if (isSuccess) {
+			try {
 				deleteFromTaskList(deleteIds);
 				storage.saveTasks(taskList);
-			}catch(Exception e){
+			} catch (Exception e) {
 				isSuccess = false;
 			}
 		}
@@ -144,174 +155,225 @@ public class TaskNote {
 	}
 
 	/**
-	 * This operation searches retrieves all relevant tasks
-	 * based on the given IDs from the ArrayList of TaskObjects.
+	 * This operation searches retrieves all relevant tasks based on the given
+	 * IDs from the ArrayList of TaskObjects.
 	 *
 	 * @param userCommand
 	 * @return status of the operation
 	 */
-	public String searchTasks(ArrayList<Integer> searchIds){
+	public String searchTasks(ArrayList<Integer> searchIds) {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
-		try{
-			for(int i = 0; i < searchIds.size(); i++){
+		try {
+			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(taskList.get(searchIds.get(i)));
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			isSuccess = false;
 		}
 		return showFeedback(COMMAND_TYPE.SEARCH, isSuccess, null);
 	}
 
 	/**
-	 * This operation removes the old task from the taskList, adds
-	 * the updated task into the taskList, sorts and saves the list
+	 * This operation removes the old task from the taskList, adds the updated
+	 * task into the taskList, sorts and saves the list
 	 *
 	 * @param userCommand
 	 * @return status of the operation
 	 */
-	public String updateTask(int updateTaskId, TaskObject updatedTaskObject){
+	public String updateTask(int updateTaskId, TaskObject updatedTaskObject) {
 		boolean isSuccess = isValidTaskId(updateTaskId);
-		if(isSuccess && updatedTaskObject != null){
-			try{
+		if (isSuccess && updatedTaskObject != null) {
+			try {
 				taskList.remove(updateTaskId);
 				taskList.add(updateTaskId, updatedTaskObject);
 				sortAndSave(taskList);
-			}catch(Exception e){
+			} catch (Exception e) {
 				isSuccess = false;
 			}
 		}
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
-	
+
+	/**
+	 * This operation reverts the action executed by the last command
+	 * 
+	 * @return status of the operation
+	 */
+	public String undoLastCommand() {
+		boolean isSuccess = true;
+		int undoCount = 0;
+		try {	
+			CommandObject commandObject = history.peekLastCommand();
+			int numPrecedingObjects = commandObject.getPrecedingObjects();
+			
+			while(undoCount <= numPrecedingObjects) {
+				commandObject = history.popLastCommand();
+				COMMAND_TYPE commandType = commandObject.getUndoCommandType();
+				if(commandType == COMMAND_TYPE.ADD) {
+					TaskObject taskObject = commandObject.getTaskObject();
+					taskList.add(taskObject);
+				}else if(commandType == COMMAND_TYPE.DELETE) {
+					TaskObject taskObject = commandObject.getTaskObject();
+					taskList.remove(taskObject);
+				}else if(commandType == COMMAND_TYPE.UPDATE) {
+					//TODO
+				}
+				undoCount++;
+			}
+			
+			sortAndSave(taskList);
+		} catch (Exception e) {
+			isSuccess = false;
+		}
+		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
+	}
+
 	/**
 	 * This operation sets the completion status of the task to be true
 	 *
-	 * @param Task Object
+	 * @param Task
+	 *            Object
 	 * @return status of the operation
 	 */
-	public String markTaskAsCompleted(TaskObject taskObject){
+	public String markTaskAsCompleted(TaskObject taskObject) {
 		boolean isSuccess = true;
-		try{
+		try {
 			taskObject.setIsMarkedDone(isSuccess);
 			sortAndSave(taskList);
-		}catch(Exception e){
+		} catch (Exception e) {
 			isSuccess = false;
 		}
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
 	}
-	
-	public boolean isValidIdList(ArrayList<Integer> idList){
+
+	public boolean isValidIdList(ArrayList<Integer> idList) {
 		boolean isValid = true;
-		if(deleteIdSize > 0){
-			for(int i = 0; i < idList.size(); i++){
+		if (deleteIdSize > 0) {
+			for (int i = 0; i < idList.size(); i++) {
 				int taskId = idList.get(i);
-				if(!isValidTaskId(taskId)){
+				if (!isValidTaskId(taskId)) {
 					isValid = false;
 					break;
 				}
 			}
-		} else{
+		} else {
 			isValid = false;
 		}
 		return isValid;
 	}
-	
-	//TODO: Check if all IDs to be deleted are valid before deleting
-	public static void deleteFromTaskList(ArrayList<Integer> deleteIds){
-		for(int i = 0; i < deleteIds.size(); i++){
-			TaskObject task = displayList.get(deleteIds.get(i));
-			int index = taskList.indexOf(task);
+
+	public static void deleteFromTaskList(ArrayList<Integer> deleteIds) {
+		for (int i = 0; i < deleteIds.size(); i++) {
+			TaskObject taskObject = displayList.get(deleteIds.get(i));
+			int index = taskList.indexOf(taskObject);
 			taskList.remove(index);
+			history.pushCommandDelete(taskObject);
 		}
+		CommandObject commandObject = history.peekLastCommand();
+		commandObject.setPrecedingObjects(deleteIdSize - Constants.DECREMENT_PRECEDING_OBJECTS);
 	}
-	
-	public boolean isValidTaskId(int taskId){
+
+	public boolean isValidTaskId(int taskId) {
 		boolean isValid = true;
-		if(taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE){
+		if (taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE) {
 			isValid = false;
 		}
 		return isValid;
 	}
 
 	/**
-	 * This operation sorts the list of Tasks and
-	 * saves them to Storage
+	 * This operation sorts the list of Tasks and saves them to Storage
 	 *
-	 * @param Task List
-	 * @throws Exception 
+	 * @param Task
+	 *            List
+	 * @throws Exception
 	 */
-	private static void sortAndSave(ArrayList<TaskObject> taskList) throws Exception{
-		try{
+	private static void sortAndSave(ArrayList<TaskObject> taskList) throws Exception {
+		try {
 			sortByDate(taskList);
 			storage.saveTasks(taskList);
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw e;
 		}
 	}
 
 	/**
-	 * This operation sorts all tasks based on the
-	 * date-time of the task
+	 * This operation sorts all tasks based on the date-time of the task
 	 *
-	 * @param list to be sorted
-	 * @throws Exception 
+	 * @param list
+	 *            to be sorted
+	 * @throws Exception
 	 */
-	private static void sortByDate(ArrayList<TaskObject> list) throws Exception{
-		//TODO
-		try{
-			//Sort by Date
-		}catch(Exception e){
+	private static void sortByDate(ArrayList<TaskObject> list) throws Exception {
+		// TODO
+		try {
+			// Sort by Date - Currently sorted by Task Name
+			Collections.sort(list, new Comparator<TaskObject>(){
+			    public int compare(TaskObject taskObject1, TaskObject taskObject2) {
+			        return taskObject1.getTaskName().compareToIgnoreCase(taskObject2.getTaskName());
+			    }
+			});
+		} catch (Exception e) {
 			System.out.println("Sort by date has an error");
 			throw e;
 		}
 	}
 
 	/**
-	 * This operation constructs the feedback to be
-	 * displayed to the User after each User Operation
+	 * This operation constructs the feedback to be displayed to the User after
+	 * each User Operation
 	 *
-	 * @param Command type, isSuccess(true if User operation
-	 * 			is executed successfully; Otherwise false), Task Object
+	 * @param Command
+	 *            type, isSuccess(true if User operation is executed
+	 *            successfully; Otherwise false), Task Object
 	 *
 	 * @return Feedback to the User
 	 */
-	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject task){
+	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject task) {
 
-		switch(commandType) {
+		switch (commandType) {
 		case ADD:
-			if(isSuccess && task != null){
+			if (isSuccess && task != null) {
 				int taskIndex = taskList.indexOf(task);
 				String taskName = task.getTaskName();
 				return String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
-			}else{
+			} else {
 				return Constants.MESSAGE_ADD_UNSUCCESSFUL;
 			}
 		case DELETE:
-			if(isSuccess){
+			if (isSuccess) {
 				return String.format(Constants.MESSAGE_DELETE_SUCCESSFUL, deleteIdSize);
-			}else{
+			} else {
 				return Constants.MESSAGE_DELETE_UNSUCCESSFUL;
 			}
 		case SEARCH:
-			if(isSuccess){
+			if (isSuccess) {
 				return String.format(Constants.MESSAGE_SEARCH_SUCCESSFUL, searchIdSize);
-			}else{
+			} else {
 				return Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
 			}
 		case UPDATE:
-			if(isSuccess && task != null){
-				//TODO: Feedback which fields were updated
-				return String.format(Constants.MESSAGE_UPDATE_SUCCESSFUL);
-			}else{
-				//TODO
+			if (isSuccess && task != null) {
+				// TODO: Feedback which fields were updated
+				return Constants.MESSAGE_UPDATE_SUCCESSFUL;
+			} else {
+				// TODO
 				return Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
 			}
+		case UNDO:
+			if (isSuccess) {
+				// TODO: Feedback what was undone
+				return Constants.MESSAGE_UNDONE_SUCCESSFUL;
+			} else {
+				// TODO
+				return Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
+			}
 		case DONE:
-			if(isSuccess && task != null){
+			if (isSuccess && task != null) {
 				String taskName = task.getTaskName();
 				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
-			}else{
+			} else {
 				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
 			}
 		default:

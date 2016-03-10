@@ -7,13 +7,13 @@ public class CommandObject {
 	
 	private COMMAND_TYPE undoCommandType;
 	private TaskObject taskObject;
-	private int precedingTasks;
+	private int precedingObjects;
 	
 	/******************* CommandObject Constructor *********************/
 	public CommandObject(COMMAND_TYPE undoCommandType, TaskObject taskObject) {
 		this.undoCommandType = undoCommandType;
 		this.taskObject = taskObject;
-		this.precedingTasks = 0;
+		this.precedingObjects = 0;
 	}
 	
 	/******************* Accessors *********************/
@@ -25,13 +25,13 @@ public class CommandObject {
 		return this.taskObject;
 	}
 	
-	public int getPrecedingTasks() {
-		return this.precedingTasks;
+	public int getPrecedingObjects() {
+		return this.precedingObjects;
 	}
 	
 	/******************* Mutators *********************/
-	public void setPrecedingTasks(int numPrecedingTasks) {
-		this.precedingTasks = numPrecedingTasks;
+	public void setPrecedingObjects(int numPrecedingObjects) {
+		this.precedingObjects = numPrecedingObjects;
 	}
 
 }

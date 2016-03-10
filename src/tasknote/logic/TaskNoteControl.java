@@ -5,6 +5,7 @@ import tasknote.logic.Commands.DeleteCommand;
 import tasknote.logic.Commands.SearchCommand;
 import tasknote.logic.Commands.UpdateCommand;
 import tasknote.logic.Commands.CompleteCommand;
+import tasknote.logic.Commands.UndoCommand;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
@@ -20,6 +21,7 @@ public class TaskNoteControl {
 	public static SearchCommand searchTask;
 	public static UpdateCommand updateTask;
 	public static CompleteCommand completeTask;
+	public static UndoCommand undoAction;
 	
 	
 	public TaskNoteControl() {
@@ -68,7 +70,7 @@ public class TaskNoteControl {
 			break;
 		case UNDO:
 			//TODO
-			response = executeUndo(userCommand);
+			response = executeUndo();
 			break;
 		case REDO:
 			//TODO
@@ -171,9 +173,12 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeUndo(String userCommand){
-		//TODO
-		return "";
+	public static String executeUndo(){
+		undoAction = new UndoCommand(taskNote);
+		undoAction.execute();
+		undoAction.refreshDisplay();
+		String response = undoAction.getFeedBack();
+		return response;
 	}
 	
 	/**
