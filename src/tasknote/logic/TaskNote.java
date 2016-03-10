@@ -185,9 +185,10 @@ public class TaskNote {
 		boolean isSuccess = isValidTaskId(updateTaskId);
 		if (isSuccess && updatedTaskObject != null) {
 			try {
-				taskList.remove(updateTaskId);
+				TaskObject oldTaskObject = taskList.remove(updateTaskId);
 				taskList.add(updateTaskId, updatedTaskObject);
 				sortAndSave(taskList);
+				history.pushCommandUpdate(oldTaskObject, updatedTaskObject);
 			} catch (Exception e) {
 				isSuccess = false;
 			}
@@ -217,7 +218,7 @@ public class TaskNote {
 					TaskObject taskObject = commandObject.getTaskObject();
 					taskList.remove(taskObject);
 				}else if(commandType == COMMAND_TYPE.UPDATE) {
-					//TODO
+					//pass - do nothing
 				}
 				undoCount++;
 			}

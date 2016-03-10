@@ -16,6 +16,7 @@ public class TaskNoteControlTest {
 	String feedback;
 	String output;
 	
+	/*
 	@Test
 	public void testAdd() {
 		command = "add breakfast 5pm";
@@ -140,7 +141,7 @@ public class TaskNoteControlTest {
 		taskName = task.getTaskName();
 		Assert.assertEquals(String.format(output, taskName), feedback);
 	}
-	
+	*/
 	
 	@Test
 	public void testUndo() {
@@ -224,6 +225,22 @@ public class TaskNoteControlTest {
 		//Test Case 5
 		command = "delete 1 3";
 		tnc.executeCommand(command);
+		
+		command = "undo   ";
+		feedback = tnc.executeCommand(command);
+		output = "The Last Operation has been Undone Successfully";
+		Assert.assertEquals(output, feedback);
+		
+		obj = tnc.getDisplayList();
+		print(obj);
+		
+		
+		//Test Case 6
+		command = "edit 1 brunch 5.15pm";
+		tnc.executeCommand(command);
+		
+		obj = tnc.getDisplayList();
+		print(obj);
 		
 		command = "undo   ";
 		feedback = tnc.executeCommand(command);
