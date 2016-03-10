@@ -29,7 +29,7 @@ public class CommandHistory {
 	 *
 	 * @param: taskObject
 	 */
-	public void undoAdd(TaskObject taskObject) {
+	public void pushCommandAdd(TaskObject taskObject) {
 		undoStack.push(new CommandObject(undoAddCommand, taskObject));
 	}
 	
@@ -39,7 +39,7 @@ public class CommandHistory {
 	 * 
 	 * @param: taskObject
 	 */
-	public void undoDelete(TaskObject taskObject) {
+	public void pushCommandDelete(TaskObject taskObject) {
 		undoStack.push(new CommandObject(undoDeleteCommand, taskObject));
 	}
 	
@@ -50,9 +50,9 @@ public class CommandHistory {
 	 *
 	 * @param: oldTaskObject, newTaskObject
 	 */
-	public void undoUpdate(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		undoAdd(newTaskObject);
-		undoDelete(oldTaskObject);
+	public void pushCommandUpdate(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		pushCommandAdd(newTaskObject);
+		pushCommandDelete(oldTaskObject);
 		CommandObject undoObject = new CommandObject(undoUpdateCommand, null);
 		undoObject.setPrecedingTasks(numPrecedingObjects);
 		undoStack.push(undoObject);
