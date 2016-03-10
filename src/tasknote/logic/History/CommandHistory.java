@@ -19,7 +19,7 @@ public class CommandHistory {
 	 * This is the Integer Constant for the number of associated preceding 
 	 * tasks for an undo object
 	 */
-	private static final int numPrecedingUndoObjects = 2;
+	private static final int numPrecedingObjects = 2;
 	
 	private static Stack<CommandObject> undoStack = new Stack<CommandObject>();
 	
@@ -54,7 +54,7 @@ public class CommandHistory {
 		undoAdd(newTaskObject);
 		undoDelete(oldTaskObject);
 		CommandObject undoObject = new CommandObject(undoUpdateCommand, null);
-		undoObject.setPrecedingTasks(numPrecedingUndoObjects);
+		undoObject.setPrecedingTasks(numPrecedingObjects);
 		undoStack.push(undoObject);
 	}
 	
