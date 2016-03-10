@@ -459,4 +459,25 @@ public class TaskObject implements Comparable {
 		
 		return true;
 	}
+	
+	public void deepCopy(TaskObject sourceTaskObject) {
+		
+		this.setTaskName(sourceTaskObject.getTaskName());
+		this.setTaskID(sourceTaskObject.getTaskID());
+		this.setDateDay(sourceTaskObject.getDateDay());
+		this.setDateMonth(sourceTaskObject.getDateMonth());
+		this.setDateYear(sourceTaskObject.getDateYear());
+		this.setDateHour(sourceTaskObject.getDateHour());
+		this.setDateMinute(sourceTaskObject.getDateMinute());
+		this.setDuration(sourceTaskObject.getDuration());
+		this.setIsMarkedDone(sourceTaskObject.getIsMarkedDone());
+		this.setIsNotified(sourceTaskObject.getIsNotified());
+		this.setLocation(sourceTaskObject.getLocation());
+		this.setNotifyTime(sourceTaskObject.getNotifyTime());
+		this.setTaskStatus(sourceTaskObject.getTaskStatus());
+		this.setTaskType(sourceTaskObject.getTaskType());
+		
+		// Postponed
+		// set Gregorian Calendar
+	}
 }

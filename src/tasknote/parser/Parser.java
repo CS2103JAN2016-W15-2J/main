@@ -209,6 +209,7 @@ public class Parser {
 							dateHour = Integer.parseInt(currentWord.substring(0, currentWordLength - 2));
 							dateMinute = Integer.parseInt(currentWord.substring(currentWordLength - 2, 
 									 											currentWordLength));
+							
 						} catch (NumberFormatException e) {
 							taskName.append(temporaryPhrase);
 							current_action = "name";
@@ -391,9 +392,12 @@ public class Parser {
 		return allSelectedTaskIDs;
 	}
 	
-	public static TaskObject parseUpdate(String userCommand, TaskObject oldTaskObject) {
+	public static TaskObject parseUpdate(String userCommand, TaskObject reallyOldTaskObject) {
 		// TODO Auto-generated method stub
 		
+		TaskObject oldTaskObject = new TaskObject(reallyOldTaskObject.getTaskName());
+		oldTaskObject.deepCopy(reallyOldTaskObject);
+
 		// Update <id> <update words>
 		String[] splitUserCommand = userCommand.split(REGEX_WHITESPACE);
 		
