@@ -142,31 +142,6 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
 	}
-	
-	public boolean isValidIdList(ArrayList<Integer> idList){
-		boolean isValid = true;
-		if(deleteIdSize > 0){
-			for(int i = 0; i < idList.size(); i++){
-				int taskId = idList.get(i);
-				if(!isValidTaskId(taskId)){
-					isValid = false;
-					break;
-				}
-			}
-		} else{
-			isValid = false;
-		}
-		return isValid;
-	}
-	
-	//TODO: Check if all IDs to be deleted are valid before deleting
-	public static void deleteFromTaskList(ArrayList<Integer> deleteIds){
-		for(int i = 0; i < deleteIds.size(); i++){
-			TaskObject task = displayList.get(deleteIds.get(i));
-			int index = taskList.indexOf(task);
-			taskList.remove(index);
-		}
-	}
 
 	/**
 	 * This operation searches retrieves all relevant tasks
@@ -209,14 +184,6 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
 	
-	public boolean isValidTaskId(int taskId){
-		boolean isValid = true;
-		if(taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE){
-			isValid = false;
-		}
-		return isValid;
-	}
-	
 	/**
 	 * This operation sets the completion status of the task to be true
 	 *
@@ -232,6 +199,39 @@ public class TaskNote {
 			isSuccess = false;
 		}
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+	}
+	
+	public boolean isValidIdList(ArrayList<Integer> idList){
+		boolean isValid = true;
+		if(deleteIdSize > 0){
+			for(int i = 0; i < idList.size(); i++){
+				int taskId = idList.get(i);
+				if(!isValidTaskId(taskId)){
+					isValid = false;
+					break;
+				}
+			}
+		} else{
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	//TODO: Check if all IDs to be deleted are valid before deleting
+	public static void deleteFromTaskList(ArrayList<Integer> deleteIds){
+		for(int i = 0; i < deleteIds.size(); i++){
+			TaskObject task = displayList.get(deleteIds.get(i));
+			int index = taskList.indexOf(task);
+			taskList.remove(index);
+		}
+	}
+	
+	public boolean isValidTaskId(int taskId){
+		boolean isValid = true;
+		if(taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE){
+			isValid = false;
+		}
+		return isValid;
 	}
 
 	/**
