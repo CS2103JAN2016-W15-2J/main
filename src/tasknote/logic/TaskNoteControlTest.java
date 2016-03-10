@@ -15,7 +15,7 @@ public class TaskNoteControlTest {
 	String command;
 	String feedback;
 	String output;
-	/*
+	
 	@Test
 	public void testAdd() {
 		command = "add breakfast 5pm";
@@ -140,7 +140,7 @@ public class TaskNoteControlTest {
 		taskName = task.getTaskName();
 		Assert.assertEquals(String.format(output, taskName), feedback);
 	}
-	*/
+	
 	
 	@Test
 	public void testUndo() {
