@@ -186,7 +186,7 @@ public class StorageConversion{
 	}
 
 	private void setTaskNotifyTime(TaskObject returnObject, String[] content) {
-		returnObject.setNotifyTime(Long.parseLong(content[1].trim()));
+		returnObject.setNotifyTime(Integer.parseInt(content[1].trim()));
 	}
 
 	private void setTaskLocation(TaskObject returnObject, String[] content) {

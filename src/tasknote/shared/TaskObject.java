@@ -30,7 +30,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	
 	private String location;
 	
-	private long notifyTime;
+	private int notifyTime;
 	private boolean isNotified;
 	
 	private TASK_STATUS taskStatus;
@@ -149,14 +149,14 @@ public class TaskObject implements Comparable<TaskObject> {
 	/**
 	 * @return the notifyTime
 	 */
-	public long getNotifyTime() {
+	public int getNotifyTime() {
 		return this.notifyTime;
 	}
 
 	/**
 	 * @param notifyTime the notifyTime to set
 	 */
-	public void setNotifyTime(long notifyTime) {
+	public void setNotifyTime(int notifyTime) {
 		this.notifyTime = notifyTime;
 	}
 

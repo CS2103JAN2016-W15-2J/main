@@ -16,7 +16,7 @@ public class ParserTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(SuperParser.getCommandType(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -26,7 +26,7 @@ public class ParserTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(SuperParser.getCommandType(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -36,7 +36,7 @@ public class ParserTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(SuperParser.getCommandType(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class ParserTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.DELETE;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(SuperParser.getCommandType(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class ParserTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.DELETE;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(SuperParser.getCommandType(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ public class ParserTest {
 		
 		TaskObject expectedResult = new TaskObject("this task for me");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class ParserTest {
 		TaskObject expectedResult = new TaskObject("do CE2");
 		expectedResult.setDateHour(5);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class ParserTest {
 		TaskObject expectedResult = new TaskObject("do CE2");
 		expectedResult.setDateHour(11);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class ParserTest {
 		TaskObject expectedResult = new TaskObject("do CE2");
 		expectedResult.setDateHour(17);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class ParserTest {
 		TaskObject expectedResult = new TaskObject("do CE2");
 		expectedResult.setDateHour(5);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class ParserTest {
 		expectedResult.setDateHour(18);
 		expectedResult.setDateMinute(46);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -133,7 +133,7 @@ public class ParserTest {
 		TaskObject expectedResult = 
 				new TaskObject("do CE2 by a fluke");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class ParserTest {
 		
 		TaskObject expectedResult = new TaskObject("do CE2 by the street");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class ParserTest {
 		TaskObject expectedResult = 
 				new TaskObject("do CE2 by playing a prank");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 	
 	@Test
@@ -165,6 +165,6 @@ public class ParserTest {
 		TaskObject expectedResult = 
 				new TaskObject("do CE2 by by by by LOL");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
 }
