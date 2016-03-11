@@ -143,6 +143,16 @@ public class CommandLineContainer extends HBox {
                     case SPACE:
                         isDefaultCommandTruncated(_commandLine);
                         break;
+                    case Z:
+                        if (key.isControlDown()) {
+                            GuiController.executeCommand(COMMAND_UNDO);
+                            break;
+                        }
+                    case Y:
+                        if (key.isControlDown()) {
+                            GuiController.executeCommand("redo");
+                            break;
+                        }
                     default:
                         break;
                 }

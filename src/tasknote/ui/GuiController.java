@@ -82,6 +82,17 @@ public class GuiController extends Application {
         _commandLineContainer.clearLastModifiedCommand();
     }
     
+    public static void executeCommand(String command) {
+        if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
+            return;
+        }
+        
+        // TODO
+        String feedback = _tasknoteControl.executeCommand(command);
+        Notification.setupNotification(_primaryWindow, feedback);
+        displayUpdatedTaskList();
+    }
+    
     private void focusOnCommandLine() {
         if (_commandLine != null) {
             _commandLine.requestFocus();
