@@ -4,7 +4,7 @@ import java.util.GregorianCalendar;
 
 import javax.management.InvalidAttributeValueException;
 
-public class TaskObject implements Comparable {
+public class TaskObject implements Comparable<TaskObject> {
     public String[] monthInString = {"", "January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October", "November", "December"
     };
@@ -431,9 +431,29 @@ public class TaskObject implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int compareTo(TaskObject otherTaskObject) {
+		
+		if (this.getDateYear() != otherTaskObject.getDateYear()) {
+			return Integer.compare(this.getDateYear(), otherTaskObject.getDateYear());
+		}
+		
+		if (this.getDateMonth() != otherTaskObject.getDateMonth()) {
+			return Integer.compare(this.getDateMonth(), otherTaskObject.getDateMonth());
+		}
+		
+		if (this.getDateDay() != otherTaskObject.getDateDay()) {
+			return Integer.compare(this.getDateDay(), otherTaskObject.getDateDay());
+		}
+		
+		if (this.getDateHour() != otherTaskObject.getDateHour()) {
+			return Integer.compare(this.getDateHour(), otherTaskObject.getDateHour());
+		}
+		
+		if (this.getDateMinute() != otherTaskObject.getDateMinute()) {
+			return Integer.compare(this.getDateMinute(), otherTaskObject.getDateMinute());
+		}
+		
+		return Integer.compare(this.getDuration(), otherTaskObject.getDuration());
 	}
 	
 	public boolean equals(Object comparingObject) {
