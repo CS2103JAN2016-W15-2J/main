@@ -287,7 +287,7 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
 	}
 
-	public boolean isValidIdList(ArrayList<Integer> idList) {
+	private boolean isValidIdList(ArrayList<Integer> idList) {
 		boolean isValid = true;
 		if (deleteIdSize > 0) {
 			for (int i = 0; i < idList.size(); i++) {
@@ -303,7 +303,7 @@ public class TaskNote {
 		return isValid;
 	}
 
-	public static void deleteFromTaskList(ArrayList<Integer> deleteIds) {
+	private static void deleteFromTaskList(ArrayList<Integer> deleteIds) {
 		for (int i = 0; i < deleteIds.size(); i++) {
 			TaskObject taskObject = displayList.get(deleteIds.get(i));
 			int index = taskList.indexOf(taskObject);

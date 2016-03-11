@@ -16,14 +16,14 @@ import java.util.ArrayList;
 
 public class TaskNoteControl {
 	
-	public static TaskNote taskNote;
-	public static AddCommand addTask;
-	public static DeleteCommand deleteTask;
-	public static SearchCommand searchTask;
-	public static UpdateCommand updateTask;
-	public static CompleteCommand completeTask;
-	public static UndoCommand undoAction;
-	public static RedoCommand redoAction;
+	private static TaskNote taskNote;
+	private static AddCommand addTask;
+	private static DeleteCommand deleteTask;
+	private static SearchCommand searchTask;
+	private static UpdateCommand updateTask;
+	private static CompleteCommand completeTask;
+	private static UndoCommand undoAction;
+	private static RedoCommand redoAction;
 	
 	
 	public TaskNoteControl() {
@@ -54,7 +54,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeAction(COMMAND_TYPE commandType, String userCommand){
+	private static String executeAction(COMMAND_TYPE commandType, String userCommand){
 		String response;
 		taskNote.reIntializeSearchList();
 		switch (commandType) {
@@ -102,7 +102,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeAdd(String userCommand){
+	private static String executeAdd(String userCommand){
 		TaskObject taskObject = Parser.parseAdd(userCommand);
 		addTask = new AddCommand(taskNote, taskObject);
 		addTask.execute();
@@ -117,7 +117,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeDelete(String userCommand){
+	private static String executeDelete(String userCommand){
 		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
 		deleteTask = new DeleteCommand(taskNote, deleteIds);
 		deleteTask.execute();
@@ -132,7 +132,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeSearch(String userCommand){
+	private static String executeSearch(String userCommand){
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
 		searchTask = new SearchCommand(taskNote, searchIds);
@@ -148,7 +148,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeUpdate(String userCommand){
+	private static String executeUpdate(String userCommand){
 		//TODO:Parser - change method name to getTaskId
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject updatedTaskObject;
@@ -174,7 +174,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeUndo(){
+	private static String executeUndo(){
 		undoAction = new UndoCommand(taskNote);
 		undoAction.execute();
 		undoAction.refreshDisplay();
@@ -188,7 +188,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeRedo(String userCommand){
+	private static String executeRedo(String userCommand){
 		redoAction = new RedoCommand(taskNote);
 		redoAction.execute();
 		redoAction.refreshDisplay();
@@ -202,7 +202,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeMarkAsComplete(String userCommand){
+	private static String executeMarkAsComplete(String userCommand){
 		//TODO:Parser - change method name to getTaskId
 		int taskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject taskObject;
@@ -226,7 +226,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	public static String executeChangeFilePath(String userCommand){
+	private static String executeChangeFilePath(String userCommand){
 		//TODO
 		return "";
 	}
