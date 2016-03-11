@@ -125,7 +125,7 @@ public class TaskNote {
 		try {
 			taskList.add(taskObject);
 			sortAndSave(taskList);
-			history.pushCommandAdd(taskObject);
+			history.pushAddToUndo(taskObject);
 		} catch (Exception e) {
 			isSuccess = false;
 		}
@@ -188,7 +188,7 @@ public class TaskNote {
 				TaskObject oldTaskObject = taskList.remove(updateTaskId);
 				taskList.add(updateTaskId, updatedTaskObject);
 				sortAndSave(taskList);
-				history.pushCommandUpdate(oldTaskObject, updatedTaskObject);
+				history.pushUpdateToUndo(oldTaskObject, updatedTaskObject);
 			} catch (Exception e) {
 				isSuccess = false;
 			}
@@ -205,12 +205,51 @@ public class TaskNote {
 		boolean isSuccess = true;
 		int undoCount = 0;
 		try {	
-			CommandObject commandObject = history.peekLastCommand();
+			CommandObject commandObject = history.peekUndoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
-			
+
 			while(undoCount <= numPrecedingObjects) {
-				commandObject = history.popLastCommand();
-				COMMAND_TYPE commandType = commandObject.getUndoCommandType();
+				commandObject = history.popUndoStack();
+				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				if(commandType == COMMAND_TYPE.ADD) {
+					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushDeleteToRedo(taskObject);
+					taskList.add(taskObject);
+				}else if(commandType == COMMAND_TYPE.DELETE) {
+					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushAddToRedo(taskObject);
+					taskList.remove(taskObject);
+				}else if(commandType == COMMAND_TYPE.UPDATE) {
+					CommandObject oldObject = history.popUndoStack();
+					CommandObject newObject = history.popUndoStack();
+					TaskObject oldTaskObject = oldObject.getTaskObject();
+					TaskObject newTaskObject = newObject.getTaskObject();
+					history.pushUpdateToRedo(oldTaskObject, newTaskObject);
+					history.pushAddToUndo(newTaskObject);
+					history.pushDeleteToUndo(oldTaskObject);
+				}
+
+				undoCount++;
+			}
+			history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
+			
+			sortAndSave(taskList);
+		} catch (Exception e) {
+			isSuccess = false;
+		}
+		
+		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
+	}
+	
+	public String redoLastUndoCommand() {
+		boolean isSuccess = true;
+		int redoCount = 0;
+		try {
+			CommandObject commandObject = history.peekRedoStack();
+			int numPrecedingObjects = commandObject.getPrecedingObjects();
+			while(redoCount <= numPrecedingObjects) {
+				commandObject = history.popRedoStack();
+				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
 				if(commandType == COMMAND_TYPE.ADD) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					taskList.add(taskObject);
@@ -220,14 +259,14 @@ public class TaskNote {
 				}else if(commandType == COMMAND_TYPE.UPDATE) {
 					//pass - do nothing
 				}
-				undoCount++;
+				redoCount++;
 			}
 			
 			sortAndSave(taskList);
 		} catch (Exception e) {
 			isSuccess = false;
 		}
-		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
+		return showFeedback(COMMAND_TYPE.REDO, isSuccess, null);
 	}
 
 	/**
@@ -269,9 +308,9 @@ public class TaskNote {
 			TaskObject taskObject = displayList.get(deleteIds.get(i));
 			int index = taskList.indexOf(taskObject);
 			taskList.remove(index);
-			history.pushCommandDelete(taskObject);
+			history.pushDeleteToUndo(taskObject);
 		}
-		CommandObject commandObject = history.peekLastCommand();
+		CommandObject commandObject = history.peekUndoStack();
 		commandObject.setPrecedingObjects(deleteIdSize - Constants.DECREMENT_PRECEDING_OBJECTS);
 	}
 
@@ -365,10 +404,18 @@ public class TaskNote {
 		case UNDO:
 			if (isSuccess) {
 				// TODO: Feedback what was undone
-				return Constants.MESSAGE_UNDONE_SUCCESSFUL;
+				return Constants.MESSAGE_UNDO_SUCCESSFUL;
 			} else {
 				// TODO
-				return Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
+				return Constants.MESSAGE_UNDO_UNSUCCESSFUL;
+			}
+		case REDO:
+			if (isSuccess) {
+				// TODO: Feedback what was re-did
+				return Constants.MESSAGE_REDO_SUCCESSFUL;
+			} else {
+				// TODO
+				return Constants.MESSAGE_REDO_UNSUCCESSFUL;
 			}
 		case DONE:
 			if (isSuccess && task != null) {

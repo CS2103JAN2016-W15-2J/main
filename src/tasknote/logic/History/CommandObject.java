@@ -5,20 +5,20 @@ import tasknote.shared.TaskObject;
 
 public class CommandObject {
 	
-	private COMMAND_TYPE undoCommandType;
+	private COMMAND_TYPE commandType;
 	private TaskObject taskObject;
 	private int precedingObjects;
 	
 	/******************* CommandObject Constructor *********************/
-	public CommandObject(COMMAND_TYPE undoCommandType, TaskObject taskObject) {
-		this.undoCommandType = undoCommandType;
+	public CommandObject(COMMAND_TYPE commandType, TaskObject taskObject) {
+		this.commandType = commandType;
 		this.taskObject = taskObject;
 		this.precedingObjects = 0;
 	}
 	
 	/******************* Accessors *********************/
-	public COMMAND_TYPE getUndoCommandType() {
-		return this.undoCommandType;
+	public COMMAND_TYPE getRevertCommandType() {
+		return this.commandType;
 	}
 	
 	public TaskObject getTaskObject() {
