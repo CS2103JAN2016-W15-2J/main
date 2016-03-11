@@ -19,6 +19,7 @@ public class Parser {
 	private static final String COMMAND_DONE = "done";
 	private static final String COMMAND_DELETE = "delete";
 	private static final String COMMAND_UNDO = "undo";
+	private static final String COMMAND_REDO = "redo";
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_SEARCH = "search";
 
@@ -86,6 +87,10 @@ public class Parser {
 			return COMMAND_TYPE.EXIT;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
 			return COMMAND_TYPE.DONE;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_REDO)) {
+			return COMMAND_TYPE.REDO;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDO)) {
+			return COMMAND_TYPE.UNDO;
 		} else {
 		    return COMMAND_TYPE.INVALID;
 		}
