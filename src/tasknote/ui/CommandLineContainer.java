@@ -140,17 +140,10 @@ public class CommandLineContainer extends HBox {
                             getNextCommand(_commandLine);
                             break;
                         }
+                    case SPACE:
+                        isDefaultCommandTruncated(_commandLine);
                     default:
                         break;
-                }
-            }
-        });
-        
-        _commandLine.setOnKeyTyped(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent key) {
-                if(key.getCharacter().matches("[ ]")) {
-                    isDefaultCommandTruncated(_commandLine);
                 }
             }
         });
