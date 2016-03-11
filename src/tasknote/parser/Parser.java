@@ -115,6 +115,7 @@ public class Parser {
 		int dateHour = -1;
 		int dateMinute = -1;
 		int hourBefore = 0;
+		int duration = 0;
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -131,6 +132,13 @@ public class Parser {
 				continue;
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
 				switchString = "location";
+				continue;
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
+				switchString = "timerangestart";
+				continue;
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO) && 
+					(dateHour >= 0 && dateMinute >= 0) ) {
+				switchString = "timerangeend";
 				continue;
 			}
 
@@ -163,15 +171,44 @@ public class Parser {
 				}
 			}
 
-			if (switchString.equals("time")) {
+			if (switchString.equals("time") || switchString.equals("timerangestart")) {
 
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
-					taskType = "deadline";
+					
+					if (switchString.equals("time")) {
+						taskType = "deadline";
+					} else if (switchString.equals("timerangestart")) {
+						taskType = "event";
+					}
 					continue;
+					
+				} catch (NumberFormatException e) {
+					System.out.println(currentPhrase
+							+ " is not a valid date format");
+					switchString = "name";
+					continue;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println(currentPhrase
+							+ " is not a valid date format");
+					switchString = "name";
+					continue;
+				}
+			}
+			
+			if (switchString.equalsIgnoreCase("timerangeend")) {
+				String[] hourMinute = currentPhrase.split(":");
+
+				try {
+					int endHour = Integer.parseInt(hourMinute[0]);
+					int endMinute = Integer.parseInt(hourMinute[1]);
+					
+					duration = 60 * (endHour - dateHour) + (endMinute - dateMinute);
+					continue;
+					
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
 							+ " is not a valid date format");
@@ -242,6 +279,9 @@ public class Parser {
 		taskObjectToBuild.setDateHour(dateHour);
 		taskObjectToBuild.setDateMinute(dateMinute);
 		taskObjectToBuild.setNotifyTime(hourBefore);
+		
+		// Set duration
+		taskObjectToBuild.setDuration(duration);
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
@@ -268,6 +308,7 @@ public class Parser {
 		int dateHour = reallyOldTaskObject.getDateHour();
 		int dateMinute = reallyOldTaskObject.getDateMinute();
 		int hourBefore = reallyOldTaskObject.getNotifyTime();
+		int duration = reallyOldTaskObject.getDuration();
 		
 		boolean alteringName = false;
 		boolean alteringLocation = false;
@@ -290,6 +331,13 @@ public class Parser {
 				continue;
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
 				switchString = "location";
+				continue;
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
+				switchString = "timerangestart";
+				continue;
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO) && 
+					(dateHour >= 0 && dateMinute >= 0) ) {
+				switchString = "timerangeend";
 				continue;
 			}
 
@@ -328,14 +376,41 @@ public class Parser {
 				}
 			}
 
-			if (switchString.equals("time")) {
+			if (switchString.equals("time") || switchString.equals("timerangestart")) {
 
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
-					taskType = "deadline";
+					
+					if (switchString.equals("time")) {
+						taskType = "deadline";
+					} else if (switchString.equals("timerangestart")) {
+						taskType = "event";
+					}
+					continue;
+				} catch (NumberFormatException e) {
+					System.out.println(currentPhrase
+							+ " is not a valid date format");
+					switchString = "name";
+					continue;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					System.out.println(currentPhrase
+							+ " is not a valid date format");
+					switchString = "name";
+					continue;
+				}
+			}
+			
+			if (switchString.equals("timerangeend")) {
+				String[] hourMinute = currentPhrase.split(":");
+
+				try {
+					int endHour = Integer.parseInt(hourMinute[0]);
+					int endMinute = Integer.parseInt(hourMinute[1]);
+					
+					duration = 60 * (endHour - dateHour) + (endMinute - dateMinute);
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -413,6 +488,9 @@ public class Parser {
 		taskObjectToBuild.setDateHour(dateHour);
 		taskObjectToBuild.setDateMinute(dateMinute);
 		taskObjectToBuild.setNotifyTime(hourBefore);
+		
+		// Set duration
+		taskObjectToBuild.setDuration(duration);
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
