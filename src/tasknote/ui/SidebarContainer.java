@@ -1,16 +1,23 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
-import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
+import static tasknote.ui.GuiConstant.PADDING_REMOVED;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
-public class SidebarContainer extends HBox{
+public class SidebarContainer extends VBox{
     private static SidebarContainer _sidebarContainer = null;
     private ClockContainer _clock = ClockContainer.getInstance();
+    private ListView<String> _observableListRepresentation = new ListView<String>();
+    private ObservableList<String> _navigationMenu = FXCollections.observableArrayList();
     
     private SidebarContainer() {
         // Only one instance of SidebarContainer is permitted
@@ -32,13 +39,46 @@ public class SidebarContainer extends HBox{
 
     private void setupSidebarContainer() {
         setSidebarContainerPresentation();
+        setNavigationPresentation();
+        setListBehaviour();
         
-        this.getChildren().addAll(_clock);
+        this.getChildren().addAll(_clock, _observableListRepresentation);
     }
     
     private void setSidebarContainerPresentation() {
-        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+        this.setPadding(new Insets(PADDING_REMOVED, PADDING_REMOVED, PADDING_REMOVED, PADDING_REMOVED));
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
         this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
+    }
+    
+    private void setNavigationPresentation() {
+        _navigationMenu.addAll("Outstanding(s)", "Overdue");
+        _observableListRepresentation.setItems(_navigationMenu);
+        // _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
+    }
+    
+    private void setListBehaviour() {
+        _observableListRepresentation.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String>param) {
+                return new ListCell<String>() {
+                    @Override
+                    public void updateItem(String value, boolean empty) {
+                        super.updateItem(value, empty);
+                        
+                        if (!isEmpty()) {
+                            VBox box = new VBox();
+                            Label nLabel = new Label(value);
+                            box.getChildren().addAll(nLabel);
+                            setGraphic(box);
+                        } else {
+                            // Prevent duplicate for a single entry
+                            setText(null);
+                            setGraphic(null);
+                        }
+                    }
+                };
+            }
+        });
     }
 }

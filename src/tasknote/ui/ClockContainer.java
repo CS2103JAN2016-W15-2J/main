@@ -2,6 +2,8 @@ package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.COLOR_HEX_CODE_WHITE;
+import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
+import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.PROPERTY_TEXT_FILL;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -14,6 +16,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
@@ -65,6 +68,7 @@ public class ClockContainer extends GridPane {
     }
     
     private void setClockContainerPresentation() {
+        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
         this.setHgap(SPACING_BETWEEN_COMPONENTS);
     }
 

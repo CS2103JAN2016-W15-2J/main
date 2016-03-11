@@ -3,6 +3,7 @@ package tasknote.ui;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
+import static tasknote.ui.GuiConstant.PADDING_REMOVED;
 import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
 import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -74,7 +75,7 @@ public class TasksContainer extends HBox {
      * Set up the presentation of the tasks container.
      */
     private void setTasksContainerPresentation() {
-        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_REMOVED));
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
         this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
         // this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c") + String.format("-fx-font-family: \"%1$s\";", "Consolas"));

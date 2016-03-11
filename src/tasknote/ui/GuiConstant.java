@@ -38,5 +38,6 @@ public abstract class GuiConstant {
     
     public static int PADDING_HORIZONTAL = 10;
     public static int PADDING_VERTICAL = 15;
+    public static int PADDING_REMOVED = 0;
     public static int SPACING_BETWEEN_COMPONENTS = 10;
 }
