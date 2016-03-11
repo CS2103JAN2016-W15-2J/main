@@ -14,7 +14,6 @@ public class Parser {
 	// the program
 	private static final String COMMAND_ADD = "add";
 	private static final String COMMAND_EDIT = "edit";
-	private static final String COMMAND_RENAME = "rename";
 	private static final String COMMAND_DONE = "done";
 	private static final String COMMAND_DELETE = "delete";
 	private static final String COMMAND_UNDO = "undo";
@@ -131,7 +130,7 @@ public class Parser {
 				switchString = "notify";
 				continue;
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
-				switchString = "at";
+				switchString = "location";
 				continue;
 			}
 
@@ -290,7 +289,7 @@ public class Parser {
 				switchString = "notify";
 				continue;
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
-				switchString = "at";
+				switchString = "location";
 				continue;
 			}
 

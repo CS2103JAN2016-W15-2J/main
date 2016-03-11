@@ -1,16 +1,10 @@
 package tasknote.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
-import sun.java2d.cmm.kcms.KcmsServiceProvider;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
 
