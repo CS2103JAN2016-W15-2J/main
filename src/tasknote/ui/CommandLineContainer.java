@@ -12,6 +12,15 @@ import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 import static tasknote.ui.GuiConstant.UNINITIALIZED_STRING;
 import static tasknote.ui.GuiConstant.commands;
 
+import static tasknote.ui.GuiConstant.COMMAND_ADD;
+import static tasknote.ui.GuiConstant.COMMAND_EDIT;
+import static tasknote.ui.GuiConstant.COMMAND_RENAME;
+import static tasknote.ui.GuiConstant.COMMAND_DONE;
+import static tasknote.ui.GuiConstant.COMMAND_DELETE;
+import static tasknote.ui.GuiConstant.COMMAND_UNDO;
+import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
+import static tasknote.ui.GuiConstant.COMMAND_EXIT;
+
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -136,6 +145,15 @@ public class CommandLineContainer extends HBox {
                 }
             }
         });
+        
+        _commandLine.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent key) {
+                if(key.getCharacter().matches("[ ]")) {
+                    isDefaultCommandTruncated(_commandLine);
+                }
+            }
+        });
     }
     
     /*
@@ -204,5 +222,47 @@ public class CommandLineContainer extends HBox {
 
     private String getLastModifiedCommand() {
         return lastModifiedCommand;
+    }
+    
+    private boolean isDefaultCommandTruncated(TextField commandLine) {
+        String command = commandLine.getText();
+        
+        switch(command) {
+            case (DEFAULT_COMMAND + COMMAND_ADD):
+                commandLine.setText(COMMAND_ADD);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_EDIT):
+                commandLine.setText(COMMAND_EDIT);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_RENAME):
+                commandLine.setText(COMMAND_RENAME);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_DONE):
+                commandLine.setText(COMMAND_ADD);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_DELETE):
+                commandLine.setText(COMMAND_DELETE);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_UNDO):
+                commandLine.setText(COMMAND_UNDO);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_SEARCH):
+                commandLine.setText(COMMAND_SEARCH);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_EXIT):
+                commandLine.setText(COMMAND_EXIT);
+                commandLine.end();
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 }
