@@ -1,11 +1,16 @@
 package tasknote.parser;
 
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import sun.java2d.cmm.kcms.KcmsServiceProvider;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
 
@@ -30,6 +35,7 @@ public class Parser {
 	private static final String KEYWORD_ON = "on";
 	private static final String KEYWORD_FROM = "from";
 	private static final String KEYWORD_TO = "to";
+	private static final String KEYWORD_IN = "in";
 
 	// Here are the regex that are used by the
 	// parser for parsing all user commands
@@ -120,6 +126,7 @@ public class Parser {
 		// Next, we split the userCommand by a whitespace
 		// regex to split the entire string into words
 		String[] userCommandWords = trimmedUserCommand.split(REGEX_WHITESPACE);
+		
 		
 		// Since the first word must be the user command
 		// then our main concern should be with all the
@@ -475,6 +482,95 @@ public class Parser {
 			return -1;
 		}
 		
+	}
+	
+	// First iteration accepts only dates
+	private static boolean handleOn(ArrayList<String> allPhrases,
+			int keywordPointer, TaskObject taskObject) {
+		
+		int phraseCount = allPhrases.size();
+		boolean isReallyKeyword = false;
+		
+		String[] acceptedKeywordsArray = {"January", "jan", "February", "feb",
+				"March", "mar", "April", "apr", "May", "June", "jun", "July",
+				"jul", "August", "aug", "September", "sep", "October", "oct",
+				"November", "nov", "December", "dec"};
+		
+		int[] mappedValuesArray = {1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8, 8, 9, 9,
+				10, 10, 11, 11, 12, 12};
+		
+		int keywordsCount = acceptedKeywordsArray.length;
+		
+		HashMap<String, Integer> acceptedKeywords = new HashMap<>();
+		
+		for (int i = 0; i < keywordsCount; i++) {
+			acceptedKeywords.put(acceptedKeywordsArray[i], mappedValuesArray[i]);
+		}
+		
+		int end = keywordPointer + 3;
+		
+		for (int i = keywordPointer; i < end && i < phraseCount; i++) {
+			
+			String currentWord = allPhrases.get(i);
+			
+			if (currentWord.endsWith("st") || currentWord.endsWith("nd") ||
+					currentWord.endsWith("rd") || currentWord.endsWith("th") ||
+					currentWord.length() < 3) {
+				
+				String getNumberWord = "";
+				
+				if (currentWord.length() > 2) {
+					getNumberWord = currentWord.substring(0, currentWord.length() - 2);
+				}
+				
+				try {
+					int dateDay = Integer.parseInt(getNumberWord);
+					taskObject.setDateDay(dateDay);
+				} catch (NumberFormatException e) {
+					break;
+				}
+			} else if (acceptedKeywords.containsKey(currentWord)) {	
+				taskObject.setDateMonth(acceptedKeywords.get(currentWord));
+			}
+		}
+		
+		return isReallyKeyword;
+		
+	}
+	
+	private static boolean handleBy(ArrayList<String> allPhrases, 
+			int keywordPointer, TaskObject taskObject) {
+		
+		int phraseCount = allPhrases.size();
+		boolean isReallyKeyword = false;
+		
+		String[] acceptedKeywordsArray = {"monday", "tueday", "wednesday",
+				"thursday", "friday", "saturday", "sunday", "tomorrow"};
+		
+		List<String> acceptedKeywordsList = Arrays.asList(acceptedKeywordsArray);
+		
+		HashSet<String> acceptedKeywords = new HashSet();
+		acceptedKeywords.addAll(acceptedKeywordsList);
+		
+		int nextCount = 0;
+		String dayOfWeek = "";
+		
+		for (int i = keywordPointer; i < phraseCount; i++) {
+			
+			if (i == keywordPointer) {
+				continue;
+			}
+			
+			String currentWord = allPhrases.get(i);
+			
+			if (acceptedKeywords.contains(currentWord)) {
+				dayOfWeek = currentWord;
+			} else if (currentWord.equalsIgnoreCase("next")) {
+				nextCount++;
+			}
+		}
+		
+		return isReallyKeyword;
 	}
 
 }

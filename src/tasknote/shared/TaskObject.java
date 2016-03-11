@@ -453,7 +453,11 @@ public class TaskObject implements Comparable<TaskObject> {
 			return Integer.compare(this.getDateMinute(), otherTaskObject.getDateMinute());
 		}
 		
-		return Integer.compare(this.getDuration(), otherTaskObject.getDuration());
+		if (this.getDuration() != otherTaskObject.getDuration()) {
+			return Integer.compare(this.getDuration(), otherTaskObject.getDuration());
+		}
+		
+		return this.getTaskName().compareTo(otherTaskObject.getTaskName());
 	}
 	
 	public boolean equals(Object comparingObject) {
