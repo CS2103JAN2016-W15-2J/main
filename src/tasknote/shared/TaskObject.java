@@ -378,7 +378,7 @@ public class TaskObject implements Comparable {
             if(dateHour < 12) {
                 String hourString = String.format("%02d", dateHour);
                 String minuteString = String.format("%02d", dateMinute);
-                taskTime = (minuteString + ":" + hourString + "am");
+                taskTime = (hourString + ":" +  minuteString+ "am");
             } else {
                 String hourString = String.format("%02d", (dateHour - 12));
                 String minuteString = String.format("%02d", dateMinute);
