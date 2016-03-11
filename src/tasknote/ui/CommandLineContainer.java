@@ -142,6 +142,7 @@ public class CommandLineContainer extends HBox {
                         }
                     case SPACE:
                         isDefaultCommandTruncated(_commandLine);
+                        break;
                     default:
                         break;
                 }
