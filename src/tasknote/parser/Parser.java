@@ -58,8 +58,11 @@ public class Parser {
 		ArrayList<String> allPhrase = firstPassCommand.getFirstPassParsedResult();
 		
 		int allPhraseCount = allPhrase.size();
+		String userCommandWord = "";
 		
-		String userCommandWord = allPhrase.get(0);
+		if (allPhraseCount > 0) {
+			userCommandWord = allPhrase.get(0);
+		}
 
 		// Finally, we check to see which COMMAND_TYPE
 		// matches the command given by the user
