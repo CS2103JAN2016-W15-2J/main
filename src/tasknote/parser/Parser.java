@@ -102,6 +102,7 @@ public class Parser {
 		int phraseCount = allPhrases.size();
 
 		String switchString = "name";
+		String taskType = "floating";
 
 		if (phraseCount == 2) {
 			return new TaskObject(allPhrases.get(1));
@@ -148,6 +149,7 @@ public class Parser {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
+					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -169,6 +171,7 @@ public class Parser {
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
+					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -206,10 +209,11 @@ public class Parser {
 		if (dateHour > 0 || dateMinute > 0) {
 			if (dateDay == -1 || dateMonth == -1 || dateYear == -1) {
 				GregorianCalendar todayCalendar = new GregorianCalendar();
-				int todayHour = todayCalendar.get(Calendar.HOUR);
+				int todayHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
 				int todayMinute = todayCalendar.get(Calendar.MINUTE);
 				
-				if (todayHour > dateHour && todayMinute > dateMinute) {
+				if (todayHour > dateHour || 
+						(todayHour == dateHour && todayMinute > dateMinute)) {
 					todayCalendar.roll(Calendar.DAY_OF_MONTH, 1);
 					
 					if (todayCalendar.get(Calendar.DAY_OF_MONTH) == 1) {
@@ -242,6 +246,9 @@ public class Parser {
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
+		
+		// Set taskType
+		taskObjectToBuild.setTaskType(taskType);
 
 		return taskObjectToBuild;
 	}
@@ -266,6 +273,7 @@ public class Parser {
 		int hourBefore = reallyOldTaskObject.getNotifyTime();
 
 		String switchString = "name";
+		String taskType = "floating";
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -299,6 +307,7 @@ public class Parser {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
+					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -320,6 +329,7 @@ public class Parser {
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
+					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -357,10 +367,11 @@ public class Parser {
 		if (dateHour > 0 || dateMinute > 0) {
 			if (dateDay == -1 || dateMonth == -1 || dateYear == -1) {
 				GregorianCalendar todayCalendar = new GregorianCalendar();
-				int todayHour = todayCalendar.get(Calendar.HOUR);
+				int todayHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
 				int todayMinute = todayCalendar.get(Calendar.MINUTE);
 				
-				if (todayHour > dateHour && todayMinute > dateMinute) {
+				if (todayHour > dateHour || 
+						(todayHour == dateHour && todayMinute > dateMinute)) {
 					todayCalendar.roll(Calendar.DAY_OF_MONTH, 1);
 					
 					if (todayCalendar.get(Calendar.DAY_OF_MONTH) == 1) {
@@ -393,6 +404,9 @@ public class Parser {
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
+		
+		// Set taskType
+		taskObjectToBuild.setTaskType(taskType);
 
 		return taskObjectToBuild;
 	}
