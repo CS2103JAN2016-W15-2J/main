@@ -261,19 +261,20 @@ public class Parser {
 
 		int phraseCount = allPhrases.size();
 
-		StringBuilder name = new StringBuilder(
-				reallyOldTaskObject.getTaskName());
-		StringBuilder location = new StringBuilder(
-				reallyOldTaskObject.getLocation());
+		StringBuilder name = new StringBuilder(reallyOldTaskObject.getTaskName());
+		StringBuilder location = new StringBuilder(reallyOldTaskObject.getLocation());
 		int dateDay = reallyOldTaskObject.getDateDay();
 		int dateMonth = reallyOldTaskObject.getDateMonth();
 		int dateYear = reallyOldTaskObject.getDateYear();
 		int dateHour = reallyOldTaskObject.getDateHour();
 		int dateMinute = reallyOldTaskObject.getDateMinute();
 		int hourBefore = reallyOldTaskObject.getNotifyTime();
+		
+		boolean alteringName = false;
+		boolean alteringLocation = false;
 
 		String switchString = "name";
-		String taskType = "floating";
+		String taskType = reallyOldTaskObject.getTaskType();
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -294,8 +295,14 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
-				name.append(REGEX_WHITESPACE);
-				name.append(currentPhrase);
+				if (!alteringName) {
+					alteringName = true;
+					name.delete(0, name.length());
+					name.append(currentPhrase);
+				} else {
+					name.append(REGEX_WHITESPACE);
+					name.append(currentPhrase);
+				}
 				continue;
 			}
 
@@ -358,8 +365,14 @@ public class Parser {
 			}
 
 			if (switchString.equals("location")) {
-				location.append(REGEX_WHITESPACE);
-				location.append(currentPhrase);
+				if (!alteringLocation) {
+					alteringLocation = true;
+					location.delete(0, location.length());
+					location.append(currentPhrase);
+				} else {
+					location.append(REGEX_WHITESPACE);
+					location.append(currentPhrase);
+				}
 				continue;
 			}
 		}
