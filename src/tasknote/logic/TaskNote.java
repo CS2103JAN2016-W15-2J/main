@@ -358,12 +358,8 @@ public class TaskNote {
 	private static void sortByDate(ArrayList<TaskObject> list) throws Exception {
 		// TODO
 		try {
-			// Sort by Date - Currently sorted by Task Name
-			Collections.sort(list, new Comparator<TaskObject>(){
-			    public int compare(TaskObject taskObject1, TaskObject taskObject2) {
-			        return taskObject1.getTaskName().compareToIgnoreCase(taskObject2.getTaskName());
-			    }
-			});
+			// Sort by Date-Time
+			Collections.sort(list);
 		} catch (Exception e) {
 			System.out.println("Sort by date has an error");
 			throw e;
