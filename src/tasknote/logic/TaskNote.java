@@ -252,13 +252,23 @@ public class TaskNote {
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
 				if(commandType == COMMAND_TYPE.ADD) {
 					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushAddToUndo(taskObject);
 					taskList.add(taskObject);
 				}else if(commandType == COMMAND_TYPE.DELETE) {
 					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushDeleteToUndo(taskObject);
 					taskList.remove(taskObject);
 				}else if(commandType == COMMAND_TYPE.UPDATE) {
 					//pass - do nothing
+					CommandObject oldObject = history.popRedoStack();
+					CommandObject newObject = history.popRedoStack();
+					TaskObject oldTaskObject = oldObject.getTaskObject();
+					TaskObject newTaskObject = newObject.getTaskObject();
+					history.pushUpdateToUndo(oldTaskObject, newTaskObject);
+					history.pushAddToUndo(oldTaskObject);
+					history.pushDeleteToUndo(newTaskObject);
 				}
+				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
 				redoCount++;
 			}
 			
