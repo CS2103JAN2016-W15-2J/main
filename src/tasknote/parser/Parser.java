@@ -3,6 +3,7 @@ package tasknote.parser;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import tasknote.shared.COMMAND_TYPE;
@@ -528,39 +529,44 @@ public class Parser {
 		return list;
 	}
 
+	// Ahead of SuperParser
 	public static ArrayList<Integer> parseSearch(String userCommand,
 			ArrayList<TaskObject> displayList) {
-		// TODO Auto-generated method stub
 
-		// Magic number: Search is of length 7
-		String searchString = userCommand.trim().substring(7,
-				userCommand.length());
-
-		Iterator taskObjectIterator = displayList.iterator();
-
-		ArrayList<Integer> allSelectedTaskIDs = new ArrayList<>();
-
-		int i = 0;
-
-		while (taskObjectIterator.hasNext()) {
-
-			TaskObject currentTaskObject = (TaskObject) taskObjectIterator
-					.next();
-
-			String currentTaskName = currentTaskObject.getTaskName();
-
-			if (currentTaskName.contains(searchString)) {
-
-				System.out.println(currentTaskName);
-				System.out.println(currentTaskObject.getTaskID());
-
-				allSelectedTaskIDs.add(i);
-			}
-
-			i++;
+		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
+		
+		int phraseCount = allPhrases.size();
+		int itemCount = displayList.size();
+		
+		HashSet<Integer> indicesToRemove = new HashSet<>();
+		HashSet<Integer> indicesToReturn = new HashSet<>();
+		
+		for (int i = 0; i < itemCount; i++) {
+			indicesToReturn.add(i);
 		}
-
-		return allSelectedTaskIDs;
+		
+		for (int i = 1; i < phraseCount; i++) {
+			
+			String currentPhrase = allPhrases.get(i).toLowerCase();
+			
+			for (int j = 0; j < itemCount; j++) {
+				String currentTaskName = displayList.get(j).getTaskName().toLowerCase();
+				
+				if (!currentTaskName.contains(currentPhrase)) {
+					indicesToRemove.add(j);
+				}
+			}
+			
+			int numberOfIndicesToRemove = indicesToRemove.size();
+			
+			indicesToReturn.removeAll(indicesToRemove);
+		}
+		
+		ArrayList<Integer> listToReturn = new ArrayList<>();
+		listToReturn.addAll(indicesToReturn);
+		
+		return listToReturn;
 	}
 
 	public static int getUpdateTaskId(String userCommand) {
