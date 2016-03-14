@@ -134,7 +134,7 @@ public class CommandLineContainer extends HBox {
                         if (key.isControlDown()) {
                             getPrevCommand(_commandLine);
                             break;
-                        }
+                        } 
                     case DOWN:
                         if (key.isControlDown()) {
                             getNextCommand(_commandLine);
