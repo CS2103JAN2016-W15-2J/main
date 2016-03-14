@@ -245,7 +245,7 @@ public class CommandLineContainer extends HBox {
                 commandLine.end();
                 return true;
             case (DEFAULT_COMMAND + COMMAND_DONE):
-                commandLine.setText(COMMAND_ADD);
+                commandLine.setText(COMMAND_DONE);
                 commandLine.end();
                 return true;
             case (DEFAULT_COMMAND + COMMAND_DELETE):
