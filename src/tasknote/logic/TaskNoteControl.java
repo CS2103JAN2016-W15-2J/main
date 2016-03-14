@@ -19,15 +19,6 @@ public class TaskNoteControl {
 	
 	private static TaskNote taskNote;
 	private static Command command;
-	/*
-	private static AddCommand addTask;
-	private static DeleteCommand deleteTask;
-	private static SearchCommand searchTask;
-	private static UpdateCommand updateTask;
-	private static CompleteCommand completeTask;
-	private static UndoCommand undoAction;
-	private static RedoCommand redoAction;
-	*/
 	
 	
 	public TaskNoteControl() {
