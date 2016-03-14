@@ -17,9 +17,12 @@ public class CommandHistory {
 	private static final COMMAND_TYPE undoAddCommand = COMMAND_TYPE.DELETE;
 	private static final COMMAND_TYPE undoDeleteCommand = COMMAND_TYPE.ADD;
 	private static final COMMAND_TYPE undoUpdateCommand = COMMAND_TYPE.UPDATE;
+	private static final COMMAND_TYPE undoDoneCommand = COMMAND_TYPE.DONE;
+	
 	private static final COMMAND_TYPE redoAddCommand = COMMAND_TYPE.ADD;
 	private static final COMMAND_TYPE redoDeleteCommand = COMMAND_TYPE.DELETE;
 	private static final COMMAND_TYPE redoUpdateCommand = COMMAND_TYPE.UPDATE;
+	private static final COMMAND_TYPE redoDoneCommand = COMMAND_TYPE.DONE;
 	
 	/*
 	 * This is the Integer Constant for the number of associated preceding 
@@ -106,6 +109,26 @@ public class CommandHistory {
 		CommandObject redoObject = new CommandObject(redoUpdateCommand, null);
 		redoObject.setPrecedingObjects(numPrecedingObjects);
 		redoStack.push(redoObject);
+	}
+	
+	/**
+	 * This operation adds the inverse of the User's 
+	 * Complete Command into the Undo Stack
+	 *
+	 * @param: taskObject
+	 */
+	public void pushDoneToUndo(TaskObject taskObject) {
+		undoStack.push(new CommandObject(undoDoneCommand, taskObject));
+	}
+	
+	/**
+	 * This operation adds the inverse of the Undo
+	 * Complete Command into the Redo Stack 
+	 *
+	 * @param: taskObject
+	 */
+	public void pushDoneToRedo(TaskObject taskObject) {
+		redoStack.push(new CommandObject(redoDoneCommand, taskObject));
 	}
 	
 	public CommandObject peekUndoStack() {
