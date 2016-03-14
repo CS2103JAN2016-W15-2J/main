@@ -1,5 +1,6 @@
 package tasknote.logic;
 
+import tasknote.logic.Commands.Command;
 import tasknote.logic.Commands.AddCommand;
 import tasknote.logic.Commands.DeleteCommand;
 import tasknote.logic.Commands.SearchCommand;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 public class TaskNoteControl {
 	
 	private static TaskNote taskNote;
+	private static Command command;
+	/*
 	private static AddCommand addTask;
 	private static DeleteCommand deleteTask;
 	private static SearchCommand searchTask;
@@ -24,6 +27,7 @@ public class TaskNoteControl {
 	private static CompleteCommand completeTask;
 	private static UndoCommand undoAction;
 	private static RedoCommand redoAction;
+	*/
 	
 	
 	public TaskNoteControl() {
@@ -104,10 +108,10 @@ public class TaskNoteControl {
 	 */
 	private static String executeAdd(String userCommand){
 		TaskObject taskObject = Parser.parseAdd(userCommand);
-		addTask = new AddCommand(taskNote, taskObject);
-		addTask.execute();
-		addTask.refreshDisplay();
-		String response = addTask.getFeedBack();
+		command = new AddCommand(taskNote, taskObject);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -119,10 +123,10 @@ public class TaskNoteControl {
 	 */
 	private static String executeDelete(String userCommand){
 		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
-		deleteTask = new DeleteCommand(taskNote, deleteIds);
-		deleteTask.execute();
-		deleteTask.refreshDisplay();
-		String response = deleteTask.getFeedBack();
+		command = new DeleteCommand(taskNote, deleteIds);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -135,10 +139,10 @@ public class TaskNoteControl {
 	private static String executeSearch(String userCommand){
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
-		searchTask = new SearchCommand(taskNote, searchIds);
-		searchTask.execute();
-		searchTask.refreshDisplay();
-		String response = searchTask.getFeedBack();
+		command = new SearchCommand(taskNote, searchIds);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -161,10 +165,10 @@ public class TaskNoteControl {
 			updatedTaskObject = null;
 		}
 		
-		updateTask = new UpdateCommand(taskNote, updateTaskId, updatedTaskObject);
-		updateTask.execute();
-		updateTask.refreshDisplay();
-		String response = updateTask.getFeedBack();
+		command = new UpdateCommand(taskNote, updateTaskId, updatedTaskObject);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -175,10 +179,10 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeUndo(){
-		undoAction = new UndoCommand(taskNote);
-		undoAction.execute();
-		undoAction.refreshDisplay();
-		String response = undoAction.getFeedBack();
+		command = new UndoCommand(taskNote);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -189,10 +193,10 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeRedo(String userCommand){
-		redoAction = new RedoCommand(taskNote);
-		redoAction.execute();
-		redoAction.refreshDisplay();
-		String response = redoAction.getFeedBack();
+		command = new RedoCommand(taskNote);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
@@ -212,10 +216,10 @@ public class TaskNoteControl {
 		}else{
 			taskObject = null;
 		}
-		completeTask = new CompleteCommand(taskNote, taskObject);
-		completeTask.execute();
-		completeTask.refreshDisplay();
-		String response = completeTask.getFeedBack();
+		command = new CompleteCommand(taskNote, taskObject);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
 		return response;
 	}
 	
