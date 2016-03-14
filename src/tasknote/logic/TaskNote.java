@@ -227,11 +227,20 @@ public class TaskNote {
 					history.pushUpdateToRedo(oldTaskObject, newTaskObject);
 					history.pushAddToUndo(newTaskObject);
 					history.pushDeleteToUndo(oldTaskObject);
+				}else if(commandType == COMMAND_TYPE.DONE) {
+					System.out.println("ENTER UNDO COMMAND");
+					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushDoneToRedo(taskObject);
+					taskList.remove(taskObject);
+					boolean isComplete = taskObject.getIsMarkedDone();
+					taskObject.setIsMarkedDone(!isComplete);
+					isComplete = taskObject.getIsMarkedDone();
+					taskList.add(taskObject);
 				}
-
+				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
 				undoCount++;
 			}
-			history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
+			
 			
 			sortAndSave(taskList);
 		} catch (Exception e) {
@@ -267,6 +276,14 @@ public class TaskNote {
 					history.pushUpdateToUndo(oldTaskObject, newTaskObject);
 					history.pushAddToUndo(oldTaskObject);
 					history.pushDeleteToUndo(newTaskObject);
+				}else if(commandType == COMMAND_TYPE.DONE) {
+					TaskObject taskObject = commandObject.getTaskObject();
+					history.pushDoneToUndo(taskObject);
+					taskList.remove(taskObject);
+					boolean isComplete = taskObject.getIsMarkedDone();
+					taskObject.setIsMarkedDone(!isComplete);
+					isComplete = taskObject.getIsMarkedDone();
+					taskList.add(taskObject);
 				}
 				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
 				redoCount++;
@@ -291,6 +308,7 @@ public class TaskNote {
 		try {
 			taskObject.setIsMarkedDone(isSuccess);
 			sortAndSave(taskList);
+			history.pushDoneToUndo(taskObject);
 		} catch (Exception e) {
 			isSuccess = false;
 		}
