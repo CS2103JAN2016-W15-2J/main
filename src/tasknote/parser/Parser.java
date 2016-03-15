@@ -163,6 +163,16 @@ public class Parser {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
+					
+					if (dateDay < 0 || dateDay > 31 ||
+							dateMonth < 0 || dateMonth > 12) {
+						
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						throw new NumberFormatException();
+					}
+					
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
@@ -185,6 +195,13 @@ public class Parser {
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
+					
+					if (dateHour > 24 || dateHour < 0 ||
+							dateMinute > 60 || dateMinute < 0) {
+						dateHour = -1;
+						dateMinute = -1;
+						throw new NumberFormatException();
+					}
 					
 					if (switchString.equals("time")) {
 						taskType = "deadline";
@@ -213,6 +230,13 @@ public class Parser {
 					endDateHour = Integer.parseInt(hourMinute[0]);
 					endDateMinute = Integer.parseInt(hourMinute[1]);
 					
+					if (endDateHour > 24 || endDateHour < 0 ||
+							endDateMinute > 60 || endDateMinute < 0) {
+						endDateHour = -1;
+						endDateMinute = -1;
+						throw new NumberFormatException();
+					}
+					
 					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 					continue;
 					
@@ -233,6 +257,11 @@ public class Parser {
 
 				try {
 					hourBefore = Integer.parseInt(currentPhrase);
+					
+					if (hourBefore < 0) {
+						hourBefore = 0;
+						throw new NumberFormatException();
+					}
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -321,6 +350,9 @@ public class Parser {
 		int dateMinute = reallyOldTaskObject.getDateMinute();
 		int hourBefore = reallyOldTaskObject.getNotifyTime();
 		int duration = reallyOldTaskObject.getDuration();
+		int endDateHour = reallyOldTaskObject.getEndDateHour();
+		int endDateMinute = reallyOldTaskObject.getEndDateMinute();
+		TaskObject.TASK_STATUS taskStatus = reallyOldTaskObject.getTaskStatus();
 		
 		boolean alteringName = false;
 		boolean alteringLocation = false;
@@ -373,6 +405,14 @@ public class Parser {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
+					
+					if (dateDay < 0 || dateDay > 31 ||
+							dateMonth < 0 || dateMonth > 31) {
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						throw new NumberFormatException();
+					}
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
@@ -395,6 +435,13 @@ public class Parser {
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
+					
+					if (dateHour < 0 || dateHour > 24 ||
+							dateMinute < 0 || dateMinute > 60) {
+						dateHour = -1;
+						dateMinute = -1;
+						throw new NumberFormatException();
+					}
 					
 					if (switchString.equals("time")) {
 						taskType = "deadline";
@@ -419,10 +466,17 @@ public class Parser {
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
-					int endHour = Integer.parseInt(hourMinute[0]);
-					int endMinute = Integer.parseInt(hourMinute[1]);
+					endDateHour = Integer.parseInt(hourMinute[0]);
+					endDateMinute = Integer.parseInt(hourMinute[1]);
 					
-					duration = 60 * (endHour - dateHour) + (endMinute - dateMinute);
+					if (endDateHour < 0 || endDateMinute > 24 ||
+							endDateMinute < 0 || endDateMinute > 60) {
+						endDateHour = -1;
+						endDateMinute = -1;
+						throw new NumberFormatException();
+					}
+					
+					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -441,6 +495,11 @@ public class Parser {
 
 				try {
 					hourBefore = Integer.parseInt(currentPhrase);
+					
+					if (hourBefore < 0) {
+						hourBefore = 0;
+						throw new NumberFormatException();
+					}
 					continue;
 				} catch (NumberFormatException e) {
 					System.out.println(currentPhrase
@@ -509,6 +568,9 @@ public class Parser {
 		
 		// Set taskType
 		taskObjectToBuild.setTaskType(taskType);
+		
+		// Set taskStatus
+		taskObjectToBuild.setTaskStatus(taskStatus);
 
 		return taskObjectToBuild;
 	}

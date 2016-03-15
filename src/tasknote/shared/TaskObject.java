@@ -510,6 +510,11 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.setNotifyTime(sourceTaskObject.getNotifyTime());
 		this.setTaskStatus(sourceTaskObject.getTaskStatus());
 		this.setTaskType(sourceTaskObject.getTaskType());
+		this.setEndDateDay(sourceTaskObject.getEndDateDay());
+		this.setEndDateMonth(sourceTaskObject.getEndDateMonth());
+		this.setEndDateYear(sourceTaskObject.getEndDateYear());
+		this.setEndDateHour(sourceTaskObject.getEndDateHour());
+		this.setEndDateMinute(sourceTaskObject.getEndDateMinute());
 		
 		// Postponed
 		// set Gregorian Calendar
