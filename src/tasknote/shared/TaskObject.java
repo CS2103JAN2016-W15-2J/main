@@ -24,6 +24,12 @@ public class TaskObject implements Comparable<TaskObject> {
 	private int dateHour;
 	private int dateMinute;
 	
+	private int endDateDay;
+	private int endDateMonth;
+	private int endDateYear;
+	private int endDateHour;
+	private int endDateMinute;
+	
 	private int duration;
 	
 	private GregorianCalendar taskObjectCalendar;
@@ -507,5 +513,75 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		// Postponed
 		// set Gregorian Calendar
+	}
+
+	/**
+	 * @return the endDateDay
+	 */
+	public int getEndDateDay() {
+		return endDateDay;
+	}
+
+	/**
+	 * @param endDateDay the endDateDay to set
+	 */
+	public void setEndDateDay(int endDateDay) {
+		this.endDateDay = endDateDay;
+	}
+
+	/**
+	 * @return the endDateMonth
+	 */
+	public int getEndDateMonth() {
+		return endDateMonth;
+	}
+
+	/**
+	 * @param endDateMonth the endDateMonth to set
+	 */
+	public void setEndDateMonth(int endDateMonth) {
+		this.endDateMonth = endDateMonth;
+	}
+
+	/**
+	 * @return the endDateYear
+	 */
+	public int getEndDateYear() {
+		return endDateYear;
+	}
+
+	/**
+	 * @param endDateYear the endDateYear to set
+	 */
+	public void setEndDateYear(int endDateYear) {
+		this.endDateYear = endDateYear;
+	}
+	
+	/**
+	 * @return the endDateHour
+	 */
+	public int getEndDateHour() {
+		return endDateHour;
+	}
+
+	/**
+	 * @param endDateHour the endDateHour to set
+	 */
+	public void setEndDateHour(int endDateHour) {
+		this.endDateHour = endDateHour;
+	}
+
+	/**
+	 * @return the endDateMinute
+	 */
+	public int getEndDateMinute() {
+		return endDateMinute;
+	}
+
+	/**
+	 * @param endDateMinute the endDateMinute to set
+	 */
+	public void setEndDateMinute(int endDateMinute) {
+		this.endDateMinute = endDateMinute;
 	}
 }

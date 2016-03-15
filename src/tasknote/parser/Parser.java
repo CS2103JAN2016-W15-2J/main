@@ -120,6 +120,9 @@ public class Parser {
 		int dateMinute = -1;
 		int hourBefore = 0;
 		int duration = 0;
+		
+		int endDateHour = -1;
+		int endDateMinute = -1;
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -207,10 +210,10 @@ public class Parser {
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
-					int endHour = Integer.parseInt(hourMinute[0]);
-					int endMinute = Integer.parseInt(hourMinute[1]);
+					endDateHour = Integer.parseInt(hourMinute[0]);
+					endDateMinute = Integer.parseInt(hourMinute[1]);
 					
-					duration = 60 * (endHour - dateHour) + (endMinute - dateMinute);
+					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 					continue;
 					
 				} catch (NumberFormatException e) {
@@ -286,6 +289,11 @@ public class Parser {
 		
 		// Set duration
 		taskObjectToBuild.setDuration(duration);
+		
+		if (duration > 0) {
+			taskObjectToBuild.setEndDateHour(endDateHour);
+			taskObjectToBuild.setEndDateMinute(endDateMinute);
+		}
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
