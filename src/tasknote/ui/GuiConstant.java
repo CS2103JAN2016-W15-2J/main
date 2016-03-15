@@ -16,6 +16,7 @@ public abstract class GuiConstant {
     public static final String COMMAND_DONE = "done";
     public static final String COMMAND_DELETE = "delete";
     public static final String COMMAND_UNDO = "undo";
+    public static final String COMMAND_REDO = "redo";
     public static final String COMMAND_SEARCH = "search";
     public static final String COMMAND_EXIT = "exit";
     
@@ -24,8 +25,8 @@ public abstract class GuiConstant {
     public static final String UNINITIALIZED_STRING = "";
     
     public static final List<String> commands = Collections.unmodifiableList(Arrays.asList(
-            UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, 
-            COMMAND_RENAME, COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH, COMMAND_EXIT));
+            UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT,
+            COMMAND_DONE, COMMAND_DELETE, COMMAND_UNDO, COMMAND_SEARCH, COMMAND_EXIT));
     
     public static final String PROPERTY_BACKGROUND_COLOR = "-fx-background-color: %1$s;";
     public static final String PROPERTY_BACKGROUND_RADIUS = "-fx-background-radius: %1$d;";

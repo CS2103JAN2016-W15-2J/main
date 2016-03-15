@@ -14,10 +14,10 @@ import static tasknote.ui.GuiConstant.commands;
 
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.COMMAND_EDIT;
-import static tasknote.ui.GuiConstant.COMMAND_RENAME;
 import static tasknote.ui.GuiConstant.COMMAND_DONE;
 import static tasknote.ui.GuiConstant.COMMAND_DELETE;
 import static tasknote.ui.GuiConstant.COMMAND_UNDO;
+import static tasknote.ui.GuiConstant.COMMAND_REDO;
 import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
 import static tasknote.ui.GuiConstant.COMMAND_EXIT;
 
@@ -133,26 +133,32 @@ public class CommandLineContainer extends HBox {
                     case UP:
                         if (key.isControlDown()) {
                             getPrevCommand(_commandLine);
-                            break;
                         } 
+                        break;
                     case DOWN:
                         if (key.isControlDown()) {
                             getNextCommand(_commandLine);
-                            break;
                         }
+                        break;
                     case SPACE:
                         isDefaultCommandTruncated(_commandLine);
                         break;
                     case Z:
                         if (key.isControlDown()) {
                             GuiController.executeCommand(COMMAND_UNDO);
-                            break;
                         }
+                        break;
                     case Y:
                         if (key.isControlDown()) {
-                            GuiController.executeCommand("redo");
-                            break;
+                            GuiController.executeCommand(COMMAND_REDO);
                         }
+                        break;
+                    case F:
+                        if (key.isControlDown()) {
+                            _commandLine.setText(COMMAND_SEARCH + " ");
+                            _commandLine.end();
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -240,10 +246,6 @@ public class CommandLineContainer extends HBox {
                 commandLine.setText(COMMAND_EDIT);
                 commandLine.end();
                 return true;
-            case (DEFAULT_COMMAND + COMMAND_RENAME):
-                commandLine.setText(COMMAND_RENAME);
-                commandLine.end();
-                return true;
             case (DEFAULT_COMMAND + COMMAND_DONE):
                 commandLine.setText(COMMAND_DONE);
                 commandLine.end();
@@ -254,6 +256,10 @@ public class CommandLineContainer extends HBox {
                 return true;
             case (DEFAULT_COMMAND + COMMAND_UNDO):
                 commandLine.setText(COMMAND_UNDO);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_REDO):
+                commandLine.setText(COMMAND_REDO);
                 commandLine.end();
                 return true;
             case (DEFAULT_COMMAND + COMMAND_SEARCH):
