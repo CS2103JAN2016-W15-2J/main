@@ -21,12 +21,26 @@ public class Constants {
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
 	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
 	
-	/* These are the warnings that will be displayed if the user does 
+	/* These are the warnings that will be displayed in the logs if the user does 
 	 * not enter valid commands
 	 */
 	public static final String WARNING_NULL_COMMAND = "Command type string cannot be null!";
 	public static final String WARNING_INVALID_COMMAND = "Invalid Command. Please try again.";
 	public static final String WARNING_INVALID_DELETE_INDEX = "Invalid Deletion Index. Please try again.";
+	public static final String WARNING_EXECUTE_ADD = "Error occured while ADDING task: %s";
+	public static final String WARNING_EXECUTE_DELETE = "Error occured while DELETING task(s): %s";
+	public static final String WARNING_EXECUTE_UPDATE = "Error occured while UPDATING task(s): %s";
+	public static final String WARNING_EXECUTE_SEARCH = "Error occured while SEARCHING and retrieving results from task list: %s";
+	public static final String WARNING_EXECUTE_COMPLETE = "Error occured while marking task as DONE: %s";
+	public static final String WARNING_EXECUTE_UNDO = "Error occured while executing UNDO operation: %s";
+	public static final String WARNING_EXECUTE_REDO = "Error occured while executing REDO operation: %s";
+	public static final String WARNING_EXECUTE_SORT_SAVE = "Error occured while SORTING tasks and SAVING to storage: %s";
+	
+	public static final String WARNING_INVALID_DELETE_ID = "Invalid DELETE ID: %d. Unable to execute DELETE operation.";
+	
+	public static final String INFO_DELETE_LIST = "No valid delete IDs have been specified. Size of Delete ID list = %d";
+	public static final String FINE_DELETE_LIST_VALIDITY = "Checking validity of %d entries to be deleted from List";
+	public static final String FINER_VALID_DELETE_ID = "Processed Valid ID [%d] : %s";
 	
 	/* These are the error messages that will be displayed if feedback is 
 	 * requested before and user requested action is performed 

@@ -9,6 +9,8 @@ import tasknote.logic.History.CommandObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TaskNote {
 
@@ -37,6 +39,8 @@ public class TaskNote {
 	 */
 	private static int searchIdSize;
 	private static int deleteIdSize;
+	
+	private static Logger logger = Logger.getLogger(TaskNote.class.getName());
 
 	public TaskNote() {
 		taskList = new ArrayList<TaskObject>();
@@ -127,6 +131,7 @@ public class TaskNote {
 			history.pushAddToUndo(taskObject);
 		} catch (Exception e) {
 			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_ADD, e));
 		}
 		return showFeedback(COMMAND_TYPE.ADD, isSuccess, taskObject);
 	}
@@ -148,6 +153,7 @@ public class TaskNote {
 				storage.saveTasks(taskList);
 			} catch (Exception e) {
 				isSuccess = false;
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE, e));
 			}
 		}
 		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
@@ -169,6 +175,7 @@ public class TaskNote {
 			}
 		} catch (Exception e) {
 			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SEARCH, e));
 		}
 		return showFeedback(COMMAND_TYPE.SEARCH, isSuccess, null);
 	}
@@ -190,6 +197,7 @@ public class TaskNote {
 				history.pushUpdateToUndo(oldTaskObject, updatedTaskObject);
 			} catch (Exception e) {
 				isSuccess = false;
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE, e));
 			}
 		}
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
@@ -240,10 +248,10 @@ public class TaskNote {
 				undoCount++;
 			}
 			
-			
 			sortAndSave(taskList);
 		} catch (Exception e) {
 			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UNDO, e));
 		}
 		
 		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
@@ -291,6 +299,7 @@ public class TaskNote {
 			sortAndSave(taskList);
 		} catch (Exception e) {
 			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_REDO, e));
 		}
 		return showFeedback(COMMAND_TYPE.REDO, isSuccess, null);
 	}
@@ -310,6 +319,7 @@ public class TaskNote {
 			history.pushDoneToUndo(taskObject);
 		} catch (Exception e) {
 			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE, e));
 		}
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
 	}
@@ -317,15 +327,18 @@ public class TaskNote {
 	private boolean isValidIdList(ArrayList<Integer> idList) {
 		boolean isValid = true;
 		if (deleteIdSize > 0) {
+			logger.log(Level.FINE, String.format(Constants.FINE_DELETE_LIST_VALIDITY, idList.size()));
 			for (int i = 0; i < idList.size(); i++) {
 				int taskId = idList.get(i);
 				if (!isValidTaskId(taskId)) {
 					isValid = false;
 					break;
 				}
+				logger.log(Level.FINER, String.format(Constants.FINER_VALID_DELETE_ID, i, displayList.get(i).getTaskName()));
 			}
 		} else {
 			isValid = false;
+			logger.log(Level.INFO, String.format(Constants.INFO_DELETE_LIST, deleteIdSize));
 		}
 		return isValid;
 	}
@@ -345,6 +358,7 @@ public class TaskNote {
 		boolean isValid = true;
 		if (taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE) {
 			isValid = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_INVALID_DELETE_ID, taskId));
 		}
 		return isValid;
 	}
@@ -361,6 +375,7 @@ public class TaskNote {
 			sortByDate(taskList);
 			storage.saveTasks(taskList);
 		} catch (Exception e) {
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SORT_SAVE, e));
 			throw e;
 		}
 	}
@@ -373,12 +388,11 @@ public class TaskNote {
 	 * @throws Exception
 	 */
 	private static void sortByDate(ArrayList<TaskObject> list) throws Exception {
-		// TODO
 		try {
 			// Sort by Date-Time
 			Collections.sort(list);
 		} catch (Exception e) {
-			System.out.println("Sort by date has an error");
+			//System.out.println("Sort by date has an error");
 			throw e;
 		}
 	}
