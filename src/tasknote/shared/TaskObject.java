@@ -229,6 +229,28 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
 	}
+	
+	/**
+     * @param Automatically set the taskType based on the current properties.
+     * @@ author MunKeat
+     */
+	public void setTaskType() {
+	    if(this.dateYear == DEFAULT_DATETIME_VALUE && this.dateMonth == DEFAULT_DATETIME_VALUE 
+	            && this.dateDay == DEFAULT_DATETIME_VALUE && this.dateHour == DEFAULT_DATETIME_VALUE
+	            && this.dateMinute == DEFAULT_DATETIME_VALUE && this.duration == 0) {
+	        this.taskType = "floating";
+	    } else if(this.dateYear != DEFAULT_DATETIME_VALUE && this.dateMonth != DEFAULT_DATETIME_VALUE 
+                && this.dateDay != DEFAULT_DATETIME_VALUE && this.duration == 0) {
+	        this.taskType = "deadline";
+	    } else if(this.dateYear != DEFAULT_DATETIME_VALUE && this.dateMonth != DEFAULT_DATETIME_VALUE 
+                && this.dateDay != DEFAULT_DATETIME_VALUE && this.dateHour != DEFAULT_DATETIME_VALUE
+                && this.dateMinute != DEFAULT_DATETIME_VALUE && this.duration > 0) {
+	        this.taskType = "event";
+	    } else {
+	        // TODO Should not reach here - throw exception?
+	        this.taskType = "?";
+	    }
+	}
 
 	/**
 	 * @return the markedDone
@@ -384,15 +406,15 @@ public class TaskObject implements Comparable<TaskObject> {
             if(dateHour < 12) {
                 String hourString = String.format("%02d", dateHour);
                 String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "am");
+                taskTime = (hourString + ":" +  minuteString+ "AM");
             } else if(dateHour == 12) {
                 String hourString = String.format("%02d", dateHour);
                 String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "pm");
+                taskTime = (hourString + ":" +  minuteString+ "PM");
             } else if(dateHour > 12){
                 String hourString = String.format("%02d", (dateHour - 12));
                 String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" + minuteString + "pm");
+                taskTime = (hourString + ":" + minuteString + "PM");
             }
         } 
         
