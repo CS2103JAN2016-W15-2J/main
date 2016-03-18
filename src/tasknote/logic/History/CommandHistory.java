@@ -88,7 +88,7 @@ public class CommandHistory {
 	public void pushUpdateToUndo(TaskObject oldTaskObject, TaskObject newTaskObject) {
 		pushAddToUndo(newTaskObject);
 		pushDeleteToUndo(oldTaskObject);
-		CommandObject undoObject = new CommandObject(redoUpdateCommand, null);
+		CommandObject undoObject = new CommandObject(undoUpdateCommand, null);
 		undoObject.setPrecedingObjects(numPrecedingObjects);
 		undoStack.push(undoObject);
 	}
