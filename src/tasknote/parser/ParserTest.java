@@ -2,6 +2,9 @@ package tasknote.parser;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import org.junit.Test;
 
 import tasknote.shared.COMMAND_TYPE;
@@ -97,7 +100,13 @@ public class ParserTest {
 		String userCommand = "add do CE2 by 5pm";
 		
 		TaskObject expectedResult = new TaskObject("do CE2");
+		GregorianCalendar todayCalendar = new GregorianCalendar();
+		
+		expectedResult.setDateDay(todayCalendar.get(Calendar.DAY_OF_MONTH));
+		expectedResult.setDateMonth(todayCalendar.get(Calendar.MONTH));
+		expectedResult.setDateYear(todayCalendar.get(Calendar.YEAR));
 		expectedResult.setDateHour(17);
+		expectedResult.setDateMinute(0);
 		
 		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}
@@ -108,7 +117,13 @@ public class ParserTest {
 		String userCommand = "add do CE2 by 5am";
 		
 		TaskObject expectedResult = new TaskObject("do CE2");
+		GregorianCalendar todayCalendar = new GregorianCalendar();
+		
+		expectedResult.setDateDay(todayCalendar.get(Calendar.DAY_OF_MONTH));
+		expectedResult.setDateMonth(todayCalendar.get(Calendar.MONTH));
+		expectedResult.setDateYear(todayCalendar.get(Calendar.YEAR));
 		expectedResult.setDateHour(5);
+		expectedResult.setDateMinute(0);
 		
 		assertEquals(SuperParser.parseAdd(userCommand), expectedResult);
 	}

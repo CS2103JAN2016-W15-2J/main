@@ -594,8 +594,7 @@ public class Parser {
 				list.add(nextID);
 
 			} catch (NumberFormatException e) {
-				// No Exceptions handling supported yet
-				// TODO
+				break;
 			}
 		}
 
