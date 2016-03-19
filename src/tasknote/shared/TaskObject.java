@@ -56,6 +56,12 @@ public class TaskObject implements Comparable<TaskObject> {
 		setDateHour(DEFAULT_DATETIME_VALUE);
 		setDateMinute(DEFAULT_DATETIME_VALUE);
 		
+		setEndDateDay(DEFAULT_DATETIME_VALUE);
+		setEndDateMonth(DEFAULT_DATETIME_VALUE);
+		setEndDateYear(DEFAULT_DATETIME_VALUE);
+		setEndDateHour(DEFAULT_DATETIME_VALUE);
+		setEndDateMinute(DEFAULT_DATETIME_VALUE);
+		
 		setDuration(0);
 		
 		setTaskObjectCalendar(new GregorianCalendar());
@@ -82,6 +88,12 @@ public class TaskObject implements Comparable<TaskObject> {
 		setDateMinute(DEFAULT_DATETIME_VALUE);
 		
 		setDuration(0);
+		
+		setEndDateDay(DEFAULT_DATETIME_VALUE);
+		setEndDateMonth(DEFAULT_DATETIME_VALUE);
+		setEndDateYear(DEFAULT_DATETIME_VALUE);
+		setEndDateHour(DEFAULT_DATETIME_VALUE);
+		setEndDateMinute(DEFAULT_DATETIME_VALUE);
 		
 		setTaskObjectCalendar(new GregorianCalendar());
 		
@@ -414,6 +426,52 @@ public class TaskObject implements Comparable<TaskObject> {
             } else if(dateHour > 12){
                 String hourString = String.format("%02d", (dateHour - 12));
                 String minuteString = String.format("%02d", dateMinute);
+                taskTime = (hourString + ":" + minuteString + "PM");
+            }
+        } 
+        
+        return taskTime;
+	}
+	
+	/**
+     * @return Get formatted date. If date is not set, will return empty string.
+     * @@author MunKeat
+     */
+	public String getFormattedEndDate() {
+	    String taskDate = "";
+	    
+        if(endDateDay != DEFAULT_DATETIME_VALUE && endDateMonth != DEFAULT_DATETIME_VALUE && endDateYear != DEFAULT_DATETIME_VALUE) {
+            assert(0 <= endDateDay && endDateDay <= 31);
+            assert(0 <= endDateMonth && endDateMonth <= 12);
+            
+            taskDate = (endDateDay + " " + monthInString[endDateMonth] + " " + endDateYear);
+        } 
+        
+        return taskDate;
+	}
+	
+    /**
+     * @return Get formatted time. If time is not set, will return empty string.
+     * @@author MunKeat
+     */
+	public String getFormattedEndTime() {
+        String taskTime = "";
+        
+        if(endDateMinute != DEFAULT_DATETIME_VALUE && endDateHour != DEFAULT_DATETIME_VALUE) {
+            assert(0 <= endDateMinute && endDateMinute <= 59);
+            assert(0 <= endDateHour && endDateHour <= 23);
+            
+            if(endDateHour < 12) {
+                String hourString = String.format("%02d", endDateHour);
+                String minuteString = String.format("%02d", endDateMinute);
+                taskTime = (hourString + ":" +  minuteString+ "AM");
+            } else if(endDateHour == 12) {
+                String hourString = String.format("%02d", endDateHour);
+                String minuteString = String.format("%02d", endDateMinute);
+                taskTime = (hourString + ":" +  minuteString+ "PM");
+            } else if(endDateHour > 12){
+                String hourString = String.format("%02d", (endDateHour - 12));
+                String minuteString = String.format("%02d", endDateMinute);
                 taskTime = (hourString + ":" + minuteString + "PM");
             }
         } 
