@@ -39,7 +39,8 @@ public class StorageMagicStringsAndNumbers{
 	/**
 	 * file name
 	 */
-	private String fileName = "taskContents.txt";
+	private final String defaultFileName = "taskContents.txt";
+	private final String defaultPathFileName = "pathContents.txt";
 	
 	/**
 	 * Magic Integers
@@ -103,24 +104,10 @@ public class StorageMagicStringsAndNumbers{
 	}
 	
 	public String getFileName(){
-		return fileName;
+		return defaultFileName;
 	}
 	
-	public boolean canChangeFileName(String fileName){
-		if(isFileNameAcceptable(fileName)){
-			this.fileName = fileName;
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	private boolean isFileNameAcceptable(String tempFileName){
-		File tempFile = new File(tempFileName);
-		try{
-			tempFile.getCanonicalPath();
-			return true;
-		}catch(IOException e){}
-		return false;
+	public String getPathFileName(){
+		return defaultPathFileName;
 	}
 }

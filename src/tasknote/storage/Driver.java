@@ -10,7 +10,7 @@ public class Driver{
 		ArrayList<TaskObject> test = new ArrayList<TaskObject>();
 		try{
 			TaskObject temp = new TaskObject();
-			temp.setTaskObjectCalendar(new GregorianCalendar(2015, 2, 21, 14, 41, 0));
+			//temp.setTaskObjectCalendar(new GregorianCalendar(2015, 2, 21, 14, 41, 0));
 			temp.setDateYear(2015);
 			temp.setDateMonth(2);
 			temp.setDateDay(21);

@@ -42,7 +42,7 @@ public class SidebarContainer extends VBox{
         setNavigationPresentation();
         setListBehaviour();
         
-        this.getChildren().addAll(_clock, _observableListRepresentation);
+        this.getChildren().addAll(_clock);
     }
     
     private void setSidebarContainerPresentation() {
