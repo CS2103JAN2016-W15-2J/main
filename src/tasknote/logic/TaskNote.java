@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.LocalDateTime;
 
 public class TaskNote {
 
@@ -21,10 +22,12 @@ public class TaskNote {
 	 */
 	private static ArrayList<TaskObject> taskList;
 	private static ArrayList<TaskObject> searchList;
+	private static ArrayList<TaskObject> showIntervalList;
 	private static ArrayList<TaskObject> displayList;
 
 	private static CommandHistory history;
 
+	private static ShowInterval showType;
 	/*
 	 * This is the storage object that will be used to load tasks into the
 	 * taskList and it will be called to save the tasks after each user
@@ -39,12 +42,13 @@ public class TaskNote {
 	 */
 	private static int searchIdSize;
 	private static int deleteIdSize;
-	
+
 	private static Logger logger = Logger.getLogger(TaskNote.class.getName());
 
 	public TaskNote() {
 		taskList = new ArrayList<TaskObject>();
 		searchList = new ArrayList<TaskObject>();
+		showIntervalList = new ArrayList<TaskObject>();
 		displayList = new ArrayList<TaskObject>();
 		history = new CommandHistory();
 	}
@@ -81,6 +85,16 @@ public class TaskNote {
 	 */
 	public ArrayList<TaskObject> getSearchList() {
 		return searchList;
+	}
+	
+	/**
+	 * This operation returns the Show Interval List containing Task Objects that
+	 * have deadlines in the given interval by the user
+	 * 
+	 * @return List of Tasks that matched User's search
+	 */
+	public ArrayList<TaskObject> getShowIntervalList(){
+		return showIntervalList;
 	}
 
 	/**
@@ -211,22 +225,22 @@ public class TaskNote {
 	public String undoLastCommand() {
 		boolean isSuccess = true;
 		int undoCount = 0;
-		try {	
+		try {
 			CommandObject commandObject = history.peekUndoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 
-			while(undoCount <= numPrecedingObjects) {
+			while (undoCount <= numPrecedingObjects) {
 				commandObject = history.popUndoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				if(commandType == COMMAND_TYPE.ADD) {
+				if (commandType == COMMAND_TYPE.ADD) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushDeleteToRedo(taskObject);
 					taskList.add(taskObject);
-				}else if(commandType == COMMAND_TYPE.DELETE) {
+				} else if (commandType == COMMAND_TYPE.DELETE) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushAddToRedo(taskObject);
 					taskList.remove(taskObject);
-				}else if(commandType == COMMAND_TYPE.UPDATE) {
+				} else if (commandType == COMMAND_TYPE.UPDATE) {
 					CommandObject oldObject = history.popUndoStack();
 					CommandObject newObject = history.popUndoStack();
 					TaskObject oldTaskObject = oldObject.getTaskObject();
@@ -234,7 +248,7 @@ public class TaskNote {
 					history.pushUpdateToRedo(oldTaskObject, newTaskObject);
 					history.pushAddToUndo(newTaskObject);
 					history.pushDeleteToUndo(oldTaskObject);
-				}else if(commandType == COMMAND_TYPE.DONE) {
+				} else if (commandType == COMMAND_TYPE.DONE) {
 					System.out.println("ENTER UNDO COMMAND");
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushDoneToRedo(taskObject);
@@ -247,35 +261,35 @@ public class TaskNote {
 				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
 				undoCount++;
 			}
-			
+
 			sortAndSave(taskList);
 		} catch (Exception e) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UNDO, e));
 		}
-		
+
 		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
 	}
-	
+
 	public String redoLastUndoCommand() {
 		boolean isSuccess = true;
 		int redoCount = 0;
 		try {
 			CommandObject commandObject = history.peekRedoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
-			while(redoCount <= numPrecedingObjects) {
+			while (redoCount <= numPrecedingObjects) {
 				commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				if(commandType == COMMAND_TYPE.ADD) {
+				if (commandType == COMMAND_TYPE.ADD) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushAddToUndo(taskObject);
 					taskList.add(taskObject);
-				}else if(commandType == COMMAND_TYPE.DELETE) {
+				} else if (commandType == COMMAND_TYPE.DELETE) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushDeleteToUndo(taskObject);
 					taskList.remove(taskObject);
-				}else if(commandType == COMMAND_TYPE.UPDATE) {
-					//pass - do nothing
+				} else if (commandType == COMMAND_TYPE.UPDATE) {
+					// pass - do nothing
 					CommandObject oldObject = history.popRedoStack();
 					CommandObject newObject = history.popRedoStack();
 					TaskObject oldTaskObject = oldObject.getTaskObject();
@@ -283,7 +297,7 @@ public class TaskNote {
 					history.pushUpdateToUndo(oldTaskObject, newTaskObject);
 					history.pushAddToUndo(oldTaskObject);
 					history.pushDeleteToUndo(newTaskObject);
-				}else if(commandType == COMMAND_TYPE.DONE) {
+				} else if (commandType == COMMAND_TYPE.DONE) {
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushDoneToUndo(taskObject);
 					taskList.remove(taskObject);
@@ -295,7 +309,7 @@ public class TaskNote {
 				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
 				redoCount++;
 			}
-			
+
 			sortAndSave(taskList);
 		} catch (Exception e) {
 			isSuccess = false;
@@ -307,8 +321,7 @@ public class TaskNote {
 	/**
 	 * This operation sets the completion status of the task to be true
 	 *
-	 * @param Task
-	 *            Object
+	 * @param TaskObject
 	 * @return status of the operation
 	 */
 	public String markTaskAsCompleted(TaskObject taskObject) {
@@ -324,6 +337,151 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
 	}
 
+	/**
+	 * This operation shows the tasks within the specified time interval
+	 *
+	 * @param showIDs
+	 * @return status of the operation
+	 */
+	public String showTasks(ShowInterval timeInterval, int countInterval) {
+		boolean isSuccess = true;
+		showIntervalList = new ArrayList<TaskObject>();
+		try {
+			switch (timeInterval) {
+			case TODAY:
+				getTodayTasks();
+				showType = ShowInterval.TODAY;
+				break;
+			case TOMORROW:
+				getTomorrowTasks();
+				showType = ShowInterval.TOMORROW;
+				break;
+			case DAY:
+				getDayTasks(countInterval);
+				showType = ShowInterval.DAY;
+				break;
+			case WEEK:
+				getWeekTasks(countInterval);
+				showType = ShowInterval.WEEK;
+				break;
+			case ALL:
+				getAllTasks();
+				showType = ShowInterval.ALL;
+				break;
+			default:
+				throw new Error("Unrecognized ShowInterval type");
+			}
+		} catch (Exception e) {
+			isSuccess = false;
+			// logger.log(Level.WARNING,
+			// String.format(Constants.WARNING_EXECUTE_COMPLETE, e));
+		}
+		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
+	}
+	
+	private void getTodayTasks(){
+		LocalDateTime now = LocalDateTime.now();
+		int currentYear = now.getYear();
+	    int currentMonth = now.getMonthValue();
+	    int currentDay = now.getDayOfMonth();
+	    
+	    try{
+	    	populateTdyTmrShowList(currentYear, currentMonth, currentDay);
+	    } catch (Exception e) {
+	    	throw e;
+	    }
+	}
+	
+	private void getTomorrowTasks(){
+		LocalDateTime now = LocalDateTime.now();
+		now = now.plusDays(Constants.INCREMENT_DAY_TOMORROW);
+		
+		int tomorrowYear = now.getYear();
+	    int tomorrowMonth = now.getMonthValue();
+	    int tomorrowDay = now.getDayOfMonth();
+	    
+	    try{
+	    	populateTdyTmrShowList(tomorrowYear, tomorrowMonth, tomorrowDay);
+	    } catch (Exception e) {
+	    	throw e;
+	    }
+	}
+	
+	private void getDayTasks(int days){
+		LocalDateTime now = LocalDateTime.now();
+		int fromYear = now.getYear();
+	    int fromMonth = now.getMonthValue();
+	    int fromDay = now.getDayOfMonth();
+		
+		now = now.plusDays(days);
+		int toYear = now.getYear();
+	    int toMonth = now.getMonthValue();
+	    int toDay = now.getDayOfMonth();
+	    
+	    try{
+	    	populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+	    } catch (Exception e) {
+	    	throw e;
+	    }
+	}
+	
+	private void getWeekTasks(int weeks){
+		LocalDateTime now = LocalDateTime.now();
+		int fromYear = now.getYear();
+	    int fromMonth = now.getMonthValue();
+	    int fromDay = now.getDayOfMonth();
+		
+		now = now.plusWeeks(weeks);
+		int toYear = now.getYear();
+	    int toMonth = now.getMonthValue();
+	    int toDay = now.getDayOfMonth();
+	    
+	    try{
+	    	populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+	    } catch (Exception e) {
+	    	throw e;
+	    }
+	}
+	
+	private void getAllTasks(){
+		try{
+			for(int i = 0; i < taskList.size(); i++){
+				TaskObject taskObject = taskList.get(i);
+				showIntervalList.add(taskObject);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	private void populateTdyTmrShowList(int year, int month, int day){
+		for(int i = 0; i < taskList.size(); i++){
+			TaskObject taskObject = taskList.get(i);
+			int taskDay = taskObject.getDateDay();
+			int taskMonth = taskObject.getDateMonth();
+			int taskYear = taskObject.getDateYear();
+			
+			if(year == taskYear && month == taskMonth && day == taskDay){
+				showIntervalList.add(taskObject);
+			}
+		}
+	}
+	
+	private void populateDayWeekShowList(int toYear, int fromYear, int toMonth, int fromMonth, int toDay, int fromDay){
+		for(int i = 0; i < taskList.size(); i++){
+			TaskObject taskObject = taskList.get(i);
+			int taskDay = taskObject.getDateDay();
+			int taskMonth = taskObject.getDateMonth();
+			int taskYear = taskObject.getDateYear();
+			
+			if(fromYear <= taskYear && taskYear <= toYear 
+					&& fromMonth <= taskMonth && taskMonth <= toMonth
+					&& fromDay <= taskDay && taskDay <= toDay){
+				showIntervalList.add(taskObject);
+			}
+		}
+	}
+
 	private boolean isValidIdList(ArrayList<Integer> idList) {
 		boolean isValid = true;
 		if (deleteIdSize > 0) {
@@ -334,7 +492,8 @@ public class TaskNote {
 					isValid = false;
 					break;
 				}
-				logger.log(Level.FINER, String.format(Constants.FINER_VALID_DELETE_ID, i, displayList.get(i).getTaskName()));
+				logger.log(Level.FINER,
+						String.format(Constants.FINER_VALID_DELETE_ID, i, displayList.get(i).getTaskName()));
 			}
 		} else {
 			isValid = false;
@@ -392,7 +551,7 @@ public class TaskNote {
 			// Sort by Date-Time
 			Collections.sort(list);
 		} catch (Exception e) {
-			//System.out.println("Sort by date has an error");
+			// System.out.println("Sort by date has an error");
 			throw e;
 		}
 	}
@@ -460,6 +619,18 @@ public class TaskNote {
 				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
 			} else {
 				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
+			}
+		case SHOW:
+			if (isSuccess) {
+				int numTasks = searchList.size();
+				if(numTasks > 0){
+					return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL, numTasks);
+				}else{
+					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks);
+				}
+				
+			} else {
+				return Constants.MESSAGE_SHOW_UNSUCCESSFUL;
 			}
 		default:
 			throw new Error("Unrecognized command type");
