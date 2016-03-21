@@ -20,6 +20,9 @@ public class Constants {
 	public static final String MESSAGE_REDO_UNSUCCESSFUL = "Redo Command Failed to be executed";
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
 	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
+	public static final String MESSAGE_SHOW_SUCCESSFUL = "%d Deadline Tasks are due";
+	public static final String MESSAGE_SHOW_NO_RESULTS = "No Deadline Tasks are due within this period";
+	public static final String MESSAGE_SHOW_UNSUCCESSFUL = "Unable to show deadline tasks within this period";
 	
 	/* These are the warnings that will be displayed in the logs if the user does 
 	 * not enter valid commands
@@ -58,7 +61,8 @@ public class Constants {
 	/* These are the integer constants used in the program 
 	 * while executing specific user operations
 	 */
-	public static int EMPTY_LIST_SIZE = 0;
-	public static int DECREMENT_PRECEDING_OBJECTS = 1;
+	public static final int EMPTY_LIST_SIZE = 0;
+	public static final int DECREMENT_PRECEDING_OBJECTS = 1;
+	public static final int INCREMENT_DAY_TOMORROW = 1;
 
 }
