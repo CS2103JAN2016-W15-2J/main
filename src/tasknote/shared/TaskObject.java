@@ -561,7 +561,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		TaskObject comparingTaskObject = (TaskObject) comparingObject;
 		
-		if (!comparingTaskObject.getTaskName().equals(this.getTaskName())) {
+		if (isTaskObjectNameNotSame(comparingTaskObject)) {
 			return false;
 		}
 		
@@ -577,7 +577,19 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		return true;
 	}
+
+	private boolean isTaskObjectNameNotSame(TaskObject comparingTaskObject) {
+		return isNull(this.getTaskName()) ? false : true;
+		//return (isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName())) ? false : !comparingTaskObject.getTaskName().equals(this.getTaskName());
+	}
 	
+	private boolean isNull(String string) {
+		if(string == null){
+			return true;
+		}
+		return false;
+	}
+
 	public void deepCopy(TaskObject sourceTaskObject) {
 		
 		this.setTaskName(sourceTaskObject.getTaskName());

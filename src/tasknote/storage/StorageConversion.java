@@ -249,7 +249,12 @@ public class StorageConversion{
 	}
 
 	private void setTaskName(TaskObject returnObject, String[] content) {
-		returnObject.setTaskName(content[1].trim());
+		String name = content[1].trim();
+		returnObject.setTaskName(extractNullOrName(name));
+	}
+
+	private String extractNullOrName(String name) {
+		return name.equals("null") ? null : name;
 	}
 
 	private boolean isNoContentFound(String[] content) {

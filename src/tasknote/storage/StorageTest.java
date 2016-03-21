@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
@@ -62,7 +65,7 @@ public class StorageTest {
 		day = random.nextInt(RAND_RANGE_DAY) + BASE_DATE;
 		hour = random.nextInt(RAND_RANGE_HOUR);
 		minute = random.nextInt(RAND_RANGE_MINUTE);
-		tempTaskObject.setTaskObjectCalendar(new GregorianCalendar(year, month, day, hour, minute));
+		//tempTaskObject.setTaskObjectCalendar(new GregorianCalendar(year, month, day, hour, minute));
 		tempTaskObject.setDateYear(year);
 		tempTaskObject.setDateMonth(month);
 		tempTaskObject.setDateDay(day);
@@ -90,11 +93,13 @@ public class StorageTest {
 			//case 3: add an ArrayList<TaskObject> with an item
 			storage.saveTasks(tempArrayList1);
 			System.out.println(tempTaskObject);
+			System.out.println();
 			System.out.println(storage.loadTasks().get(0));
+			assertTrue(storage.loadTasks().equals(tempArrayList1));
 			
 			//case 4: add 4 items into storage and retrieval
 			storage.saveTasks(tempArrayList2);
-			assertTrue(tempArrayList2.equals(storage.loadTasks()));
+
 			
 		}catch(IOException ioe){
 			
