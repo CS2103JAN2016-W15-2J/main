@@ -8,6 +8,17 @@ import java.io.File;
 
 public class PathManipulation{
 	private StorageMagicStringsAndNumbers magicValuesRetriever;
+	private PathHistory pathHistory;
+	
+	public PathManipulation(){
+		initializeFamilyClasses();
+	}
+
+	private void initializeFamilyClasses() {
+		magicValuesRetriever = new StorageMagicStringsAndNumbers();
+		pathHistory = new PathHistory();
+	}
+	
 	
 	private boolean iSFilePathValid(String path){
 		//todo
@@ -17,5 +28,13 @@ public class PathManipulation{
 	public boolean changePath(String oldPathName, String newPathName){
 		//todo
 		return false;
+	}
+	
+	public String undo(){
+		return pathHistory.undo();
+	}
+	
+	public String redo(){
+		return pathHistory.redo();
 	}
 }
