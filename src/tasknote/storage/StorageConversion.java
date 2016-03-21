@@ -1,9 +1,6 @@
 package tasknote.storage;
 
 import java.io.IOException;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import tasknote.shared.TaskObject;
 

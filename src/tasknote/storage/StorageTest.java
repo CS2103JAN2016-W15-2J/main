@@ -4,15 +4,10 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
@@ -54,7 +49,7 @@ public class StorageTest {
 			tempArrayList2.add(tempTaskObject);
 			tempArrayList2.add(tempTaskObject);
 			tempArrayList2.add(tempTaskObject);
-			Storage storage = new Storage();
+			storage = new Storage();
 		}catch(Exception e){}
 	}
 
