@@ -47,6 +47,7 @@ public class FileManipulation{
 		String fileName = extractCanonicalFileName();
 		fileName = handleEmptyFileNameExtracted(fileName);
 		initializeTextFile(fileName);
+		storeNewTextFilePath();
 	}
 
 	private String handleEmptyFileNameExtracted(String fileName) {

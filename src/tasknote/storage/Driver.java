@@ -19,6 +19,7 @@ public class Driver{
 			test.add(new TaskObject());
 			Storage storage = new Storage();
 			storage.saveTasks(test);
+			storage.changePath("C:/NUS/CS2103T/");
 			
 			ArrayList<TaskObject> list = storage.loadTasks();
 			System.out.println("#number of items: " + list.size());
