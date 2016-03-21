@@ -30,26 +30,22 @@ public class StorageConversion{
 		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
 			storeItemIntoTaskObject(index, linesInTask[index], returnObject);
 		}
-		setGregorianCalendar(returnObject, getGregorianCalendarFromTask(returnObject));
+		//setGregorianCalendar(returnObject, getGregorianCalendarFromTask(returnObject));
 		
 		return returnObject;
 	}
-
-	private void setGregorianCalendar(TaskObject returnObject, GregorianCalendar returnCalendar) {
-		returnCalendar.set(returnObject.getDateYear(), returnObject.getDateMonth(), returnObject.getDateDay(), returnObject.getDateHour(), returnObject.getDateMinute());
-	}
 	
-	private void storeItemIntoTaskObject(int index, String string, TaskObject returnObject) throws IOException, ClassNotFoundException {
+	private void storeItemIntoTaskObject(int taskObjectLine, String string, TaskObject returnObject) throws IOException, ClassNotFoundException {
 		String[] content;
 		if(isNullString(string)){
 			return;
 		}else{
-			content = extractContent(index, string);
+			content = extractContent(taskObjectLine, string);
 		}
 		if(isNoContentFound(content)){
 			return;
 		}
-		switch(index){
+		switch(taskObjectLine){
 			case 0:
 				setTaskName(returnObject, content);
 				break;
@@ -86,6 +82,7 @@ public class StorageConversion{
 			case 11:
 				setTaskType(returnObject, content);
 				break;
+			/*
 			case 12:
 				setTaskIsMarkedDone(returnObject, content);
 				break;
@@ -98,33 +95,45 @@ public class StorageConversion{
 			case 15:
 				setTaskTimeZoneDayLightTime(returnObject, content);
 				break;
+			*/
 			default:
 				break;
-		}
-	}
-
-	private void setTaskTimeZoneDayLightTime(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			getTimeZoneFromTask(returnObject).useDaylightTime();
 		}
 	}
 
 	private boolean isTimeZoneUsingDayLightTime(String[] content) {
 		return content[1].trim().equalsIgnoreCase("true");
 	}
-
-	private void setTaskGregorianCalendar(TaskObject returnObject, String[] content) {
-		getTimeZoneFromTask(returnObject).setID(content[1].trim());;
+	
+	/*
+	* GregorianCalendar Methods
+	
+	private void setGregorianCalendar(TaskObject returnObject, GregorianCalendar returnCalendar) {
+		returnCalendar.set(returnObject.getDateYear(), returnObject.getDateMonth(), returnObject.getDateDay(), returnObject.getDateHour(), returnObject.getDateMinute());
 	}
-
+	
+	private void setTaskTimeZoneDayLightTime(TaskObject returnObject, String[] content) {
+		if(isTimeZoneUsingDayLightTime(content)){
+			getTimeZoneFromTask(returnObject).useDaylightTime();
+		}
+	}
+	
+	private void setTaskGregorianCalendar(TaskObject returnObject, String[] content) {
+		getTimeZoneFromTask(returnObject).setID(content[1].trim());
+	}
+	
 	private TimeZone getTimeZoneFromTask(TaskObject returnObject) {
 		return getGregorianCalendarFromTask(returnObject).getTimeZone();
 	}
-
+	
 	private GregorianCalendar getGregorianCalendarFromTask(TaskObject returnObject) {
 		return returnObject.getTaskObjectCalendar();
 	}
-
+	
+	private void setLocaleToTaskObjectCalendar(TaskObject returnObject, Locale locale) {
+		returnObject.setTaskObjectCalendar(new GregorianCalendar(locale));
+	}
+	
 	private void setTaskLocale(TaskObject returnObject, String[] content) {
 		String firstDayOfWeek = content[1].trim();
 		if(isLocaleSundayFirstDayOfWeek(firstDayOfWeek)){
@@ -134,10 +143,6 @@ public class StorageConversion{
 			Locale locale = getLocaleMondayFirstDayOfWeek();
 			setLocaleToTaskObjectCalendar(returnObject, locale);
 		}
-	}
-
-	private void setLocaleToTaskObjectCalendar(TaskObject returnObject, Locale locale) {
-		returnObject.setTaskObjectCalendar(new GregorianCalendar(locale));
 	}
 
 	private Locale getLocaleMondayFirstDayOfWeek() {
@@ -163,6 +168,32 @@ public class StorageConversion{
 			returnObject.setIsMarkedDone(false);
 		}
 	}
+	
+	private void writeTaskTimeZoneDayLightTime(TimeZone taskTimeZone, StringBuffer tempBuffer) {
+		tempBuffer.append(taskTimeZone.observesDaylightTime());
+	}
+
+	private void writeTaskTimeZoneID(TimeZone taskTimeZone, StringBuffer tempBuffer) {
+		tempBuffer.append(taskTimeZone.getID());
+	}
+
+	private boolean isLocaleMondayFirstDayOfWeek(GregorianCalendar taskCalendar) {
+		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getMondayFirstDayOfWeek();
+	}
+
+	private boolean isLocaleSundayFirstDayOfWeek(GregorianCalendar taskCalendar) {
+		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getSundayFirstDayOfWeek();
+	}
+
+	private void writeLocaleMondayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
+		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getMondayFirstDayOfWeek()));
+	}
+
+	private void writeLocaleSundayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
+		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
+	}
+	
+	*/
 
 	private void setTaskType(TaskObject returnObject, String[] content) {
 		returnObject.setTaskType(content[1].trim());
@@ -240,21 +271,21 @@ public class StorageConversion{
 	 */
 	public String convertTaskObjectToString(TaskObject task){
 		StringBuffer convertedString = new StringBuffer("");
-		GregorianCalendar taskCalendar = getGregorianCalendarFromTask(task);
-		TimeZone taskTimeZone = taskCalendar.getTimeZone();
+		//GregorianCalendar taskCalendar = getGregorianCalendarFromTask(task);
+		//TimeZone taskTimeZone = taskCalendar.getTimeZone();
 		
 		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
-			convertedString.append(extractItemFromTaskObject(index, task, taskCalendar, taskTimeZone));
+			convertedString.append(extractItemFromTaskObject(index, task));
 		}
 		
 		return convertedString.toString();
 	}
 	
-	private StringBuffer extractItemFromTaskObject(int index, TaskObject task, GregorianCalendar taskCalendar, TimeZone taskTimeZone){
+	private StringBuffer extractItemFromTaskObject(int taskObjectLine, TaskObject task){
 		StringBuffer tempBuffer = new StringBuffer("");
-		tempBuffer.append(magicValuesRetriever.getTaskObjectTitle(index));
+		tempBuffer.append(magicValuesRetriever.getTaskObjectTitle(taskObjectLine));
 		tempBuffer.append(magicValuesRetriever.getSpace());
-		switch(index){
+		switch(taskObjectLine){
 			case 0:
 				writeTaskNameToStringBuffer(task, tempBuffer);
 				break;
@@ -294,6 +325,7 @@ public class StorageConversion{
 			case 12:
 				writeIsMarkedDoneToStringBuffer(task, tempBuffer);
 				break;
+			/*
 			case 13:
 				if(isLocaleSundayFirstDayOfWeek(taskCalendar)){
 					writeLocaleSundayFirstDayOfWeekToStringBuffer(tempBuffer);
@@ -307,35 +339,12 @@ public class StorageConversion{
 			case 15:
 				writeTaskTimeZoneDayLightTime(taskTimeZone, tempBuffer);
 				break;
+			*/
 			default:
 				break;
 		}
 		tempBuffer.append(magicValuesRetriever.getNewLine());
 		return tempBuffer;
-	}
-
-	private void writeTaskTimeZoneDayLightTime(TimeZone taskTimeZone, StringBuffer tempBuffer) {
-		tempBuffer.append(taskTimeZone.observesDaylightTime());
-	}
-
-	private void writeTaskTimeZoneID(TimeZone taskTimeZone, StringBuffer tempBuffer) {
-		tempBuffer.append(taskTimeZone.getID());
-	}
-
-	private boolean isLocaleMondayFirstDayOfWeek(GregorianCalendar taskCalendar) {
-		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getMondayFirstDayOfWeek();
-	}
-
-	private boolean isLocaleSundayFirstDayOfWeek(GregorianCalendar taskCalendar) {
-		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getSundayFirstDayOfWeek();
-	}
-
-	private void writeLocaleMondayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
-		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getMondayFirstDayOfWeek()));
-	}
-
-	private void writeLocaleSundayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
-		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
 	}
 
 	private void writeIsMarkedDoneToStringBuffer(TaskObject task, StringBuffer tempBuffer) {

@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 public class Storage{
 	private FileManipulation fileManipulator;
+	private PathManipulation pathManipulator;
 	
 	/**
 	 * constructor to construct FileManipulator to manipulate items from/to file
 	 */
 	public Storage(){
 		fileManipulator = new FileManipulation();
+		pathManipulator = new PathManipulation();
 	}
 	
 	/**

@@ -319,7 +319,11 @@ public class Parser {
 		// Set duration
 		taskObjectToBuild.setDuration(duration);
 		
+		// set end datetime
 		if (duration > 0) {
+			taskObjectToBuild.setEndDateYear(dateYear);
+			taskObjectToBuild.setEndDateMonth(dateMonth);
+			taskObjectToBuild.setEndDateDay(dateDay);
 			taskObjectToBuild.setEndDateHour(endDateHour);
 			taskObjectToBuild.setEndDateMinute(endDateMinute);
 		}
@@ -562,6 +566,15 @@ public class Parser {
 		
 		// Set duration
 		taskObjectToBuild.setDuration(duration);
+		
+		// Set end datetime
+		if (duration > 0) {
+			taskObjectToBuild.setEndDateYear(dateYear);
+			taskObjectToBuild.setEndDateMonth(dateMonth);
+			taskObjectToBuild.setEndDateDay(dateDay);
+			taskObjectToBuild.setEndDateHour(endDateHour);
+			taskObjectToBuild.setEndDateMinute(endDateMinute);
+		}
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
@@ -594,8 +607,7 @@ public class Parser {
 				list.add(nextID);
 
 			} catch (NumberFormatException e) {
-				// No Exceptions handling supported yet
-				// TODO
+				break;
 			}
 		}
 
@@ -630,8 +642,6 @@ public class Parser {
 					indicesToRemove.add(j);
 				}
 			}
-			
-			int numberOfIndicesToRemove = indicesToRemove.size();
 			
 			indicesToReturn.removeAll(indicesToRemove);
 		}

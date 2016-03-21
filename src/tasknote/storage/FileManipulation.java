@@ -13,19 +13,25 @@ import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
 public class FileManipulation{
-	private static File textFile;
 	
 	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	private StorageConversion storageManipulator;
+	
+	private static File textFile;
+	private static File pathFile;
 
 	/**
 	 * Constructor to initialize file
 	 */
 	public FileManipulation(){
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
-		storageManipulator = new StorageConversion();
+		initializeFamilyClasses();
 		initializeFile();
 		createFileIfNotExist();
+	}
+
+	private void initializeFamilyClasses() {
+		magicValuesRetriever = new StorageMagicStringsAndNumbers();
+		storageManipulator = new StorageConversion();
 	}
 
 	private void createFileIfNotExist() {
@@ -33,8 +39,12 @@ public class FileManipulation{
 			createNewFile();
 		}
 	}
-
+	
+	/**
+	 * get PATH + filename from pathFile and attempts to open the file
+	 */
 	private void initializeFile(){
+		pathFile = new File(magicValuesRetriever.getPathFileName());
 		textFile = new File(magicValuesRetriever.getFileName());
 	}
 
@@ -45,9 +55,15 @@ public class FileManipulation{
 	private void createNewFile(){
 		try{
 			textFile.createNewFile(); 
+			storeNewTextFile(textFile);
 		}catch(IOException e){
-			// todo
+			System.out.println(e.getMessage());
 		}
+	}
+	
+	private void storeNewTextFile(File textFile) throws IOException{
+		//todo
+		throw new IOException("Failed to store PATH + filename into pathFile");
 	}
 	
 	/**
@@ -150,7 +166,7 @@ public class FileManipulation{
 	 *
 	 */
 	public boolean canChangeFileName(String newFileName){
-		if(magicValuesRetriever.canChangeFileName(newFileName)){
+		if(canChangeFileName(newFileName)){
 			copyFileAndDeletePrevious(newFileName);
 			return true;
 		}else{
@@ -212,5 +228,21 @@ public class FileManipulation{
 	public void cleanFile() throws IOException{
 		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile));
 		fileWriter.close();
+	}
+	
+	public String changeFileName(String fileName){
+		if(isFileNameAcceptable(fileName)){
+			return fileName;
+		}
+		return null;
+	}
+	
+	private boolean isFileNameAcceptable(String tempFileName){
+		File tempFile = new File(tempFileName);
+		try{
+			tempFile.getCanonicalPath();
+			return true;
+		}catch(IOException e){}
+		return false;
 	}
 }
