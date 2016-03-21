@@ -69,15 +69,12 @@ public class TaskNoteControl {
 			response = executeUndo();
 			break;
 		case REDO:
-			//TODO
 			response = executeRedo(userCommand);
 			break;
 		case DONE:
-			//TODO: parser
 			response = executeMarkAsComplete(userCommand);
 			break;
 		case CHANGE_FILE_PATH:
-			//TODO
 			response = executeChangeFilePath(userCommand);
 			break;
 		case INVALID:
