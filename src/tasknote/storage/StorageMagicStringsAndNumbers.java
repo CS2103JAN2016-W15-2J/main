@@ -22,44 +22,47 @@ public class StorageMagicStringsAndNumbers{
 														, "timeZoneID:"
 														, "isDayLightTimeOn:"
 														, ""};
-	private final static String[] STRING_TASK_STATUS = {"TASK_DEFAULT",
-														"TASK_OUTSTANDING",
-														"TASK_COMPLETED",
-														"TASK_INVALID_STORAGE"};
 	
-	private final static String SPACE = " ";
-	private final static String NEWLINE = "\n";
+	private final String[] STRING_TASK_STATUS = {"TASK_DEFAULT",
+												 "TASK_OUTSTANDING",
+												 "TASK_COMPLETED",
+												 "TASK_INVALID_STORAGE"};
 	
+	private final String STRING_SPACE = " ";
+	private final String STRING_NEWLINE = "\n";
+	private final String STRING_SLASH = "/";
+	private final String STRING_PATH_SLASH = "\\";
+	private final String STRING_PATH_DIVISION = "\\\\";
+	private final String STRING_TEXT_FILE_END = ".txt";
+	
+	/*
 	private final static String LOCALE_MONDAY = "Monday";
 	private final static String LOCALE_SUNDAY = "Sunday";
 	private final static String LOCALE_LANGAUGE = "en"; //assumption since we are not displaying other languages other than English
+	private final static int LOCALE_US = 1;
+	private final static int LOCALE_GB = 2;
+	*/
+	
 	/**
 	 * file name
 	 */
 	private final String defaultFileName = "taskContents.txt";
 	private final String defaultPathFileName = "pathContents.txt";
 	
+	private static final String FORMAT_PATH_NAME = "%1$s%2$s";
+	
 	/**
 	 * Magic Integers
 	 */
-	private final static int SUM_OF_TASKOBJECT_ITEMS = 17;
-	private final static int SUM_OF_TASK_STATUS = 4;
-	private final static int BUFFERSIZE = 32768;
-	private final static int LOCALE_US = 1;
-	private final static int LOCALE_GB = 2;
+	private final int SUM_OF_TASKOBJECT_ITEMS = 13;
+	private final int SUM_OF_TASK_STATUS = 4;
+	private final int BUFFERSIZE = 32768;
 	
 	public StorageMagicStringsAndNumbers(){}
 	
+	/*
 	public String getLanguage(){
 		return LOCALE_LANGAUGE;
-	}
-	
-	public String getTaskObjectTitle(int index){
-		return STRING_TASKOBJECT[index];
-	}
-	
-	public String getTaskStatus(int index){
-		return STRING_TASK_STATUS[index];
 	}
 	
 	public int getSundayFirstDayOfWeek(){
@@ -79,13 +82,42 @@ public class StorageMagicStringsAndNumbers{
 		}
 		return "";
 	}
+	*/
+	
+	public String getTaskObjectTitle(int index){
+		return STRING_TASKOBJECT[index];
+	}
+	
+	public String getTaskStatus(int index){
+		return STRING_TASK_STATUS[index];
+	}
 	
 	public String getSpace(){
-		return SPACE;
+		return STRING_SPACE;
 	}
 	
 	public String getNewLine(){
-		return NEWLINE;
+		return STRING_NEWLINE;
+	}
+	
+	public String getSlash(){
+		return STRING_SLASH;
+	}
+	
+	public String getPathSlash(){
+		return STRING_PATH_SLASH;
+	}
+	
+	public String getPathDivision(){
+		return STRING_PATH_DIVISION;
+	}
+	
+	public String getTextFileEnding(){
+		return STRING_TEXT_FILE_END;
+	}
+	
+	public String produceFullPathName(String pathName, String fileName){
+		return String.format(FORMAT_PATH_NAME, pathName, fileName);
 	}
 	
 	public int getBufferSize(){

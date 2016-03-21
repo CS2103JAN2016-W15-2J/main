@@ -5,9 +5,11 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
@@ -19,53 +21,137 @@ public class FileManipulation{
 	
 	private static File textFile;
 	private static File pathFile;
+	
+	private String textFileName;
 
 	/**
 	 * Constructor to initialize file
 	 */
 	public FileManipulation(){
 		initializeFamilyClasses();
-		initializeFile();
+		initializeFiles();
 		createFileIfNotExist();
+	}
+	
+	public String getTextFileName(){
+		return textFileName;
 	}
 
 	private void initializeFamilyClasses() {
 		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 		storageManipulator = new StorageConversion();
 	}
+	
+	private void initializeFiles(){
+		initializePathFile();
+		String fileName = extractCanonicalFileName();
+		fileName = handleEmptyFileNameExtracted(fileName);
+		initializeTextFile(fileName);
+	}
 
-	private void createFileIfNotExist() {
-		if(isFileNotExist()){
-			createNewFile();
+	private String handleEmptyFileNameExtracted(String fileName) {
+		if(isNullString(fileName)){
+			fileName = magicValuesRetriever.getFileName();
 		}
+		return fileName;
 	}
 	
-	/**
-	 * get PATH + filename from pathFile and attempts to open the file
-	 */
-	private void initializeFile(){
-		pathFile = new File(magicValuesRetriever.getPathFileName());
-		textFile = new File(magicValuesRetriever.getFileName());
+	private boolean isNullString(String content){
+		return content == null;
 	}
 
-	private boolean isFileNotExist(){
-		return !textFile.exists();
+	private void initializeTextFile(String fileName) {
+		textFile = new File(fileName);
+		textFileName = extractTextFileName(fileName);
 	}
 
-	private void createNewFile(){
+	private String extractTextFileName(String fileName) {
+		String[] pathListName = fileName.split(magicValuesRetriever.getPathDivision());
+		return pathListName[getLastIndexOfArray(pathListName)];
+	}
+
+	private int getLastIndexOfArray(String[] pathListName) {
+		return pathListName.length-1;
+	}
+
+	private void initializePathFile() {
+		pathFile = new File(getDefaultPathFileName());
+	}
+
+	private String getDefaultPathFileName() {
+		return magicValuesRetriever.getPathFileName();
+	}
+	
+	private String extractCanonicalFileName(){
+		if(isFileNotExist(pathFile)){
+			return magicValuesRetriever.getFileName();
+		}
+		return readFileName();
+	}
+
+	private String readFileName() {
 		try{
-			textFile.createNewFile(); 
-			storeNewTextFile(textFile);
+			BufferedReader fileReader = initializeFileReader();
+			String fileName = fileReader.readLine();
+			fileReader.close();
+			return fileName;
+		}catch(IOException ioe){}
+		return null;
+	}
+
+	private BufferedReader initializeFileReader() throws FileNotFoundException {
+		return new BufferedReader(initializePathFileReader());
+	}
+
+	private FileReader initializePathFileReader() throws FileNotFoundException {
+		return new FileReader(pathFile);
+	}
+
+	private void createFileIfNotExist() {
+		createPathFileIfNotExist();
+		createTextFileIfNotExist();
+	}
+
+	private void createPathFileIfNotExist() {
+		if(isFileNotExist(pathFile)){
+			createNewFile(pathFile);
+		}
+	}
+
+	private void createTextFileIfNotExist() {
+		if(isFileNotExist(textFile)){
+			createNewFile(textFile);
+			storeNewTextFilePath();
+		}
+	}
+
+	private boolean isFileNotExist(File file){
+		return !file.exists();
+	}
+
+	private void createNewFile(File file){
+		try{
+			file.createNewFile(); 
 		}catch(IOException e){
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	private void storeNewTextFile(File textFile) throws IOException{
-		//todo
-		throw new IOException("Failed to store PATH + filename into pathFile");
+	private void storeNewTextFilePath(){
+		try{
+			BufferedOutputStream fileWriter = new BufferedOutputStream(initializePathFileOutputStream());
+			byte[] textFileCanonicalPathName = textFile.getCanonicalPath().getBytes();
+			fileWriter.write(textFileCanonicalPathName,0,textFileCanonicalPathName.length);
+			fileWriter.close();
+		}catch(IOException ioe){
+			
+		}
 	}
 	
+	private OutputStream initializePathFileOutputStream() throws FileNotFoundException {
+		return new FileOutputStream(pathFile);
+	}
+
 	/**
 	 * This method reads from file and converts it into ArrayList/<TaskObject/>
 	 * to return to logic
@@ -139,7 +225,7 @@ public class FileManipulation{
 			byte[] bufferMemory = stringToFile.getBytes();
 			int totalNumberOfBytesToWrite = bufferMemory.length;
 			int maxWriteLength = magicValuesRetriever.getBufferSize();
-			BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile,true));
+			BufferedOutputStream fileWriter = new BufferedOutputStream(initializeContinuousTextFileOutputStream());
 			
 			loopWriteOneObjectToFile(bufferMemory, totalNumberOfBytesToWrite, maxWriteLength, fileWriter);
 			
@@ -147,6 +233,10 @@ public class FileManipulation{
 		}catch(IOException ioe){
 			throw new TaskListIOException();
 		}
+	}
+
+	private FileOutputStream initializeContinuousTextFileOutputStream() throws FileNotFoundException {
+		return new FileOutputStream(textFile,true);
 	}
 
 	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
@@ -165,13 +255,25 @@ public class FileManipulation{
 	 * @return	boolean true for success copy of file and false otherwise
 	 *
 	 */
-	public boolean canChangeFileName(String newFileName){
-		if(canChangeFileName(newFileName)){
-			copyFileAndDeletePrevious(newFileName);
+	
+	public boolean changeFileName(String fileName){
+		if(isFileNameAcceptable(fileName)){
+			copyFileAndDeletePrevious(fileName);
+			initializeTextFile(fileName);
+			storeNewTextFilePath();
+			setNewFileEnvironment();
 			return true;
-		}else{
-			return false;
 		}
+		return false;
+	}
+	
+	private boolean isFileNameAcceptable(String tempFileName){
+		File tempFile = new File(tempFileName);
+		try{
+			tempFile.getCanonicalPath();
+			return true;
+		}catch(IOException e){}
+		return false;
 	}
 
 	private void copyFileAndDeletePrevious(String newFileName) {
@@ -194,18 +296,25 @@ public class FileManipulation{
 
 	private void copyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream)
 			throws IOException{
+		
 		byte[] bufferMemory = new byte[magicValuesRetriever.getBufferSize()];
-
 		int length = inputStream.read(bufferMemory);
+		loopCopyFileContents(inputStream, outputStream, bufferMemory, length);
+	
+	}
 
+	private void loopCopyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream,
+			byte[] bufferMemory, int length) throws IOException {
+		
 		while (isPositive(length)) {
 			outputStream.write(bufferMemory, 0, length);
 			length = inputStream.read(bufferMemory);
 		}
+	
 	}
 	
 	private void setNewFileEnvironment(){
-		initializeFile();
+		initializeFiles();
 	}
 
 	private void deleteOldFile(){
@@ -226,23 +335,11 @@ public class FileManipulation{
 	}
 	
 	public void cleanFile() throws IOException{
-		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(textFile));
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeTextFileOutputStream());
 		fileWriter.close();
 	}
-	
-	public String changeFileName(String fileName){
-		if(isFileNameAcceptable(fileName)){
-			return fileName;
-		}
-		return null;
-	}
-	
-	private boolean isFileNameAcceptable(String tempFileName){
-		File tempFile = new File(tempFileName);
-		try{
-			tempFile.getCanonicalPath();
-			return true;
-		}catch(IOException e){}
-		return false;
+
+	private FileOutputStream initializeTextFileOutputStream() throws FileNotFoundException {
+		return new FileOutputStream(textFile);
 	}
 }
