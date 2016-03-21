@@ -32,7 +32,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	
 	private int duration;
 	
-	private GregorianCalendar taskObjectCalendar;
+	//private GregorianCalendar taskObjectCalendar;
 	
 	private String location;
 	
@@ -64,7 +64,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		setDuration(0);
 		
-		setTaskObjectCalendar(new GregorianCalendar());
+		//setTaskObjectCalendar(new GregorianCalendar());
 		
 		setLocation("");
 		
@@ -95,7 +95,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setEndDateHour(DEFAULT_DATETIME_VALUE);
 		setEndDateMinute(DEFAULT_DATETIME_VALUE);
 		
-		setTaskObjectCalendar(new GregorianCalendar());
+		//setTaskObjectCalendar(new GregorianCalendar());
 		
 		setLocation("");
 		
@@ -284,16 +284,20 @@ public class TaskObject implements Comparable<TaskObject> {
 	/**
 	 * @return the taskObjectCalendar
 	 */
+	/*
 	public GregorianCalendar getTaskObjectCalendar() {
 		return this.taskObjectCalendar;
 	}
+	*/
 
 	/**
 	 * @param taskObjectCalendar the taskObjectCalendar to set
 	 */
+	/*
 	public void setTaskObjectCalendar(GregorianCalendar taskObjectCalendar) {
 		this.taskObjectCalendar = taskObjectCalendar;
 	}
+	*/
 
 	/**
 	 * @return the dateMonth
@@ -373,7 +377,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	public String toString(){
 		return "task name = " + taskName
 				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
-				+ "\nGregorianCalendar = " + taskObjectCalendar
+				//+ "\nGregorianCalendar = " + taskObjectCalendar
 				+ "\nTime = " + dateHour + " " + dateMinute
 				+ "\nDuration = " + duration
 				+ "\nlocation = " + location
@@ -381,10 +385,10 @@ public class TaskObject implements Comparable<TaskObject> {
 				+ "\nisNotified = " + isNotified
 				+ "\ntaskStatus = " + taskStatus
 				+ "\ntaskType = " + taskType
-				+ "\nisMarkedDone = " + isMarkedDone
-				+ "\nFirstDayOfWeek = " +  taskObjectCalendar.getFirstDayOfWeek()
-				+ "\nTimeZoneID = " + taskObjectCalendar.getTimeZone().getID()
-				+ "\nisDayLightTimeOn = " + taskObjectCalendar.getTimeZone().observesDaylightTime() + "\n";
+				+ "\nisMarkedDone = " + isMarkedDone;
+				//+ "\nFirstDayOfWeek = " +  taskObjectCalendar.getFirstDayOfWeek()
+				//+ "\nTimeZoneID = " + taskObjectCalendar.getTimeZone().getID()
+				//+ "\nisDayLightTimeOn = " + taskObjectCalendar.getTimeZone().observesDaylightTime() + "\n";
 	}
 	
     /**
