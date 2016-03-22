@@ -577,8 +577,8 @@ public class TaskObject implements Comparable<TaskObject> {
 	}
 
 	private boolean isTaskObjectNameNotSame(TaskObject comparingTaskObject) {
-		return isNull(this.getTaskName()) ? false : true;
-		//return (isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName())) ? false : !comparingTaskObject.getTaskName().equals(this.getTaskName());
+		//return isNull(this.getTaskName()) ? false : true;
+		return (isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName())) ? false : !comparingTaskObject.getTaskName().equals(this.getTaskName());
 	}
 	
 	private boolean isNull(String string) {
