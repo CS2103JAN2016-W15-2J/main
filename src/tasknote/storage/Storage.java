@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Storage{
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
+	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	
 	/**
 	 * constructor to construct FileManipulator to manipulate items from/to file
@@ -16,6 +17,7 @@ public class Storage{
 	public Storage(){
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
+		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 	}
 	
 	/**
@@ -47,7 +49,6 @@ public class Storage{
 	public void cleanFile() throws IOException{
 		fileManipulator.cleanFile();
 	}
-<<<<<<< HEAD
 	
 	public boolean changePath(String newPathName){
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
@@ -78,6 +79,4 @@ public class Storage{
 			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
 		}
 	}
-=======
->>>>>>> parent of 411c9bc... DONE: PATH manipulation
 }
