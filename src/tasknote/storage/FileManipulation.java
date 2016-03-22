@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
@@ -287,8 +286,9 @@ public class FileManipulation{
 			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
 			
 			copyFileContents(inputStream, outputStream);
-			closeStream(inputStream,outputStream);
 			deleteOldFile();
+			setNewFileEnvironment();
+			closeStream(inputStream,outputStream);
 			
 		}catch(IOException e){
 			// do nothing
@@ -308,10 +308,8 @@ public class FileManipulation{
 			byte[] bufferMemory, int length) throws IOException {
 		
 		while (isPositive(length)) {
-			System.out.println(new String(bufferMemory));
 			outputStream.write(bufferMemory, 0, length);
 			length = inputStream.read(bufferMemory);
-			outputStream.flush();
 		}
 	
 	}
@@ -320,8 +318,7 @@ public class FileManipulation{
 		initializeFiles();
 	}
 
-	private void deleteOldFile() throws IOException{
-		Files.delete(textFile.toPath());
+	private void deleteOldFile(){
 		textFile.delete();
 	}
 

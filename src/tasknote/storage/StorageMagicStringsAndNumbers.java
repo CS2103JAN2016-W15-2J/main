@@ -18,7 +18,6 @@ public class StorageMagicStringsAndNumbers{
 														, "taskStatus:"
 														, "taskType:"
 														, "isMarkedDone:"
-														, ""
 														, "firstDayOfWeek:"
 														, "timeZoneID:"
 														, "isDayLightTimeOn:"
@@ -56,7 +55,7 @@ public class StorageMagicStringsAndNumbers{
 	/**
 	 * Magic Integers
 	 */
-	private final int SUM_OF_TASKOBJECT_ITEMS = 14;
+	private final int SUM_OF_TASKOBJECT_ITEMS = 13;
 	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
 	

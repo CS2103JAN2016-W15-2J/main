@@ -8,7 +8,6 @@ public class Driver{
 	public static void main(String[] args){
 		ArrayList<TaskObject> test = new ArrayList<TaskObject>();
 		try{
-			/*
 			TaskObject temp = new TaskObject();
 			//temp.setTaskObjectCalendar(new GregorianCalendar(2015, 2, 21, 14, 41, 0));
 			temp.setDateYear(2015);
@@ -18,10 +17,9 @@ public class Driver{
 			temp.setDateMinute(41);
 			test.add(temp);
 			test.add(new TaskObject());
-			*/
 			Storage storage = new Storage();
-			//storage.saveTasks(test);
-			storage.changePath("C:/NUS/");
+			storage.saveTasks(test);
+			storage.changePath("C:/NUS/CS2103T/");
 			
 			ArrayList<TaskObject> list = storage.loadTasks();
 			System.out.println("#number of items: " + list.size());
