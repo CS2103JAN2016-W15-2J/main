@@ -51,34 +51,5 @@ public class Storage{
 	public void cleanFile() throws IOException{
 		fileManipulator.cleanFile();
 	}
-	
-	public boolean changePath(String newPathName){
-		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		textFileName = textFileName.replace(magicValuesRetriever.getSlash(), magicValuesRetriever.getPathSlash());
-		
-		if(pathManipulator.canChangePath(textFileName)){
-			fileManipulator.changeFileName(textFileName);
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public boolean undoPath(){
-		String previousPath = pathManipulator.extractUndoPathString();
-		return fileManipulator.changeFileName(previousPath);
-	}
-	
-	public boolean redoPath(){
-		String nextPath = pathManipulator.extractRedoPathString();
-		return fileManipulator.changeFileName(nextPath);
-	}
-	
-	private String concatPathIfNeeded(String pathName, String previousTextFileName){
-		if(pathName.contains(magicValuesRetriever.getTextFileEnding())){
-			return pathName;
-		}else{
-			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
-		}
-	}
+
 }
