@@ -8,6 +8,8 @@ import tasknote.logic.Commands.UpdateCommand;
 import tasknote.logic.Commands.CompleteCommand;
 import tasknote.logic.Commands.UndoCommand;
 import tasknote.logic.Commands.RedoCommand;
+import tasknote.logic.Commands.ShowCommand;
+import tasknote.logic.ShowInterval;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
 import tasknote.shared.COMMAND_TYPE;
@@ -76,6 +78,11 @@ public class TaskNoteControl {
 			break;
 		case CHANGE_FILE_PATH:
 			response = executeChangeFilePath(userCommand);
+			break;
+		case SHOW:
+			//TODO: Parser
+			//response = executeShow(userCommand);
+			response = "";
 			break;
 		case INVALID:
 			response = Constants.WARNING_INVALID_COMMAND;
@@ -222,5 +229,26 @@ public class TaskNoteControl {
 		//TODO
 		return "";
 	}
+	
+	/**
+	 * This operation executes the User's request to show
+	 * all tasks whose deadlines are within the specified time interval
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
+	/*
+	private static String executeShow(String userCommand){
+		//TODO: Parser
+		//E.g. Show next 7 weeks / Show all / Show tdy
+		ShowInterval timeInterval = Parser.parseShow(userCommand); // returns WEEK / ALL / TODAY
+		int countInterval = Parse.getInterval(userCommand); // returns 7 / -1 / -1
+		command = new ShowCommand(taskNote, timeInterval, countInterval);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
+		return response;
+	}
+	*/
 	
 }
