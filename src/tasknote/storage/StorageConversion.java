@@ -70,26 +70,43 @@ public class StorageConversion{
 			case 8:
 				setTaskNotifyTime(returnObject, content);
 				break;
-			case 9:
-				setTaskIsNotified(returnObject, content);
-				break;
-			case 10: //note is enum!
+			case 9: //note is enum!
 				setTaskStatus(returnObject, content);
 				break;
-			case 11:
+			case 10:
 				setTaskType(returnObject, content);
 				break;
-			/*
+			case 11:
+				setTaskEndDateDay(returnObject, content);
+				break;
 			case 12:
-				setTaskIsMarkedDone(returnObject, content);
+				setTaskEndDateMonth(returnObject, content);
 				break;
 			case 13:
-				setTaskLocale(returnObject, content);
+				setTaskEndDateYear(returnObject, content);
 				break;
 			case 14:
-				setTaskGregorianCalendar(returnObject, content);
+				setTaskEndDateHour(returnObject, content);
 				break;
 			case 15:
+				setTaskEndDateMinute(returnObject, content);
+				break;
+			case 16:
+				break;
+			/*
+			case 19:
+				setTaskIsMarkedDone(returnObject, content);
+				break;
+			case 20:
+				setTaskIsNotified(returnObject, content);
+				break;
+			case 21:
+				setTaskLocale(returnObject, content);
+				break;
+			case 22:
+				setTaskGregorianCalendar(returnObject, content);
+				break;
+			case 23:
 				setTaskTimeZoneDayLightTime(returnObject, content);
 				break;
 			*/
@@ -97,13 +114,36 @@ public class StorageConversion{
 				break;
 		}
 	}
+	
+	private void setTaskEndDateMinute(TaskObject returnObject, String[] content) {
+		returnObject.setEndDateMinute(Integer.parseInt(content[1].trim()));
+	}
 
+	private void setTaskEndDateHour(TaskObject returnObject, String[] content) {
+		returnObject.setEndDateHour(Integer.parseInt(content[1].trim()));
+		
+	}
+
+	private void setTaskEndDateYear(TaskObject returnObject, String[] content) {
+		returnObject.setEndDateYear(Integer.parseInt(content[1].trim()));
+		
+	}
+
+	private void setTaskEndDateMonth(TaskObject returnObject, String[] content) {
+		returnObject.setEndDateMonth(Integer.parseInt(content[1].trim()));
+		
+	}
+
+	private void setTaskEndDateDay(TaskObject returnObject, String[] content) {
+		returnObject.setEndDateDay(Integer.parseInt(content[1].trim()));
+	}
+
+	/*
+	* GregorianCalendar Methods
+	
 	private boolean isTimeZoneUsingDayLightTime(String[] content) {
 		return content[1].trim().equalsIgnoreCase("true");
 	}
-	
-	/*
-	* GregorianCalendar Methods
 	
 	private void setGregorianCalendar(TaskObject returnObject, GregorianCalendar returnCalendar) {
 		returnCalendar.set(returnObject.getDateYear(), returnObject.getDateMonth(), returnObject.getDateDay(), returnObject.getDateHour(), returnObject.getDateMinute());
@@ -157,14 +197,6 @@ public class StorageConversion{
 	private boolean isLocaleSundayFirstDayOfWeek(String firstDayOfWeek) {
 		return firstDayOfWeek.equalsIgnoreCase(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
 	}
-
-	private void setTaskIsMarkedDone(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			returnObject.setIsMarkedDone(true);
-		}else{
-			returnObject.setIsMarkedDone(false);
-		}
-	}
 	
 	private void writeTaskTimeZoneDayLightTime(TimeZone taskTimeZone, StringBuffer tempBuffer) {
 		tempBuffer.append(taskTimeZone.observesDaylightTime());
@@ -190,6 +222,30 @@ public class StorageConversion{
 		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
 	}
 	
+	private void setTaskIsMarkedDone(TaskObject returnObject, String[] content) {
+		if(isTimeZoneUsingDayLightTime(content)){
+			returnObject.setIsMarkedDone(true);
+		}else{
+			returnObject.setIsMarkedDone(false);
+		}
+	}
+	
+	private void setTaskIsNotified(TaskObject returnObject, String[] content) {
+		if(isTimeZoneUsingDayLightTime(content)){
+			returnObject.setIsNotified(true);
+		}else{
+			returnObject.setIsNotified(false);
+		}
+	}
+	
+	private void writeIsMarkedDoneToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getIsMarkedDone());
+	}
+	
+	private void writeTaskIsNotifiedToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getIsNotified());
+	}
+	
 	*/
 
 	private void setTaskType(TaskObject returnObject, String[] content) {
@@ -202,14 +258,6 @@ public class StorageConversion{
 			if(taskStatus.equalsIgnoreCase(magicValuesRetriever.getTaskStatus(indexEnum))){
 				returnObject.setTaskStatus(magicValuesRetriever.getTaskStatus(indexEnum));
 			}
-		}
-	}
-
-	private void setTaskIsNotified(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			returnObject.setIsNotified(true);
-		}else{
-			returnObject.setIsNotified(false);
 		}
 	}
 
@@ -316,18 +364,36 @@ public class StorageConversion{
 				writeTaskNotifyTimeToStringBuffer(task, tempBuffer);
 				break;
 			case 9:
-				writeTaskIsNotifiedToStringBuffer(task, tempBuffer);
-				break;
-			case 10:
 				writeTaskGetStatusToStringBuffer(task, tempBuffer);
 				break;
-			case 11:
+			case 10:
 				writeGetTaskTypeToStringBuffer(task, tempBuffer);
+				break;
+			case 11:
+				writeGetTaskEndDateDayToStringBuffer(task, tempBuffer);
+				break;
+			case 12:
+				writeGetTaskEndDateMonthToStringBuffer(task, tempBuffer);
+				break;
+			case 13:
+				writeGetTaskEndDateYearToStringBuffer(task, tempBuffer);
+				break;
+			case 14:
+				writeGetTaskEndDateHourToStringBuffer(task, tempBuffer);
+				break;
+			case 15:
+				writeGetTaskEndDateMinuteToStringBuffer(task, tempBuffer);
+				break;
+			case 16:
+				break;
+			
+			/*
+			case 9:
+				writeTaskIsNotifiedToStringBuffer(task, tempBuffer);
 				break;
 			case 12:
 				writeIsMarkedDoneToStringBuffer(task, tempBuffer);
 				break;
-			/*
 			case 13:
 				if(isLocaleSundayFirstDayOfWeek(taskCalendar)){
 					writeLocaleSundayFirstDayOfWeekToStringBuffer(tempBuffer);
@@ -349,8 +415,24 @@ public class StorageConversion{
 		return tempBuffer;
 	}
 
-	private void writeIsMarkedDoneToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getIsMarkedDone());
+	private void writeGetTaskEndDateMinuteToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getEndDateMinute());
+	}
+
+	private void writeGetTaskEndDateHourToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getEndDateHour());
+	}
+
+	private void writeGetTaskEndDateYearToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getEndDateYear());	
+	}
+
+	private void writeGetTaskEndDateMonthToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getEndDateMonth());
+	}
+
+	private void writeGetTaskEndDateDayToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
+		tempBuffer.append(task.getEndDateDay());
 	}
 
 	private void writeGetTaskTypeToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
@@ -359,10 +441,6 @@ public class StorageConversion{
 
 	private void writeTaskGetStatusToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
 		tempBuffer.append(task.getTaskStatus());
-	}
-
-	private void writeTaskIsNotifiedToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getIsNotified());
 	}
 
 	private void writeTaskNotifyTimeToStringBuffer(TaskObject task, StringBuffer tempBuffer) {

@@ -14,15 +14,21 @@ public class StorageMagicStringsAndNumbers{
 														, "duration:"
 														, "location:"
 														, "notifyTime:"
-														, "isNotified:"
 														, "taskStatus:"
 														, "taskType:"
-														, "isMarkedDone:"
+														, "endDateDay:"
+														, "endDateMonth:"
+														, "endDateYear:"
+														, "endDateHour:"
+														, "endDateMinute:"
 														, ""
+														/*
+														, "isNotified:"
+														, "isMarkedDone:"
 														, "firstDayOfWeek:"
 														, "timeZoneID:"
 														, "isDayLightTimeOn:"
-														, ""};
+														, ""*/};
 	
 	private final String[] STRING_TASK_STATUS = {"TASK_DEFAULT",
 												 "TASK_OUTSTANDING",
@@ -56,7 +62,7 @@ public class StorageMagicStringsAndNumbers{
 	/**
 	 * Magic Integers
 	 */
-	private final int SUM_OF_TASKOBJECT_ITEMS = 14;
+	private final int SUM_OF_TASKOBJECT_ITEMS = 17;
 	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
 	

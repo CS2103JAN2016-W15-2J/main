@@ -1,7 +1,5 @@
 package tasknote.shared;
 
-import java.util.GregorianCalendar;
-
 import javax.management.InvalidAttributeValueException;
 
 public class TaskObject implements Comparable<TaskObject> {
