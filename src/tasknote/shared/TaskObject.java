@@ -571,9 +571,67 @@ public class TaskObject implements Comparable<TaskObject> {
 			return false;
 		}
 		
-		// TODO
+		if (comparingTaskObject.getDateDay() != this.getDateDay()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getDateMonth() != this.getDateMonth()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getDateYear() != this.getDateYear()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getEndDateDay() != this.getEndDateDay()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getEndDateMonth() != this.getEndDateMonth()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getEndDateYear() != this.getEndDateYear()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getEndDateHour() != this.getEndDateHour()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getEndDateMinute() != this.getEndDateMinute()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getDuration() != this.getDuration()) {
+			return false;
+		}
+		
+		if (isTaskObjectLocationNotSame(comparingTaskObject)) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getNotifyTime() != this.getNotifyTime()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getIsNotified() != this.getIsNotified()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getTaskStatus() != this.getTaskStatus()) {
+			return false;
+		}
+		
+		if (comparingTaskObject.getIsMarkedDone() != this.getIsMarkedDone()) {
+			return false;
+		}
 		
 		return true;
+	}
+
+	private boolean isTaskObjectLocationNotSame(TaskObject comparingTaskObject) {
+		return (isNull(comparingTaskObject.getLocation()) && isNull(this.getLocation())) ? false : !comparingTaskObject.getLocation().equals(this.getLocation());
 	}
 
 	private boolean isTaskObjectNameNotSame(TaskObject comparingTaskObject) {
