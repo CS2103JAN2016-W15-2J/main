@@ -7,19 +7,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Storage{
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
+	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	
 	/**
 	 * constructor to construct FileManipulator to manipulate items from/to file
 	 */
 	public Storage(){
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
+		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 	}
-	
 	
 	/**
 	 * read all the tasks from file and return to logic
@@ -46,7 +45,6 @@ public class Storage{
 	
 	/**
 	 * 
-	 * @throws IOException
 	 */
 	public void cleanFile() throws IOException{
 		fileManipulator.cleanFile();
@@ -64,14 +62,6 @@ public class Storage{
 		return false;
 	}
 	
-	private String concatPathIfNeeded(String pathName, String previousTextFileName){
-		if(pathName.contains(magicValuesRetriever.getTextFileEnding())){
-			return pathName;
-		}else{
-			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
-		}
-	}
-	
 	public boolean undoPath(){
 		String previousPath = pathManipulator.extractUndoPathString();
 		return fileManipulator.changeFileName(previousPath);
@@ -80,5 +70,13 @@ public class Storage{
 	public boolean redoPath(){
 		String nextPath = pathManipulator.extractRedoPathString();
 		return fileManipulator.changeFileName(nextPath);
+	}
+	
+	private String concatPathIfNeeded(String pathName, String previousTextFileName){
+		if(pathName.contains(magicValuesRetriever.getTextFileEnding())){
+			return pathName;
+		}else{
+			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
+		}
 	}
 }
