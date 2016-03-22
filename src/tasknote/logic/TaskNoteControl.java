@@ -15,41 +15,56 @@ import tasknote.shared.Constants;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to interact directly with the UI to process 
+ * and execute User Commands. 
+ * The Command object will be used to create a new instance of the
+ * corresponding Command Class. 
+ * This Class interacts with the Parser Component, which parses the 
+ * User Command and returns relevant data. 
+ * Once each command is executed, the task list will be updated with 
+ * the relevant task objects to be displayed to the User. 
+ * Each method in this class that executes a command returns a 
+ * feedback String to the caller.
+ *
+ * @author Murali Girish Narayanan
+ */
+
 public class TaskNoteControl {
-	
+
 	private static TaskNote taskNote;
 	private static Command command;
-	
-	
+
 	public TaskNoteControl() {
 		taskNote = new TaskNote();
 		taskNote.loadTasks();
 	}
-	
+
 	public ArrayList<TaskObject> getDisplayList() {
 		return taskNote.getDisplayList();
 	}
-	
+
 	/**
-	 * This operation gets the command type and executes 
-	 * the requested action
+	 * This operation gets the command type and executes the requested action
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	public String executeCommand(String userCommand){
+	public String executeCommand(String userCommand) {
 		COMMAND_TYPE commandType = Parser.getCommandType(userCommand);
 		String feedback = executeAction(commandType, userCommand);
 		return feedback;
 	}
-	
+
 	/**
 	 * This operation executes the user command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeAction(COMMAND_TYPE commandType, String userCommand){
+	private static String executeAction(COMMAND_TYPE commandType, String userCommand) {
 		String response;
 		taskNote.reIntializeSearchList();
 		switch (commandType) {
@@ -87,14 +102,15 @@ public class TaskNoteControl {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Add command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeAdd(String userCommand){
+	private static String executeAdd(String userCommand) {
 		TaskObject taskObject = Parser.parseAdd(userCommand);
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
@@ -102,14 +118,15 @@ public class TaskNoteControl {
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Delete command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeDelete(String userCommand){
+	private static String executeDelete(String userCommand) {
 		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
@@ -117,14 +134,15 @@ public class TaskNoteControl {
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Search command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeSearch(String userCommand){
+	private static String executeSearch(String userCommand) {
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
 		command = new SearchCommand(taskNote, searchIds);
@@ -133,75 +151,79 @@ public class TaskNoteControl {
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Update command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeUpdate(String userCommand){
-		//TODO:Parser - change method name to getTaskId
+	private static String executeUpdate(String userCommand) {
+		// TODO:Parser - change method name to getTaskId
 		int updateTaskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject updatedTaskObject;
-		
-		if(taskNote.isValidTaskId(updateTaskId)){
+
+		if (taskNote.isValidTaskId(updateTaskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			TaskObject oldTaskObject = displayList.get(updateTaskId);
 			updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject);
-		}else{
+		} else {
 			updatedTaskObject = null;
 		}
-		
+
 		command = new UpdateCommand(taskNote, updateTaskId, updatedTaskObject);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Undo command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeUndo(){
+	private static String executeUndo() {
 		command = new UndoCommand(taskNote);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Redo command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeRedo(String userCommand){
+	private static String executeRedo(String userCommand) {
 		command = new RedoCommand(taskNote);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Mark As Completed command
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeMarkAsComplete(String userCommand){
-		//TODO:Parser - change method name to getTaskId
+	private static String executeMarkAsComplete(String userCommand) {
+		// TODO:Parser - change method name to getTaskId
 		int taskId = Parser.getUpdateTaskId(userCommand);
 		TaskObject taskObject;
-		if(taskNote.isValidTaskId(taskId)){
+		if (taskNote.isValidTaskId(taskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			taskObject = displayList.get(taskId);
-		}else{
+		} else {
 			taskObject = null;
 		}
 		command = new CompleteCommand(taskNote, taskObject);
@@ -210,17 +232,18 @@ public class TaskNoteControl {
 		String response = command.getFeedBack();
 		return response;
 	}
-	
+
 	/**
-	 * This operation executes the User's request to change 
-	 * the directory the task file exists in
+	 * This operation executes the User's request to change the directory the
+	 * task file exists in
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeChangeFilePath(String userCommand){
-		//TODO
+	private static String executeChangeFilePath(String userCommand) {
+		// TODO
 		return "";
 	}
-	
+
 }
