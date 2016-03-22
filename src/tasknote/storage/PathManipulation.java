@@ -7,7 +7,6 @@ import java.io.File;
  */
 
 public class PathManipulation{
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	private PathHistory pathHistory;
 	
 	public PathManipulation(){
@@ -15,26 +14,28 @@ public class PathManipulation{
 	}
 
 	private void initializeFamilyClasses() {
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 		pathHistory = new PathHistory();
 	}
 	
-	
-	private boolean iSFilePathValid(String path){
-		//todo
+	public boolean canChangePath(String newPathName){
+		if(iSFilePathValid(newPathName)){
+			pathHistory.addHistory(newPathName);
+			return true;
+		}
 		return false;
 	}
 	
-	public boolean changePath(String oldPathName, String newPathName){
-		//todo
-		return false;
+	private boolean iSFilePathValid(String pathName){
+		File tempFile = new File(pathName);
+		File directory = tempFile.getParentFile();
+		return directory.exists();
 	}
 	
-	public String undo(){
+	public String extractUndoPathString(){
 		return pathHistory.undo();
 	}
 	
-	public String redo(){
+	public String extractRedoPathString(){
 		return pathHistory.redo();
 	}
 }
