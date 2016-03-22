@@ -30,7 +30,6 @@ public class StorageMagicStringsAndNumbers{
 	
 	private final String STRING_SPACE = " ";
 	private final String STRING_NEWLINE = "\n";
-	private final String STRING_EMPTY_STRING = "";
 	private final String STRING_SLASH = "/";
 	private final String STRING_PATH_SLASH = "\\";
 	private final String STRING_PATH_DIVISION = "\\\\";
@@ -99,10 +98,6 @@ public class StorageMagicStringsAndNumbers{
 	
 	public String getNewLine(){
 		return STRING_NEWLINE;
-	}
-	
-	public String getEmptyString(){
-		return STRING_EMPTY_STRING;
 	}
 	
 	public String getSlash(){
