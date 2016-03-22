@@ -64,14 +64,6 @@ public class Storage{
 		return false;
 	}
 	
-	private String concatPathIfNeeded(String pathName, String previousTextFileName){
-		if(pathName.contains(magicValuesRetriever.getTextFileEnding())){
-			return pathName;
-		}else{
-			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
-		}
-	}
-	
 	public boolean undoPath(){
 		String previousPath = pathManipulator.extractUndoPathString();
 		return fileManipulator.changeFileName(previousPath);
@@ -80,5 +72,13 @@ public class Storage{
 	public boolean redoPath(){
 		String nextPath = pathManipulator.extractRedoPathString();
 		return fileManipulator.changeFileName(nextPath);
+	}
+	
+	private String concatPathIfNeeded(String pathName, String previousTextFileName){
+		if(pathName.contains(magicValuesRetriever.getTextFileEnding())){
+			return pathName;
+		}else{
+			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
+		}
 	}
 }
