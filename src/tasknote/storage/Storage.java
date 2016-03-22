@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Storage{
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
 	
@@ -15,11 +14,9 @@ public class Storage{
 	 * constructor to construct FileManipulator to manipulate items from/to file
 	 */
 	public Storage(){
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
 	}
-	
 	
 	/**
 	 * read all the tasks from file and return to logic
@@ -46,10 +43,12 @@ public class Storage{
 	
 	/**
 	 * 
-	 * @throws IOException
 	 */
 	public void cleanFile() throws IOException{
 		fileManipulator.cleanFile();
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of 411c9bc... DONE: PATH manipulation
 }
