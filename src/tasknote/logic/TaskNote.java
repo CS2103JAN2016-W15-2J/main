@@ -119,8 +119,7 @@ public class TaskNote {
 	 * This operation refreshes the list of task to be displayed to the user
 	 * after each user operation
 	 *
-	 * @param List
-	 *            of Tasks to be displayed to the User
+	 * @param List of Tasks to be displayed to the User
 	 */
 	public void refreshDisplay(ArrayList<TaskObject> list) {
 		displayList = new ArrayList<TaskObject>();
@@ -133,8 +132,7 @@ public class TaskNote {
 	 * This operation adds a taskObject to the ArrayList of TaskObjects, sorts
 	 * it based on Date and Time and saves it in the Storage
 	 *
-	 * @param task
-	 *            object
+	 * @param task object
 	 * @return Status of Operation
 	 */
 	public String addTask(TaskObject taskObject) {
@@ -154,8 +152,7 @@ public class TaskNote {
 	 * This operation deletes a task in the ArrayList of TaskObjects and saves
 	 * it in the Storage
 	 *
-	 * @param Id
-	 *            of the Task stored in ArrayList
+	 * @param Id of the Task stored in ArrayList
 	 * @return Status of the operation
 	 */
 	public String deleteTask(ArrayList<Integer> deleteIds) {
@@ -379,6 +376,11 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
 	}
 	
+	/**
+	 * This operation populates tasks in Search Interval List with
+	 * task objects that have deadlines today
+	 * 
+	 */
 	private void getTodayTasks(){
 		LocalDateTime now = LocalDateTime.now();
 		int currentYear = now.getYear();
@@ -392,6 +394,11 @@ public class TaskNote {
 	    }
 	}
 	
+	/**
+	 * This operation populates tasks in Search Interval List with
+	 * task objects that have deadlines tomorrow
+	 * 
+	 */
 	private void getTomorrowTasks(){
 		LocalDateTime now = LocalDateTime.now();
 		now = now.plusDays(Constants.INCREMENT_DAY_TOMORROW);
@@ -407,6 +414,16 @@ public class TaskNote {
 	    }
 	}
 	
+	/**
+	 * This operation populates tasks in Search Interval List with
+	 * task objects that have deadlines within the next specified number
+	 * of days by the user
+	 * 
+	 * E.g. of User Command: Show next 5 days
+	 * 
+	 * @param: number of days
+	 * 
+	 */
 	private void getDayTasks(int days){
 		LocalDateTime now = LocalDateTime.now();
 		int fromYear = now.getYear();
@@ -425,6 +442,16 @@ public class TaskNote {
 	    }
 	}
 	
+	/**
+	 * This operation populates tasks in Search Interval List with
+	 * task objects that have deadlines within the next specified number
+	 * of weeks by the user
+	 * 
+	 * E.g. of User Command: Show next 1 week
+	 * 
+	 * @param: number of weeks
+	 * 
+	 */
 	private void getWeekTasks(int weeks){
 		LocalDateTime now = LocalDateTime.now();
 		int fromYear = now.getYear();
