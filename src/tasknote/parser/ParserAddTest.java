@@ -34,10 +34,36 @@ public class ParserAddTest {
 		
 		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(today.get(Calendar.YEAR));
+		expectedResult.setDateMonth(today.get(Calendar.MONTH) + 1);
+		expectedResult.setDateDay(today.get(Calendar.DAY_OF_MONTH));
+		expectedResult.setDateHour(23);
+		expectedResult.setDateMinute(59);
+		
+		expectedResult.setTaskType("deadline");
+		
+		expectedResult.equals(Parser.parseAdd(userCommand));
+		
+		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+	}
+	
+	@Test
+	public void testAddBadDeadline() {
+		
+		// This should generally prevent cases where the add
+		// function automatically rolls the date to the next day
+		// for the purpose of checking
+		String userCommand = "add baddeadline by 76:90";
+		
+		TaskObject expectedResult = new TaskObject("baddeadline");
+		
+		/*
+		GregorianCalendar today = new GregorianCalendar();
+		expectedResult.setDateYear(today.get(Calendar.YEAR));
 		expectedResult.setDateMonth(today.get(Calendar.MONTH));
 		expectedResult.setDateDay(today.get(Calendar.DAY_OF_MONTH));
 		expectedResult.setDateHour(23);
 		expectedResult.setDateMinute(59);
+		*/
 		
 		assertEquals(Parser.parseAdd(userCommand), expectedResult);
 	}
@@ -58,6 +84,8 @@ public class ParserAddTest {
 		expectedResult.setDateDay(1);
 		expectedResult.setDateHour(5);
 		expectedResult.setDateMinute(30);
+		
+		expectedResult.setTaskType("event");
 		
 		assertEquals(Parser.parseAdd(userCommand), expectedResult);
 	}
