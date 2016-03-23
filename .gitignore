@@ -6,6 +6,7 @@
 ###################################################
 ## Project Specifics
 ###################################################
+pathContents.txt
 taskContents.txt
 client_secret.json
 *.uml*
