@@ -2,11 +2,18 @@ package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
+import com.pepperonas.fxiconics.FxIconicsLabel;
+import com.pepperonas.fxiconics.MaterialColor;
+import com.pepperonas.fxiconics.cmd.FxFontCommunity.Icons;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -37,9 +44,9 @@ public class SidebarContainer extends VBox{
     private void setupSidebarContainer() {
         setSidebarContainerPresentation();
         setNavigationPresentation();
-        setListBehaviour();
+        setNavigationBehaviour();
         
-        this.getChildren().addAll(_clock);
+        this.getChildren().addAll(_clock, new Separator(), _observableListRepresentation);
     }
     
     private void setSidebarContainerPresentation() {
@@ -48,12 +55,14 @@ public class SidebarContainer extends VBox{
     }
     
     private void setNavigationPresentation() {
-        _navigationMenu.addAll("Outstanding(s)", "Overdue");
+        _observableListRepresentation.setId("sidebar-navigation");
+        _navigationMenu.addAll("Outstanding", "Overdue", "Completed");
         _observableListRepresentation.setItems(_navigationMenu);
+        
         // _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
     }
     
-    private void setListBehaviour() {
+    private void setNavigationBehaviour() {
         _observableListRepresentation.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
             public ListCell<String> call(ListView<String>param) {
@@ -61,12 +70,9 @@ public class SidebarContainer extends VBox{
                     @Override
                     public void updateItem(String value, boolean empty) {
                         super.updateItem(value, empty);
-                        
+                        this.getStyleClass().add("sidebar-container");
                         if (!isEmpty()) {
-                            VBox box = new VBox();
-                            Label nLabel = new Label(value);
-                            box.getChildren().addAll(nLabel);
-                            setGraphic(box);
+                            setGraphic(setNavigationCellPresentation(value));
                         } else {
                             // Prevent duplicate for a single entry
                             setText(null);
@@ -76,5 +82,32 @@ public class SidebarContainer extends VBox{
                 };
             }
         });
+    }
+    
+    private HBox setNavigationCellPresentation(String value) {
+        HBox box = new HBox();
+        box.setPadding(new Insets(0, 0, 0, 20));
+        box.setSpacing(20);
+        Icons icon = getIcon(value);
+        FxIconicsLabel btnDefault = (FxIconicsLabel) new FxIconicsLabel.Builder(icon).size(24).color(MaterialColor.GREY_500).build();
+        Label nLabel = new Label(value);
+        // TODO
+        nLabel.getStyleClass().add("notification-title");
+        box.getChildren().addAll(btnDefault, nLabel);
+        
+        return box;
+    }
+    
+    private Icons getIcon(String value) {
+        switch(value) {
+            case "Outstanding":
+                return Icons.cmd_alarm_multiple;
+            case "Overdue":
+                return Icons.cmd_comment_alert;
+            case "Completed":
+                return Icons.cmd_checkbox_multiple_marked;
+        }
+        
+        return null;
     }
 }

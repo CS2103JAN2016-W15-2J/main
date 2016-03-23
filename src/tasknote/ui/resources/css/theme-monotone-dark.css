@@ -1,3 +1,10 @@
+/**************************************************
+ * Theme: Monotone-dark
+ **************************************************/
+* {
+	/*e.g. -fx-base1: #... */
+}
+
 .root {
 	-fx-font-size: 12pt;
 }
@@ -56,6 +63,15 @@
  **************************************************/
  .sidebar-container {
  	-fx-background-color: #26292c;
+ }
+ 
+ #sidebar-navigation {
+ 	-fx-padding: 100 0 0 0;
+ 	-fx-background-color: #26292c;
+ }
+ 
+ #sidebar-navigation .list-cell:empty {
+ 	-fx-background-color: inherit;
  }
  
 /**************************************************
