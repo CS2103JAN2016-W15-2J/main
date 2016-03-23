@@ -21,7 +21,7 @@ public class Driver{
 			
 			Storage storage = new Storage();
 			storage.saveTasks(test);
-			//storage.changePath("C:/NUS/");
+			//storage.changePath("C:/NUS/hello.txt");
 			
 			ArrayList<TaskObject> list = storage.loadTasks();
 			System.out.println("#number of items: " + list.size());
