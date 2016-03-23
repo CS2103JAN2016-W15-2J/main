@@ -4,6 +4,7 @@ import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
 
@@ -25,13 +27,10 @@ public class GuiController extends Application {
 
     private static CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
     private static TextField _commandLine = _commandLineContainer.getCommandLine();
-
     private static TasksContainer _tasksContainer = TasksContainer.getInstance();
     private static ObservableList<TaskObject> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
-
     private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
     private static ObservableList<TaskObject> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
-    
     private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
     
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();

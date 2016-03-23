@@ -62,11 +62,12 @@
  * SIDEBAR CONTAINER
  **************************************************/
  .sidebar-container {
+ 	-fx-padding: 10 15 10 15;
  	-fx-background-color: #26292c;
  }
  
  #sidebar-navigation {
- 	-fx-padding: 100 0 0 0;
+ 	-fx-padding: 40 0 0 0;
  	-fx-background-color: #26292c;
  }
  
@@ -74,11 +75,15 @@
  	-fx-background-color: inherit;
  }
  
+ #sidebar-navigation .list-cell:selected {
+ 	-fx-background-color: #313437;
+ }
+ 
 /**************************************************
  * CLOCK CONTAINER
  **************************************************/
  .clock-container {
- 	-fx-padding: 10 15 10 15;
+ 	
  }
  
  .clock-label-month-date {
