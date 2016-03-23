@@ -377,6 +377,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	public String toString(){
 		return "task name = " + taskName
 				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
+				+ "\nEndDate = " + endDateDay + "/" + endDateMonth + "/" + endDateYear
 				//+ "\nGregorianCalendar = " + taskObjectCalendar
 				+ "\nTime = " + dateHour + " " + dateMinute
 				+ "\nDuration = " + duration
