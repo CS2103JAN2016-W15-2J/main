@@ -276,6 +276,8 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
 		    this.taskStatus = TASK_STATUS.TASK_COMPLETED;
+		}else{
+			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
 		}
 	}
 
@@ -375,6 +377,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	public String toString(){
 		return "task name = " + taskName
 				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
+				+ "\nEndDate = " + endDateDay + "/" + endDateMonth + "/" + endDateYear
 				//+ "\nGregorianCalendar = " + taskObjectCalendar
 				+ "\nTime = " + dateHour + " " + dateMinute
 				+ "\nDuration = " + duration
