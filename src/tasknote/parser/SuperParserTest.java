@@ -10,7 +10,7 @@ import org.junit.Test;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
 
-public class ParserTest {
+public class SuperParserTest {
 	
 	@Test
 	public void getCommandTypeBasic() {
