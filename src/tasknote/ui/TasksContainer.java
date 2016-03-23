@@ -1,16 +1,10 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
-import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
-import static tasknote.ui.GuiConstant.PADDING_REMOVED;
-import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
-import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
@@ -75,9 +69,8 @@ public class TasksContainer extends HBox {
      * Set up the presentation of the tasks container.
      */
     private void setTasksContainerPresentation() {
-        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_REMOVED));
+        this.getStyleClass().add("tasks-container");
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
-        this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
         // this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c") + String.format("-fx-font-family: \"%1$s\";", "Consolas"));
     }
     
@@ -85,9 +78,8 @@ public class TasksContainer extends HBox {
      * Set up the presentation of the (observable) list containing all the tasks.
      */
     private void setTaskListPresentation() {
+        _observableListRepresentation.getStyleClass().add("tasks-list");
         _observableListRepresentation.setItems(_tasksList);
-        _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437")
-                + String.format(PROPERTY_BACKGROUND_RADIUS, 5));
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
     
@@ -102,7 +94,7 @@ public class TasksContainer extends HBox {
                     @Override
                     public void updateItem(TaskObject task, boolean empty) {
                         super.updateItem(task, empty);
-                        setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#313437"));
+                        this.getStyleClass().add("tasks-list-cell");
                         if (!isEmpty()) {
                             setGraphic(getFormattedText(task));
                         } else {

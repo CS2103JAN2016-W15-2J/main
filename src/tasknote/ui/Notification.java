@@ -1,16 +1,11 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
-import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_RADIUS;
-import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
-import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
 import javafx.scene.effect.DropShadow;
@@ -28,8 +23,6 @@ import javafx.util.Duration;
 public class Notification {
     private final static int DURATION_IN_SECOND_NOTIFICATION = 5;
     private final static int MINIMUM_NOTIFICATION_WIDTH = 400;
-    private static int FONT_SIZE_NOTIFICATION_TITLE = 12;
-    private static int FONT_SIZE_NOTIFICATION_CONTENT = 12;
     private final static String DEFAULT_NOTIFICATION_TITLE = "Notification";
 
     private Notification() {
@@ -118,41 +111,20 @@ public class Notification {
         
         notificationContent.setEffect(dropShadow);
         
-        notificationContent.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#1e2123")
-                + String.format(PROPERTY_BACKGROUND_RADIUS, 10));
+        notificationContent.getStyleClass().add("notification-content");
         notificationContent.setMinWidth(MINIMUM_NOTIFICATION_WIDTH);
         notificationContent.setSpacing(SPACING_BETWEEN_COMPONENTS);
-        notificationContent.setPadding(new Insets(20, 20, 20, 20));
     }
     
     private static void setTitleMessagePresentation(Text titleMessage) {
-        titleMessage.setFill(Color.WHITE);
-        titleMessage.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold")
-                + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
+        titleMessage.getStyleClass().add("notification-title");
     }
     
     private static void setExitButtonPresentation(Text exitButton) {
-        exitButton.setFill(Color.GRAY);
-        exitButton.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
+        exitButton.getStyleClass().addAll("notification-exit-button");
     }
     
     private static void setExitButtonBehaviour(Text exitButton, Popup notificationContainer) {
-        exitButton.setOnMouseEntered((new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                exitButton.setFill(Color.WHITE);
-                exitButton.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold")
-                        + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
-            }
-        }));
-        exitButton.setOnMouseExited((new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                exitButton.setFill(Color.GRAY);
-                exitButton.setStyle(String.format(PROPERTY_FONT_WEIGHT, "normal")
-                        + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_TITLE));
-            }
-        }));
         exitButton.setOnMouseClicked((new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -162,8 +134,7 @@ public class Notification {
     }
     
     private static void setAlertMessagePresentation(Text alertMessage) {
-        alertMessage.setFill(Color.WHITE);
-        alertMessage.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_NOTIFICATION_CONTENT));
+        alertMessage.getStyleClass().add("notification-alert-message");
     }
     
     private static void runFadeAnimation(Popup popupNotification, Pane pane) {

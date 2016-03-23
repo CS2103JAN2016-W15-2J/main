@@ -2,7 +2,6 @@ package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
-import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 
 import java.util.ArrayList;
 
@@ -18,9 +17,8 @@ import tasknote.shared.TaskObject;
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TaskNote";
     
-    private final double WINDOW_MIN_WIDTH = 900.0;
+    private final double WINDOW_MIN_WIDTH = 450.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
-    private static int FONT_SIZE_APPLICATION = 12;
 
     private static CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
     private static TextField _commandLine = _commandLineContainer.getCommandLine();
@@ -43,7 +41,8 @@ public class GuiController extends Application {
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
         
-        frame.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_APPLICATION));
+        String here = getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm();
+        scene.getStylesheets().add(here);
         
         frame.setTop(MainMenuContainer.getInstance());
         frame.setLeft(_sidebarContainer);
@@ -60,7 +59,6 @@ public class GuiController extends Application {
         
         focusOnCommandLine();
         
-        stage.setMaximized(true);
         stage.setMinWidth(WINDOW_MIN_WIDTH);
         stage.setMinHeight(WINDOW_MIN_HEIGHT);
     }

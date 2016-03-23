@@ -1,11 +1,5 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
-import static tasknote.ui.GuiConstant.COLOR_HEX_CODE_WHITE;
-import static tasknote.ui.GuiConstant.PADDING_HORIZONTAL;
-import static tasknote.ui.GuiConstant.PADDING_VERTICAL;
-import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
-import static tasknote.ui.GuiConstant.PROPERTY_TEXT_FILL;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
 import java.util.Calendar;
@@ -16,7 +10,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
@@ -26,9 +19,6 @@ public class ClockContainer extends GridPane {
     private static final String TIME_DELIMITER = ":";
 
     private static final int INTERVAL_SECOND_ANIMATION = 1;
-    
-    private static int FONT_SIZE_DAYDATE = 16;
-    private static int FONT_SIZE_DAY_OF_WEEK = 25;
 
     private static final Calendar _currentTime = Calendar.getInstance();
     private static ClockContainer _timerContainer = null;
@@ -68,7 +58,7 @@ public class ClockContainer extends GridPane {
     }
     
     private void setClockContainerPresentation() {
-        this.setPadding(new Insets(PADDING_HORIZONTAL, PADDING_VERTICAL, PADDING_HORIZONTAL, PADDING_VERTICAL));
+        this.getStyleClass().add("clock-container");
         this.setHgap(SPACING_BETWEEN_COMPONENTS);
     }
 
@@ -76,13 +66,9 @@ public class ClockContainer extends GridPane {
      * Set up the presentation of the labels in ClockContainer.
      */
     private void setLabelsPresentation() {
-         _monthAndDateLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                       + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAYDATE));
-         _hourMinuteAndSecondLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                           + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAYDATE));
-         _dayOfWeekLabel.setStyle(String.format(PROPERTY_TEXT_FILL, COLOR_HEX_CODE_WHITE) 
-                    + String.format(PROPERTY_FONT_SIZE, FONT_SIZE_DAY_OF_WEEK) + String.format(PROPERTY_FONT_WEIGHT, "bold"));
-         
+         _monthAndDateLabel.getStyleClass().add("clock-label-month-date");
+         _hourMinuteAndSecondLabel.getStyleClass().add("clock-label-hour-minute-second");
+         _dayOfWeekLabel.getStyleClass().add("clock-label-day-of-week");
          GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
          GridPane.setConstraints(_monthAndDateLabel, 1, 0);
          GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);

@@ -1,12 +1,9 @@
 package tasknote.ui;
 
-import static tasknote.ui.GuiConstant.PADDING_REMOVED;
-import static tasknote.ui.GuiConstant.PROPERTY_BACKGROUND_COLOR;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -46,9 +43,8 @@ public class SidebarContainer extends VBox{
     }
     
     private void setSidebarContainerPresentation() {
-        this.setPadding(new Insets(PADDING_REMOVED, PADDING_REMOVED, PADDING_REMOVED, PADDING_REMOVED));
+        this.getStyleClass().add("sidebar-container");
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
-        this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
     }
     
     private void setNavigationPresentation() {
