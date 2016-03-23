@@ -13,6 +13,9 @@ import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
 public class StorageTest {
+	private static final String PATH_NAME_INVALID = "C:/hello";
+	private static final String PATH_NAME_WITH_TEXT_FILE = "C:/NUS/hello.txt";
+	private static final String PATH_NAME_WITHOUT_SLASH = "C:/NUS";
 	private static final int BASE_DATE = 1;
 	private static final int BASE_YEAR = 1980;
 	private static final int RAND_RANGE_MINUTE = 60;
@@ -50,7 +53,9 @@ public class StorageTest {
 			tempArrayList2.add(tempTaskObject);
 			tempArrayList2.add(tempTaskObject);
 			storage = new Storage();
-		}catch(Exception e){}
+		}catch(Exception e){
+			
+		}
 	}
 
 	private TaskObject InitializeTaskObject() {
@@ -87,14 +92,32 @@ public class StorageTest {
 			
 			//case 3: add an ArrayList<TaskObject> with an item
 			storage.saveTasks(tempArrayList1);
-			System.out.println(tempTaskObject);
-			System.out.println();
-			System.out.println(storage.loadTasks().get(0));
 			assertTrue(storage.loadTasks().equals(tempArrayList1));
 			
 			//case 4: add 4 items into storage and retrieval
 			storage.saveTasks(tempArrayList2);
-
+			assertTrue(storage.loadTasks().equals(tempArrayList2));
+			
+			//case 5: undo PATH where there is no history
+			assertFalse(storage.undoPath());
+			
+			//case 6: change PATH with a correct PATH
+			assertTrue(storage.changePath(PATH_NAME_WITHOUT_SLASH));
+			
+			//case 7: change PATH with a different file
+			assertTrue(storage.changePath(PATH_NAME_WITH_TEXT_FILE));
+			
+			//case 8: change PATH to an invalid PATH
+			assertFalse(storage.changePath(PATH_NAME_INVALID));
+			
+			//case 9: undo PATH
+			assertTrue(storage.undoPath());
+			
+			//case 10: redo PATH
+			assertTrue(storage.redoPath());
+			
+			//case 11: redo PATH when there is no future history
+			assertFalse(storage.redoPath());
 			
 		}catch(IOException ioe){
 			

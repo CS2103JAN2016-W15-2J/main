@@ -3,7 +3,7 @@ package tasknote.storage;
 public class StorageMagicStringsAndNumbers{
 	
 	/**
-	 * Magic Strings
+	 * Magic Strings for TaskObject
 	 */
 	private final static String[] STRING_TASKOBJECT = { "taskName:"
 														, "dateDay:"
@@ -30,11 +30,17 @@ public class StorageMagicStringsAndNumbers{
 														, "isDayLightTimeOn:"
 														, ""*/};
 	
+	/**
+	 * Task Status
+	 */
 	private final String[] STRING_TASK_STATUS = {"TASK_DEFAULT",
 												 "TASK_OUTSTANDING",
 												 "TASK_COMPLETED",
 												 "TASK_INVALID_STORAGE"};
 	
+	/**
+	 * Magic Strings
+	 */
 	private final String STRING_SPACE = " ";
 	private final String STRING_NEWLINE = "\n";
 	private final String STRING_EMPTY_STRING = "";
@@ -42,6 +48,13 @@ public class StorageMagicStringsAndNumbers{
 	private final String STRING_PATH_SLASH = "\\";
 	private final String STRING_PATH_DIVISION = "\\\\";
 	private final String STRING_TEXT_FILE_END = ".txt";
+	
+	/**
+	 * Logging messages
+	 */
+	private final String LOGGING_MESSAGE_FAILED_PATH_CHANGE = "Invalid PATH. PATH trace entered: %1$s.";
+	private final String LOGGING_MESSAGE_FAILED_UNDO = "This is the maximum history you can undo.";
+	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum history you can redo.";
 	
 	/*
 	private final static String LOCALE_MONDAY = "Monday";
@@ -52,7 +65,7 @@ public class StorageMagicStringsAndNumbers{
 	*/
 	
 	/**
-	 * file name
+	 * file/path name
 	 */
 	private final String defaultFileName = "taskContents.txt";
 	private final String defaultPathFileName = "pathContents.txt";
@@ -150,5 +163,18 @@ public class StorageMagicStringsAndNumbers{
 	
 	public String getPathFileName(){
 		return defaultPathFileName;
+	}
+	
+	//Methods involving getting logging message
+	public String getWrongPathName(){
+		return LOGGING_MESSAGE_FAILED_PATH_CHANGE;
+	}
+	
+	public String getFailedUndo(){
+		return LOGGING_MESSAGE_FAILED_UNDO;
+	}
+	
+	public String getFailedRedo(){
+		return LOGGING_MESSAGE_FAILED_REDO;
 	}
 }

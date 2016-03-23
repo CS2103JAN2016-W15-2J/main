@@ -1,10 +1,12 @@
 package tasknote.storage;
 
 import tasknote.shared.TaskObject;
+import tasknote.shared.Constants;
 import tasknote.shared.TaskListIOException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Storage{
@@ -12,7 +14,7 @@ public class Storage{
 	private PathManipulation pathManipulator;
 	private StorageMagicStringsAndNumbers magicValuesRetriever;
 	
-	private static final Logger log = Logger.getLogger( Storage.class.getName() );
+	private static final Logger storageLog = Logger.getLogger( Storage.class.getName() );
 	
 	/**
 	 * constructor to construct FileManipulator to manipulate items from/to file
@@ -66,7 +68,7 @@ public class Storage{
 			fileManipulator.changeFileName(textFileName);
 			return true;
 		}
-		
+		storageLog.log(Level.FINE, String.format(magicValuesRetriever.getWrongPathName(), textFileName));
 		return false;
 	}
 	
@@ -75,8 +77,13 @@ public class Storage{
 	 * @return true if successfully undo path
 	 */
 	public boolean undoPath(){
-		String previousPath = pathManipulator.extractUndoPathString();
-		return fileManipulator.changeFileName(previousPath);
+		try{
+			String previousPath = pathManipulator.extractUndoPathString();
+			return fileManipulator.changeFileName(previousPath);
+		}catch(NullPointerException npe){
+			storageLog.log(Level.FINE, magicValuesRetriever.getFailedUndo());
+			return false;
+		}
 	}
 	
 	/**
@@ -84,16 +91,24 @@ public class Storage{
 	 * @return true if successfully redo path
 	 */
 	public boolean redoPath(){
-		String nextPath = pathManipulator.extractRedoPathString();
-		return fileManipulator.changeFileName(nextPath);
+		try{
+			String nextPath = pathManipulator.extractRedoPathString();
+			return fileManipulator.changeFileName(nextPath);
+		}catch(NullPointerException npe){
+			storageLog.log(Level.FINE, magicValuesRetriever.getFailedRedo());
+			return false;
+		}
 	}
 	
 	// private helper methods
 	private String concatPathIfNeeded(String pathName, String previousTextFileName){
 		if(pathName.endsWith(magicValuesRetriever.getTextFileEnding())){
 			return pathName;
-		}else{
+		}else if(pathName.endsWith(magicValuesRetriever.getSlash())){
 			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
+		}else{
+			pathName = pathName.concat(magicValuesRetriever.getSlash());
+			return concatPathIfNeeded(pathName, previousTextFileName);
 		}
 	}
 }
