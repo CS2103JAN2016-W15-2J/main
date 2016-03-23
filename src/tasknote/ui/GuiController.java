@@ -4,18 +4,20 @@ import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
+import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TaskNote";
@@ -32,6 +34,7 @@ public class GuiController extends Application {
     private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
     private static ObservableList<TaskObject> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
     private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
+    private static ListView<String> _sidebarNavigation = _sidebarContainer.getNavigationList();
     
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
     
@@ -51,8 +54,11 @@ public class GuiController extends Application {
         frame.setRight(_floatingTasksContainer);
         frame.setBottom(_commandLineContainer);
         
+        
+        setSidebarNavigationBehaviour();
         // TODO
-        displayUpdatedTaskList();
+        _sidebarContainer.selectNavigationCell(1);
+        displayOutstandingTaskList();
         
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
@@ -75,6 +81,7 @@ public class GuiController extends Application {
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
+        _sidebarContainer.selectNavigationCell(1);
         displayUpdatedTaskList();
         
         commandLine.setText(DEFAULT_COMMAND);
@@ -90,6 +97,7 @@ public class GuiController extends Application {
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
+        _sidebarContainer.selectNavigationCell(1);
         displayUpdatedTaskList();
     }
     
@@ -120,6 +128,97 @@ public class GuiController extends Application {
         
         _tasksListToBeDisplayed.setAll(tasksList);
         _floatingTasksListToBeDisplayed.setAll(floatsList);
+    }
+    
+    private static void displayOutstandingTaskList() {
+        ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        
+        for(int index = 0; index < displayList.size(); index++) {
+            displayList.get(index).setTaskID(index + 1);
+        }
+        
+        ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
+        ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
+        
+        for(TaskObject task: displayList) {
+            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_DEFAULT) {
+                floatsList.add(task);
+            } else if (task.getTaskStatus() == TASK_STATUS.TASK_DEFAULT){
+                tasksList.add(task);
+            }
+        }
+        
+        _tasksListToBeDisplayed.setAll(tasksList);
+        _floatingTasksListToBeDisplayed.setAll(floatsList);
+    }
+    
+    private static void displayOverdueTaskList() {
+        ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        
+        for(int index = 0; index < displayList.size(); index++) {
+            displayList.get(index).setTaskID(index + 1);
+        }
+        
+        ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
+        ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
+        
+        for(TaskObject task: displayList) {
+            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_OUTSTANDING) {
+                floatsList.add(task);
+            } else if (task.getTaskStatus() == TASK_STATUS.TASK_OUTSTANDING){
+                tasksList.add(task);
+            }
+        }
+        
+        _tasksListToBeDisplayed.setAll(tasksList);
+        _floatingTasksListToBeDisplayed.setAll(floatsList);
+    }
+    
+    private static void displayCompletedTaskList() {
+        ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        
+        for(int index = 0; index < displayList.size(); index++) {
+            displayList.get(index).setTaskID(index + 1);
+        }
+        
+        ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
+        ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
+        
+        for(TaskObject task: displayList) {
+            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
+                floatsList.add(task);
+            } else if (task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED){
+                tasksList.add(task);
+            }
+        }
+        
+        _tasksListToBeDisplayed.setAll(tasksList);
+        _floatingTasksListToBeDisplayed.setAll(floatsList);
+    }
+    
+    private void setSidebarNavigationBehaviour() {
+        _sidebarNavigation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                changeView(newSelection);
+            }
+        });
+    }
+    
+    private void changeView(String selected){
+        switch(selected) {
+            case "View All":
+                displayUpdatedTaskList();
+                break;
+            case "Outstanding":
+                displayOutstandingTaskList();
+                break;
+            case "Overdue":
+                displayOverdueTaskList();
+                break;
+            case "Completed":
+                displayCompletedTaskList();
+                break;
+        }
     }
     
     public static void main(String[] argv) {

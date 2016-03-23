@@ -40,6 +40,18 @@ public class SidebarContainer extends VBox{
         }
         return _sidebarContainer;
     }
+    
+    public ListView<String> getNavigationList() {
+        return _observableListRepresentation;
+    } 
+    
+    public void selectNavigationCell(int index) {
+        if(index > _navigationMenu.size()) {
+            return;
+        } else {
+            _observableListRepresentation.getSelectionModel().select(index);
+        }
+    }
 
     private void setupSidebarContainer() {
         setSidebarContainerPresentation();
@@ -59,9 +71,8 @@ public class SidebarContainer extends VBox{
     
     private void setNavigationPresentation() {
         _observableListRepresentation.setId("sidebar-navigation");
-        _navigationMenu.addAll("Outstanding", "Overdue", "Completed");
+        _navigationMenu.addAll("View All", "Outstanding", "Overdue", "Completed");
         _observableListRepresentation.setItems(_navigationMenu);
-        
         // _observableListRepresentation.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c"));
     }
     
@@ -103,6 +114,8 @@ public class SidebarContainer extends VBox{
     
     private Icons getIcon(String value) {
         switch(value) {
+            case "View All":
+                return Icons.cmd_home;
             case "Outstanding":
                 return Icons.cmd_alarm_multiple;
             case "Overdue":
