@@ -95,7 +95,7 @@ public class SidebarContainer extends VBox{
         FxIconicsLabel btnDefault = (FxIconicsLabel) new FxIconicsLabel.Builder(icon).size(24).color(MaterialColor.GREY_500).build();
         Label nLabel = new Label(value);
         // TODO
-        nLabel.getStyleClass().add("notification-title");
+        nLabel.getStyleClass().add("sidebar-navigation-cell");
         box.getChildren().addAll(btnDefault, nLabel);
         
         return box;

@@ -75,8 +75,17 @@
  	-fx-background-color: inherit;
  }
  
- #sidebar-navigation .list-cell:selected {
+ #sidebar-navigation:focused .list-cell:filled:selected,
+ #sidebar-navigation:focused .list-cell:filled:selected .label,
+ #sidebar-navigation .list-cell:selected, 
+ #sidebar-navigation .list-cell:selected .label {
+ 	-fx-text-fill: #ffffff;
  	-fx-background-color: #313437;
+ }
+ 
+ .sidebar-navigation-cell {
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
  }
  
 /**************************************************
