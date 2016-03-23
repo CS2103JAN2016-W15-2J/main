@@ -81,8 +81,9 @@ public class GuiController extends Application {
         // TODO
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
+        
         _sidebarContainer.selectNavigationCell(1);
-        displayUpdatedTaskList();
+        displayOutstandingTaskList();
         
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
@@ -98,7 +99,7 @@ public class GuiController extends Application {
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
         _sidebarContainer.selectNavigationCell(1);
-        displayUpdatedTaskList();
+        displayOutstandingTaskList();
     }
     
     private void focusOnCommandLine() {
