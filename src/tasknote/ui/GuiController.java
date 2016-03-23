@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tasknote.logic.TaskNoteControl;
@@ -16,6 +17,8 @@ import tasknote.shared.TaskObject;
 
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TaskNote";
+    
+    private final String APPLICATION_ICON_PATH = "resources/image/tasknote-icon.png";
     
     private final double WINDOW_MIN_WIDTH = 450.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
@@ -41,8 +44,7 @@ public class GuiController extends Application {
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
         
-        String here = getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm();
-        scene.getStylesheets().add(here);
+        scene.getStylesheets().add(getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm());
         
         frame.setTop(MainMenuContainer.getInstance());
         frame.setLeft(_sidebarContainer);
@@ -55,6 +57,7 @@ public class GuiController extends Application {
         
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
+        stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH))); 
         stage.show();
         
         focusOnCommandLine();
