@@ -62,14 +62,33 @@ public class Storage{
 	 */
 	public boolean changePath(String newPathName){
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		textFileName = textFileName.replace(magicValuesRetriever.getSlash(), magicValuesRetriever.getPathSlash());
 		
-		if(pathManipulator.canChangePath(textFileName)){
+		if(isPathForMac(textFileName)){
 			fileManipulator.changeFileName(textFileName);
 			return true;
 		}
+		
+		String textFileNameForWindows = convertFilePathForWindows(textFileName);
+		
+		if(isPathForWindows(textFileNameForWindows)){
+			fileManipulator.changeFileName(textFileNameForWindows);
+			return true;
+		}
+			
 		storageLog.log(Level.FINE, String.format(magicValuesRetriever.getWrongPathName(), textFileName));
 		return false;
+	}
+
+	private String convertFilePathForWindows(String textFileName) {
+		return textFileName.replace(magicValuesRetriever.getSlash(), magicValuesRetriever.getPathSlash());
+	}
+
+	private boolean isPathForWindows(String textFileName) {
+		return pathManipulator.canChangePath(textFileName);
+	}
+
+	private boolean isPathForMac(String textFileName) {
+		return pathManipulator.canChangePath(textFileName);
 	}
 	
 	/**
