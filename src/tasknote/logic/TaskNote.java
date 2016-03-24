@@ -36,6 +36,11 @@ public class TaskNote {
 	private static Storage storage = new Storage();
 
 	/*
+	 * This is used to store the filePath
+	 */
+	private static String filePath;
+
+	/*
 	 * These integers are used to store the number of results retrieved upon
 	 * user's search (searchIdSize) and the number of tasks to be deleted
 	 * (deleteIdSize)
@@ -51,6 +56,7 @@ public class TaskNote {
 		showIntervalList = new ArrayList<TaskObject>();
 		displayList = new ArrayList<TaskObject>();
 		history = new CommandHistory();
+		filePath = new String();
 	}
 
 	/**
@@ -227,7 +233,7 @@ public class TaskNote {
 		} catch (Error er) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE_INVALID_OBJECTID, er));
-		} 
+		}
 
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
@@ -291,7 +297,7 @@ public class TaskNote {
 		try {
 			CommandObject commandObject = history.peekRedoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
-			
+
 			while (redoCount <= numPrecedingObjects) {
 				commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
@@ -354,6 +360,35 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_INVALID_OBJECT, er));
 		}
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+	}
+
+	/**
+	 * This operation changes the File Path to the new location specified by the
+	 * user
+	 *
+	 * @param file
+	 *            path
+	 * @return status of the operation
+	 */
+	public String changeFilePath(String newFilePath) {
+		boolean isSuccess;
+		filePath = newFilePath;
+		try {
+			assert (filePath.equals(Constants.EMPTY_STRING) && isNotNullFilePath(filePath));
+			isSuccess = storage.changePath(filePath);
+			if (isSuccess) {
+				logger.log(Level.INFO, String.format(Constants.INFO_EXECUTE_CHANGE_PATH_SUCCESSFUL, filePath));
+			} else {
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_CHANGE_PATH_FALSE, filePath));
+			}
+		} catch (Exception ex) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_CHANGE_PATH_FAILURE, filePath, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_INVALID_FILEPATH, er));
+		}
+		return showFeedback(COMMAND_TYPE.CHANGE_FILE_PATH, isSuccess, null);
 	}
 
 	/**
@@ -455,7 +490,7 @@ public class TaskNote {
 		int fromDay = now.getDayOfMonth();
 
 		try {
-			assert(days > Constants.ZERO_TIME_INTERVAL);
+			assert (days > Constants.ZERO_TIME_INTERVAL);
 			now = now.plusDays(days);
 			int toYear = now.getYear();
 			int toMonth = now.getMonthValue();
@@ -485,7 +520,7 @@ public class TaskNote {
 		int fromDay = now.getDayOfMonth();
 
 		try {
-			assert(weeks > Constants.ZERO_TIME_INTERVAL);
+			assert (weeks > Constants.ZERO_TIME_INTERVAL);
 			now = now.plusWeeks(weeks);
 			int toYear = now.getYear();
 			int toMonth = now.getMonthValue();
@@ -534,6 +569,11 @@ public class TaskNote {
 				showIntervalList.add(taskObject);
 			}
 		}
+	}
+
+	private boolean isNotNullFilePath(String filePath) {
+		boolean isNotNull = (filePath != null);
+		return isNotNull;
 	}
 
 	private boolean isNotNullTaskObject(TaskObject taskObject) {
@@ -683,6 +723,12 @@ public class TaskNote {
 				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
 			} else {
 				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
+			}
+		case CHANGE_FILE_PATH:
+			if (isSuccess) {
+				return String.format(Constants.MESSAGE_CHANGE_PATH_SUCCESSFUL, filePath);
+			} else {
+				return String.format(Constants.MESSAGE_CHANGE_PATH_UNSUCCESSFUL, filePath);
 			}
 		case SHOW:
 			if (isSuccess) {

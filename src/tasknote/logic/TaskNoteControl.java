@@ -92,7 +92,9 @@ public class TaskNoteControl {
 			response = executeMarkAsComplete(userCommand);
 			break;
 		case CHANGE_FILE_PATH:
-			response = executeChangeFilePath(userCommand);
+			//TODO: Parser
+			//response = executeChangeFilePath(userCommand);
+			response = "";
 			break;
 		case SHOW:
 			//TODO: Parser
@@ -248,10 +250,17 @@ public class TaskNoteControl {
 	 *            Command
 	 * @return Status of Operation
 	 */
+	/*
 	private static String executeChangeFilePath(String userCommand) {
-		//TODO
-		return "";
+		//TODO: parser
+		//String filePath = Parser.parseFilePath(userCommand);
+		command = new ChangeFilePathCommand(taskNote, filePath);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
+		return response;
 	}
+	*/
 	
 	/**
 	 * This operation executes the User's request to show
