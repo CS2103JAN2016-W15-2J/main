@@ -114,7 +114,7 @@ public class TaskNote {
 	public void reIntializeSearchList() {
 		searchList = new ArrayList<TaskObject>();
 	}
-
+	
 	/**
 	 * This operation refreshes the list of task to be displayed to the user
 	 * after each user operation
@@ -160,6 +160,7 @@ public class TaskNote {
 		boolean isSuccess = isValidIdList(deleteIds);
 		if (isSuccess) {
 			try {
+				//TODO: Assert deleteIds.size > 0
 				deleteFromTaskList(deleteIds);
 				storage.saveTasks(taskList);
 			} catch (Exception e) {
@@ -181,6 +182,8 @@ public class TaskNote {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
 		try {
+			//TODO
+			//assert(searchIdSize > 0);
 			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(taskList.get(searchIds.get(i)));
 			}
@@ -324,12 +327,17 @@ public class TaskNote {
 	public String markTaskAsCompleted(TaskObject taskObject) {
 		boolean isSuccess = true;
 		try {
+			//TODO: Assert valid taskObject in taskList
+			assert(isValidTaskObject(taskObject) == isSuccess);
 			taskObject.setIsMarkedDone(isSuccess);
 			sortAndSave(taskList);
 			history.pushDoneToUndo(taskObject);
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE, e));
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_INVALID_OBJECT, er));
 		}
 		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
 	}
@@ -507,6 +515,11 @@ public class TaskNote {
 				showIntervalList.add(taskObject);
 			}
 		}
+	}
+	
+	private boolean isValidTaskObject(TaskObject taskObject){
+		boolean isValid = taskList.contains(taskObject);
+		return isValid;
 	}
 
 	private boolean isValidIdList(ArrayList<Integer> idList) {
