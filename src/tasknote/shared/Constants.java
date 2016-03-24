@@ -23,7 +23,9 @@ public class Constants {
 	public static final String MESSAGE_SHOW_SUCCESSFUL = "%d Deadline Tasks are due";
 	public static final String MESSAGE_SHOW_NO_RESULTS = "No Deadline Tasks are due within this period";
 	public static final String MESSAGE_SHOW_UNSUCCESSFUL = "Unable to show deadline tasks within this period";
-
+	public static final String MESSAGE_CHANGE_PATH_SUCCESSFUL = "File path successfuly changed to: %s";
+	public static final String MESSAGE_CHANGE_PATH_UNSUCCESSFUL = "Unsuccessful operation. Unable to change file path to: %s";
+	
 	/*
 	 * These are the warnings that will be displayed in the logs if the user
 	 * does not enter valid commands
@@ -45,6 +47,9 @@ public class Constants {
 	public static final String WARNING_EXECUTE_REDO = "Error occured while executing REDO operation: %s";
 	public static final String WARNING_EXECUTE_SHOW_FAILURE = "Error while attempting to retrieve and SHOW taks for specifed time interval: %s";
 	public static final String WARNING_EXECUTE_SHOW_INVALID_INTERVAL = "Invalid number of days/weeks entered: %s";
+	public static final String WARNING_EXECUTE_CHANGE_PATH_FALSE = "Unable to execute change of file path. False returned by Storage";
+	public static final String WARNING_EXECUTE_CHANGE_PATH_FAILURE = "Error: Change File Path to [ %s ] failed: %s";
+	public static final String WARNING_EXECUTE_SHOW_INVALID_FILEPATH = "Error: Change File Path. Invalid file path [ %s ]";
 	public static final String WARNING_EXECUTE_SORT_SAVE = "Error occured while SORTING tasks and SAVING to storage: %s";
 
 	public static final String WARNING_INVALID_DELETE_ID = "Invalid DELETE ID: %d. Unable to execute DELETE operation.";
@@ -59,7 +64,8 @@ public class Constants {
 	public static final String INFO_SEARCH_SUCCESSFUL = "Search result(s) retrieved successfully";
 	public static final String INFO_UNDO_SUCCESSFUL = "Last operation is undone successfully";
 	public static final String INFO_REDO_SUCCESSFUL = "Last operation is re-done successfully";
-
+	public static final String INFO_EXECUTE_CHANGE_PATH_SUCCESSFUL = "File path has been successfully changed to: %s";
+	
 	public static final String FINE_DELETE_LIST_VALIDITY = "Checking validity of %d entries to be deleted from List";
 	public static final String FINER_VALID_DELETE_ID = "Processed Valid ID [%d] : %s";
 
@@ -76,7 +82,13 @@ public class Constants {
 	public static final String STRING_TASKSTATUS_OUTSTANDING = "TASK_OUTSTANDING";
 	public static final String STRING_TASKSTATUS_COMPLETED = "TASK_COMPLETED";
 	public static final String STRING_TASKSTATUS_INVALID_STORAGE = "TASK_INVALID_STORAGE";
-
+	
+	/*
+	 * These are the String constants used in the program while executing
+	 * specific user operations
+	 */
+	
+	public static final String EMPTY_STRING = "";
 	/*
 	 * These are the integer constants used in the program while executing
 	 * specific user operations
