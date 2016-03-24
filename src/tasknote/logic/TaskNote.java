@@ -140,12 +140,17 @@ public class TaskNote {
 	public String addTask(TaskObject taskObject) {
 		boolean isSuccess = true;
 		try {
+			assert (isNotNullTaskObject(taskObject) == isSuccess);
 			taskList.add(taskObject);
 			sortAndSave(taskList);
 			history.pushAddToUndo(taskObject);
-		} catch (Exception e) {
+			logger.log(Level.INFO, String.format(Constants.INFO_ADD_SUCCESSFUL));
+		} catch (Exception ex) {
 			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_ADD, e));
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_ADD_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_ADD_INVALID_OBJECT, er));
 		}
 		return showFeedback(COMMAND_TYPE.ADD, isSuccess, taskObject);
 	}
@@ -160,16 +165,17 @@ public class TaskNote {
 	 */
 	public String deleteTask(ArrayList<Integer> deleteIds) {
 		deleteIdSize = deleteIds.size();
-		boolean isSuccess = isValidIdList(deleteIds);
-		if (isSuccess) {
-			try {
-				// TODO: Assert deleteIds.size > 0
-				deleteFromTaskList(deleteIds);
-				storage.saveTasks(taskList);
-			} catch (Exception e) {
-				isSuccess = false;
-				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE, e));
-			}
+		boolean isSuccess = true;
+		try {
+			assert (deleteIdSize > Constants.EMPTY_LIST_SIZE && isValidIdList(deleteIds));
+			deleteFromTaskList(deleteIds);
+			storage.saveTasks(taskList);
+		} catch (Exception ex) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_INVALID_LIST, er));
 		}
 		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
 	}
@@ -185,7 +191,7 @@ public class TaskNote {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
 		try {
-			assert(searchIdSize > Constants.EMPTY_LIST_SIZE);
+			assert (searchIdSize > Constants.EMPTY_LIST_SIZE);
 			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(taskList.get(searchIds.get(i)));
 			}
@@ -208,18 +214,21 @@ public class TaskNote {
 	 * @return status of the operation
 	 */
 	public String updateTask(int updateTaskId, TaskObject updatedTaskObject) {
-		boolean isSuccess = isValidTaskId(updateTaskId);
-		if (isSuccess && updatedTaskObject != null) {
-			try {
-				TaskObject oldTaskObject = taskList.remove(updateTaskId);
-				taskList.add(updateTaskId, updatedTaskObject);
-				sortAndSave(taskList);
-				history.pushUpdateToUndo(oldTaskObject, updatedTaskObject);
-			} catch (Exception e) {
-				isSuccess = false;
-				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE, e));
-			}
-		}
+		boolean isSuccess = true;
+		try {
+			assert (isValidTaskId(updateTaskId) && updatedTaskObject != null);
+			TaskObject oldTaskObject = taskList.remove(updateTaskId);
+			taskList.add(updateTaskId, updatedTaskObject);
+			sortAndSave(taskList);
+			history.pushUpdateToUndo(oldTaskObject, updatedTaskObject);
+		} catch (Exception ex) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE_INVALID_OBJECTID, er));
+		} 
+
 		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
 	}
 
@@ -255,7 +264,6 @@ public class TaskNote {
 					history.pushAddToUndo(newTaskObject);
 					history.pushDeleteToUndo(oldTaskObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
-					System.out.println("ENTER UNDO COMMAND");
 					TaskObject taskObject = commandObject.getTaskObject();
 					history.pushDoneToRedo(taskObject);
 					taskList.remove(taskObject);
@@ -267,8 +275,8 @@ public class TaskNote {
 				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
 				undoCount++;
 			}
-
 			sortAndSave(taskList);
+			logger.log(Level.INFO, Constants.INFO_UNDO_SUCCESSFUL);
 		} catch (Exception e) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UNDO, e));
@@ -283,6 +291,7 @@ public class TaskNote {
 		try {
 			CommandObject commandObject = history.peekRedoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
+			
 			while (redoCount <= numPrecedingObjects) {
 				commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
@@ -295,7 +304,6 @@ public class TaskNote {
 					history.pushDeleteToUndo(taskObject);
 					taskList.remove(taskObject);
 				} else if (commandType == COMMAND_TYPE.UPDATE) {
-					// pass - do nothing
 					CommandObject oldObject = history.popRedoStack();
 					CommandObject newObject = history.popRedoStack();
 					TaskObject oldTaskObject = oldObject.getTaskObject();
@@ -315,8 +323,8 @@ public class TaskNote {
 				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
 				redoCount++;
 			}
-
 			sortAndSave(taskList);
+			logger.log(Level.INFO, Constants.INFO_REDO_SUCCESSFUL);
 		} catch (Exception e) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_REDO, e));
@@ -382,10 +390,12 @@ public class TaskNote {
 			default:
 				throw new Error("Unrecognized ShowInterval type");
 			}
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			isSuccess = false;
-			// logger.log(Level.WARNING,
-			// String.format(Constants.WARNING_EXECUTE_COMPLETE, e));
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_INVALID_INTERVAL, er));
 		}
 		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
 	}
@@ -444,15 +454,17 @@ public class TaskNote {
 		int fromMonth = now.getMonthValue();
 		int fromDay = now.getDayOfMonth();
 
-		now = now.plusDays(days);
-		int toYear = now.getYear();
-		int toMonth = now.getMonthValue();
-		int toDay = now.getDayOfMonth();
-
 		try {
+			assert(days > Constants.ZERO_TIME_INTERVAL);
+			now = now.plusDays(days);
+			int toYear = now.getYear();
+			int toMonth = now.getMonthValue();
+			int toDay = now.getDayOfMonth();
 			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
-		} catch (Exception e) {
-			throw e;
+		} catch (Exception ex) {
+			throw ex;
+		} catch (Error er) {
+			throw er;
 		}
 	}
 
@@ -472,15 +484,17 @@ public class TaskNote {
 		int fromMonth = now.getMonthValue();
 		int fromDay = now.getDayOfMonth();
 
-		now = now.plusWeeks(weeks);
-		int toYear = now.getYear();
-		int toMonth = now.getMonthValue();
-		int toDay = now.getDayOfMonth();
-
 		try {
+			assert(weeks > Constants.ZERO_TIME_INTERVAL);
+			now = now.plusWeeks(weeks);
+			int toYear = now.getYear();
+			int toMonth = now.getMonthValue();
+			int toDay = now.getDayOfMonth();
 			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
-		} catch (Exception e) {
-			throw e;
+		} catch (Exception ex) {
+			throw ex;
+		} catch (Error er) {
+			throw er;
 		}
 	}
 
@@ -520,6 +534,11 @@ public class TaskNote {
 				showIntervalList.add(taskObject);
 			}
 		}
+	}
+
+	private boolean isNotNullTaskObject(TaskObject taskObject) {
+		boolean isNotNull = (taskObject != null);
+		return isNotNull;
 	}
 
 	private boolean isValidTaskObject(TaskObject taskObject) {

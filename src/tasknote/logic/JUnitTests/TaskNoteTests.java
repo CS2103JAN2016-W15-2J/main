@@ -19,7 +19,30 @@ public class TaskNoteTests {
 	String feedback;
 	String output;
 	String command;
+	
+	
+	@Test
+	public void testAddTask() {
+		
+		/*
+		 * The following is a boundary case for the ‘negative value’ partition
+		 */
+		
+		feedback = note.addTask(null);
+		output = Constants.MESSAGE_ADD_UNSUCCESSFUL;
+		Assert.assertEquals(output, feedback);
+		
 
+		/*
+		 * The following is a test case that is part of the partition that is
+		 * valid
+		 */
+		
+		feedback = note.addTask(new TaskObject("New Task Object"));
+		output = String.format(Constants.MESSAGE_ADD_SUCCESSFUL, 1, "New Task Object");
+		Assert.assertEquals(output, feedback);
+	}
+	
 	@Test
 	public void testDeleteTask() {
 		ArrayList<Integer> ids = new ArrayList<Integer>();
