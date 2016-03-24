@@ -3,14 +3,12 @@ package tasknote.logic.JUnitTests;
 import org.junit.Test;
 import org.junit.Assert;
 
-import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class TaskNoteTests {
 
