@@ -334,6 +334,7 @@ public class TaskNote {
 			taskObject.setIsMarkedDone(isSuccess);
 			sortAndSave(taskList);
 			history.pushDoneToUndo(taskObject);
+			logger.log(Level.INFO, Constants.INFO_DONE_SUCCESSFUL);
 		} catch (Exception ex) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_FAILURE, ex));
