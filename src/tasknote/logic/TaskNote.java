@@ -185,14 +185,17 @@ public class TaskNote {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
 		try {
-			// TODO
-			// assert(searchIdSize > 0);
+			assert(searchIdSize > Constants.EMPTY_LIST_SIZE);
 			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(taskList.get(searchIds.get(i)));
 			}
-		} catch (Exception e) {
+			logger.log(Level.INFO, Constants.INFO_SEARCH_SUCCESSFUL);
+		} catch (Exception ex) {
 			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SEARCH, e));
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SEARCH_FAILURE, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SEARCH_NO_RESULT, er));
 		}
 		return showFeedback(COMMAND_TYPE.SEARCH, isSuccess, null);
 	}

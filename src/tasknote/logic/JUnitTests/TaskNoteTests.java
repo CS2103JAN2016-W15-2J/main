@@ -78,11 +78,10 @@ public class TaskNoteTests {
 		Assert.assertEquals(output, feedback);
 
 		// Case 2
-		// TODO: MUST BE UNSUCCESSFUL MESSAGE
 		ids = new ArrayList<Integer>();
 		feedback = note.searchTasks(ids);
 		output = Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
-		// Assert.assertEquals(output, feedback);
+		Assert.assertEquals(output, feedback);
 
 		/*
 		 * The following is a test case that is part of the partition that is

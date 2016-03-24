@@ -33,7 +33,8 @@ public class Constants {
 	public static final String WARNING_EXECUTE_ADD = "Error occured while ADDING task: %s";
 	public static final String WARNING_EXECUTE_DELETE = "Error occured while DELETING task(s): %s";
 	public static final String WARNING_EXECUTE_UPDATE = "Error occured while UPDATING task(s): %s";
-	public static final String WARNING_EXECUTE_SEARCH = "Error occured while SEARCHING and retrieving results from task list: %s";
+	public static final String WARNING_EXECUTE_SEARCH_FAILURE = "Error occured while SEARCHING and RETRIEVING results from task list: %s";
+	public static final String WARNING_EXECUTE_SEARCH_NO_RESULT = "No valid search results due to empty Search ID list received";
 	public static final String WARNING_EXECUTE_COMPLETE_FAILURE = "Error occured while marking task as DONE: %s";
 	public static final String WARNING_EXECUTE_COMPLETE_INVALID_OBJECT = "Invalid Task Object Error(not found in task list): %s";
 	public static final String WARNING_EXECUTE_UNDO = "Error occured while executing UNDO operation: %s";
@@ -44,6 +45,7 @@ public class Constants {
 	
 	public static final String INFO_DELETE_LIST = "No valid delete IDs have been specified. Size of Delete ID list = %d";
 	public static final String INFO_DONE_SUCCESSFUL = "Task marked as complete successfully";
+	public static final String INFO_SEARCH_SUCCESSFUL = "Search result(s) retrieved successfully";
 	public static final String FINE_DELETE_LIST_VALIDITY = "Checking validity of %d entries to be deleted from List";
 	public static final String FINER_VALID_DELETE_ID = "Processed Valid ID [%d] : %s";
 	
