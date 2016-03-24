@@ -86,14 +86,14 @@ public class TaskNote {
 	public ArrayList<TaskObject> getSearchList() {
 		return searchList;
 	}
-	
+
 	/**
-	 * This operation returns the Show Interval List containing Task Objects that
-	 * have deadlines in the given interval by the user
+	 * This operation returns the Show Interval List containing Task Objects
+	 * that have deadlines in the given interval by the user
 	 * 
 	 * @return List of Tasks that matched User's search
 	 */
-	public ArrayList<TaskObject> getShowIntervalList(){
+	public ArrayList<TaskObject> getShowIntervalList() {
 		return showIntervalList;
 	}
 
@@ -114,12 +114,13 @@ public class TaskNote {
 	public void reIntializeSearchList() {
 		searchList = new ArrayList<TaskObject>();
 	}
-	
+
 	/**
 	 * This operation refreshes the list of task to be displayed to the user
 	 * after each user operation
 	 *
-	 * @param List of Tasks to be displayed to the User
+	 * @param List
+	 *            of Tasks to be displayed to the User
 	 */
 	public void refreshDisplay(ArrayList<TaskObject> list) {
 		displayList = new ArrayList<TaskObject>();
@@ -132,7 +133,8 @@ public class TaskNote {
 	 * This operation adds a taskObject to the ArrayList of TaskObjects, sorts
 	 * it based on Date and Time and saves it in the Storage
 	 *
-	 * @param task object
+	 * @param task
+	 *            object
 	 * @return Status of Operation
 	 */
 	public String addTask(TaskObject taskObject) {
@@ -152,7 +154,8 @@ public class TaskNote {
 	 * This operation deletes a task in the ArrayList of TaskObjects and saves
 	 * it in the Storage
 	 *
-	 * @param Id of the Task stored in ArrayList
+	 * @param Id
+	 *            of the Task stored in ArrayList
 	 * @return Status of the operation
 	 */
 	public String deleteTask(ArrayList<Integer> deleteIds) {
@@ -160,7 +163,7 @@ public class TaskNote {
 		boolean isSuccess = isValidIdList(deleteIds);
 		if (isSuccess) {
 			try {
-				//TODO: Assert deleteIds.size > 0
+				// TODO: Assert deleteIds.size > 0
 				deleteFromTaskList(deleteIds);
 				storage.saveTasks(taskList);
 			} catch (Exception e) {
@@ -182,8 +185,8 @@ public class TaskNote {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
 		try {
-			//TODO
-			//assert(searchIdSize > 0);
+			// TODO
+			// assert(searchIdSize > 0);
 			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(taskList.get(searchIds.get(i)));
 			}
@@ -327,8 +330,7 @@ public class TaskNote {
 	public String markTaskAsCompleted(TaskObject taskObject) {
 		boolean isSuccess = true;
 		try {
-			//TODO: Assert valid taskObject in taskList
-			assert(isValidTaskObject(taskObject) == isSuccess);
+			assert (isValidTaskObject(taskObject) == isSuccess);
 			taskObject.setIsMarkedDone(isSuccess);
 			sortAndSave(taskList);
 			history.pushDoneToUndo(taskObject);
@@ -383,104 +385,104 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
 	}
-	
+
 	/**
-	 * This operation populates tasks in Search Interval List with
-	 * task objects that have deadlines today
+	 * This operation populates tasks in Search Interval List with task objects
+	 * that have deadlines today
 	 * 
 	 */
-	private void getTodayTasks(){
+	private void getTodayTasks() {
 		LocalDateTime now = LocalDateTime.now();
 		int currentYear = now.getYear();
-	    int currentMonth = now.getMonthValue();
-	    int currentDay = now.getDayOfMonth();
-	    
-	    try{
-	    	populateTdyTmrShowList(currentYear, currentMonth, currentDay);
-	    } catch (Exception e) {
-	    	throw e;
-	    }
+		int currentMonth = now.getMonthValue();
+		int currentDay = now.getDayOfMonth();
+
+		try {
+			populateTdyTmrShowList(currentYear, currentMonth, currentDay);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
+
 	/**
-	 * This operation populates tasks in Search Interval List with
-	 * task objects that have deadlines tomorrow
+	 * This operation populates tasks in Search Interval List with task objects
+	 * that have deadlines tomorrow
 	 * 
 	 */
-	private void getTomorrowTasks(){
+	private void getTomorrowTasks() {
 		LocalDateTime now = LocalDateTime.now();
 		now = now.plusDays(Constants.INCREMENT_DAY_TOMORROW);
-		
+
 		int tomorrowYear = now.getYear();
-	    int tomorrowMonth = now.getMonthValue();
-	    int tomorrowDay = now.getDayOfMonth();
-	    
-	    try{
-	    	populateTdyTmrShowList(tomorrowYear, tomorrowMonth, tomorrowDay);
-	    } catch (Exception e) {
-	    	throw e;
-	    }
+		int tomorrowMonth = now.getMonthValue();
+		int tomorrowDay = now.getDayOfMonth();
+
+		try {
+			populateTdyTmrShowList(tomorrowYear, tomorrowMonth, tomorrowDay);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
+
 	/**
-	 * This operation populates tasks in Search Interval List with
-	 * task objects that have deadlines within the next specified number
-	 * of days by the user
+	 * This operation populates tasks in Search Interval List with task objects
+	 * that have deadlines within the next specified number of days by the user
 	 * 
 	 * E.g. of User Command: Show next 5 days
 	 * 
-	 * @param: number of days
+	 * @param: number
+	 *             of days
 	 * 
 	 */
-	private void getDayTasks(int days){
+	private void getDayTasks(int days) {
 		LocalDateTime now = LocalDateTime.now();
 		int fromYear = now.getYear();
-	    int fromMonth = now.getMonthValue();
-	    int fromDay = now.getDayOfMonth();
-		
+		int fromMonth = now.getMonthValue();
+		int fromDay = now.getDayOfMonth();
+
 		now = now.plusDays(days);
 		int toYear = now.getYear();
-	    int toMonth = now.getMonthValue();
-	    int toDay = now.getDayOfMonth();
-	    
-	    try{
-	    	populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
-	    } catch (Exception e) {
-	    	throw e;
-	    }
+		int toMonth = now.getMonthValue();
+		int toDay = now.getDayOfMonth();
+
+		try {
+			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
+
 	/**
-	 * This operation populates tasks in Search Interval List with
-	 * task objects that have deadlines within the next specified number
-	 * of weeks by the user
+	 * This operation populates tasks in Search Interval List with task objects
+	 * that have deadlines within the next specified number of weeks by the user
 	 * 
 	 * E.g. of User Command: Show next 1 week
 	 * 
-	 * @param: number of weeks
+	 * @param: number
+	 *             of weeks
 	 * 
 	 */
-	private void getWeekTasks(int weeks){
+	private void getWeekTasks(int weeks) {
 		LocalDateTime now = LocalDateTime.now();
 		int fromYear = now.getYear();
-	    int fromMonth = now.getMonthValue();
-	    int fromDay = now.getDayOfMonth();
-		
+		int fromMonth = now.getMonthValue();
+		int fromDay = now.getDayOfMonth();
+
 		now = now.plusWeeks(weeks);
 		int toYear = now.getYear();
-	    int toMonth = now.getMonthValue();
-	    int toDay = now.getDayOfMonth();
-	    
-	    try{
-	    	populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
-	    } catch (Exception e) {
-	    	throw e;
-	    }
+		int toMonth = now.getMonthValue();
+		int toDay = now.getDayOfMonth();
+
+		try {
+			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-	
-	private void getAllTasks(){
-		try{
-			for(int i = 0; i < taskList.size(); i++){
+
+	private void getAllTasks() {
+		try {
+			for (int i = 0; i < taskList.size(); i++) {
 				TaskObject taskObject = taskList.get(i);
 				showIntervalList.add(taskObject);
 			}
@@ -488,36 +490,35 @@ public class TaskNote {
 			throw e;
 		}
 	}
-	
-	private void populateTdyTmrShowList(int year, int month, int day){
-		for(int i = 0; i < taskList.size(); i++){
+
+	private void populateTdyTmrShowList(int year, int month, int day) {
+		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
 			int taskDay = taskObject.getDateDay();
 			int taskMonth = taskObject.getDateMonth();
 			int taskYear = taskObject.getDateYear();
-			
-			if(year == taskYear && month == taskMonth && day == taskDay){
+
+			if (year == taskYear && month == taskMonth && day == taskDay) {
 				showIntervalList.add(taskObject);
 			}
 		}
 	}
-	
-	private void populateDayWeekShowList(int toYear, int fromYear, int toMonth, int fromMonth, int toDay, int fromDay){
-		for(int i = 0; i < taskList.size(); i++){
+
+	private void populateDayWeekShowList(int toYear, int fromYear, int toMonth, int fromMonth, int toDay, int fromDay) {
+		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
 			int taskDay = taskObject.getDateDay();
 			int taskMonth = taskObject.getDateMonth();
 			int taskYear = taskObject.getDateYear();
-			
-			if(fromYear <= taskYear && taskYear <= toYear 
-					&& fromMonth <= taskMonth && taskMonth <= toMonth
-					&& fromDay <= taskDay && taskDay <= toDay){
+
+			if (fromYear <= taskYear && taskYear <= toYear && fromMonth <= taskMonth && taskMonth <= toMonth
+					&& fromDay <= taskDay && taskDay <= toDay) {
 				showIntervalList.add(taskObject);
 			}
 		}
 	}
-	
-	private boolean isValidTaskObject(TaskObject taskObject){
+
+	private boolean isValidTaskObject(TaskObject taskObject) {
 		boolean isValid = taskList.contains(taskObject);
 		return isValid;
 	}
@@ -663,12 +664,12 @@ public class TaskNote {
 		case SHOW:
 			if (isSuccess) {
 				int numTasks = searchList.size();
-				if(numTasks > 0){
+				if (numTasks > 0) {
 					return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL, numTasks);
-				}else{
+				} else {
 					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks);
 				}
-				
+
 			} else {
 				return Constants.MESSAGE_SHOW_UNSUCCESSFUL;
 			}
