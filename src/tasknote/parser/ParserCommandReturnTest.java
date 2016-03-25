@@ -18,6 +18,16 @@ public class ParserCommandReturnTest {
 	}
 	
 	@Test
+	public void testReturnAddCommandCaseInsensitive() {
+		
+		String userCommand = "AdD sOmE TaSK";
+		
+		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
+		
+		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+	}
+	
+	@Test
 	public void testReturnSearchCommand() {
 		
 		String userCommand = "search stuff";
@@ -70,6 +80,8 @@ public class ParserCommandReturnTest {
 	@Test
 	public void testReturnInvalidAddCommand() {
 		
+		// Add command requires at least one other parameter to act
+		// as the new task name
 		String userCommand = "add";
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.INVALID;

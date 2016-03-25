@@ -1,5 +1,6 @@
 package tasknote.parser;
 
+import tasknote.logic.ShowInterval;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -21,6 +22,7 @@ public class Parser {
 	private static final String COMMAND_REDO = "redo";
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_SEARCH = "search";
+	private static final String COMMAND_SHOW = "show";
 
 	// Here are the valid keywords accepted by
 	// the program
@@ -90,6 +92,8 @@ public class Parser {
 			return COMMAND_TYPE.REDO;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDO)) {
 			return COMMAND_TYPE.UNDO;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SHOW)) {
+			return COMMAND_TYPE.SHOW;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -650,6 +654,10 @@ public class Parser {
 		listToReturn.addAll(indicesToReturn);
 		
 		return listToReturn;
+	}
+	
+	public static ShowInterval parseShow(String userCommand) {
+		return ShowInterval.TODAY;
 	}
 
 	public static int getUpdateTaskId(String userCommand) {
