@@ -2,6 +2,7 @@ package tasknote.logic;
 
 import tasknote.storage.Storage;
 import tasknote.shared.TaskObject;
+import tasknote.shared.TaskObject.TASK_STATUS;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.Constants;
 import tasknote.logic.History.CommandHistory;
@@ -28,6 +29,8 @@ public class TaskNote {
 	private static CommandHistory history;
 
 	private static ShowInterval showType;
+	private static ShowCategory taskCategory;
+	
 	/*
 	 * This is the storage object that will be used to load tasks into the
 	 * taskList and it will be called to save the tasks after each user
@@ -401,6 +404,7 @@ public class TaskNote {
 		boolean isSuccess = true;
 		showIntervalList = new ArrayList<TaskObject>();
 		try {
+			assert(timeInterval != null);
 			switch (timeInterval) {
 			case TODAY:
 				getTodayTasks();
@@ -433,6 +437,47 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_INVALID_INTERVAL, er));
 		}
 		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
+	}
+	
+	/**
+	 * This operation executes the retrieval of tasks in the user specified
+	 * display category
+	 *
+	 * @param category
+	 * @return status of the operation
+	 */
+	public String displayCategory(ShowCategory category) {
+		boolean isSuccess = true;
+		try {
+			assert(category != null);
+			switch (category) {
+			case ALL:
+				displayAllTasks();
+				taskCategory = ShowCategory.ALL;
+				break;
+			case OUTSTANDING:
+				displayTasks(TASK_STATUS.TASK_OUTSTANDING);
+				taskCategory = ShowCategory.OUTSTANDING;
+				break;
+			case OVERDUE:
+				displayTasks(TASK_STATUS.TASK_OVERDUE);
+				taskCategory = ShowCategory.OVERDUE;
+				break;
+			case COMPLETED:
+				displayTasks(TASK_STATUS.TASK_COMPLETED);
+				taskCategory = ShowCategory.COMPLETED;
+				break;
+			default:
+				throw new Error("Unrecognized ShowInterval type");
+			}
+		} catch (Exception ex) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_CATEGORY_FAILURE, category, ex));
+		} catch (Error er) {
+			isSuccess = false;
+			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_CATEGORY_INVALID, er));
+		}
+		return showFeedback(COMMAND_TYPE.CHANGE_CATEGORY, isSuccess, null);
 	}
 
 	/**
@@ -543,6 +588,29 @@ public class TaskNote {
 			throw e;
 		}
 	}
+	
+	private void displayAllTasks() {
+		getAllTasks();
+		refreshDisplay(showIntervalList);
+	}
+
+	/**
+	 * This operation populates tasks in the user specified category
+	 * in the list to be displayed to the user
+	 * 
+	 * @param: taskStatus
+	 * 
+	 */
+	private void displayTasks(TASK_STATUS taskStatus) {
+		ArrayList<TaskObject> list = new ArrayList<TaskObject>();
+		for (int i = 0; i < taskList.size(); i++) {
+			TaskObject task = taskList.get(i);
+			if (task.getTaskStatus() == taskStatus){
+				list.add(task);
+			}
+		}
+		refreshDisplay(list);
+	}
 
 	private void populateTdyTmrShowList(int year, int month, int day) {
 		for (int i = 0; i < taskList.size(); i++) {
@@ -571,6 +639,7 @@ public class TaskNote {
 		}
 	}
 
+	
 	private boolean isNotNullFilePath(String filePath) {
 		boolean isNotNull = (filePath != null);
 		return isNotNull;
@@ -741,6 +810,12 @@ public class TaskNote {
 
 			} else {
 				return Constants.MESSAGE_SHOW_UNSUCCESSFUL;
+			}
+		case CHANGE_CATEGORY:
+			if (isSuccess) {
+				return String.format(Constants.MESSAGE_CHANGE_CATEGORY_SUCCESSFUL, taskCategory);
+			} else {
+				return String.format(Constants.MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL, taskCategory);
 			}
 		default:
 			throw new Error("Unrecognized command type");

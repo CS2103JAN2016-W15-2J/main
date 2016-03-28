@@ -9,6 +9,7 @@ import tasknote.logic.Commands.CompleteCommand;
 import tasknote.logic.Commands.UndoCommand;
 import tasknote.logic.Commands.RedoCommand;
 import tasknote.logic.Commands.ShowCommand;
+import tasknote.logic.ShowCategory;
 import tasknote.logic.ShowInterval;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
@@ -99,6 +100,11 @@ public class TaskNoteControl {
 		case SHOW:
 			//TODO: Parser
 			//response = executeShow(userCommand);
+			response = "";
+			break;
+		case CHANGE_CATEGORY:
+			//TODO: Parser
+			//response = executeChangeCategory(userCommand);
 			response = "";
 			break;
 		case INVALID:
@@ -282,4 +288,21 @@ public class TaskNoteControl {
 		return response;
 	}
 	*/
+	
+	/**
+	 * This operation executes the User's request to show
+	 * all tasks whose deadlines are within the specified time interval
+	 *
+	 * @param User Command
+	 * @return Status of Operation
+	 */
+	private static String executeChangeCategory(String userCommand){
+		//TODO: Parser
+		ShowCategory category = Parser.parseChangeCateogry(userCommand);
+		command = new ChangeCategoryCommand(taskNote, category);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
+		return response;
+	}
 }
