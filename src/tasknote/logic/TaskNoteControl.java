@@ -296,6 +296,7 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
+	/*
 	private static String executeChangeCategory(String userCommand){
 		//TODO: Parser
 		ShowCategory category = Parser.parseChangeCateogry(userCommand);
@@ -305,4 +306,5 @@ public class TaskNoteControl {
 		String response = command.getFeedBack();
 		return response;
 	}
+	*/
 }
