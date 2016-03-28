@@ -1,10 +1,14 @@
 package tasknote.parser;
 
 import tasknote.logic.ShowInterval;
+
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.IllegalFormatException;
 import java.util.Iterator;
 
 import tasknote.shared.COMMAND_TYPE;
@@ -23,6 +27,7 @@ public class Parser {
 	private static final String COMMAND_EXIT = "exit";
 	private static final String COMMAND_SEARCH = "search";
 	private static final String COMMAND_SHOW = "show";
+	private static final String COMMAND_RELOCATE = "relocate";
 
 	// Here are the valid keywords accepted by
 	// the program
@@ -94,6 +99,8 @@ public class Parser {
 			return COMMAND_TYPE.UNDO;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SHOW)) {
 			return COMMAND_TYPE.SHOW;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_RELOCATE)) {
+			return COMMAND_TYPE.CHANGE_FILE_PATH;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -657,7 +664,155 @@ public class Parser {
 	}
 	
 	public static ShowInterval parseShow(String userCommand) {
-		return ShowInterval.TODAY;
+		
+		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
+		
+		int phraseCount = allPhrases.size();
+		
+		for (int i = 1; i < phraseCount; i++) {
+			
+			String currentPhrase = allPhrases.get(i).toLowerCase();
+			
+			if (currentPhrase.equals("today")) {
+				return ShowInterval.TODAY;
+			}
+			
+			if (currentPhrase.equals("tomorrow")) {
+				return ShowInterval.TOMORROW;
+			}
+			
+			if (currentPhrase.equals("week")) {
+				return ShowInterval.WEEK;
+			}
+			
+			if (currentPhrase.equals("all")) {
+				return ShowInterval.ALL;
+			}
+		}
+		
+		// Default behaviour - consider throwing exception
+		return ShowInterval.ALL;
+	}
+	
+	public static int getInterval(String userCommand) {
+		
+		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
+		
+		int phraseCount = allPhrases.size();
+		
+		for (int i = 1; i < phraseCount; i++) {
+			
+			String currentPhrase = allPhrases.get(i).toLowerCase();
+			
+			if (currentPhrase.equals("today") || currentPhrase.equals("tomorrow") ||
+					currentPhrase.equals("all")) {
+				return -1;
+			}
+			
+			if (currentPhrase.equals("next")) {
+				
+				int forwardCounter = i + 1;
+				
+				// Defensive check
+				if (forwardCounter == phraseCount) {
+					return -1;
+				}
+				
+				currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
+				
+				// Trivial case
+				if (currentPhrase.equals("week")) {
+					return 1;
+				}
+				
+				// Recursive case
+				if (currentPhrase.equals("next")) {
+					
+					int nextCount = 2;
+					forwardCounter++;
+					
+					while (forwardCounter < phraseCount) {
+						
+						currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
+						
+						if (currentPhrase.equals("next")) {
+							nextCount++;
+							forwardCounter++;
+							continue;
+						}
+						
+						if (currentPhrase.equals("week")) {
+							return nextCount;
+						}
+						
+						// Consider changing exception type
+						throw new RuntimeException("Unknown word between next next ? week, encountered.");
+					}
+					
+					// Consider changing exception type
+					throw new RuntimeException("Nothing specified after next next.");
+				}
+				
+				// Numeric case + all other cases
+				try {
+					
+					int placeOfWeekKeyword = forwardCounter + 1;
+					
+					// Defensive check
+					if (placeOfWeekKeyword == phraseCount) {
+						return -1;
+					}
+					
+					int returnValue = Integer.parseInt(currentPhrase);
+					currentPhrase = allPhrases.get(placeOfWeekKeyword).toLowerCase();
+					
+					if (returnValue <= 0) {
+						throw new NumberFormatException("Number supplied was not at least 1");
+					}
+					
+					if (currentPhrase.equals("week")) {
+						return returnValue;
+					} else {
+						throw new RuntimeException("Unknown word given after next <number> ?");
+					}
+					
+				} catch (NumberFormatException e) {
+					System.out.println(e);
+				} catch (RuntimeException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		
+		// Default value
+		return -1;
+	}
+	
+	public static String parseFilePath(String userCommand) {
+		
+		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
+		
+		int phraseCount = allPhrases.size();
+		
+		for (int i = 1; i < phraseCount; i++) {
+			
+			String currentPhrase = allPhrases.get(i);
+			
+			try {
+				
+				Paths.get(currentPhrase);
+				return currentPhrase;
+				
+			} catch (InvalidPathException | NullPointerException e) {
+				continue;
+			}
+		}
+		
+		// Default value
+		return "";
 	}
 
 	public static int getUpdateTaskId(String userCommand) {
