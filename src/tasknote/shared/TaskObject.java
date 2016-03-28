@@ -8,7 +8,7 @@ public class TaskObject implements Comparable<TaskObject> {
     };
     
     public static enum TASK_STATUS {
-        TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_INVALID_STORAGE
+        TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_OVERDUE, TASK_INVALID_STORAGE
     };
     
     public final int DEFAULT_DATETIME_VALUE = -1;
@@ -214,6 +214,10 @@ public class TaskObject implements Comparable<TaskObject> {
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING)){
 			this.taskStatus = TASK_STATUS.TASK_OUTSTANDING;
+			return;
+		}
+		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OVERDUE)){
+			this.taskStatus = TASK_STATUS.TASK_OVERDUE;
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED)){

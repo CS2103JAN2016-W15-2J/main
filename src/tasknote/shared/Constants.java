@@ -25,6 +25,8 @@ public class Constants {
 	public static final String MESSAGE_SHOW_UNSUCCESSFUL = "Unable to show deadline tasks within this period";
 	public static final String MESSAGE_CHANGE_PATH_SUCCESSFUL = "File path successfuly changed to: %s";
 	public static final String MESSAGE_CHANGE_PATH_UNSUCCESSFUL = "Unsuccessful operation. Unable to change file path to: %s";
+	public static final String MESSAGE_CHANGE_CATEGORY_SUCCESSFUL = "%s tasks have been successfully displayed";
+	public static final String MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL = "Unsuccessful operation. Unable to display %s tasks";
 	
 	/*
 	 * These are the warnings that will be displayed in the logs if the user
@@ -50,6 +52,8 @@ public class Constants {
 	public static final String WARNING_EXECUTE_CHANGE_PATH_FALSE = "Unable to execute change of file path. False returned by Storage";
 	public static final String WARNING_EXECUTE_CHANGE_PATH_FAILURE = "Error: Change File Path to [ %s ] failed: %s";
 	public static final String WARNING_EXECUTE_SHOW_INVALID_FILEPATH = "Error: Change File Path. Invalid file path [ %s ]";
+	public static final String WARNING_EXECUTE_SHOW_CATEGORY_FAILURE = "Error: Unable to display tasks specified in category [ %s ] ;  Error: %s";
+	public static final String WARNING_EXECUTE_SHOW_CATEGORY_INVALID = "Invalid Task Status Category specified. Valid Categories: [ALL, OUTSTANDING, OVERDUE, COMPLETED]; Error: %s";
 	public static final String WARNING_EXECUTE_SORT_SAVE = "Error occured while SORTING tasks and SAVING to storage: %s";
 
 	public static final String WARNING_INVALID_DELETE_ID = "Invalid DELETE ID: %d. Unable to execute DELETE operation.";
@@ -80,6 +84,7 @@ public class Constants {
 	 */
 	public static final String STRING_TASKSTATUS_DEFAULT = "TASK_DEFAULT";
 	public static final String STRING_TASKSTATUS_OUTSTANDING = "TASK_OUTSTANDING";
+	public static final String STRING_TASKSTATUS_OVERDUE = "TASK_OVERDUE";
 	public static final String STRING_TASKSTATUS_COMPLETED = "TASK_COMPLETED";
 	public static final String STRING_TASKSTATUS_INVALID_STORAGE = "TASK_INVALID_STORAGE";
 	
