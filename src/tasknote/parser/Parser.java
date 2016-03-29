@@ -772,7 +772,7 @@ public class Parser {
 						throw new NumberFormatException("Number supplied was not at least 1");
 					}
 					
-					if (currentPhrase.equals("week")) {
+					if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
 						return returnValue;
 					} else {
 						throw new RuntimeException("Unknown word given after next <number> ?");
