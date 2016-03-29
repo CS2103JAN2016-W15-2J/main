@@ -45,11 +45,11 @@ public class TaskNote {
 
 	/*
 	 * These integers are used to store the number of results retrieved upon
-	 * user's search (searchIdSize) and the number of tasks to be deleted
-	 * (deleteIdSize)
+	 * user's operation
 	 */
 	private static int searchIdSize;
 	private static int deleteIdSize;
+	private static int showCountInterval;
 
 	private static Logger logger = Logger.getLogger(TaskNote.class.getName());
 
@@ -405,6 +405,7 @@ public class TaskNote {
 		showIntervalList = new ArrayList<TaskObject>();
 		try {
 			assert (timeInterval != null);
+			showCountInterval = countInterval;
 			switch (timeInterval) {
 			case TODAY:
 				getTodayTasks();
@@ -602,7 +603,7 @@ public class TaskNote {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
 			String taskType = taskObject.getTaskType();
-			if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
+			if (taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
 				int taskDay = taskObject.getDateDay();
 				int taskMonth = taskObject.getDateMonth();
 				int taskYear = taskObject.getDateYear();
@@ -618,7 +619,7 @@ public class TaskNote {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
 			String taskType = taskObject.getTaskType();
-			if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
+			if (taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
 				LocalDateTime taskDateTime = getTaskDateTime(taskObject);
 				if ((taskDateTime.isEqual(startDateTime) || taskDateTime.isAfter(startDateTime))
 						&& (taskDateTime.isEqual(endDateTime) || taskDateTime.isBefore(endDateTime))) {
@@ -627,7 +628,7 @@ public class TaskNote {
 			}
 		}
 	}
-	
+
 	private LocalDateTime getTaskDateTime(TaskObject taskObject) {
 		int taskDay = taskObject.getDateDay();
 		int taskMonth = taskObject.getDateMonth();
@@ -801,7 +802,16 @@ public class TaskNote {
 			if (isSuccess) {
 				int numTasks = showIntervalList.size();
 				if (numTasks > 0) {
-					return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL, numTasks, showType);
+					if (showType == ShowInterval.ALL) {
+						return Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
+					} else {
+						if (showCountInterval > Constants.EMPTY_LIST_SIZE) {
+							return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL, numTasks,
+									showCountInterval, showType);
+						} else {
+							return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE, numTasks, showType);
+						}
+					}
 				} else {
 					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks, showType);
 				}

@@ -126,7 +126,14 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeAdd(String userCommand) {
+		boolean isSuccess = true;
 		TaskObject taskObject = Parser.parseAdd(userCommand);
+		try{
+			//taskObject = Parser.parseAdd(userCommand, isSuccess);
+		} catch (Exception e) {
+			isSuccess = false;
+			//taskObject = Parser.parseAdd(userCommand, isSuccess);
+		}
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
 		command.refreshDisplay();
