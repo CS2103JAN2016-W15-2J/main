@@ -96,7 +96,6 @@ public class TaskNoteControl {
 			break;
 		case CHANGE_FILE_PATH:
 			response = executeChangeFilePath(userCommand);
-			response = "";
 			break;
 		case SHOW:
 			//TODO: Parser
