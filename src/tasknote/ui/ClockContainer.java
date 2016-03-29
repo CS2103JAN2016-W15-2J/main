@@ -15,8 +15,9 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 public class ClockContainer extends GridPane {
-    private static final char WHITESPACE = ' ';
-    private static final String TIME_DELIMITER = ":";
+    private final String FORMAT_TIME = "%1$02d:%2$02d:%3$02d %4$s";
+    private final String FORMAT_DATE = "%1$3s %2$ 2d";
+    private final String FORMAT_DAY = "%1$3s";
 
     private static final int INTERVAL_SECOND_ANIMATION = 1;
 
@@ -93,23 +94,17 @@ public class ClockContainer extends GridPane {
     
     private void setLabelsToCurrentTime() {
         _currentTime.setTimeInMillis(System.currentTimeMillis());
-        String monthString = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH));
-        String dayOfWeek = pad(3, WHITESPACE, _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase());
-        String dayString = pad(2, WHITESPACE, String.valueOf(_currentTime.get(Calendar.DAY_OF_MONTH)));
-        String hourString = pad(2, '0', _currentTime.get(Calendar.HOUR) == 0 ? "12" : String.valueOf(_currentTime.get(Calendar.HOUR)));
-        String minuteString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.MINUTE)));
-        String secondString = pad(2, '0', String.valueOf(_currentTime.get(Calendar.SECOND)));
-        String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
-        _dayOfWeekLabel.setText(dayOfWeek);
-        _monthAndDateLabel.setText(monthString + WHITESPACE + dayString);
-        _hourMinuteAndSecondLabel.setText(hourString + TIME_DELIMITER + minuteString + TIME_DELIMITER + secondString + WHITESPACE + ampmString);
-    }
-
-    private static String pad(int fieldWidth, char paddingCharacter, String originalString) {
-        int maximumLengthOfString = Math.min(fieldWidth, originalString.length());
-        originalString = originalString.substring(0, maximumLengthOfString);
-        String paddedString = String.format("%" + fieldWidth + "s", originalString).replace(WHITESPACE, paddingCharacter);
         
-        return paddedString;
+        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, 3);
+        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, 3);
+        int dayOfMonth = _currentTime.get(Calendar.DAY_OF_MONTH);
+        int hours = _currentTime.get(Calendar.HOUR) == 0 ? 12 : _currentTime.get(Calendar.HOUR);
+        int minutes = _currentTime.get(Calendar.MINUTE);
+        int seconds = _currentTime.get(Calendar.SECOND);
+        String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+        
+        _dayOfWeekLabel.setText(String.format(FORMAT_DAY, dayOfWeek));
+        _monthAndDateLabel.setText(String.format(FORMAT_DATE, monthString, dayOfMonth));
+        _hourMinuteAndSecondLabel.setText(String.format(FORMAT_TIME, hours, minutes, seconds, ampmString));
     }
 }
