@@ -664,7 +664,77 @@ public class Parser {
 
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = currentPhrase.split("/");
+				String[] dayMonthYear = new String[3];
+
+				if (currentPhrase.contains("/")) {
+					dayMonthYear = currentPhrase.split("/");
+				} else if (currentPhrase.contains("-")) {
+					dayMonthYear = currentPhrase.split("-");
+				} else {
+
+					String possibleDay = currentPhrase;
+					int extraWordsUsed = 0;
+
+					// Trim stuff if required
+					if (possibleDay.endsWith("st")
+							|| possibleDay.endsWith("nd")
+							|| possibleDay.endsWith("rd")
+							|| possibleDay.endsWith("th")) {
+
+						possibleDay = possibleDay.substring(0,
+								possibleDay.length() - 2);
+					}
+
+					dayMonthYear[0] = possibleDay;
+
+					boolean foundMonth = false;
+					String possibleMonth = "";
+
+					if (i + 1 < phraseCount) {
+						possibleMonth = allPhrases.get(i + 1).toLowerCase();
+					}
+
+					String[] possibleMonthValues = { "jan", "january", "feb",
+							"february", "mar", "march", "apr", "april", "may",
+							"may", "jun", "june", "jul", "july", "aug",
+							"august", "oct", "october", "nov", "november",
+							"dec", "december" };
+
+					for (int j = 0; j < possibleMonthValues.length; j++) {
+
+						if (possibleMonth.equals(possibleMonthValues[j])) {
+							foundMonth = true;
+							int numericMonth = 1 + (j / 2);
+							dayMonthYear[1] = Integer.toString(numericMonth);
+							extraWordsUsed++;
+							break;
+						}
+					}
+
+					if (!foundMonth) {
+						GregorianCalendar today = new GregorianCalendar();
+						dayMonthYear[1] = Integer.toString(today
+								.get(Calendar.MONTH) + 1);
+					}
+
+					String possibleYear = "";
+
+					if (foundMonth && (i + 2) < phraseCount) {
+						possibleYear = allPhrases.get(i + 2);
+					}
+
+					try {
+						int numericYear = Integer.parseInt(possibleYear);
+						dayMonthYear[2] = Integer.toString(numericYear);
+						extraWordsUsed++;
+					} catch (NumberFormatException e) {
+						GregorianCalendar today = new GregorianCalendar();
+						dayMonthYear[2] = Integer.toString(today
+								.get(Calendar.YEAR));
+					}
+
+					i = i + extraWordsUsed;
+				}
 
 				try {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
