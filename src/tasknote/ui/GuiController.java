@@ -51,7 +51,7 @@ public class GuiController extends Application {
         
         scene.getStylesheets().add(getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm());
         
-        frame.setTop(MainMenuContainer.getInstance());
+        //frame.setTop(MainMenuContainer.getInstance());
         frame.setLeft(_sidebarContainer);
         frame.setCenter(_tasksContainer);
         frame.setRight(_floatingTasksContainer);
