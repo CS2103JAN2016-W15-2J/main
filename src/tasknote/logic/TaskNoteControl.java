@@ -57,7 +57,14 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public String executeCommand(String userCommand) {
-		COMMAND_TYPE commandType = Parser.getCommandType(userCommand, true);
+		boolean isSuccess = true;
+		COMMAND_TYPE commandType;
+		try{
+			commandType = Parser.getCommandType(userCommand, isSuccess);
+		} catch(Exception e) {
+			isSuccess = false;
+			commandType = Parser.getCommandType(userCommand, isSuccess);
+		}
 		String feedback = executeAction(commandType, userCommand);
 		return feedback;
 	}
@@ -126,18 +133,21 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeAdd(String userCommand) {
+		TaskObject taskObject;
 		boolean isSuccess = true;
-		TaskObject taskObject = Parser.parseAdd(userCommand, true);
-		try{
-			//taskObject = Parser.parseAdd(userCommand, isSuccess);
+		String parserFeedback = new String(" ");
+		try {
+			taskObject = Parser.parseAdd(userCommand, isSuccess);
 		} catch (Exception e) {
 			isSuccess = false;
-			//taskObject = Parser.parseAdd(userCommand, isSuccess);
+			parserFeedback = e.getMessage();
+			taskObject = Parser.parseAdd(userCommand, isSuccess);
 		}
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 
@@ -149,11 +159,21 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeDelete(String userCommand) {
-		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand, true);
+		ArrayList<Integer> deleteIds;
+		boolean isSuccess = true;
+		String parserFeedback = new String(" ");
+		try {
+			deleteIds = Parser.parseDelete(userCommand, isSuccess);
+		} catch (Exception e) {
+			isSuccess = false;
+			parserFeedback = e.getMessage();
+			deleteIds = Parser.parseDelete(userCommand, isSuccess);
+		}
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 
@@ -166,11 +186,21 @@ public class TaskNoteControl {
 	 */
 	private static String executeSearch(String userCommand) {
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList, true);
+		ArrayList<Integer> searchIds;
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		try {
+			searchIds = Parser.parseSearch(userCommand, displayList, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			searchIds = Parser.parseSearch(userCommand, displayList, throwException);
+		}
 		command = new SearchCommand(taskNote, searchIds);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 
@@ -183,13 +213,31 @@ public class TaskNoteControl {
 	 */
 	private static String executeUpdate(String userCommand) {
 		// TODO:Parser - change method name to getTaskId
-		int updateTaskId = Parser.getUpdateTaskId(userCommand, true);
+		int updateTaskId;
 		TaskObject updatedTaskObject;
-
+		boolean throwException = true;
+		String parserUpdateIdFeedback = new String(" ");
+		String parserUpdateObjectFeedback = new String(" ");
+		
+		try {
+			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserUpdateIdFeedback = e.getMessage();
+			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
+		}
+		
+		throwException = true;
 		if (taskNote.isValidTaskId(updateTaskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			TaskObject oldTaskObject = displayList.get(updateTaskId);
-			updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject, true);
+			try {
+				updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject, throwException);
+			} catch (Exception e) {
+				throwException = false;
+				parserUpdateObjectFeedback = e.getMessage();
+				updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject, throwException);
+			}
 		} else {
 			updatedTaskObject = null;
 		}
@@ -198,6 +246,8 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserUpdateIdFeedback);
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserUpdateObjectFeedback);
 		return response;
 	}
 
@@ -240,7 +290,17 @@ public class TaskNoteControl {
 	 */
 	private static String executeMarkAsComplete(String userCommand) {
 		// TODO:Parser - change method name to getTaskId
-		int taskId = Parser.getUpdateTaskId(userCommand, true);
+		int taskId;
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		try {
+			// TODO:Parser - change method name to getTaskId
+			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+		}
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
@@ -252,6 +312,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 
@@ -264,11 +325,21 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeChangeFilePath(String userCommand) {
-		String filePath = Parser.parseFilePath(userCommand, true);
+		String filePath;
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		try{
+			filePath = Parser.parseFilePath(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			filePath = Parser.parseFilePath(userCommand, throwException);
+		}
 		command = new ChangeFilePathCommand(taskNote, filePath);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 	
@@ -281,12 +352,34 @@ public class TaskNoteControl {
 	 */
 	
 	private static String executeShow(String userCommand){
-		ShowInterval timeInterval = Parser.parseShow(userCommand, true);
-		int countInterval = Parser.getInterval(userCommand, true);
+		ShowInterval timeInterval;
+		int countInterval;
+		boolean throwException = true;
+		String parserShowFeedback = new String(" ");
+		String parserIntervalFeedback = new String(" ");
+		
+		try {
+			timeInterval = Parser.parseShow(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserShowFeedback = e.getMessage();
+			timeInterval = Parser.parseShow(userCommand, throwException);
+		}
+		
+		throwException = true;
+		try {
+			countInterval = Parser.getInterval(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserIntervalFeedback = e.getMessage();
+			countInterval = Parser.getInterval(userCommand, throwException);
+		}
 		command = new ShowCommand(taskNote, timeInterval, countInterval);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserShowFeedback);
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserIntervalFeedback);
 		return response;
 	}
 	
@@ -300,12 +393,22 @@ public class TaskNoteControl {
 	 */
 	private static String executeChangeCategory(String userCommand){
 		//TODO: Parser
-		//ShowCategory category = Parser.parseChangeCateogry(userCommand);
-		ShowCategory category = parseChangeCategory(userCommand);
+		ShowCategory category;
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		try {
+			//category = Parser.parseChangeCateogry(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			//category = Parser.parseChangeCateogry(userCommand, throwException);
+		}
+		category = parseChangeCategory(userCommand);
 		command = new ChangeCategoryCommand(taskNote, category);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
 	
