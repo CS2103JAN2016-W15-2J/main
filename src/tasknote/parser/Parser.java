@@ -28,6 +28,7 @@ public class Parser {
 	private static final String COMMAND_SEARCH = "search";
 	private static final String COMMAND_SHOW = "show";
 	private static final String COMMAND_RELOCATE = "relocate";
+	private static final String COMMAND_HELP = "help";
 
 	// Here are the valid keywords accepted by
 	// the program
@@ -59,14 +60,16 @@ public class Parser {
 	 *         match any of the valid COMMAND_TYPES, the INVALID COMMAND_TYPE
 	 *         value is returned instead
 	 */
-	public static COMMAND_TYPE getCommandType(String userCommand, boolean throwException) {
+	public static COMMAND_TYPE getCommandType(String userCommand,
+			boolean throwException) {
 
 		ParserFirstPass firstPassCommand = new ParserFirstPass(userCommand);
-		ArrayList<String> allPhrase = firstPassCommand.getFirstPassParsedResult();
-		
+		ArrayList<String> allPhrase = firstPassCommand
+				.getFirstPassParsedResult();
+
 		int allPhraseCount = allPhrase.size();
 		String userCommandWord = "";
-		
+
 		if (allPhraseCount > 0) {
 			userCommandWord = allPhrase.get(0);
 		}
@@ -101,6 +104,59 @@ public class Parser {
 			return COMMAND_TYPE.SHOW;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_RELOCATE)) {
 			return COMMAND_TYPE.CHANGE_FILE_PATH;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
+			return COMMAND_TYPE.HELP;
+		} else {
+			return COMMAND_TYPE.INVALID;
+		}
+	}
+
+	public static COMMAND_TYPE parseHelp(String userCommand,
+			boolean throwException) {
+
+		ParserFirstPass firstPassCommand = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrase = firstPassCommand
+				.getFirstPassParsedResult();
+
+		int allPhraseCount = allPhrase.size();
+		String userCommandWord = "";
+
+		if (allPhraseCount > 1) {
+			userCommandWord = allPhrase.get(1);
+		}
+
+		// Finally, we check to see which COMMAND_TYPE
+		// matches the command given by the user
+		// If none of the COMMAND_TYPE matches, the
+		// INVALID COMMAND_TYPE is returned instead
+		if (userCommandWord.equalsIgnoreCase(COMMAND_ADD)) {
+
+			if (allPhraseCount == 1) {
+				return COMMAND_TYPE.INVALID;
+			} else {
+				return COMMAND_TYPE.ADD;
+			}
+
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EDIT)) {
+			return COMMAND_TYPE.UPDATE;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DELETE)) {
+			return COMMAND_TYPE.DELETE;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
+			return COMMAND_TYPE.SEARCH;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EXIT)) {
+			return COMMAND_TYPE.EXIT;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
+			return COMMAND_TYPE.DONE;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_REDO)) {
+			return COMMAND_TYPE.REDO;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDO)) {
+			return COMMAND_TYPE.UNDO;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SHOW)) {
+			return COMMAND_TYPE.SHOW;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_RELOCATE)) {
+			return COMMAND_TYPE.CHANGE_FILE_PATH;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
+			return COMMAND_TYPE.HELP;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -131,7 +187,7 @@ public class Parser {
 		int dateMinute = -1;
 		int hourBefore = 0;
 		int duration = 0;
-		
+
 		int endDateHour = -1;
 		int endDateMinute = -1;
 
@@ -154,8 +210,8 @@ public class Parser {
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
 				switchString = "timerangestart";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO) && 
-					(dateHour >= 0 && dateMinute >= 0) ) {
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO)
+					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				continue;
 			}
@@ -168,24 +224,87 @@ public class Parser {
 
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = currentPhrase.split("/");
+				String[] dayMonthYear = {};
+
+				if (currentPhrase.contains("/")) {
+					dayMonthYear = currentPhrase.split("/");
+				} else if (currentPhrase.contains("-")) {
+					dayMonthYear = currentPhrase.split("-");
+				} else {
+
+					String possibleDay = currentPhrase;
+					
+					// Trim stuff if required
+					if (possibleDay.endsWith("st")
+							|| possibleDay.endsWith("nd")
+							|| possibleDay.endsWith("rd")
+							|| possibleDay.endsWith("th")) {
+
+						possibleDay = possibleDay.substring(0,
+								possibleDay.length() - 2);
+					}
+
+					dayMonthYear[0] = possibleDay;
+					
+					boolean foundMonth = false;
+					
+					if (i + 1 < phraseCount) {
+						String possibleMonth = allPhrases.get(i + 1).toLowerCase();
+						
+						String[] possibleMonthValues = { "jan", "january", "feb",
+								"february", "mar", "march", "apr", "april", "may",
+								"may", "jun", "june", "jul", "july", "aug",
+								"august", "oct", "october", "nov", "november",
+								"dec", "december" };
+
+						for (int j = 0; j < possibleMonthValues.length; j++) {
+
+							if (possibleMonth.equals(possibleMonthValues[j])) {
+								foundMonth = true;
+								int numericMonth = 1 + (j / 2);
+								dayMonthYear[1] = Integer.toString(numericMonth);
+								i++;
+								break;
+							}
+						}
+
+						if (!foundMonth) {
+							GregorianCalendar today = new GregorianCalendar();
+							dayMonthYear[1] = Integer.toString(today
+									.get(Calendar.MONTH) + 1);
+						}
+					}
+					
+					if (foundMonth && (i + 2) < phraseCount) {
+						String possibleYear = allPhrases.get(i + 2);
+						
+						try {
+							int numericYear = Integer.parseInt(possibleYear);
+							dayMonthYear[2] = Integer.toString(numericYear);
+						} catch (NumberFormatException e) {
+							GregorianCalendar today = new GregorianCalendar();
+							dayMonthYear[2] = Integer.toString(today
+									.get(Calendar.YEAR));
+						}
+					}
+				}
 
 				try {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
-					
-					if (dateDay < 0 || dateDay > 31 ||
-							dateMonth < 0 || dateMonth > 12) {
-						
+
+					if (dateDay < 0 || dateDay > 31 || dateMonth < 0
+							|| dateMonth > 12) {
+
 						dateDay = -1;
 						dateMonth = -1;
 						dateYear = -1;
-						
+
 						if (throwException) {
-							NumberFormatException e = 
-									new NumberFormatException("Invalid date or month given. "
-									+ "Consult the following command for assistance:\n help add");
+							NumberFormatException e = new NumberFormatException(
+									"Invalid date or month given. "
+											+ "Consult the following command for assistance:\n help add");
 							System.out.println(e);
 							throw e;
 						} else {
@@ -193,15 +312,15 @@ public class Parser {
 							continue;
 						}
 					}
-					
+
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse date value given. "
-								+ "Consult the following command for assistance:\n help add");
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse date value given. "
+										+ "Consult the following command for assistance:\n help add");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -211,12 +330,12 @@ public class Parser {
 						switchString = "name";
 						continue;
 					}
-					
+
 				} catch (ArrayIndexOutOfBoundsException e) {
-					
+
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse "
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse "
 										+ "date value given. Consult the following "
 										+ "command for assistance:\n help add");
 						System.out.println(e2);
@@ -231,23 +350,24 @@ public class Parser {
 				}
 			}
 
-			if (switchString.equals("time") || switchString.equals("timerangestart")) {
+			if (switchString.equals("time")
+					|| switchString.equals("timerangestart")) {
 
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
-					
-					if (dateHour > 24 || dateHour < 0 ||
-							dateMinute > 60 || dateMinute < 0) {
-						
+
+					if (dateHour > 24 || dateHour < 0 || dateMinute > 60
+							|| dateMinute < 0) {
+
 						dateHour = -1;
 						dateMinute = -1;
-						
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Invalid time value"
+							NumberFormatException e2 = new NumberFormatException(
+									"Invalid time value"
 											+ " given. Consult the following command"
 											+ " for assistance:\n help add");
 							System.out.println(e2);
@@ -259,19 +379,19 @@ public class Parser {
 							continue;
 						}
 					}
-					
+
 					if (switchString.equals("time")) {
 						taskType = "deadline";
 					} else if (switchString.equals("timerangestart")) {
 						taskType = "event";
 					}
 					continue;
-					
+
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse time value"
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse time value"
 										+ " given. Consult the following command"
 										+ " for assistance:\n help add");
 						System.out.println(e2);
@@ -282,12 +402,12 @@ public class Parser {
 						switchString = "name";
 						continue;
 					}
-					
+
 				} catch (ArrayIndexOutOfBoundsException e) {
-					
+
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse time value"
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse time value"
 										+ " given. Consult the following command"
 										+ " for assistance:\n help add");
 						System.out.println(e2);
@@ -300,23 +420,23 @@ public class Parser {
 					}
 				}
 			}
-			
+
 			if (switchString.equalsIgnoreCase("timerangeend")) {
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					endDateHour = Integer.parseInt(hourMinute[0]);
 					endDateMinute = Integer.parseInt(hourMinute[1]);
-					
-					if (endDateHour > 24 || endDateHour < 0 ||
-							endDateMinute > 60 || endDateMinute < 0) {
+
+					if (endDateHour > 24 || endDateHour < 0
+							|| endDateMinute > 60 || endDateMinute < 0) {
 						endDateHour = -1;
 						endDateMinute = -1;
-						
+
 						if (throwException) {
-							
-							NumberFormatException e2 = 
-									new NumberFormatException("Invalid end time value"
+
+							NumberFormatException e2 = new NumberFormatException(
+									"Invalid end time value"
 											+ " given. Consult the following command"
 											+ " for assistance:\n help add");
 							System.out.println(e2);
@@ -328,15 +448,16 @@ public class Parser {
 							continue;
 						}
 					}
-					
-					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
+
+					duration = 60 * (endDateHour - dateHour)
+							+ (endDateMinute - dateMinute);
 					continue;
-					
+
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse end time value"
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse end time value"
 										+ " given. Consult the following command"
 										+ " for assistance:\n help add");
 						System.out.println(e2);
@@ -347,12 +468,12 @@ public class Parser {
 						switchString = "name";
 						continue;
 					}
-					
+
 				} catch (ArrayIndexOutOfBoundsException e) {
-					
+
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse end"
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse end"
 										+ " time value given. Consult the following command"
 										+ " for assistance:\n help add");
 						System.out.println(e2);
@@ -370,13 +491,13 @@ public class Parser {
 
 				try {
 					hourBefore = Integer.parseInt(currentPhrase);
-					
+
 					if (hourBefore < 0) {
 						hourBefore = 0;
-						
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Could not parse notify value"
+							NumberFormatException e2 = new NumberFormatException(
+									"Could not parse notify value"
 											+ " given. Consult the following command"
 											+ " for assistance:\n help add");
 							System.out.println(e2);
@@ -389,8 +510,8 @@ public class Parser {
 					continue;
 				} catch (NumberFormatException e) {
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse notify value"
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse notify value"
 										+ " given. Consult the following command"
 										+ " for assistance:\n help add");
 						System.out.println(e2);
@@ -414,20 +535,20 @@ public class Parser {
 				GregorianCalendar todayCalendar = new GregorianCalendar();
 				int todayHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
 				int todayMinute = todayCalendar.get(Calendar.MINUTE);
-				
-				if (todayHour > dateHour || 
-						(todayHour == dateHour && todayMinute > dateMinute)) {
+
+				if (todayHour > dateHour
+						|| (todayHour == dateHour && todayMinute > dateMinute)) {
 					todayCalendar.roll(Calendar.DAY_OF_MONTH, 1);
-					
+
 					if (todayCalendar.get(Calendar.DAY_OF_MONTH) == 1) {
 						todayCalendar.roll(Calendar.MONTH, 1);
-						
+
 						if (todayCalendar.get(Calendar.MONTH) == 1) {
 							todayCalendar.roll(Calendar.YEAR, 1);
 						}
 					}
 				}
-				
+
 				dateDay = todayCalendar.get(Calendar.DAY_OF_MONTH);
 				dateMonth = todayCalendar.get(Calendar.MONTH) + 1;
 				dateYear = todayCalendar.get(Calendar.YEAR);
@@ -446,10 +567,10 @@ public class Parser {
 		taskObjectToBuild.setDateHour(dateHour);
 		taskObjectToBuild.setDateMinute(dateMinute);
 		taskObjectToBuild.setNotifyTime(hourBefore);
-		
+
 		// Set duration
 		taskObjectToBuild.setDuration(duration);
-		
+
 		// set end datetime
 		if (duration > 0) {
 			taskObjectToBuild.setEndDateYear(dateYear);
@@ -461,7 +582,7 @@ public class Parser {
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
-		
+
 		// Set taskType
 		taskObjectToBuild.setTaskType(taskType);
 
@@ -476,8 +597,10 @@ public class Parser {
 
 		int phraseCount = allPhrases.size();
 
-		StringBuilder name = new StringBuilder(reallyOldTaskObject.getTaskName());
-		StringBuilder location = new StringBuilder(reallyOldTaskObject.getLocation());
+		StringBuilder name = new StringBuilder(
+				reallyOldTaskObject.getTaskName());
+		StringBuilder location = new StringBuilder(
+				reallyOldTaskObject.getLocation());
 		int dateDay = reallyOldTaskObject.getDateDay();
 		int dateMonth = reallyOldTaskObject.getDateMonth();
 		int dateYear = reallyOldTaskObject.getDateYear();
@@ -488,7 +611,7 @@ public class Parser {
 		int endDateHour = reallyOldTaskObject.getEndDateHour();
 		int endDateMinute = reallyOldTaskObject.getEndDateMinute();
 		TaskObject.TASK_STATUS taskStatus = reallyOldTaskObject.getTaskStatus();
-		
+
 		boolean alteringName = false;
 		boolean alteringLocation = false;
 
@@ -514,8 +637,8 @@ public class Parser {
 			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
 				switchString = "timerangestart";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO) && 
-					(dateHour >= 0 && dateMinute >= 0) ) {
+			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO)
+					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				continue;
 			}
@@ -540,14 +663,14 @@ public class Parser {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
-					
-					if (dateDay < 0 || dateDay > 31 ||
-							dateMonth < 0 || dateMonth > 31) {
-						
+
+					if (dateDay < 0 || dateDay > 31 || dateMonth < 0
+							|| dateMonth > 31) {
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Could not parse date value given. "
-									+ "Consult the following command for assistance:\n help edit");
+							NumberFormatException e2 = new NumberFormatException(
+									"Could not parse date value given. "
+											+ "Consult the following command for assistance:\n help edit");
 							System.out.println(e2);
 							throw e2;
 						} else {
@@ -558,15 +681,15 @@ public class Parser {
 							continue;
 						}
 					}
-					
+
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse date value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse date value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -578,9 +701,9 @@ public class Parser {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse date value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse date value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -593,21 +716,22 @@ public class Parser {
 				}
 			}
 
-			if (switchString.equals("time") || switchString.equals("timerangestart")) {
+			if (switchString.equals("time")
+					|| switchString.equals("timerangestart")) {
 
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
-					
-					if (dateHour < 0 || dateHour > 24 ||
-							dateMinute < 0 || dateMinute > 60) {
-						
+
+					if (dateHour < 0 || dateHour > 24 || dateMinute < 0
+							|| dateMinute > 60) {
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Could not parse time value given. "
-									+ "Consult the following command for assistance:\n help edit");
+							NumberFormatException e2 = new NumberFormatException(
+									"Could not parse time value given. "
+											+ "Consult the following command for assistance:\n help edit");
 							System.out.println(e2);
 							throw e2;
 						} else {
@@ -617,7 +741,7 @@ public class Parser {
 							continue;
 						}
 					}
-					
+
 					if (switchString.equals("time")) {
 						taskType = "deadline";
 					} else if (switchString.equals("timerangestart")) {
@@ -626,9 +750,9 @@ public class Parser {
 					continue;
 				} catch (NumberFormatException e) {
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse time value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse time value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -639,9 +763,9 @@ public class Parser {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse time value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse time value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -652,21 +776,21 @@ public class Parser {
 					}
 				}
 			}
-			
+
 			if (switchString.equals("timerangeend")) {
 				String[] hourMinute = currentPhrase.split(":");
 
 				try {
 					endDateHour = Integer.parseInt(hourMinute[0]);
 					endDateMinute = Integer.parseInt(hourMinute[1]);
-					
-					if (endDateHour < 0 || endDateMinute > 24 ||
-							endDateMinute < 0 || endDateMinute > 60) {
-						
+
+					if (endDateHour < 0 || endDateMinute > 24
+							|| endDateMinute < 0 || endDateMinute > 60) {
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Could not parse end time value given. "
-									+ "Consult the following command for assistance:\n help edit");
+							NumberFormatException e2 = new NumberFormatException(
+									"Could not parse end time value given. "
+											+ "Consult the following command for assistance:\n help edit");
 							System.out.println(e2);
 							throw e2;
 						} else {
@@ -676,14 +800,15 @@ public class Parser {
 							continue;
 						}
 					}
-					
-					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
+
+					duration = 60 * (endDateHour - dateHour)
+							+ (endDateMinute - dateMinute);
 					continue;
 				} catch (NumberFormatException e) {
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse end time value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse end time value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -694,9 +819,9 @@ public class Parser {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = 
-								new ArrayIndexOutOfBoundsException("Could not parse end time value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
+								"Could not parse end time value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -712,13 +837,13 @@ public class Parser {
 
 				try {
 					hourBefore = Integer.parseInt(currentPhrase);
-					
+
 					if (hourBefore < 0) {
-						
+
 						if (throwException) {
-							NumberFormatException e2 = 
-									new NumberFormatException("Could not parse notify value given. "
-									+ "Consult the following command for assistance:\n help edit");
+							NumberFormatException e2 = new NumberFormatException(
+									"Could not parse notify value given. "
+											+ "Consult the following command for assistance:\n help edit");
 							System.out.println(e2);
 							throw e2;
 						} else {
@@ -730,9 +855,9 @@ public class Parser {
 					continue;
 				} catch (NumberFormatException e) {
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Could not parse notify value given. "
-								+ "Consult the following command for assistance:\n help edit");
+						NumberFormatException e2 = new NumberFormatException(
+								"Could not parse notify value given. "
+										+ "Consult the following command for assistance:\n help edit");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -755,26 +880,26 @@ public class Parser {
 				continue;
 			}
 		}
-		
+
 		if (dateHour > 0 || dateMinute > 0) {
 			if (dateDay == -1 || dateMonth == -1 || dateYear == -1) {
 				GregorianCalendar todayCalendar = new GregorianCalendar();
 				int todayHour = todayCalendar.get(Calendar.HOUR_OF_DAY);
 				int todayMinute = todayCalendar.get(Calendar.MINUTE);
-				
-				if (todayHour > dateHour || 
-						(todayHour == dateHour && todayMinute > dateMinute)) {
+
+				if (todayHour > dateHour
+						|| (todayHour == dateHour && todayMinute > dateMinute)) {
 					todayCalendar.roll(Calendar.DAY_OF_MONTH, 1);
-					
+
 					if (todayCalendar.get(Calendar.DAY_OF_MONTH) == 1) {
 						todayCalendar.roll(Calendar.MONTH, 1);
-						
+
 						if (todayCalendar.get(Calendar.MONTH) == 1) {
 							todayCalendar.roll(Calendar.YEAR, 1);
 						}
 					}
 				}
-				
+
 				dateDay = todayCalendar.get(Calendar.DAY_OF_MONTH);
 				dateMonth = todayCalendar.get(Calendar.MONTH) + 1;
 				dateYear = todayCalendar.get(Calendar.YEAR);
@@ -793,10 +918,10 @@ public class Parser {
 		taskObjectToBuild.setDateHour(dateHour);
 		taskObjectToBuild.setDateMinute(dateMinute);
 		taskObjectToBuild.setNotifyTime(hourBefore);
-		
+
 		// Set duration
 		taskObjectToBuild.setDuration(duration);
-		
+
 		// Set end datetime
 		if (duration > 0) {
 			taskObjectToBuild.setEndDateYear(dateYear);
@@ -808,17 +933,18 @@ public class Parser {
 
 		// Set location
 		taskObjectToBuild.setLocation(location.toString());
-		
+
 		// Set taskType
 		taskObjectToBuild.setTaskType(taskType);
-		
+
 		// Set taskStatus
 		taskObjectToBuild.setTaskStatus(taskStatus);
 
 		return taskObjectToBuild;
 	}
 
-	public static ArrayList<Integer> parseDelete(String userCommand, boolean throwException) {
+	public static ArrayList<Integer> parseDelete(String userCommand,
+			boolean throwException) {
 		// TODO Auto-generated method stub
 
 		ParserFirstPass parseAllWords = new ParserFirstPass(userCommand);
@@ -831,45 +957,45 @@ public class Parser {
 		for (int i = 1; i < phraseCount; i++) {
 
 			String nextCommand = allPhrases.get(i).toLowerCase();
-			
+
 			if (nextCommand.equals("-") || nextCommand.equals("to")) {
-				
+
 				try {
-					
+
 					int endID = Integer.parseInt(allPhrases.get(i + 1)) - 1;
 					int startID = list.get(list.size() - 1);
-					
+
 					startID++;
 					i++;
-					
+
 					while (startID <= endID) {
-						
+
 						list.add(startID);
 						startID++;
 					}
-					
+
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Cannot delete non-numeric ID");
+						NumberFormatException e2 = new NumberFormatException(
+								"Cannot delete non-numeric ID");
 						System.out.println(e2);
 						throw e2;
 					} else {
-						
+
 						// Let it continue running, ignoring this bad value
 						continue;
 					}
-					
+
 				} catch (IndexOutOfBoundsException e) {
-					
+
 					if (throwException) {
-						IndexOutOfBoundsException e2 = 
-								new IndexOutOfBoundsException("No start of range ID was found");
+						IndexOutOfBoundsException e2 = new IndexOutOfBoundsException(
+								"No start of range ID was found");
 						System.out.println(e2);
 						throw e2;
 					} else {
-						
+
 						// Let it continue running, ignoring this bad value
 						continue;
 					}
@@ -877,16 +1003,16 @@ public class Parser {
 			} else {
 
 				try {
-	
+
 					int nextID = Integer.parseInt(nextCommand) - 1;
-	
+
 					list.add(nextID);
-	
+
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 = 
-								new NumberFormatException("Cannot delete non-numeric ID");
+						NumberFormatException e2 = new NumberFormatException(
+								"Cannot delete non-numeric ID");
 						System.out.println(e2);
 						throw e2;
 					} else {
@@ -906,268 +1032,276 @@ public class Parser {
 
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
-		
+
 		int phraseCount = allPhrases.size();
 		int itemCount = displayList.size();
-		
+
 		HashSet<Integer> indicesToRemove = new HashSet<>();
 		HashSet<Integer> indicesToReturn = new HashSet<>();
-		
+
 		for (int i = 0; i < itemCount; i++) {
 			indicesToReturn.add(i);
 		}
-		
+
 		for (int i = 1; i < phraseCount; i++) {
-			
+
 			String currentPhrase = allPhrases.get(i).toLowerCase();
-			
+
 			for (int j = 0; j < itemCount; j++) {
-				String currentTaskName = displayList.get(j).getTaskName().toLowerCase();
-				
+				String currentTaskName = displayList.get(j).getTaskName()
+						.toLowerCase();
+
 				if (!currentTaskName.contains(currentPhrase)) {
 					indicesToRemove.add(j);
 				}
 			}
-			
+
 			indicesToReturn.removeAll(indicesToRemove);
 		}
-		
+
 		ArrayList<Integer> listToReturn = new ArrayList<>();
 		listToReturn.addAll(indicesToReturn);
-		
+
 		return listToReturn;
 	}
-	
-	public static ShowInterval parseShow(String userCommand, boolean throwException) {
-		
+
+	public static ShowInterval parseShow(String userCommand,
+			boolean throwException) {
+
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
-		
+
 		int phraseCount = allPhrases.size();
-		
+
 		for (int i = 1; i < phraseCount; i++) {
-			
+
 			String currentPhrase = allPhrases.get(i).toLowerCase();
-			
+
 			if (currentPhrase.equals("today")) {
 				return ShowInterval.TODAY;
 			}
-			
+
 			if (currentPhrase.equals("tomorrow")) {
 				return ShowInterval.TOMORROW;
 			}
-			
+
 			if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
 				return ShowInterval.WEEK;
 			}
-			
+
 			if (currentPhrase.equals("day") || currentPhrase.equals("days")) {
 				return ShowInterval.DAY;
 			}
-			
+
 			if (currentPhrase.equals("all")) {
 				return ShowInterval.ALL;
 			}
 		}
-		
+
 		// Default behaviour - consider throwing exception
 		return ShowInterval.ALL;
 	}
-	
+
 	public static int getInterval(String userCommand, boolean throwException) {
-		
+
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
-		
+
 		int phraseCount = allPhrases.size();
-		
+
 		for (int i = 1; i < phraseCount; i++) {
-			
+
 			String currentPhrase = allPhrases.get(i).toLowerCase();
-			
-			if (currentPhrase.equals("today") || currentPhrase.equals("tomorrow") ||
-					currentPhrase.equals("all")) {
+
+			if (currentPhrase.equals("today")
+					|| currentPhrase.equals("tomorrow")
+					|| currentPhrase.equals("all")) {
 				return -1;
 			}
-			
+
 			if (currentPhrase.equals("next")) {
-				
+
 				int forwardCounter = i + 1;
-				
+
 				// Defensive check
 				if (forwardCounter == phraseCount) {
 					return -1;
 				}
-				
+
 				currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
-				
+
 				// Trivial case
 				if (currentPhrase.equals("week") || currentPhrase.equals("day")) {
 					return 1;
 				}
-				
+
 				// Recursive case
 				if (currentPhrase.equals("next")) {
-					
+
 					int nextCount = 2;
 					forwardCounter++;
-					
+
 					while (forwardCounter < phraseCount) {
-						
-						currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
-						
+
+						currentPhrase = allPhrases.get(forwardCounter)
+								.toLowerCase();
+
 						if (currentPhrase.equals("next")) {
 							nextCount++;
 							forwardCounter++;
 							continue;
 						}
-						
-						if (currentPhrase.equals("week") || currentPhrase.equals("day")) {
+
+						if (currentPhrase.equals("week")
+								|| currentPhrase.equals("day")) {
 							return nextCount;
 						}
-						
-						
+
 						if (throwException) {
 							// Consider changing exception type
-							RuntimeException e = 
-									new RuntimeException("Could not identify how far ahead to show. "
+							RuntimeException e = new RuntimeException(
+									"Could not identify how far ahead to show. "
 											+ "Use the following command for more details:\n help show");
 							System.out.println(e);
 							throw e;
 						} else {
-							
+
 							// Default value
 							return -1;
 						}
-						
+
 					}
-					
+
 					if (throwException) {
 						// Consider changing exception type
-						RuntimeException e = 
-								new RuntimeException("Could not identify how far ahead to show. "
+						RuntimeException e = new RuntimeException(
+								"Could not identify how far ahead to show. "
 										+ "Use the following command for more details:\n help show");
 						System.out.println(e);
 						throw e;
 					} else {
-						
+
 						// Default value
 						return -1;
 					}
 				}
-				
+
 				// Numeric case + all other cases
 				try {
-					
+
 					int placeOfWeekKeyword = forwardCounter + 1;
-					
+
 					// Defensive check
 					if (placeOfWeekKeyword == phraseCount) {
 						return -1;
 					}
-					
+
 					int returnValue = Integer.parseInt(currentPhrase);
-					currentPhrase = allPhrases.get(placeOfWeekKeyword).toLowerCase();
-					
+					currentPhrase = allPhrases.get(placeOfWeekKeyword)
+							.toLowerCase();
+
 					if (returnValue <= 0) {
-						NumberFormatException e =
-								new NumberFormatException("Unable to show negative weeks/days");
+						NumberFormatException e = new NumberFormatException(
+								"Unable to show negative weeks/days");
 						System.out.println(e);
 						throw e;
 					}
-					
-					if (currentPhrase.equals("week") || currentPhrase.equals("weeks") ||
-							currentPhrase.equals("day") || currentPhrase.equals("days")) {
+
+					if (currentPhrase.equals("week")
+							|| currentPhrase.equals("weeks")
+							|| currentPhrase.equals("day")
+							|| currentPhrase.equals("days")) {
 						return returnValue;
 					} else {
 						if (throwException) {
 							// Consider changing exception type
-							RuntimeException e = 
-									new RuntimeException("Could not identify how far ahead to show. "
+							RuntimeException e = new RuntimeException(
+									"Could not identify how far ahead to show. "
 											+ "Use the following command for more details:\n help show");
 							System.out.println(e);
 							throw e;
 						} else {
-							
+
 							// Default value
 							return -1;
 						}
 					}
-					
+
 				} catch (NumberFormatException e) {
-					
+
 					if (throwException) {
-						NumberFormatException e2 =
-								new NumberFormatException("Unable to show non-numerical weeks/days");
+						NumberFormatException e2 = new NumberFormatException(
+								"Unable to show non-numerical weeks/days");
 						System.out.println(e2);
 						throw e2;
 					} else {
-						
+
 						// Default value
 						return -1;
 					}
-					
+
 				} catch (RuntimeException e) {
 					if (throwException) {
 						// Consider changing exception type
-						RuntimeException e2 = 
-								new RuntimeException("Could not identify how far ahead to show. "
+						RuntimeException e2 = new RuntimeException(
+								"Could not identify how far ahead to show. "
 										+ "Use the following command for more details:\n help show");
 						System.out.println(e2);
 						throw e2;
 					} else {
-						
+
 						// Default value
 						return -1;
 					}
 				}
 			}
 		}
-		
+
 		if (throwException) {
 			// Consider changing exception type
-			RuntimeException e = 
-					new RuntimeException("Could not identify how far ahead to show. "
+			RuntimeException e = new RuntimeException(
+					"Could not identify how far ahead to show. "
 							+ "Use the following command for more details:\n help show");
 			System.out.println(e);
 			throw e;
 		} else {
-			
+
 			// Default value
 			return -1;
 		}
 	}
-	
-	public static String parseFilePath(String userCommand, boolean throwException) {
-		
+
+	public static String parseFilePath(String userCommand,
+			boolean throwException) {
+
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
-		
+
 		int phraseCount = allPhrases.size();
-		
+
 		for (int i = 1; i < phraseCount; i++) {
-			
+
 			String currentPhrase = allPhrases.get(i);
-			
+
 			try {
-				
+
 				Paths.get(currentPhrase);
 				return currentPhrase;
-				
+
 			} catch (InvalidPathException | NullPointerException e) {
 				continue;
 			}
 		}
-		
+
 		if (throwException) {
-			
-			RuntimeException e = 
-					new RuntimeException("Could not find valid file path in command supplied. "
+
+			RuntimeException e = new RuntimeException(
+					"Could not find valid file path in command supplied. "
 							+ "Consult the following for more details:\n help relocate");
 			System.out.println(e);
 			throw e;
 		} else {
-			
+
 			// Default value
 			return "";
 		}
@@ -1185,14 +1319,14 @@ public class Parser {
 
 			return returnValue;
 		} catch (NumberFormatException e) {
-			
+
 			if (throwException) {
-				
-				NumberFormatException e2 = 
-						new NumberFormatException("ID for editing task is not valid.");
+
+				NumberFormatException e2 = new NumberFormatException(
+						"ID for editing task is not valid.");
 				System.out.println(e2);
 				throw e2;
-				
+
 			} else {
 				return -1;
 			}
