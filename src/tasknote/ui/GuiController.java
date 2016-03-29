@@ -4,10 +4,10 @@ import static tasknote.ui.GuiConstant.COMMAND_ADD;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
@@ -15,7 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
+import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TASK_STATUS;
 
@@ -39,6 +41,9 @@ public class GuiController extends Application {
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
     
     private static Stage _primaryWindow = null;
+    
+    private static final Logger logger = Logger.getLogger(TaskNote.class.getName());
+    private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "Warning! An invalid input (empty string, or simple \"add\") is passed for command execution.";
     
     @Override
     public void start(Stage stage) {
@@ -74,7 +79,8 @@ public class GuiController extends Application {
     public static void retrieveCommand(TextField commandLine) {
         String command = commandLine.getText();
         
-        if(command.trim().equals(COMMAND_ADD)) {
+        if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
+            logger.log(Level.INFO, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
             return;
         }
         
@@ -92,6 +98,7 @@ public class GuiController extends Application {
     
     public static void executeCommand(String command) {
         if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
+            logger.log(Level.INFO, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
             return;
         }
         
