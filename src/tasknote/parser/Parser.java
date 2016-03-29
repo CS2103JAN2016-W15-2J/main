@@ -505,7 +505,72 @@ public class Parser {
 			}
 
 			if (switchString.equalsIgnoreCase("timerangeend")) {
-				String[] hourMinute = currentPhrase.split(":");
+
+				String[] hourMinute = new String[2];
+				hourMinute[0] = "-1";
+				hourMinute[1] = "-1";
+
+				int extraHours = 0;
+
+				if (currentPhrase.contains(":")) {
+					hourMinute = currentPhrase.split(":");
+
+					// Trim as required
+					if (hourMinute[1].endsWith("am")) {
+						hourMinute[1] = hourMinute[1].substring(0,
+								hourMinute[1].length() - 2);
+					} else if (hourMinute[1].endsWith("pm")) {
+
+						extraHours = 12;
+						hourMinute[1] = hourMinute[1].substring(0,
+								hourMinute[1].length() - 2);
+					}
+				} else {
+
+					// Count character by character from the back
+					int phraseSize = currentPhrase.length();
+
+					// Five length and above case
+					// Must contain an am/pm suffix
+					// Trim and run it with shortest cases
+					if (phraseSize >= 5) {
+						
+						if (currentPhrase.endsWith("pm")) {
+							extraHours = 12;
+						}
+						currentPhrase = currentPhrase.substring(0,
+								currentPhrase.length() - 2);
+						phraseSize = phraseSize - 2;
+					}
+
+					// Triple and quad length case
+					// Might have either single/double digit + am/pm
+					// Or triple/quad digit 24hr time format
+					if (phraseSize >= 3) {
+
+						if (currentPhrase.endsWith("am")) {
+							hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
+							hourMinute[1] = "0";
+						} else if (currentPhrase.endsWith("pm")) {
+							extraHours = 12;
+							hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
+							hourMinute[1] = "0";
+						} else {
+							hourMinute[0] = currentPhrase.substring(0,
+									phraseSize - 2);
+							hourMinute[1] = currentPhrase.substring(
+									phraseSize - 2, phraseSize);
+						}
+					}
+
+					// Single and double length case
+					// e.g. 3, 11, 09
+					// Impossible: 1pm, 145
+					if (phraseSize < 3) {
+						hourMinute[0] = currentPhrase;
+						hourMinute[1] = "0";
+					}
+				}
 
 				try {
 					endDateHour = Integer.parseInt(hourMinute[0]);
@@ -1000,7 +1065,74 @@ public class Parser {
 			}
 
 			if (switchString.equals("timerangeend")) {
-				String[] hourMinute = currentPhrase.split(":");
+
+				String[] hourMinute = new String[2];
+				hourMinute[0] = "-1";
+				hourMinute[1] = "-1";
+
+				int extraHours = 0;
+
+				if (currentPhrase.contains(":")) {
+					hourMinute = currentPhrase.split(":");
+
+					// Trim as required
+					if (hourMinute[1].endsWith("am")) {
+						hourMinute[1] = hourMinute[1].substring(0,
+								hourMinute[1].length() - 2);
+					} else if (hourMinute[1].endsWith("pm")) {
+
+						extraHours = 12;
+						hourMinute[1] = hourMinute[1].substring(0,
+								hourMinute[1].length() - 2);
+					}
+				} else {
+
+					// Count character by character from the back
+					int phraseSize = currentPhrase.length();
+
+					// Five length and above case
+					// Must contain an am/pm suffix
+					// Trim and run it with shortest cases
+					if (phraseSize >= 5) {
+
+						if (currentPhrase.endsWith("pm")) {
+							extraHours = 12;
+						}
+						currentPhrase = currentPhrase.substring(0,
+								currentPhrase.length() - 2);
+						phraseSize = phraseSize - 2;
+					}
+
+					// Triple and quad length case
+					// Might have either single/double digit + am/pm
+					// Or triple/quad digit 24hr time format
+					if (phraseSize >= 3) {
+
+						if (currentPhrase.endsWith("am")) {
+							hourMinute[0] = currentPhrase.substring(0,
+									phraseSize - 2);
+							hourMinute[1] = "0";
+						} else if (currentPhrase.endsWith("pm")) {
+							extraHours = 12;
+							hourMinute[0] = currentPhrase.substring(0,
+									phraseSize - 2);
+							hourMinute[1] = "0";
+						} else {
+							hourMinute[0] = currentPhrase.substring(0,
+									phraseSize - 2);
+							hourMinute[1] = currentPhrase.substring(
+									phraseSize - 2, phraseSize);
+						}
+					}
+
+					// Single and double length case
+					// e.g. 3, 11, 09
+					// Impossible: 1pm, 145
+					if (phraseSize < 3) {
+						hourMinute[0] = currentPhrase;
+						hourMinute[1] = "0";
+					}
+				}
 
 				try {
 					endDateHour = Integer.parseInt(hourMinute[0]);
