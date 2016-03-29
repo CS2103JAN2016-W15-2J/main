@@ -89,6 +89,12 @@ public class Constants {
 	public static final String STRING_TASKSTATUS_INVALID_STORAGE = "TASK_INVALID_STORAGE";
 	
 	/*
+	 * These are strings that are used for taskType in TaskObject
+	 */
+	public static final String STRING_TASKTYPE_DEADLINE = "DEADLINE";
+	public static final String STRING_TASKTYPE_FLOATING = "FLOATING";
+	
+	/*
 	 * These are the String constants used in the program while executing
 	 * specific user operations
 	 */

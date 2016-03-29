@@ -601,12 +601,15 @@ public class TaskNote {
 	private void populateTdyTmrShowList(int year, int month, int day) {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
-			int taskDay = taskObject.getDateDay();
-			int taskMonth = taskObject.getDateMonth();
-			int taskYear = taskObject.getDateYear();
+			String taskType = taskObject.getTaskType();
+			if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
+				int taskDay = taskObject.getDateDay();
+				int taskMonth = taskObject.getDateMonth();
+				int taskYear = taskObject.getDateYear();
 
-			if (year == taskYear && month == taskMonth && day == taskDay) {
-				showIntervalList.add(taskObject);
+				if (year == taskYear && month == taskMonth && day == taskDay) {
+					showIntervalList.add(taskObject);
+				}
 			}
 		}
 	}
@@ -614,10 +617,13 @@ public class TaskNote {
 	private void populateDayWeekShowList(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
-			LocalDateTime taskDateTime = getTaskDateTime(taskObject);
-			if ((taskDateTime.isEqual(startDateTime) || taskDateTime.isAfter(startDateTime))
-					&& (taskDateTime.isEqual(endDateTime) || taskDateTime.isBefore(endDateTime))) {
-				showIntervalList.add(taskObject);
+			String taskType = taskObject.getTaskType();
+			if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)) {
+				LocalDateTime taskDateTime = getTaskDateTime(taskObject);
+				if ((taskDateTime.isEqual(startDateTime) || taskDateTime.isAfter(startDateTime))
+						&& (taskDateTime.isEqual(endDateTime) || taskDateTime.isBefore(endDateTime))) {
+					showIntervalList.add(taskObject);
+				}
 			}
 		}
 	}
