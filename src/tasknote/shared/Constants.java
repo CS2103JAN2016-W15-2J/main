@@ -20,7 +20,9 @@ public class Constants {
 	public static final String MESSAGE_REDO_UNSUCCESSFUL = "Redo Command Failed to be executed";
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
 	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
-	public static final String MESSAGE_SHOW_SUCCESSFUL = "%d Deadline Tasks are due";
+	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL = "%d Deadline Task(s) due [ %d %s ]";
+	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE = "%d Deadline Task(s) due [ %s ]";
+	public static final String MESSAGE_SHOW_SUCCESSFUL_ALL = "All Tasks are displayed";
 	public static final String MESSAGE_SHOW_NO_RESULTS = "No Deadline Tasks are due within this period";
 	public static final String MESSAGE_SHOW_UNSUCCESSFUL = "Unable to show deadline tasks within this period";
 	public static final String MESSAGE_CHANGE_PATH_SUCCESSFUL = "File path successfuly changed to: %s";
