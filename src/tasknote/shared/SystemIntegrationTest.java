@@ -31,6 +31,7 @@ public class SystemIntegrationTest {
 
     @BeforeClass
     public static void initialise() throws InterruptedException {
+        System.out.println("SystemIntegrationTest will thus commence...");
         fileContent = new ArrayList<String>();
         taskContentsFileTransfer();
         
@@ -344,7 +345,9 @@ public class SystemIntegrationTest {
     
     @AfterClass
     public static void restore() {
+        System.out.println("SystemIntegrationTest's restore is called...");
         taskContentsFileRestore();
+        System.out.println("End of SystemIntegrationTest's testing.");
     }
 
 }
