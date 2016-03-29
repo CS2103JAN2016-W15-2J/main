@@ -650,7 +650,6 @@ public class Parser {
 			}
 		}
 
-		System.out.println(list.toString());
 		return list;
 	}
 
