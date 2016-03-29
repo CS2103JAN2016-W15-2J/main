@@ -682,8 +682,12 @@ public class Parser {
 				return ShowInterval.TOMORROW;
 			}
 			
-			if (currentPhrase.equals("week")) {
+			if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
 				return ShowInterval.WEEK;
+			}
+			
+			if (currentPhrase.equals("day") || currentPhrase.equals("days")) {
+				return ShowInterval.DAY;
 			}
 			
 			if (currentPhrase.equals("all")) {
@@ -723,7 +727,7 @@ public class Parser {
 				currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
 				
 				// Trivial case
-				if (currentPhrase.equals("week")) {
+				if (currentPhrase.equals("week") || currentPhrase.equals("day")) {
 					return 1;
 				}
 				
@@ -743,12 +747,12 @@ public class Parser {
 							continue;
 						}
 						
-						if (currentPhrase.equals("week")) {
+						if (currentPhrase.equals("week") || currentPhrase.equals("day")) {
 							return nextCount;
 						}
 						
 						// Consider changing exception type
-						throw new RuntimeException("Unknown word between next next ? week, encountered.");
+						throw new RuntimeException("Unknown word between next next ? week/day, encountered.");
 					}
 					
 					// Consider changing exception type
@@ -772,7 +776,8 @@ public class Parser {
 						throw new NumberFormatException("Number supplied was not at least 1");
 					}
 					
-					if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
+					if (currentPhrase.equals("week") || currentPhrase.equals("weeks") ||
+							currentPhrase.equals("day") || currentPhrase.equals("days")) {
 						return returnValue;
 					} else {
 						throw new RuntimeException("Unknown word given after next <number> ?");
