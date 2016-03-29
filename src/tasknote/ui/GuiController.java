@@ -15,9 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
-import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TASK_STATUS;
 
@@ -42,8 +40,8 @@ public class GuiController extends Application {
     
     private static Stage _primaryWindow = null;
     
-    private static final Logger logger = Logger.getLogger(TaskNote.class.getName());
-    private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "Warning! An invalid input (empty string, or simple \"add\") is passed for command execution.";
+    private static final Logger logger = Logger.getLogger(GuiController.class.getName());
+    private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "An invalid input (empty string, or simple \"add\") is passed for command execution.";
     
     @Override
     public void start(Stage stage) {
@@ -80,7 +78,7 @@ public class GuiController extends Application {
         String command = commandLine.getText();
         
         if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
-            logger.log(Level.INFO, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
+            logger.log(Level.WARNING, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
             return;
         }
         
@@ -98,7 +96,7 @@ public class GuiController extends Application {
     
     public static void executeCommand(String command) {
         if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
-            logger.log(Level.INFO, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
+            logger.log(Level.WARNING, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
             return;
         }
         
@@ -127,10 +125,16 @@ public class GuiController extends Application {
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
         for(TaskObject task: displayList) {
-            if(task.getTaskType().equals("floating")) {
-                floatsList.add(task);
-            } else {
-                tasksList.add(task);
+            switch(task.getTaskType()) {
+                case TaskObject.TASK_TYPE_FLOATING:
+                    floatsList.add(task);
+                    break;
+                case TaskObject.TASK_TYPE_DEADLINE:
+                case TaskObject.TASK_TYPE_EVENT:
+                    tasksList.add(task);
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -149,10 +153,20 @@ public class GuiController extends Application {
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
         for(TaskObject task: displayList) {
-            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_DEFAULT) {
-                floatsList.add(task);
-            } else if (task.getTaskStatus() == TASK_STATUS.TASK_DEFAULT){
-                tasksList.add(task);
+            if(task.getTaskStatus() != TASK_STATUS.TASK_DEFAULT) {
+                continue;
+            }
+            
+            switch(task.getTaskType()) {
+                case TaskObject.TASK_TYPE_FLOATING:
+                    floatsList.add(task);
+                    break;
+                case TaskObject.TASK_TYPE_DEADLINE:
+                case TaskObject.TASK_TYPE_EVENT:
+                    tasksList.add(task);
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -171,10 +185,20 @@ public class GuiController extends Application {
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
         for(TaskObject task: displayList) {
-            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_OUTSTANDING) {
-                floatsList.add(task);
-            } else if (task.getTaskStatus() == TASK_STATUS.TASK_OUTSTANDING){
-                tasksList.add(task);
+            if(task.getTaskStatus() != TASK_STATUS.TASK_OUTSTANDING) {
+                continue;
+            }
+            
+            switch(task.getTaskType()) {
+                case TaskObject.TASK_TYPE_FLOATING:
+                    floatsList.add(task);
+                    break;
+                case TaskObject.TASK_TYPE_DEADLINE:
+                case TaskObject.TASK_TYPE_EVENT:
+                    tasksList.add(task);
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -193,10 +217,20 @@ public class GuiController extends Application {
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
         for(TaskObject task: displayList) {
-            if(task.getTaskType().equals("floating") && task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
-                floatsList.add(task);
-            } else if (task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED){
-                tasksList.add(task);
+            if(task.getTaskStatus() != TASK_STATUS.TASK_COMPLETED) {
+                continue;
+            }
+            
+            switch(task.getTaskType()) {
+                case TaskObject.TASK_TYPE_FLOATING:
+                    floatsList.add(task);
+                    break;
+                case TaskObject.TASK_TYPE_DEADLINE:
+                case TaskObject.TASK_TYPE_EVENT:
+                    tasksList.add(task);
+                    break;
+                default:
+                    break;
             }
         }
         

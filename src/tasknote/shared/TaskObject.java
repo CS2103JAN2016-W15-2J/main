@@ -1,8 +1,32 @@
 package tasknote.shared;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.management.InvalidAttributeValueException;
 
 public class TaskObject implements Comparable<TaskObject> {
+    public final int DEFAULT_DATETIME_VALUE = -1;
+    
+    private final String EXCEPTION_NULL_TASK_NAME = "Task Name cannot be null!";
+    private final String EXCEPTION_EMPTY_TASK_NAME = "Task Name cannot be empty!";
+    private final String EXCEPTION_INCORRECT_TASK_MONTH = "Task month is set incorrectly.";
+    private final String EXCEPTION_INCORRECT_TASK_DAY = "Task day is set incorrectly.";
+    private final String EXCEPTION_INCORRECT_TASK_HOUR = "Task hour is set incorrectly.";
+    private final String EXCEPTION_INCORRECT_TASK_MINUTE = "Task minute is set incorrectly.";
+    
+    private final String WARNING_INCONSISTENT_TASK_TYPE = "It appears that task: %1$s is inconsistent with the task type: %2$s...";
+    
+    private final String FORMAT_DATE = "%d %s %d";
+    private final String FORMAT_TIME_MORNING = "%1$02d:%2$02dAM";
+    private final String FORMAT_TIME_EVENING = "%1$02d:%2$02dPM";
+    
+    private static final Logger logger = Logger.getLogger(TaskObject.class.getName());
+    
+    public final static String TASK_TYPE_FLOATING = "floating";
+    public final static String TASK_TYPE_DEADLINE = "deadline";
+    public final static String TASK_TYPE_EVENT = "event";
+    
     public String[] monthInString = {"", "January", "February", "March", "April",
             "May", "June", "July", "August", "September", "October", "November", "December"
     };
@@ -11,10 +35,8 @@ public class TaskObject implements Comparable<TaskObject> {
         TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_OVERDUE, TASK_INVALID_STORAGE
     };
     
-    public final int DEFAULT_DATETIME_VALUE = -1;
-    
 	private String taskName;
-	private int taskID; // for your debugging purposes
+	private int taskID;
 	
 	private int dateDay;
 	private int dateMonth;
@@ -38,7 +60,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	private boolean isNotified;
 	
 	private TASK_STATUS taskStatus;
-	private String taskType; // for my debugging purposes
+	private String taskType;
 	
 	private boolean isMarkedDone;
 	
@@ -70,7 +92,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setIsNotified(false);
 		
 		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
-		setTaskType("floating");
+		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
 	}
@@ -101,7 +123,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setIsNotified(false);
 		
 		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
-		setTaskType("floating");
+		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
 	}
@@ -248,21 +270,24 @@ public class TaskObject implements Comparable<TaskObject> {
      * @param Automatically set the taskType based on the current properties.
      * @@ author MunKeat
      */
-	public void setTaskType() {
+	public boolean isTaskTypeSet() {
 	    if(this.dateYear == DEFAULT_DATETIME_VALUE && this.dateMonth == DEFAULT_DATETIME_VALUE 
 	            && this.dateDay == DEFAULT_DATETIME_VALUE && this.dateHour == DEFAULT_DATETIME_VALUE
 	            && this.dateMinute == DEFAULT_DATETIME_VALUE && this.duration == 0) {
-	        this.taskType = "floating";
+	        this.taskType = TASK_TYPE_FLOATING;
+	        return true;
 	    } else if(this.dateYear != DEFAULT_DATETIME_VALUE && this.dateMonth != DEFAULT_DATETIME_VALUE 
                 && this.dateDay != DEFAULT_DATETIME_VALUE && this.duration == 0) {
-	        this.taskType = "deadline";
+	        this.taskType = TASK_TYPE_DEADLINE;
+	        return true;
 	    } else if(this.dateYear != DEFAULT_DATETIME_VALUE && this.dateMonth != DEFAULT_DATETIME_VALUE 
                 && this.dateDay != DEFAULT_DATETIME_VALUE && this.dateHour != DEFAULT_DATETIME_VALUE
                 && this.dateMinute != DEFAULT_DATETIME_VALUE && this.duration > 0) {
-	        this.taskType = "event";
+	        this.taskType = TASK_TYPE_FLOATING;
+	        return true;
 	    } else {
-	        // TODO Should not reach here - throw exception?
-	        this.taskType = "?";
+	        // TODO
+	        return false;
 	    }
 	}
 
@@ -280,7 +305,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
 		    this.taskStatus = TASK_STATUS.TASK_COMPLETED;
-		}else{
+		} else {
 			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
 		}
 	}
@@ -407,7 +432,7 @@ public class TaskObject implements Comparable<TaskObject> {
             assert(0 <= dateDay && dateDay <= 31);
             assert(0 <= dateMonth && dateMonth <= 12);
             
-            taskDate = (dateDay + " " + monthInString[dateMonth] + " " + dateYear);
+            taskDate = String.format(FORMAT_DATE, dateDay, monthInString[dateMonth], dateYear);
         } 
         
         return taskDate;
@@ -425,17 +450,11 @@ public class TaskObject implements Comparable<TaskObject> {
             assert(0 <= dateHour && dateHour <= 23);
             
             if(dateHour < 12) {
-                String hourString = String.format("%02d", dateHour);
-                String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "AM");
+                taskTime = String.format(FORMAT_TIME_MORNING, dateHour, dateMinute);
             } else if(dateHour == 12) {
-                String hourString = String.format("%02d", dateHour);
-                String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "PM");
+                taskTime = String.format(FORMAT_TIME_EVENING, dateHour, dateMinute);
             } else if(dateHour > 12){
-                String hourString = String.format("%02d", (dateHour - 12));
-                String minuteString = String.format("%02d", dateMinute);
-                taskTime = (hourString + ":" + minuteString + "PM");
+                taskTime = String.format(FORMAT_TIME_EVENING, (dateHour - 12), dateMinute);
             }
         } 
         
@@ -453,7 +472,7 @@ public class TaskObject implements Comparable<TaskObject> {
             assert(0 <= endDateDay && endDateDay <= 31);
             assert(0 <= endDateMonth && endDateMonth <= 12);
             
-            taskDate = (endDateDay + " " + monthInString[endDateMonth] + " " + endDateYear);
+            taskDate = String.format(FORMAT_DATE, endDateDay, monthInString[endDateMonth], endDateYear);
         } 
         
         return taskDate;
@@ -471,17 +490,11 @@ public class TaskObject implements Comparable<TaskObject> {
             assert(0 <= endDateHour && endDateHour <= 23);
             
             if(endDateHour < 12) {
-                String hourString = String.format("%02d", endDateHour);
-                String minuteString = String.format("%02d", endDateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "AM");
+                taskTime = String.format(FORMAT_TIME_MORNING, endDateHour, endDateMinute);
             } else if(endDateHour == 12) {
-                String hourString = String.format("%02d", endDateHour);
-                String minuteString = String.format("%02d", endDateMinute);
-                taskTime = (hourString + ":" +  minuteString+ "PM");
+                taskTime = String.format(FORMAT_TIME_EVENING, endDateHour, endDateMinute);
             } else if(endDateHour > 12){
-                String hourString = String.format("%02d", (endDateHour - 12));
-                String minuteString = String.format("%02d", endDateMinute);
-                taskTime = (hourString + ":" + minuteString + "PM");
+                taskTime = String.format(FORMAT_TIME_EVENING, (endDateHour - 12), endDateMinute);
             }
         } 
         
@@ -493,38 +506,46 @@ public class TaskObject implements Comparable<TaskObject> {
      * @throws Exception will only be thrown when any attribute strongly violates permitted value.
      * @@author MunKeat
      */
-	public boolean isTaskConsistent() throws Exception {
+	public boolean isTaskConsistent() throws InvalidAttributeValueException {
 	    // TODO WIP
         if(getTaskName() == null) {
-            throw new InvalidAttributeValueException("Task Name cannot be null!");
+            throw new InvalidAttributeValueException(EXCEPTION_NULL_TASK_NAME);
         } else if (getTaskName().isEmpty()) {
-            throw new InvalidAttributeValueException("Task Name cannot be empty!");
+            throw new InvalidAttributeValueException(EXCEPTION_EMPTY_TASK_NAME);
         }
         
         // First, let's look at the date/time attributes
         if(dateMonth != DEFAULT_DATETIME_VALUE && (0 > dateMonth || dateMonth > 12)) {
-            throw new InvalidAttributeValueException("Task month is set incorrectly.");
+            throw new InvalidAttributeValueException(EXCEPTION_INCORRECT_TASK_MONTH);
         } else if (dateDay != DEFAULT_DATETIME_VALUE && (0 > dateDay || dateDay > 31)) {
-            throw new InvalidAttributeValueException("Task day is set incorrectly.");
+            throw new InvalidAttributeValueException(EXCEPTION_INCORRECT_TASK_DAY);
         } else if (dateHour != DEFAULT_DATETIME_VALUE && (0 > dateHour || dateHour > 23)) {
-            throw new InvalidAttributeValueException("Task hour is set incorrectly.");
+            throw new InvalidAttributeValueException(EXCEPTION_INCORRECT_TASK_HOUR);
         } else if (dateMinute != DEFAULT_DATETIME_VALUE && (0 > dateMinute || dateMinute > 59)) {
-            throw new InvalidAttributeValueException("Task minute is set incorrectly.");
+            throw new InvalidAttributeValueException(EXCEPTION_INCORRECT_TASK_MINUTE);
         }
         
         switch(getTaskType().trim()) {
-            case "floating": 
-                if(!getFormattedTime().isEmpty() || !getFormattedTime().isEmpty()) {
+            case TASK_TYPE_FLOATING: 
+                if(!getFormattedTime().isEmpty() || !getFormattedDate().isEmpty()) {
+                    logger.log(Level.WARNING, String.format(WARNING_INCONSISTENT_TASK_TYPE, this.getTaskName(), TASK_TYPE_FLOATING));
                     return false;
                 } else if (getDuration() > 0) {
+                    logger.log(Level.WARNING, String.format(WARNING_INCONSISTENT_TASK_TYPE, this.getTaskName(), TASK_TYPE_FLOATING));
                     return false;
                 }
                 break;
+            case TASK_TYPE_DEADLINE: 
+                if(getFormattedTime().isEmpty() || getFormattedDate().isEmpty()) {
+                    logger.log(Level.WARNING, String.format(WARNING_INCONSISTENT_TASK_TYPE, this.getTaskName(), TASK_TYPE_FLOATING));
+                    return false;
+                } else if (getDuration() > 0) {
+                    logger.log(Level.WARNING, String.format(WARNING_INCONSISTENT_TASK_TYPE, this.getTaskName(), TASK_TYPE_FLOATING));
+                    return false;
+                }
             default:
                 break;
         }
-        
-        // TODO Add other test. WIP, as other possible types are unknown. 
         
         return true;
 	}

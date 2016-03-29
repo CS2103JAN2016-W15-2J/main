@@ -14,13 +14,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.TextField;
 import tasknote.logic.TaskNoteControl;
 import tasknote.parser.Parser;
-import tasknote.shared.TaskObject.TASK_STATUS;
 import tasknote.storage.Storage;
 import tasknote.ui.CommandLineContainer;
 import tasknote.ui.FloatingTasksContainer;
@@ -172,7 +169,7 @@ public class SystemIntegrationTest {
         GuiController.executeCommand("add floating task 0");
         // Check Parser
         TaskObject floatingTask1 = Parser.parseAdd("add floating task 0", true);
-        assertTrue(floatingTask1.getTaskType().equals("floating"));
+        assertTrue(floatingTask1.getTaskType().equals(TaskObject.TASK_TYPE_FLOATING));
         // Check Storage
         try {
             assertTrue(storage.loadTasks().contains(floatingTask1));
