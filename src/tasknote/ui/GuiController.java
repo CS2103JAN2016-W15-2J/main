@@ -211,7 +211,7 @@ public class GuiController extends Application {
         floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
-    private static void displayCompletedTaskList() {
+    private static void displayTaskList(String navigationTag) {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
         TasksContainer tasksContainer = TasksContainer.getInstance();
         ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
@@ -225,8 +225,21 @@ public class GuiController extends Application {
         ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
         
+        TASK_STATUS taskTypeRequired = null;
+        
+        switch(navigationTag) {
+            case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
+                taskTypeRequired = TASK_STATUS.TASK_DEFAULT;
+                break;
+            case SidebarContainer.NAVIGATION_TAG_OVERDUE:
+                taskTypeRequired = TASK_STATUS.TASK_OUTSTANDING;
+                break;
+            case SidebarContainer.NAVIGATION_TAG_COMPLETED:
+                taskTypeRequired = TASK_STATUS.TASK_COMPLETED;
+        }
+        
         for(TaskObject task: displayList) {
-            if(task.getTaskStatus() != TASK_STATUS.TASK_COMPLETED) {
+            if(task.getTaskStatus() != taskTypeRequired) {
                 continue;
             }
             
@@ -275,15 +288,15 @@ public class GuiController extends Application {
                 break;
             case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
                 sidebarContainer.selectNavigationCell(1);
-                displayOutstandingTaskList();
+                displayTaskList(selected);
                 break;
             case SidebarContainer.NAVIGATION_TAG_OVERDUE:
                 sidebarContainer.selectNavigationCell(2);
-                displayOverdueTaskList();
+                displayTaskList(selected);
                 break;
             case SidebarContainer.NAVIGATION_TAG_COMPLETED:
                 sidebarContainer.selectNavigationCell(3);
-                displayCompletedTaskList();
+                displayTaskList(selected);
                 break;
         }
     }
