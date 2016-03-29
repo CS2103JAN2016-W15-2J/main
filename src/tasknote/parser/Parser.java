@@ -1522,7 +1522,7 @@ public class Parser {
 		if (currentPhrase.contains(":") || currentPhrase.contains(".")) {
 			
 			if (currentPhrase.contains(":")) {
-				String[] tempHourMinute = currentPhrase.split("/");
+				String[] tempHourMinute = currentPhrase.split(":");
 				hourMinute[0] = tempHourMinute[0];
 				hourMinute[1] = tempHourMinute[1];
 			} else {
