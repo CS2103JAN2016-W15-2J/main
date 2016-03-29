@@ -57,13 +57,13 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public String executeCommand(String userCommand) {
-		boolean isSuccess = true;
+		boolean throwException = true;
 		COMMAND_TYPE commandType;
 		try{
-			commandType = Parser.getCommandType(userCommand, isSuccess);
+			commandType = Parser.getCommandType(userCommand, throwException);
 		} catch(Exception e) {
-			isSuccess = false;
-			commandType = Parser.getCommandType(userCommand, isSuccess);
+			throwException = false;
+			commandType = Parser.getCommandType(userCommand, throwException);
 		}
 		String feedback = executeAction(commandType, userCommand);
 		return feedback;
@@ -134,14 +134,14 @@ public class TaskNoteControl {
 	 */
 	private static String executeAdd(String userCommand) {
 		TaskObject taskObject;
-		boolean isSuccess = true;
+		boolean throwException = true;
 		String parserFeedback = new String(" ");
 		try {
-			taskObject = Parser.parseAdd(userCommand, isSuccess);
+			taskObject = Parser.parseAdd(userCommand, throwException);
 		} catch (Exception e) {
-			isSuccess = false;
+			throwException = false;
 			parserFeedback = e.getMessage();
-			taskObject = Parser.parseAdd(userCommand, isSuccess);
+			taskObject = Parser.parseAdd(userCommand, throwException);
 		}
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
@@ -160,14 +160,14 @@ public class TaskNoteControl {
 	 */
 	private static String executeDelete(String userCommand) {
 		ArrayList<Integer> deleteIds;
-		boolean isSuccess = true;
+		boolean throwException = true;
 		String parserFeedback = new String(" ");
 		try {
-			deleteIds = Parser.parseDelete(userCommand, isSuccess);
+			deleteIds = Parser.parseDelete(userCommand, throwException);
 		} catch (Exception e) {
-			isSuccess = false;
+			throwException = false;
 			parserFeedback = e.getMessage();
-			deleteIds = Parser.parseDelete(userCommand, isSuccess);
+			deleteIds = Parser.parseDelete(userCommand, throwException);
 		}
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
