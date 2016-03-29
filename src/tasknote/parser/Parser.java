@@ -1394,8 +1394,44 @@ public class Parser {
 		dayMonthYear[4] = "maybeNotDate";
 
 		int extraWordsUsed = 0;
-
-		if (currentPhrase.contains("/")) {
+		
+		if (currentPhrase.equals("today") || currentPhrase.equals("tdy")) {
+			
+			GregorianCalendar today = new GregorianCalendar();
+			int todayDate = today.get(Calendar.DAY_OF_MONTH);
+			int todayMonth = today.get(Calendar.MONTH) + 1;
+			int todayYear = today.get(Calendar.YEAR);
+			
+			dayMonthYear[0] = Integer.toString(todayDate);
+			dayMonthYear[1] = Integer.toString(todayMonth);
+			dayMonthYear[2] = Integer.toString(todayYear);
+			dayMonthYear[4] = "isDate";
+			
+		} else if (currentPhrase.equals("tomorrow") || currentPhrase.equals("tmr")) {
+			
+			GregorianCalendar tomorrow = new GregorianCalendar();
+			tomorrow.roll(Calendar.DAY_OF_MONTH, 1);
+			
+			int tomorrowDate = tomorrow.get(Calendar.DAY_OF_MONTH);
+			int tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
+			int tomorrowYear = tomorrow.get(Calendar.YEAR);
+			
+			if (tomorrowDate == 1) {
+				tomorrow.roll(Calendar.MONTH, 1);
+				tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
+				
+				if (tomorrowMonth == 1) {
+					tomorrow.roll(Calendar.YEAR, 1);
+					tomorrowYear = tomorrow.get(Calendar.YEAR);
+				}
+			}
+			
+			dayMonthYear[0] = Integer.toString(tomorrowDate);
+			dayMonthYear[1] = Integer.toString(tomorrowMonth);
+			dayMonthYear[2] = Integer.toString(tomorrowYear);
+			dayMonthYear[4] = "isDate";
+			
+		} else if (currentPhrase.contains("/")) {
 			String[] tempDayMonthYear = currentPhrase.split("/");
 			dayMonthYear[0] = tempDayMonthYear[0];
 			dayMonthYear[1] = tempDayMonthYear[1];
