@@ -108,7 +108,7 @@ public class Parser {
 
 	// Fixed command structure: add taskname <on date> <by time> <notify time>
 	// <at location>
-	public static TaskObject parseAdd(String userCommand) {
+	public static TaskObject parseAdd(String userCommand, boolean throwException) {
 
 		ParserFirstPass parseAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = parseAllWords.getFirstPassParsedResult();
@@ -181,21 +181,53 @@ public class Parser {
 						dateDay = -1;
 						dateMonth = -1;
 						dateYear = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e = 
+									new NumberFormatException("Invalid date or month given. "
+									+ "Consult the following command for assistance:\n help add");
+							System.out.println(e);
+							throw e;
+						} else {
+							switchString = "name";
+							continue;
+						}
 					}
 					
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse date value given. "
+								+ "Consult the following command for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						switchString = "name";
+						continue;
+					}
+					
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse "
+										+ "date value given. Consult the following "
+										+ "command for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -209,9 +241,23 @@ public class Parser {
 					
 					if (dateHour > 24 || dateHour < 0 ||
 							dateMinute > 60 || dateMinute < 0) {
+						
 						dateHour = -1;
 						dateMinute = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Invalid time value"
+											+ " given. Consult the following command"
+											+ " for assistance:\n help add");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							dateHour = -1;
+							dateMinute = -1;
+							switchString = "name";
+							continue;
+						}
 					}
 					
 					if (switchString.equals("time")) {
@@ -222,15 +268,36 @@ public class Parser {
 					continue;
 					
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse time value"
+										+ " given. Consult the following command"
+										+ " for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateHour = -1;
+						dateMinute = -1;
+						switchString = "name";
+						continue;
+					}
+					
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse time value"
+										+ " given. Consult the following command"
+										+ " for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateHour = -1;
+						dateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 			
@@ -245,22 +312,57 @@ public class Parser {
 							endDateMinute > 60 || endDateMinute < 0) {
 						endDateHour = -1;
 						endDateMinute = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							
+							NumberFormatException e2 = 
+									new NumberFormatException("Invalid end time value"
+											+ " given. Consult the following command"
+											+ " for assistance:\n help add");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							endDateHour = -1;
+							endDateMinute = -1;
+							switchString = "name";
+							continue;
+						}
 					}
 					
 					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 					continue;
 					
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse end time value"
+										+ " given. Consult the following command"
+										+ " for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						endDateHour = -1;
+						endDateMinute = -1;
+						switchString = "name";
+						continue;
+					}
+					
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse end"
+										+ " time value given. Consult the following command"
+										+ " for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						endDateHour = -1;
+						endDateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -271,14 +373,32 @@ public class Parser {
 					
 					if (hourBefore < 0) {
 						hourBefore = 0;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Could not parse notify value"
+											+ " given. Consult the following command"
+											+ " for assistance:\n help add");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							switchString = "name";
+							continue;
+						}
 					}
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse notify value"
+										+ " given. Consult the following command"
+										+ " for assistance:\n help add");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -349,7 +469,7 @@ public class Parser {
 	}
 
 	public static TaskObject parseUpdate(String userCommand,
-			TaskObject reallyOldTaskObject) {
+			TaskObject reallyOldTaskObject, boolean throwException) {
 
 		ParserFirstPass parseAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = parseAllWords.getFirstPassParsedResult();
@@ -423,23 +543,53 @@ public class Parser {
 					
 					if (dateDay < 0 || dateDay > 31 ||
 							dateMonth < 0 || dateMonth > 31) {
-						dateDay = -1;
-						dateMonth = -1;
-						dateYear = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Could not parse date value given. "
+									+ "Consult the following command for assistance:\n help edit");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							dateDay = -1;
+							dateMonth = -1;
+							dateYear = -1;
+							switchString = "name";
+							continue;
+						}
 					}
+					
 					taskType = "deadline";
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse date value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						switchString = "name";
+						continue;
+					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse date value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateDay = -1;
+						dateMonth = -1;
+						dateYear = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -453,9 +603,19 @@ public class Parser {
 					
 					if (dateHour < 0 || dateHour > 24 ||
 							dateMinute < 0 || dateMinute > 60) {
-						dateHour = -1;
-						dateMinute = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Could not parse time value given. "
+									+ "Consult the following command for assistance:\n help edit");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							dateHour = -1;
+							dateMinute = -1;
+							switchString = "name";
+							continue;
+						}
 					}
 					
 					if (switchString.equals("time")) {
@@ -465,15 +625,31 @@ public class Parser {
 					}
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse time value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateHour = -1;
+						dateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse time value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						dateHour = -1;
+						dateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 			
@@ -486,23 +662,49 @@ public class Parser {
 					
 					if (endDateHour < 0 || endDateMinute > 24 ||
 							endDateMinute < 0 || endDateMinute > 60) {
-						endDateHour = -1;
-						endDateMinute = -1;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Could not parse end time value given. "
+									+ "Consult the following command for assistance:\n help edit");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							endDateHour = -1;
+							endDateMinute = -1;
+							switchString = "name";
+							continue;
+						}
 					}
 					
 					duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse end time value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						endDateHour = -1;
+						endDateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						ArrayIndexOutOfBoundsException e2 = 
+								new ArrayIndexOutOfBoundsException("Could not parse end time value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						endDateHour = -1;
+						endDateMinute = -1;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -512,15 +714,32 @@ public class Parser {
 					hourBefore = Integer.parseInt(currentPhrase);
 					
 					if (hourBefore < 0) {
-						hourBefore = 0;
-						throw new NumberFormatException();
+						
+						if (throwException) {
+							NumberFormatException e2 = 
+									new NumberFormatException("Could not parse notify value given. "
+									+ "Consult the following command for assistance:\n help edit");
+							System.out.println(e2);
+							throw e2;
+						} else {
+							hourBefore = 0;
+							switchString = "name";
+							continue;
+						}
 					}
 					continue;
 				} catch (NumberFormatException e) {
-					System.out.println(currentPhrase
-							+ " is not a valid date format");
-					switchString = "name";
-					continue;
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Could not parse notify value given. "
+								+ "Consult the following command for assistance:\n help edit");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						hourBefore = 0;
+						switchString = "name";
+						continue;
+					}
 				}
 			}
 
@@ -599,7 +818,7 @@ public class Parser {
 		return taskObjectToBuild;
 	}
 
-	public static ArrayList<Integer> parseDelete(String userCommand) {
+	public static ArrayList<Integer> parseDelete(String userCommand, boolean throwException) {
 		// TODO Auto-generated method stub
 
 		ParserFirstPass parseAllWords = new ParserFirstPass(userCommand);
@@ -631,10 +850,29 @@ public class Parser {
 					
 				} catch (NumberFormatException e) {
 					
-					System.out.println("Encountered unexpected non-number at <number> - ?");
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Cannot delete non-numeric ID");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						
+						// Let it continue running, ignoring this bad value
+						continue;
+					}
+					
 				} catch (IndexOutOfBoundsException e) {
 					
-					System.out.println("No number supplied after <number> -");
+					if (throwException) {
+						IndexOutOfBoundsException e2 = 
+								new IndexOutOfBoundsException("No start of range ID was found");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						
+						// Let it continue running, ignoring this bad value
+						continue;
+					}
 				}
 			} else {
 
@@ -645,7 +883,16 @@ public class Parser {
 					list.add(nextID);
 	
 				} catch (NumberFormatException e) {
-					break;
+					
+					if (throwException) {
+						NumberFormatException e2 = 
+								new NumberFormatException("Cannot delete non-numeric ID");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						// Let it continue running, ignoring this bad value
+						continue;
+					}
 				}
 			}
 		}
@@ -655,7 +902,7 @@ public class Parser {
 
 	// Ahead of SuperParser
 	public static ArrayList<Integer> parseSearch(String userCommand,
-			ArrayList<TaskObject> displayList) {
+			ArrayList<TaskObject> displayList, boolean throwException) {
 
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
@@ -691,7 +938,7 @@ public class Parser {
 		return listToReturn;
 	}
 	
-	public static ShowInterval parseShow(String userCommand) {
+	public static ShowInterval parseShow(String userCommand, boolean throwException) {
 		
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
@@ -727,7 +974,7 @@ public class Parser {
 		return ShowInterval.ALL;
 	}
 	
-	public static int getInterval(String userCommand) {
+	public static int getInterval(String userCommand, boolean throwException) {
 		
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
@@ -779,12 +1026,34 @@ public class Parser {
 							return nextCount;
 						}
 						
-						// Consider changing exception type
-						throw new RuntimeException("Unknown word between next next ? week/day, encountered.");
+						
+						if (throwException) {
+							// Consider changing exception type
+							RuntimeException e = 
+									new RuntimeException("Could not identify how far ahead to show. "
+											+ "Use the following command for more details:\n help show");
+							System.out.println(e);
+							throw e;
+						} else {
+							
+							// Default value
+							return -1;
+						}
+						
 					}
 					
-					// Consider changing exception type
-					throw new RuntimeException("Nothing specified after next next.");
+					if (throwException) {
+						// Consider changing exception type
+						RuntimeException e = 
+								new RuntimeException("Could not identify how far ahead to show. "
+										+ "Use the following command for more details:\n help show");
+						System.out.println(e);
+						throw e;
+					} else {
+						
+						// Default value
+						return -1;
+					}
 				}
 				
 				// Numeric case + all other cases
@@ -801,29 +1070,75 @@ public class Parser {
 					currentPhrase = allPhrases.get(placeOfWeekKeyword).toLowerCase();
 					
 					if (returnValue <= 0) {
-						throw new NumberFormatException("Number supplied was not at least 1");
+						NumberFormatException e =
+								new NumberFormatException("Unable to show negative weeks/days");
+						System.out.println(e);
+						throw e;
 					}
 					
 					if (currentPhrase.equals("week") || currentPhrase.equals("weeks") ||
 							currentPhrase.equals("day") || currentPhrase.equals("days")) {
 						return returnValue;
 					} else {
-						throw new RuntimeException("Unknown word given after next <number> ?");
+						if (throwException) {
+							// Consider changing exception type
+							RuntimeException e = 
+									new RuntimeException("Could not identify how far ahead to show. "
+											+ "Use the following command for more details:\n help show");
+							System.out.println(e);
+							throw e;
+						} else {
+							
+							// Default value
+							return -1;
+						}
 					}
 					
 				} catch (NumberFormatException e) {
-					System.out.println(e);
+					
+					if (throwException) {
+						NumberFormatException e2 =
+								new NumberFormatException("Unable to show non-numerical weeks/days");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						
+						// Default value
+						return -1;
+					}
+					
 				} catch (RuntimeException e) {
-					System.out.println(e);
+					if (throwException) {
+						// Consider changing exception type
+						RuntimeException e2 = 
+								new RuntimeException("Could not identify how far ahead to show. "
+										+ "Use the following command for more details:\n help show");
+						System.out.println(e2);
+						throw e2;
+					} else {
+						
+						// Default value
+						return -1;
+					}
 				}
 			}
 		}
 		
-		// Default value
-		return -1;
+		if (throwException) {
+			// Consider changing exception type
+			RuntimeException e = 
+					new RuntimeException("Could not identify how far ahead to show. "
+							+ "Use the following command for more details:\n help show");
+			System.out.println(e);
+			throw e;
+		} else {
+			
+			// Default value
+			return -1;
+		}
 	}
 	
-	public static String parseFilePath(String userCommand) {
+	public static String parseFilePath(String userCommand, boolean throwException) {
 		
 		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
@@ -844,11 +1159,21 @@ public class Parser {
 			}
 		}
 		
-		// Default value
-		return "";
+		if (throwException) {
+			
+			RuntimeException e = 
+					new RuntimeException("Could not find valid file path in command supplied. "
+							+ "Consult the following for more details:\n help relocate");
+			System.out.println(e);
+			throw e;
+		} else {
+			
+			// Default value
+			return "";
+		}
 	}
 
-	public static int getUpdateTaskId(String userCommand) {
+	public static int getUpdateTaskId(String userCommand, boolean throwException) {
 
 		String[] splitUserCommand = userCommand.trim().split(REGEX_WHITESPACE);
 
@@ -860,9 +1185,17 @@ public class Parser {
 
 			return returnValue;
 		} catch (NumberFormatException e) {
-
-			return -1;
+			
+			if (throwException) {
+				
+				NumberFormatException e2 = 
+						new NumberFormatException("ID for editing task is not valid.");
+				System.out.println(e2);
+				throw e2;
+				
+			} else {
+				return -1;
+			}
 		}
-
 	}
 }
