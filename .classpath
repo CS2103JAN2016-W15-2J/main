@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/NUS/CS2103T/main/lib/fxiconics-0.0.5-jfx.jar"/>
-	<classpathentry kind="lib" path="lib/fxiconics-0.0.5-jfx.jar"/>
+	<classpathentry kind="lib" path="/Users/Girish/GitHub/Projects/NUS/CS2103T/ProjectTaskNote/main/lib/fxiconics-0.0.5-jfx.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
