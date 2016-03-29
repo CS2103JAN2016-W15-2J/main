@@ -59,7 +59,7 @@ public class Parser {
 	 *         match any of the valid COMMAND_TYPES, the INVALID COMMAND_TYPE
 	 *         value is returned instead
 	 */
-	public static COMMAND_TYPE getCommandType(String userCommand) {
+	public static COMMAND_TYPE getCommandType(String userCommand, boolean throwException) {
 
 		ParserFirstPass firstPassCommand = new ParserFirstPass(userCommand);
 		ArrayList<String> allPhrase = firstPassCommand.getFirstPassParsedResult();
