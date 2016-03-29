@@ -224,7 +224,7 @@ public class Parser {
 
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = {};
+				String[] dayMonthYear = new String[3];
 
 				if (currentPhrase.contains("/")) {
 					dayMonthYear = currentPhrase.split("/");
@@ -233,7 +233,8 @@ public class Parser {
 				} else {
 
 					String possibleDay = currentPhrase;
-					
+					int extraWordsUsed = 0;
+
 					// Trim stuff if required
 					if (possibleDay.endsWith("st")
 							|| possibleDay.endsWith("nd")
@@ -245,48 +246,54 @@ public class Parser {
 					}
 
 					dayMonthYear[0] = possibleDay;
-					
+
 					boolean foundMonth = false;
-					
+					String possibleMonth = "";
+
 					if (i + 1 < phraseCount) {
-						String possibleMonth = allPhrases.get(i + 1).toLowerCase();
-						
-						String[] possibleMonthValues = { "jan", "january", "feb",
-								"february", "mar", "march", "apr", "april", "may",
-								"may", "jun", "june", "jul", "july", "aug",
-								"august", "oct", "october", "nov", "november",
-								"dec", "december" };
+						possibleMonth = allPhrases.get(i + 1).toLowerCase();
+					}
 
-						for (int j = 0; j < possibleMonthValues.length; j++) {
+					String[] possibleMonthValues = { "jan", "january", "feb",
+							"february", "mar", "march", "apr", "april", "may",
+							"may", "jun", "june", "jul", "july", "aug",
+							"august", "oct", "october", "nov", "november",
+							"dec", "december" };
 
-							if (possibleMonth.equals(possibleMonthValues[j])) {
-								foundMonth = true;
-								int numericMonth = 1 + (j / 2);
-								dayMonthYear[1] = Integer.toString(numericMonth);
-								i++;
-								break;
-							}
-						}
+					for (int j = 0; j < possibleMonthValues.length; j++) {
 
-						if (!foundMonth) {
-							GregorianCalendar today = new GregorianCalendar();
-							dayMonthYear[1] = Integer.toString(today
-									.get(Calendar.MONTH) + 1);
+						if (possibleMonth.equals(possibleMonthValues[j])) {
+							foundMonth = true;
+							int numericMonth = 1 + (j / 2);
+							dayMonthYear[1] = Integer.toString(numericMonth);
+							extraWordsUsed++;
+							break;
 						}
 					}
-					
+
+					if (!foundMonth) {
+						GregorianCalendar today = new GregorianCalendar();
+						dayMonthYear[1] = Integer.toString(today
+								.get(Calendar.MONTH) + 1);
+					}
+
+					String possibleYear = "";
+
 					if (foundMonth && (i + 2) < phraseCount) {
-						String possibleYear = allPhrases.get(i + 2);
-						
-						try {
-							int numericYear = Integer.parseInt(possibleYear);
-							dayMonthYear[2] = Integer.toString(numericYear);
-						} catch (NumberFormatException e) {
-							GregorianCalendar today = new GregorianCalendar();
-							dayMonthYear[2] = Integer.toString(today
-									.get(Calendar.YEAR));
-						}
+						possibleYear = allPhrases.get(i + 2);
 					}
+
+					try {
+						int numericYear = Integer.parseInt(possibleYear);
+						dayMonthYear[2] = Integer.toString(numericYear);
+						extraWordsUsed++;
+					} catch (NumberFormatException e) {
+						GregorianCalendar today = new GregorianCalendar();
+						dayMonthYear[2] = Integer.toString(today
+								.get(Calendar.YEAR));
+					}
+
+					i = i + extraWordsUsed;
 				}
 
 				try {

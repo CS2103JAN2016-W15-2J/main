@@ -57,7 +57,7 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public String executeCommand(String userCommand) {
-		COMMAND_TYPE commandType = Parser.getCommandType(userCommand);
+		COMMAND_TYPE commandType = Parser.getCommandType(userCommand, true);
 		String feedback = executeAction(commandType, userCommand);
 		return feedback;
 	}
@@ -127,7 +127,7 @@ public class TaskNoteControl {
 	 */
 	private static String executeAdd(String userCommand) {
 		boolean isSuccess = true;
-		TaskObject taskObject = Parser.parseAdd(userCommand);
+		TaskObject taskObject = Parser.parseAdd(userCommand, true);
 		try{
 			//taskObject = Parser.parseAdd(userCommand, isSuccess);
 		} catch (Exception e) {
@@ -149,7 +149,7 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeDelete(String userCommand) {
-		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand);
+		ArrayList<Integer> deleteIds = Parser.parseDelete(userCommand, true);
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
 		command.refreshDisplay();
@@ -166,7 +166,7 @@ public class TaskNoteControl {
 	 */
 	private static String executeSearch(String userCommand) {
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList);
+		ArrayList<Integer> searchIds = Parser.parseSearch(userCommand, displayList, true);
 		command = new SearchCommand(taskNote, searchIds);
 		command.execute();
 		command.refreshDisplay();
@@ -183,13 +183,13 @@ public class TaskNoteControl {
 	 */
 	private static String executeUpdate(String userCommand) {
 		// TODO:Parser - change method name to getTaskId
-		int updateTaskId = Parser.getUpdateTaskId(userCommand);
+		int updateTaskId = Parser.getUpdateTaskId(userCommand, true);
 		TaskObject updatedTaskObject;
 
 		if (taskNote.isValidTaskId(updateTaskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			TaskObject oldTaskObject = displayList.get(updateTaskId);
-			updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject);
+			updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject, true);
 		} else {
 			updatedTaskObject = null;
 		}
@@ -240,7 +240,7 @@ public class TaskNoteControl {
 	 */
 	private static String executeMarkAsComplete(String userCommand) {
 		// TODO:Parser - change method name to getTaskId
-		int taskId = Parser.getUpdateTaskId(userCommand);
+		int taskId = Parser.getUpdateTaskId(userCommand, true);
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
@@ -264,7 +264,7 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeChangeFilePath(String userCommand) {
-		String filePath = Parser.parseFilePath(userCommand);
+		String filePath = Parser.parseFilePath(userCommand, true);
 		command = new ChangeFilePathCommand(taskNote, filePath);
 		command.execute();
 		command.refreshDisplay();
@@ -281,8 +281,8 @@ public class TaskNoteControl {
 	 */
 	
 	private static String executeShow(String userCommand){
-		ShowInterval timeInterval = Parser.parseShow(userCommand);
-		int countInterval = Parser.getInterval(userCommand);
+		ShowInterval timeInterval = Parser.parseShow(userCommand, true);
+		int countInterval = Parser.getInterval(userCommand, true);
 		command = new ShowCommand(taskNote, timeInterval, countInterval);
 		command.execute();
 		command.refreshDisplay();

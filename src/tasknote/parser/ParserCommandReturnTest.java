@@ -14,7 +14,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -24,7 +24,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -34,7 +34,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.SEARCH;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.UPDATE;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.DELETE;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.EXIT;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.INVALID;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -86,6 +86,6 @@ public class ParserCommandReturnTest {
 		
 		COMMAND_TYPE expectedResult = COMMAND_TYPE.INVALID;
 		
-		assertEquals(Parser.getCommandType(userCommand), expectedResult);
+		assertEquals(Parser.getCommandType(userCommand, true), expectedResult);
 	}
 }

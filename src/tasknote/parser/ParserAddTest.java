@@ -19,7 +19,7 @@ public class ParserAddTest {
 		
 		TaskObject expectedResult = new TaskObject("longtaskname");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -41,9 +41,9 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		expectedResult.equals(Parser.parseAdd(userCommand));
+		expectedResult.equals(Parser.parseAdd(userCommand, true));
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -65,7 +65,7 @@ public class ParserAddTest {
 		expectedResult.setDateMinute(59);
 		*/
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -87,7 +87,7 @@ public class ParserAddTest {
 		expectedResult.setDateMinute(59);
 		*/
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -109,7 +109,7 @@ public class ParserAddTest {
 		expectedResult.setDateMinute(59);
 		*/
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -131,7 +131,7 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -153,7 +153,7 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -175,7 +175,7 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -197,7 +197,7 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 	
 	@Test
@@ -214,6 +214,6 @@ public class ParserAddTest {
 		expectedResult.setDateMonth(3);
 		expectedResult.setDateDay(2);
 		
-		assertEquals(Parser.parseAdd(userCommand), expectedResult);
+		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
 	}
 }

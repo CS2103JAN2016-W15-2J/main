@@ -17,6 +17,6 @@ public class ParserDeleteTest {
 		expectedResult.add(2);
 		expectedResult.add(3);
 		
-		assertEquals(Parser.parseDelete(userCommand), expectedResult);
+		assertEquals(Parser.parseDelete(userCommand, true), expectedResult);
 	}
 }
