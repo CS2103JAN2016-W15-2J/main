@@ -481,6 +481,51 @@ public class TaskNote {
 		return showFeedback(COMMAND_TYPE.CHANGE_CATEGORY, isSuccess, null);
 	}
 
+	public static String displayHelpMessage(COMMAND_TYPE commandType) {
+		String helpMessage;
+		switch(commandType) {
+		case ADD:
+			helpMessage = Constants.MESSAGE_HELP_ADD;
+			break;
+		case DELETE:
+			helpMessage = Constants.MESSAGE_HELP_DELETE;
+			break;
+		case SEARCH:
+			helpMessage = Constants.MESSAGE_HELP_SEARCH;
+			break;
+		case UPDATE:
+			helpMessage = Constants.MESSAGE_HELP_UPDATE;
+			break;
+		case UNDO:
+			helpMessage = Constants.MESSAGE_HELP_UNDO;
+			break;
+		case REDO:
+			helpMessage = Constants.MESSAGE_HELP_REDO;
+			break;
+		case DONE:
+			helpMessage = Constants.MESSAGE_HELP_DONE;
+			break;
+		case CHANGE_FILE_PATH:
+			helpMessage = Constants.MESSAGE_HELP_CHANGE_FILE_PATH;
+			break;
+		case SHOW:
+			helpMessage = Constants.MESSAGE_HELP_SHOW;
+			break;
+		case CHANGE_CATEGORY:
+			helpMessage = Constants.MESSAGE_HELP_CHANGE_CATEGORY;
+			break;
+		case HELP:
+			helpMessage = Constants.MESSAGE_HELP_HELP;
+			break;
+		case EXIT:
+			helpMessage = Constants.MESSAGE_HELP_EXIT;
+			break;
+		default:
+			helpMessage = new String();
+		}
+		return helpMessage;
+	}
+	
 	/**
 	 * This operation populates tasks in Search Interval List with task objects
 	 * that have deadlines today
