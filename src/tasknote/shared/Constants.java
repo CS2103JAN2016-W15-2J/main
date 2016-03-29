@@ -30,6 +30,36 @@ public class Constants {
 	public static final String MESSAGE_CHANGE_CATEGORY_SUCCESSFUL = "%s tasks have been successfully displayed";
 	public static final String MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL = "Unsuccessful operation. Unable to display %s tasks";
 	
+
+	/*
+	 * These are the Messages to be displayed to inform user of valid 
+	 * command entries
+	 * 
+	 * Format:
+	 * 
+	 * 	ADD
+	 * 		Add deadline task: 
+	 * 			add <TaskName> on <time> by <date>
+	 * 		Add floating task:
+	 * 			add <TaskName>
+	 * 		Keywords: on, by, after ...
+	 * 		Note: Place double quotes (E.g. Meet at "Gardens by the bay")
+	 * 
+	 */
+	public static final String MESSAGE_HELP_ADD = "";
+	public static final String MESSAGE_HELP_DELETE = "";
+	public static final String MESSAGE_HELP_SEARCH = "";
+	public static final String MESSAGE_HELP_UPDATE = "";
+	public static final String MESSAGE_HELP_UNDO = "";
+	public static final String MESSAGE_HELP_REDO = "";
+	public static final String MESSAGE_HELP_DONE = "";
+	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "";
+	public static final String MESSAGE_HELP_SHOW = "";
+	public static final String MESSAGE_HELP_CHANGE_CATEGORY = "";
+	public static final String MESSAGE_HELP_HELP = "";
+	public static final String MESSAGE_HELP_EXIT = "";
+	
+	
 	/*
 	 * These are the warnings that will be displayed in the logs if the user
 	 * does not enter valid commands

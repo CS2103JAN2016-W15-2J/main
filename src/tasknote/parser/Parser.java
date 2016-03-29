@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.IllegalFormatException;
-import java.util.Iterator;
 
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
@@ -43,7 +41,6 @@ public class Parser {
 	// Here are the regex that are used by the
 	// parser for parsing all user commands
 	private static final String REGEX_WHITESPACE = " ";
-	private static final String REGEX_QUOTATION = "\"";
 
 	/**
 	 * This method accepts an entire String passed from the user through his
@@ -194,23 +191,22 @@ public class Parser {
 		for (int i = 2; i < phraseCount; i++) {
 
 			String currentPhrase = allPhrases.get(i);
+			String lowerPhrase = currentPhrase.toLowerCase();
 
-			if (currentPhrase.equalsIgnoreCase(KEYWORD_ON)) {
-				switchString = "date";
+			if (lowerPhrase.equals(KEYWORD_ON)
+					|| lowerPhrase.equals(KEYWORD_BY)) {
+				switchString = "datetime";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_BY)) {
-				switchString = "time";
-				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_NOTIFY)) {
+			} else if (lowerPhrase.equals(KEYWORD_NOTIFY)) {
 				switchString = "notify";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
+			} else if (lowerPhrase.equals(KEYWORD_AT)) {
 				switchString = "location";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
+			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
 				switchString = "timerangestart";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO)
+			} else if (lowerPhrase.equals(KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				continue;
@@ -222,82 +218,25 @@ public class Parser {
 				continue;
 			}
 
+			if (switchString.equals("datetime")) {
+
+				String[] maybeDayMonthYear = tryToParseDate(allPhrases,
+						currentPhrase, i, phraseCount);
+
+				if (maybeDayMonthYear[4].equals("maybeNotDate")) {
+					switchString = "time";
+				} else {
+					switchString = "date";
+				}
+			}
+
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = new String[3];
-				dayMonthYear[0] = "-1";
-				dayMonthYear[1] = "-1";
-				dayMonthYear[2] = "-1";
+				String[] dayMonthYear = tryToParseDate(allPhrases,
+						currentPhrase, i, phraseCount);
 
-				if (currentPhrase.contains("/")) {
-					dayMonthYear = currentPhrase.split("/");
-				} else if (currentPhrase.contains("-")) {
-					dayMonthYear = currentPhrase.split("-");
-				} else {
-
-					String possibleDay = currentPhrase;
-					int extraWordsUsed = 0;
-
-					// Trim stuff if required
-					if (possibleDay.endsWith("st")
-							|| possibleDay.endsWith("nd")
-							|| possibleDay.endsWith("rd")
-							|| possibleDay.endsWith("th")) {
-
-						possibleDay = possibleDay.substring(0,
-								possibleDay.length() - 2);
-					}
-
-					dayMonthYear[0] = possibleDay;
-
-					boolean foundMonth = false;
-					String possibleMonth = "";
-
-					if (i + 1 < phraseCount) {
-						possibleMonth = allPhrases.get(i + 1).toLowerCase();
-					}
-
-					String[] possibleMonthValues = { "jan", "january", "feb",
-							"february", "mar", "march", "apr", "april", "may",
-							"may", "jun", "june", "jul", "july", "aug",
-							"august", "oct", "october", "nov", "november",
-							"dec", "december" };
-
-					for (int j = 0; j < possibleMonthValues.length; j++) {
-
-						if (possibleMonth.equals(possibleMonthValues[j])) {
-							foundMonth = true;
-							int numericMonth = 1 + (j / 2);
-							dayMonthYear[1] = Integer.toString(numericMonth);
-							extraWordsUsed++;
-							break;
-						}
-					}
-
-					if (!foundMonth) {
-						GregorianCalendar today = new GregorianCalendar();
-						dayMonthYear[1] = Integer.toString(today
-								.get(Calendar.MONTH) + 1);
-					}
-
-					String possibleYear = "";
-
-					if (foundMonth && (i + 2) < phraseCount) {
-						possibleYear = allPhrases.get(i + 2);
-					}
-
-					try {
-						int numericYear = Integer.parseInt(possibleYear);
-						dayMonthYear[2] = Integer.toString(numericYear);
-						extraWordsUsed++;
-					} catch (NumberFormatException e) {
-						GregorianCalendar today = new GregorianCalendar();
-						dayMonthYear[2] = Integer.toString(today
-								.get(Calendar.YEAR));
-					}
-
-					i = i + extraWordsUsed;
-				}
+				int extraWordsUsed = Integer.parseInt(dayMonthYear[3]);
+				i = i + extraWordsUsed;
 
 				try {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
@@ -363,75 +302,23 @@ public class Parser {
 			if (switchString.equals("time")
 					|| switchString.equals("timerangestart")) {
 
-				String[] hourMinute = new String[2];
-				hourMinute[0] = "-1";
-				hourMinute[1] = "-1";
-
-				int extraHours = 0;
-
-				if (currentPhrase.contains(":")) {
-					hourMinute = currentPhrase.split(":");
-
-					// Trim as required
-					if (hourMinute[1].endsWith("am")) {
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					} else if (hourMinute[1].endsWith("pm")) {
-
-						extraHours = 12;
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					}
-				} else {
-
-					// Count character by character from the back
-					int phraseSize = currentPhrase.length();
-
-					// Five length and above case
-					// Must contain an am/pm suffix
-					// Trim and run it with shortest cases
-					if (phraseSize >= 5) {
-
-						if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-						}
-						currentPhrase = currentPhrase.substring(0,
-								currentPhrase.length() - 2);
-						phraseSize = phraseSize - 2;
-					}
-
-					// Triple and quad length case
-					// Might have either single/double digit + am/pm
-					// Or triple/quad digit 24hr time format
-					if (phraseSize >= 3) {
-
-						if (currentPhrase.endsWith("am")) {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = currentPhrase.substring(
-									phraseSize - 2, phraseSize);
-						}
-					}
-
-					// Single and double length case
-					// e.g. 3, 11, 09
-					// Impossible: 1pm, 145
-					if (phraseSize < 3) {
-						hourMinute[0] = currentPhrase;
-						hourMinute[1] = "0";
-					}
-				}
+				String[] hourMinute = tryToParseTime(currentPhrase);
 
 				try {
+
+					int extraHours = 0;
+
+					// For 12am
+					if (hourMinute[0].equals("12")
+							&& hourMinute[2].equals("0")) {
+						hourMinute[0] = "0";
+					}
+
+					// For pm
+					if ((!hourMinute[0].equals("12"))
+							&& hourMinute[2].equals("12")) {
+						extraHours = 12;
+					}
 
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
@@ -506,75 +393,32 @@ public class Parser {
 
 			if (switchString.equalsIgnoreCase("timerangeend")) {
 
-				String[] hourMinute = new String[2];
-				hourMinute[0] = "-1";
-				hourMinute[1] = "-1";
-
-				int extraHours = 0;
-
-				if (currentPhrase.contains(":")) {
-					hourMinute = currentPhrase.split(":");
-
-					// Trim as required
-					if (hourMinute[1].endsWith("am")) {
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					} else if (hourMinute[1].endsWith("pm")) {
-
-						extraHours = 12;
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					}
-				} else {
-
-					// Count character by character from the back
-					int phraseSize = currentPhrase.length();
-
-					// Five length and above case
-					// Must contain an am/pm suffix
-					// Trim and run it with shortest cases
-					if (phraseSize >= 5) {
-						
-						if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-						}
-						currentPhrase = currentPhrase.substring(0,
-								currentPhrase.length() - 2);
-						phraseSize = phraseSize - 2;
-					}
-
-					// Triple and quad length case
-					// Might have either single/double digit + am/pm
-					// Or triple/quad digit 24hr time format
-					if (phraseSize >= 3) {
-
-						if (currentPhrase.endsWith("am")) {
-							hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
-							hourMinute[1] = "0";
-						} else if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-							hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
-							hourMinute[1] = "0";
-						} else {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = currentPhrase.substring(
-									phraseSize - 2, phraseSize);
-						}
-					}
-
-					// Single and double length case
-					// e.g. 3, 11, 09
-					// Impossible: 1pm, 145
-					if (phraseSize < 3) {
-						hourMinute[0] = currentPhrase;
-						hourMinute[1] = "0";
-					}
-				}
+				String[] hourMinute = tryToParseTime(currentPhrase);
 
 				try {
+
+					int extraHours = 0;
+
+					// For 12am
+					if (hourMinute[0].equals("12")
+							&& hourMinute[2].equals("0")) {
+						hourMinute[0] = "0";
+					}
+
+					// For pm
+					if ((!hourMinute[0].equals("12"))
+							&& hourMinute[2].equals("12")) {
+						extraHours = 12;
+					}
+
 					endDateHour = Integer.parseInt(hourMinute[0]);
 					endDateMinute = Integer.parseInt(hourMinute[1]);
+
+					// A delayed check prevents passing weird cases like
+					// -1pm
+					if (endDateHour >= 0) {
+						endDateHour = endDateHour + extraHours;
+					}
 
 					if (endDateHour > 24 || endDateHour < 0
 							|| endDateMinute > 60 || endDateMinute < 0) {
@@ -769,23 +613,21 @@ public class Parser {
 		for (int i = 2; i < phraseCount; i++) {
 
 			String currentPhrase = allPhrases.get(i);
+			String lowerPhrase = currentPhrase.toLowerCase();
 
-			if (currentPhrase.equalsIgnoreCase(KEYWORD_ON)) {
-				switchString = "date";
+			if (lowerPhrase.equals(KEYWORD_ON) || lowerPhrase.equals(KEYWORD_BY)) {
+				switchString = "datetime";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_BY)) {
-				switchString = "time";
-				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_NOTIFY)) {
+			} else if (lowerPhrase.equals(KEYWORD_NOTIFY)) {
 				switchString = "notify";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_AT)) {
+			} else if (lowerPhrase.equals(KEYWORD_AT)) {
 				switchString = "location";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_FROM)) {
+			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
 				switchString = "timerangestart";
 				continue;
-			} else if (currentPhrase.equalsIgnoreCase(KEYWORD_TO)
+			} else if (lowerPhrase.equals(KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				continue;
@@ -803,87 +645,31 @@ public class Parser {
 				continue;
 			}
 
+			if (switchString.equals("datetime")) {
+
+				String[] maybeDayMonthYear = tryToParseDate(allPhrases,
+						currentPhrase, i, phraseCount);
+
+				if (maybeDayMonthYear[4].equals("maybeNotDate")) {
+					switchString = "time";
+				} else {
+					switchString = "date";
+				}
+			}
+
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = new String[3];
-				dayMonthYear[0] = "-1";
-				dayMonthYear[1] = "-1";
-				dayMonthYear[2] = "-1";
-
-				if (currentPhrase.contains("/")) {
-					dayMonthYear = currentPhrase.split("/");
-				} else if (currentPhrase.contains("-")) {
-					dayMonthYear = currentPhrase.split("-");
-				} else {
-
-					String possibleDay = currentPhrase;
-					int extraWordsUsed = 0;
-
-					// Trim stuff if required
-					if (possibleDay.endsWith("st")
-							|| possibleDay.endsWith("nd")
-							|| possibleDay.endsWith("rd")
-							|| possibleDay.endsWith("th")) {
-
-						possibleDay = possibleDay.substring(0,
-								possibleDay.length() - 2);
-					}
-
-					dayMonthYear[0] = possibleDay;
-
-					boolean foundMonth = false;
-					String possibleMonth = "";
-
-					if (i + 1 < phraseCount) {
-						possibleMonth = allPhrases.get(i + 1).toLowerCase();
-					}
-
-					String[] possibleMonthValues = { "jan", "january", "feb",
-							"february", "mar", "march", "apr", "april", "may",
-							"may", "jun", "june", "jul", "july", "aug",
-							"august", "oct", "october", "nov", "november",
-							"dec", "december" };
-
-					for (int j = 0; j < possibleMonthValues.length; j++) {
-
-						if (possibleMonth.equals(possibleMonthValues[j])) {
-							foundMonth = true;
-							int numericMonth = 1 + (j / 2);
-							dayMonthYear[1] = Integer.toString(numericMonth);
-							extraWordsUsed++;
-							break;
-						}
-					}
-
-					if (!foundMonth) {
-						GregorianCalendar today = new GregorianCalendar();
-						dayMonthYear[1] = Integer.toString(today
-								.get(Calendar.MONTH) + 1);
-					}
-
-					String possibleYear = "";
-
-					if (foundMonth && (i + 2) < phraseCount) {
-						possibleYear = allPhrases.get(i + 2);
-					}
-
-					try {
-						int numericYear = Integer.parseInt(possibleYear);
-						dayMonthYear[2] = Integer.toString(numericYear);
-						extraWordsUsed++;
-					} catch (NumberFormatException e) {
-						GregorianCalendar today = new GregorianCalendar();
-						dayMonthYear[2] = Integer.toString(today
-								.get(Calendar.YEAR));
-					}
-
-					i = i + extraWordsUsed;
-				}
+				String[] dayMonthYear = tryToParseDate(allPhrases,
+						currentPhrase, i, phraseCount);
+				
 
 				try {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
+					int extraWordsUsed = Integer.parseInt(dayMonthYear[3]);
+					
+					i = i + extraWordsUsed;
 
 					if (dateDay < 0 || dateDay > 31 || dateMonth < 0
 							|| dateMonth > 31) {
@@ -940,77 +726,32 @@ public class Parser {
 			if (switchString.equals("time")
 					|| switchString.equals("timerangestart")) {
 
-				String[] hourMinute = new String[2];
-				hourMinute[0] = "-1";
-				hourMinute[1] = "-1";
-
-				int extraHours = 0;
-
-				if (currentPhrase.contains(":")) {
-					hourMinute = currentPhrase.split(":");
-
-					// Trim as required
-					if (hourMinute[1].endsWith("am")) {
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					} else if (hourMinute[1].endsWith("pm")) {
-
-						extraHours = 12;
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					}
-				} else {
-
-					// Count character by character from the back
-					int phraseSize = currentPhrase.length();
-
-					// Five length and above case
-					// Must contain an am/pm suffix
-					// Trim and run it with shortest cases
-					if (phraseSize >= 5) {
-
-						if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-						}
-						currentPhrase = currentPhrase.substring(0,
-								currentPhrase.length() - 2);
-						phraseSize = phraseSize - 2;
-					}
-
-					// Triple and quad length case
-					// Might have either single/double digit + am/pm
-					// Or triple/quad digit 24hr time format
-					if (phraseSize >= 3) {
-
-						if (currentPhrase.endsWith("am")) {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = currentPhrase.substring(
-									phraseSize - 2, phraseSize);
-						}
-					}
-
-					// Single and double length case
-					// e.g. 3, 11, 09
-					// Impossible: 1pm, 145
-					if (phraseSize < 3) {
-						hourMinute[0] = currentPhrase;
-						hourMinute[1] = "0";
-					}
-				}
+				String[] hourMinute = tryToParseTime(currentPhrase);
 
 				try {
+
+					int extraHours = 0;
+
+					// For 12am
+					if (hourMinute[0].equals("12")
+							&& hourMinute[2].equals("0")) {
+						hourMinute[0] = "0";
+					}
+
+					// For pm
+					if ((!hourMinute[0].equals("12"))
+							&& hourMinute[2].equals("12")) {
+						extraHours = 12;
+					}
+
 					dateHour = Integer.parseInt(hourMinute[0]);
 					dateMinute = Integer.parseInt(hourMinute[1]);
+
+					// A delayed check prevents passing weird cases like
+					// -1pm
+					if (dateHour >= 0) {
+						dateHour = dateHour + extraHours;
+					}
 
 					if (dateHour < 0 || dateHour > 24 || dateMinute < 0
 							|| dateMinute > 60) {
@@ -1066,77 +807,32 @@ public class Parser {
 
 			if (switchString.equals("timerangeend")) {
 
-				String[] hourMinute = new String[2];
-				hourMinute[0] = "-1";
-				hourMinute[1] = "-1";
-
-				int extraHours = 0;
-
-				if (currentPhrase.contains(":")) {
-					hourMinute = currentPhrase.split(":");
-
-					// Trim as required
-					if (hourMinute[1].endsWith("am")) {
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					} else if (hourMinute[1].endsWith("pm")) {
-
-						extraHours = 12;
-						hourMinute[1] = hourMinute[1].substring(0,
-								hourMinute[1].length() - 2);
-					}
-				} else {
-
-					// Count character by character from the back
-					int phraseSize = currentPhrase.length();
-
-					// Five length and above case
-					// Must contain an am/pm suffix
-					// Trim and run it with shortest cases
-					if (phraseSize >= 5) {
-
-						if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-						}
-						currentPhrase = currentPhrase.substring(0,
-								currentPhrase.length() - 2);
-						phraseSize = phraseSize - 2;
-					}
-
-					// Triple and quad length case
-					// Might have either single/double digit + am/pm
-					// Or triple/quad digit 24hr time format
-					if (phraseSize >= 3) {
-
-						if (currentPhrase.endsWith("am")) {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else if (currentPhrase.endsWith("pm")) {
-							extraHours = 12;
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = "0";
-						} else {
-							hourMinute[0] = currentPhrase.substring(0,
-									phraseSize - 2);
-							hourMinute[1] = currentPhrase.substring(
-									phraseSize - 2, phraseSize);
-						}
-					}
-
-					// Single and double length case
-					// e.g. 3, 11, 09
-					// Impossible: 1pm, 145
-					if (phraseSize < 3) {
-						hourMinute[0] = currentPhrase;
-						hourMinute[1] = "0";
-					}
-				}
+				String[] hourMinute = tryToParseTime(currentPhrase);
 
 				try {
+
+					int extraHours = 0;
+
+					// For 12am
+					if (hourMinute[0].equals("12")
+							&& hourMinute[2].equals("0")) {
+						hourMinute[0] = "0";
+					}
+
+					// For pm
+					if ((!hourMinute[0].equals("12"))
+							&& hourMinute[2].equals("12")) {
+						extraHours = 12;
+					}
+
 					endDateHour = Integer.parseInt(hourMinute[0]);
 					endDateMinute = Integer.parseInt(hourMinute[1]);
+
+					// A delayed check prevents passing weird cases like
+					// -1pm
+					if (endDateHour >= 0) {
+						endDateHour = endDateHour + extraHours;
+					}
 
 					if (endDateHour < 0 || endDateMinute > 24
 							|| endDateMinute < 0 || endDateMinute > 60) {
@@ -1685,5 +1381,178 @@ public class Parser {
 				return -1;
 			}
 		}
+	}
+
+	private static String[] tryToParseDate(ArrayList<String> allPhrases,
+			String currentPhrase, int i, int phraseCount) {
+
+		String[] dayMonthYear = new String[5];
+		dayMonthYear[0] = "-1";
+		dayMonthYear[1] = "-1";
+		dayMonthYear[2] = "-1";
+		dayMonthYear[3] = "0";
+		dayMonthYear[4] = "maybeNotDate";
+
+		int extraWordsUsed = 0;
+
+		if (currentPhrase.contains("/")) {
+			String[] tempDayMonthYear = currentPhrase.split("/");
+			dayMonthYear[0] = tempDayMonthYear[0];
+			dayMonthYear[1] = tempDayMonthYear[1];
+			dayMonthYear[2] = tempDayMonthYear[2];
+			dayMonthYear[4] = "isDate";
+		} else if (currentPhrase.contains("-")) {
+			String[] tempDayMonthYear = currentPhrase.split("-");
+			dayMonthYear[0] = tempDayMonthYear[0];
+			dayMonthYear[1] = tempDayMonthYear[1];
+			dayMonthYear[2] = tempDayMonthYear[2];
+			dayMonthYear[4] = "isDate";
+		} else {
+
+			String possibleDay = currentPhrase;
+
+			// Trim stuff if required
+			if (possibleDay.endsWith("st") || possibleDay.endsWith("nd")
+					|| possibleDay.endsWith("rd") || possibleDay.endsWith("th")) {
+
+				possibleDay = possibleDay
+						.substring(0, possibleDay.length() - 2);
+
+				dayMonthYear[4] = "isDate";
+			}
+
+			dayMonthYear[0] = possibleDay;
+
+			boolean foundMonth = false;
+			String possibleMonth = "";
+
+			if (i + 1 < phraseCount) {
+				possibleMonth = allPhrases.get(i + 1).toLowerCase();
+			}
+
+			String[] possibleMonthValues = { "jan", "january", "feb",
+					"february", "mar", "march", "apr", "april", "may", "may",
+					"jun", "june", "jul", "july", "aug", "august", "oct",
+					"october", "nov", "november", "dec", "december" };
+
+			for (int j = 0; j < possibleMonthValues.length; j++) {
+
+				if (possibleMonth.equals(possibleMonthValues[j])) {
+					foundMonth = true;
+					dayMonthYear[4] = "isDate";
+					int numericMonth = 1 + (j / 2);
+					dayMonthYear[1] = Integer.toString(numericMonth);
+					extraWordsUsed++;
+					break;
+				}
+			}
+
+			if (!foundMonth) {
+				GregorianCalendar today = new GregorianCalendar();
+				dayMonthYear[1] = Integer
+						.toString(today.get(Calendar.MONTH) + 1);
+			}
+
+			String possibleYear = "";
+
+			if (foundMonth && (i + 2) < phraseCount) {
+				possibleYear = allPhrases.get(i + 2);
+			}
+
+			try {
+				int numericYear = Integer.parseInt(possibleYear);
+				dayMonthYear[2] = Integer.toString(numericYear);
+				extraWordsUsed++;
+			} catch (NumberFormatException e) {
+				GregorianCalendar today = new GregorianCalendar();
+				dayMonthYear[2] = Integer.toString(today.get(Calendar.YEAR));
+			}
+		}
+
+		dayMonthYear[3] = Integer.toString(extraWordsUsed);
+
+		return dayMonthYear;
+	}
+
+	private static String[] tryToParseTime(String currentPhrase) {
+
+		String[] hourMinute = new String[3];
+		hourMinute[0] = "-1";
+		hourMinute[1] = "-1";
+		hourMinute[2] = "0";
+
+		int extraHours = 0;
+
+		if (currentPhrase.contains(":") || currentPhrase.contains(".")) {
+			
+			if (currentPhrase.contains(":")) {
+				String[] tempHourMinute = currentPhrase.split("/");
+				hourMinute[0] = tempHourMinute[0];
+				hourMinute[1] = tempHourMinute[1];
+			} else {
+				String[] tempHourMinute = currentPhrase.split("\\.");
+				hourMinute[0] = tempHourMinute[0];
+				hourMinute[1] = tempHourMinute[1];
+			}
+
+			// Trim as required
+			if (hourMinute[1].endsWith("am")) {
+				hourMinute[1] = hourMinute[1].substring(0,
+						hourMinute[1].length() - 2);
+			} else if (hourMinute[1].endsWith("pm")) {
+
+				extraHours = 12;
+				hourMinute[1] = hourMinute[1].substring(0,
+						hourMinute[1].length() - 2);
+			}
+		} else {
+
+			// Count character by character from the back
+			int phraseSize = currentPhrase.length();
+
+			// Five length and above case
+			// Must contain an am/pm suffix
+			// Trim and run it with shortest cases
+			if (phraseSize >= 5) {
+
+				if (currentPhrase.endsWith("pm")) {
+					extraHours = 12;
+				}
+				currentPhrase = currentPhrase.substring(0,
+						currentPhrase.length() - 2);
+				phraseSize = phraseSize - 2;
+			}
+
+			// Triple and quad length case
+			// Might have either single/double digit + am/pm
+			// Or triple/quad digit 24hr time format
+			if (phraseSize >= 3) {
+
+				if (currentPhrase.endsWith("am")) {
+					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
+					hourMinute[1] = "0";
+				} else if (currentPhrase.endsWith("pm")) {
+					extraHours = 12;
+					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
+					hourMinute[1] = "0";
+				} else {
+					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
+					hourMinute[1] = currentPhrase.substring(phraseSize - 2,
+							phraseSize);
+				}
+			}
+
+			// Single and double length case
+			// e.g. 3, 11, 09
+			// Impossible: 1pm, 145
+			if (phraseSize < 3) {
+				hourMinute[0] = currentPhrase;
+				hourMinute[1] = "0";
+			}
+		}
+
+		hourMinute[2] = Integer.toString(extraHours);
+
+		return hourMinute;
 	}
 }

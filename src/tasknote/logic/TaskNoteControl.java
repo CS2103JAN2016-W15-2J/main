@@ -5,6 +5,7 @@ import tasknote.logic.Commands.AddCommand;
 import tasknote.logic.Commands.DeleteCommand;
 import tasknote.logic.Commands.ChangeCategoryCommand;
 import tasknote.logic.Commands.ChangeFilePathCommand;
+import tasknote.logic.Commands.HelpCommand;
 import tasknote.logic.Commands.SearchCommand;
 import tasknote.logic.Commands.UpdateCommand;
 import tasknote.logic.Commands.CompleteCommand;
@@ -105,13 +106,16 @@ public class TaskNoteControl {
 			response = executeChangeFilePath(userCommand);
 			break;
 		case SHOW:
-			//TODO: Parser
 			response = executeShow(userCommand);
-			//response = "";
 			break;
 		case CHANGE_CATEGORY:
 			//TODO: Parser
 			//response = executeChangeCategory(userCommand);
+			response = "";
+			break;
+		case HELP:
+			//TODO: Parser
+			//response = executeHelp(userCommand);
 			response = "";
 			break;
 		case INVALID:
@@ -426,5 +430,24 @@ public class TaskNoteControl {
 		}else{
 			return ShowCategory.COMPLETED;
 		}
+	}
+	
+	private static String executeHelp(String userCommand) {
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		COMMAND_TYPE commandType;
+		try {
+			commandType = Parser.parseHelp(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			commandType = Parser.parseHelp(userCommand, throwException);
+		}
+		command = new HelpCommand(taskNote, commandType);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		return response;
 	}
 }
