@@ -3,6 +3,8 @@ package tasknote.logic;
 import tasknote.logic.Commands.Command;
 import tasknote.logic.Commands.AddCommand;
 import tasknote.logic.Commands.DeleteCommand;
+import tasknote.logic.Commands.ChangeCategoryCommand;
+import tasknote.logic.Commands.ChangeFilePathCommand;
 import tasknote.logic.Commands.SearchCommand;
 import tasknote.logic.Commands.UpdateCommand;
 import tasknote.logic.Commands.CompleteCommand;
@@ -93,8 +95,7 @@ public class TaskNoteControl {
 			response = executeMarkAsComplete(userCommand);
 			break;
 		case CHANGE_FILE_PATH:
-			//TODO: Parser
-			//response = executeChangeFilePath(userCommand);
+			response = executeChangeFilePath(userCommand);
 			response = "";
 			break;
 		case SHOW:
@@ -256,17 +257,15 @@ public class TaskNoteControl {
 	 *            Command
 	 * @return Status of Operation
 	 */
-	/*
 	private static String executeChangeFilePath(String userCommand) {
 		//TODO: parser
-		//String filePath = Parser.parseFilePath(userCommand);
+		String filePath = Parser.parseFilePath(userCommand);
 		command = new ChangeFilePathCommand(taskNote, filePath);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	*/
 	
 	/**
 	 * This operation executes the User's request to show
@@ -275,19 +274,20 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	/*
+	
 	private static String executeShow(String userCommand){
 		//TODO: Parser
 		//E.g. Show next 7 weeks / Show all / Show tdy
 		ShowInterval timeInterval = Parser.parseShow(userCommand); // returns WEEK / ALL / TODAY
-		int countInterval = Parse.getInterval(userCommand); // returns 7 / -1 / -1
+		int countInterval = Parser.getInterval(userCommand); // returns 7 / -1 / -1
+		System.out.println("SOW INTERVAL = " + timeInterval + " count interval = " + countInterval);
 		command = new ShowCommand(taskNote, timeInterval, countInterval);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	*/
+	
 	
 	/**
 	 * This operation executes the User's request to show
@@ -296,15 +296,30 @@ public class TaskNoteControl {
 	 * @param User Command
 	 * @return Status of Operation
 	 */
-	/*
 	private static String executeChangeCategory(String userCommand){
 		//TODO: Parser
-		ShowCategory category = Parser.parseChangeCateogry(userCommand);
+		//ShowCategory category = Parser.parseChangeCateogry(userCommand);
+		ShowCategory category = parseChangeCategory(userCommand);
 		command = new ChangeCategoryCommand(taskNote, category);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
 		return response;
 	}
-	*/
+	
+	private static ShowCategory parseChangeCategory(String userCommand) {
+		String[] parts = userCommand.split("\\s+");
+		String category = parts[1];
+		if(category.equalsIgnoreCase("ALL")){
+			return ShowCategory.ALL;
+		}else if(category.equalsIgnoreCase("OUTSTANDING")){
+			return ShowCategory.OUTSTANDING;
+		}else if(category.equalsIgnoreCase("OVERDUE")){
+			return ShowCategory.OVERDUE;
+		}else if(category.equalsIgnoreCase("COMPLETED")){
+			return ShowCategory.COMPLETED;
+		}else{
+			return ShowCategory.COMPLETED;
+		}
+	}
 }
