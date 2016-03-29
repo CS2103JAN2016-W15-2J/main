@@ -19,7 +19,8 @@ public class ClockContainer extends GridPane {
     private final String FORMAT_DATE = "%1$3s %2$ 2d";
     private final String FORMAT_DAY = "%1$3s";
 
-    private static final int INTERVAL_SECOND_ANIMATION = 1;
+    private final int INTERVAL_SECOND_ANIMATION = 1;
+    private final int MAXIMUM_WORD_LENGTH = 3;
 
     private static final Calendar _currentTime = Calendar.getInstance();
     private static ClockContainer _timerContainer = null;
@@ -95,8 +96,8 @@ public class ClockContainer extends GridPane {
     private void setLabelsToCurrentTime() {
         _currentTime.setTimeInMillis(System.currentTimeMillis());
         
-        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, 3);
-        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, 3);
+        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, MAXIMUM_WORD_LENGTH);
+        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, MAXIMUM_WORD_LENGTH);
         int dayOfMonth = _currentTime.get(Calendar.DAY_OF_MONTH);
         int hours = _currentTime.get(Calendar.HOUR) == 0 ? 12 : _currentTime.get(Calendar.HOUR);
         int minutes = _currentTime.get(Calendar.MINUTE);
