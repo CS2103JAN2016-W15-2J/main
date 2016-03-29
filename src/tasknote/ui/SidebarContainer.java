@@ -91,7 +91,8 @@ public class SidebarContainer extends VBox{
     
     private void setNavigationPresentation() {
         _observableListRepresentation.setId("sidebar-navigation");
-        _navigationMenu.addAll(NAVIGATION_TAG_VIEW_ALL, NAVIGATION_TAG_OUTSTANDING, NAVIGATION_TAG_OVERDUE, NAVIGATION_TAG_COMPLETED, "", NAVIGATION_TAG_SETTINGS);
+        //_navigationMenu.addAll(NAVIGATION_TAG_VIEW_ALL, NAVIGATION_TAG_OUTSTANDING, NAVIGATION_TAG_OVERDUE, NAVIGATION_TAG_COMPLETED, "", NAVIGATION_TAG_SETTINGS);
+        _navigationMenu.addAll(NAVIGATION_TAG_VIEW_ALL, NAVIGATION_TAG_OUTSTANDING, NAVIGATION_TAG_OVERDUE, NAVIGATION_TAG_COMPLETED);
         _observableListRepresentation.setItems(_navigationMenu);
     }
     
