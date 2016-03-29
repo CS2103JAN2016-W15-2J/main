@@ -30,7 +30,7 @@ public class TaskNote {
 
 	private static ShowInterval showType;
 	private static ShowCategory taskCategory;
-	
+
 	/*
 	 * This is the storage object that will be used to load tasks into the
 	 * taskList and it will be called to save the tasks after each user
@@ -404,7 +404,7 @@ public class TaskNote {
 		boolean isSuccess = true;
 		showIntervalList = new ArrayList<TaskObject>();
 		try {
-			assert(timeInterval != null);
+			assert (timeInterval != null);
 			switch (timeInterval) {
 			case TODAY:
 				getTodayTasks();
@@ -438,7 +438,7 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
 	}
-	
+
 	/**
 	 * This operation executes the retrieval of tasks in the user specified
 	 * display category
@@ -449,7 +449,7 @@ public class TaskNote {
 	public String displayCategory(ShowCategory category) {
 		boolean isSuccess = true;
 		try {
-			assert(category != null);
+			assert (category != null);
 			switch (category) {
 			case ALL:
 				displayAllTasks();
@@ -529,18 +529,11 @@ public class TaskNote {
 	 * 
 	 */
 	private void getDayTasks(int days) {
-		LocalDateTime now = LocalDateTime.now();
-		int fromYear = now.getYear();
-		int fromMonth = now.getMonthValue();
-		int fromDay = now.getDayOfMonth();
-
 		try {
 			assert (days > Constants.ZERO_TIME_INTERVAL);
-			now = now.plusDays(days);
-			int toYear = now.getYear();
-			int toMonth = now.getMonthValue();
-			int toDay = now.getDayOfMonth();
-			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+			LocalDateTime startDateTime = LocalDateTime.now();
+			LocalDateTime endDateTime = startDateTime.plusDays(days);
+			populateDayWeekShowList(startDateTime, endDateTime);
 		} catch (Exception ex) {
 			throw ex;
 		} catch (Error er) {
@@ -559,18 +552,11 @@ public class TaskNote {
 	 * 
 	 */
 	private void getWeekTasks(int weeks) {
-		LocalDateTime now = LocalDateTime.now();
-		int fromYear = now.getYear();
-		int fromMonth = now.getMonthValue();
-		int fromDay = now.getDayOfMonth();
-
 		try {
 			assert (weeks > Constants.ZERO_TIME_INTERVAL);
-			now = now.plusWeeks(weeks);
-			int toYear = now.getYear();
-			int toMonth = now.getMonthValue();
-			int toDay = now.getDayOfMonth();
-			populateDayWeekShowList(toYear, fromYear, toMonth, fromMonth, toDay, fromDay);
+			LocalDateTime startDateTime = LocalDateTime.now();
+			LocalDateTime endDateTime = startDateTime.plusWeeks(weeks);
+			populateDayWeekShowList(startDateTime, endDateTime);
 		} catch (Exception ex) {
 			throw ex;
 		} catch (Error er) {
@@ -588,15 +574,15 @@ public class TaskNote {
 			throw e;
 		}
 	}
-	
+
 	private void displayAllTasks() {
 		getAllTasks();
 		refreshDisplay(showIntervalList);
 	}
 
 	/**
-	 * This operation populates tasks in the user specified category
-	 * in the list to be displayed to the user
+	 * This operation populates tasks in the user specified category in the list
+	 * to be displayed to the user
 	 * 
 	 * @param: taskStatus
 	 * 
@@ -605,7 +591,7 @@ public class TaskNote {
 		ArrayList<TaskObject> list = new ArrayList<TaskObject>();
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject task = taskList.get(i);
-			if (task.getTaskStatus() == taskStatus){
+			if (task.getTaskStatus() == taskStatus) {
 				list.add(task);
 			}
 		}
@@ -625,21 +611,27 @@ public class TaskNote {
 		}
 	}
 
-	private void populateDayWeekShowList(int toYear, int fromYear, int toMonth, int fromMonth, int toDay, int fromDay) {
+	private void populateDayWeekShowList(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
-			int taskDay = taskObject.getDateDay();
-			int taskMonth = taskObject.getDateMonth();
-			int taskYear = taskObject.getDateYear();
-
-			if (fromYear <= taskYear && taskYear <= toYear && fromMonth <= taskMonth && taskMonth <= toMonth
-					&& fromDay <= taskDay && taskDay <= toDay) {
+			LocalDateTime taskDateTime = getTaskDateTime(taskObject);
+			if ((taskDateTime.isEqual(startDateTime) || taskDateTime.isAfter(startDateTime))
+					&& (taskDateTime.isEqual(endDateTime) || taskDateTime.isBefore(endDateTime))) {
 				showIntervalList.add(taskObject);
 			}
 		}
 	}
-
 	
+	private LocalDateTime getTaskDateTime(TaskObject taskObject) {
+		int taskDay = taskObject.getDateDay();
+		int taskMonth = taskObject.getDateMonth();
+		int taskYear = taskObject.getDateYear();
+		int taskHour = taskObject.getDateHour();
+		int taskMinute = taskObject.getDateMinute();
+		LocalDateTime taskDateTime = LocalDateTime.of(taskYear, taskMonth, taskDay, taskHour, taskMinute);
+		return taskDateTime;
+	}
+
 	private boolean isNotNullFilePath(String filePath) {
 		boolean isNotNull = (filePath != null);
 		return isNotNull;
@@ -801,15 +793,15 @@ public class TaskNote {
 			}
 		case SHOW:
 			if (isSuccess) {
-				int numTasks = searchList.size();
+				int numTasks = showIntervalList.size();
 				if (numTasks > 0) {
-					return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL, numTasks);
+					return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL, numTasks, showType);
 				} else {
-					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks);
+					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks, showType);
 				}
 
 			} else {
-				return Constants.MESSAGE_SHOW_UNSUCCESSFUL;
+				return String.format(Constants.MESSAGE_SHOW_UNSUCCESSFUL, showType);
 			}
 		case CHANGE_CATEGORY:
 			if (isSuccess) {
