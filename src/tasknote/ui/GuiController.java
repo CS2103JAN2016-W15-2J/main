@@ -21,23 +21,12 @@ import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class GuiController extends Application {
     private final String APPLICATION_NAME = "TaskNote";
-    
     private final String APPLICATION_ICON_PATH = "resources/image/tasknote-icon.png";
     
     private final double WINDOW_MIN_WIDTH = 450.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
 
-    private static CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
-    private static TextField _commandLine = _commandLineContainer.getCommandLine();
-    private static TasksContainer _tasksContainer = TasksContainer.getInstance();
-    private static ObservableList<TaskObject> _tasksListToBeDisplayed = _tasksContainer.getTasksList();
-    private static FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
-    private static ObservableList<TaskObject> _floatingTasksListToBeDisplayed = _floatingTasksContainer.getFloatingTasksList();
-    private static SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
-    private static ListView<String> _sidebarNavigation = _sidebarContainer.getNavigationList();
-    
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
-    
     private static Stage _primaryWindow = null;
     
     private static final Logger logger = Logger.getLogger(GuiController.class.getName());
@@ -45,9 +34,16 @@ public class GuiController extends Application {
     
     @Override
     public void start(Stage stage) {
-        _primaryWindow = stage;
+        CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
+        TextField _commandLine = _commandLineContainer.getCommandLine();
+        TasksContainer _tasksContainer = TasksContainer.getInstance();
+        FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
+        SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
+        
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
+        
+        _primaryWindow = stage;
         
         scene.getStylesheets().add(getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm());
         
@@ -57,19 +53,18 @@ public class GuiController extends Application {
         frame.setRight(_floatingTasksContainer);
         frame.setBottom(_commandLineContainer);
         
-        
         setSidebarNavigationBehaviour();
-        // TODO
-        _sidebarContainer.selectNavigationCell(1);
-        displayOutstandingTaskList();
         
+        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
+        setStage(stage, scene);
+        focusOnCommandLine(_commandLine);
+    }
+    
+    private void setStage(Stage stage, Scene scene) {
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
         stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH))); 
         stage.show();
-        
-        focusOnCommandLine();
-        
         stage.setMinWidth(WINDOW_MIN_WIDTH);
         stage.setMinHeight(WINDOW_MIN_HEIGHT);
     }
@@ -82,16 +77,14 @@ public class GuiController extends Application {
             return;
         }
         
-        // TODO
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
         
-        _sidebarContainer.selectNavigationCell(1);
-        displayOutstandingTaskList();
+        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
         
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
-        _commandLineContainer.clearLastModifiedCommand();
+        CommandLineContainer.getInstance().clearLastModifiedCommand();
     }
     
     public static void executeCommand(String command) {
@@ -100,21 +93,25 @@ public class GuiController extends Application {
             return;
         }
         
-        // TODO
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
-        _sidebarContainer.selectNavigationCell(1);
-        displayOutstandingTaskList();
+        
+        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
     }
     
-    private void focusOnCommandLine() {
-        if (_commandLine != null) {
-            _commandLine.requestFocus();
-            _commandLine.end();
+    private void focusOnCommandLine(TextField commandLine) {
+        if (commandLine != null) {
+            commandLine.requestFocus();
+            commandLine.end();
         }
     }
     
     private static void displayUpdatedTaskList() {
+        TasksContainer tasksContainer = TasksContainer.getInstance();
+        ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        ObservableList<TaskObject> floatingTasksListToBeDisplayed = floatingTasksContainer.getFloatingTasksList();
+        
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
         
         for(int index = 0; index < displayList.size(); index++) {
@@ -138,12 +135,16 @@ public class GuiController extends Application {
             }
         }
         
-        _tasksListToBeDisplayed.setAll(tasksList);
-        _floatingTasksListToBeDisplayed.setAll(floatsList);
+        tasksListToBeDisplayed.setAll(tasksList);
+        floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
     private static void displayOutstandingTaskList() {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        TasksContainer tasksContainer = TasksContainer.getInstance();
+        ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        ObservableList<TaskObject> floatingTasksListToBeDisplayed = floatingTasksContainer.getFloatingTasksList();
         
         for(int index = 0; index < displayList.size(); index++) {
             displayList.get(index).setTaskID(index + 1);
@@ -170,12 +171,16 @@ public class GuiController extends Application {
             }
         }
         
-        _tasksListToBeDisplayed.setAll(tasksList);
-        _floatingTasksListToBeDisplayed.setAll(floatsList);
+        tasksListToBeDisplayed.setAll(tasksList);
+        floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
     private static void displayOverdueTaskList() {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        TasksContainer tasksContainer = TasksContainer.getInstance();
+        ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        ObservableList<TaskObject> floatingTasksListToBeDisplayed = floatingTasksContainer.getFloatingTasksList();
         
         for(int index = 0; index < displayList.size(); index++) {
             displayList.get(index).setTaskID(index + 1);
@@ -202,12 +207,16 @@ public class GuiController extends Application {
             }
         }
         
-        _tasksListToBeDisplayed.setAll(tasksList);
-        _floatingTasksListToBeDisplayed.setAll(floatsList);
+        tasksListToBeDisplayed.setAll(tasksList);
+        floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
     private static void displayCompletedTaskList() {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
+        TasksContainer tasksContainer = TasksContainer.getInstance();
+        ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        ObservableList<TaskObject> floatingTasksListToBeDisplayed = floatingTasksContainer.getFloatingTasksList();
         
         for(int index = 0; index < displayList.size(); index++) {
             displayList.get(index).setTaskID(index + 1);
@@ -234,30 +243,46 @@ public class GuiController extends Application {
             }
         }
         
-        _tasksListToBeDisplayed.setAll(tasksList);
-        _floatingTasksListToBeDisplayed.setAll(floatsList);
+        tasksListToBeDisplayed.setAll(tasksList);
+        floatingTasksListToBeDisplayed.setAll(floatsList);
     }
     
     private void setSidebarNavigationBehaviour() {
-        _sidebarNavigation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        SidebarContainer sidebarContainer = SidebarContainer.getInstance();
+        ListView<String> sidebarNavigation = sidebarContainer.getNavigationList();
+        
+        sidebarNavigation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 changeView(newSelection);
             }
         });
     }
     
-    private void changeView(String selected){
+    private static void changeView(String selected){
+        SidebarContainer sidebarContainer = SidebarContainer.getInstance();
+        
+        // Prepare layout
+        if(selected.equals(SidebarContainer.NAVIGATION_TAG_SETTINGS)) {
+            // TODO
+        } else {
+            
+        }
+        
         switch(selected) {
-            case "View All":
+            case SidebarContainer.NAVIGATION_TAG_VIEW_ALL:
+                sidebarContainer.selectNavigationCell(0);
                 displayUpdatedTaskList();
                 break;
-            case "Outstanding":
+            case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
+                sidebarContainer.selectNavigationCell(1);
                 displayOutstandingTaskList();
                 break;
-            case "Overdue":
+            case SidebarContainer.NAVIGATION_TAG_OVERDUE:
+                sidebarContainer.selectNavigationCell(2);
                 displayOverdueTaskList();
                 break;
-            case "Completed":
+            case SidebarContainer.NAVIGATION_TAG_COMPLETED:
+                sidebarContainer.selectNavigationCell(3);
                 displayCompletedTaskList();
                 break;
         }

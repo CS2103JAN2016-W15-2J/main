@@ -25,11 +25,11 @@ public class SidebarContainer extends VBox{
     private ObservableList<String> _navigationMenu = FXCollections.observableArrayList();
     private Separator _separator = new Separator();
     
-    public final String NAVIGATION_TAG_VIEW_ALL = "View All";
-    public final String NAVIGATION_TAG_OUTSTANDING = "Outstanding";
-    public final String NAVIGATION_TAG_OVERDUE = "Overdue";
-    public final String NAVIGATION_TAG_COMPLETED = "Completed";
-    public final String NAVIGATION_TAG_SETTINGS = "Settings";
+    public final static String NAVIGATION_TAG_VIEW_ALL = "View All";
+    public final static String NAVIGATION_TAG_OUTSTANDING = "Outstanding";
+    public final static String NAVIGATION_TAG_OVERDUE = "Overdue";
+    public final static String NAVIGATION_TAG_COMPLETED = "Completed";
+    public final static String NAVIGATION_TAG_SETTINGS = "Settings";
     
     private SidebarContainer() {
         // Only one instance of SidebarContainer is permitted
