@@ -99,8 +99,8 @@ public class TaskNoteControl {
 			break;
 		case SHOW:
 			//TODO: Parser
-			//response = executeShow(userCommand);
-			response = "";
+			response = executeShow(userCommand);
+			//response = "";
 			break;
 		case CHANGE_CATEGORY:
 			//TODO: Parser
@@ -257,7 +257,6 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeChangeFilePath(String userCommand) {
-		//TODO: parser
 		String filePath = Parser.parseFilePath(userCommand);
 		command = new ChangeFilePathCommand(taskNote, filePath);
 		command.execute();
@@ -275,11 +274,8 @@ public class TaskNoteControl {
 	 */
 	
 	private static String executeShow(String userCommand){
-		//TODO: Parser
-		//E.g. Show next 7 weeks / Show all / Show tdy
-		ShowInterval timeInterval = Parser.parseShow(userCommand); // returns WEEK / ALL / TODAY
-		int countInterval = Parser.getInterval(userCommand); // returns 7 / -1 / -1
-		System.out.println("SOW INTERVAL = " + timeInterval + " count interval = " + countInterval);
+		ShowInterval timeInterval = Parser.parseShow(userCommand);
+		int countInterval = Parser.getInterval(userCommand);
 		command = new ShowCommand(taskNote, timeInterval, countInterval);
 		command.execute();
 		command.refreshDisplay();
