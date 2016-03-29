@@ -602,26 +602,55 @@ public class Parser {
 	public static ArrayList<Integer> parseDelete(String userCommand) {
 		// TODO Auto-generated method stub
 
-		String[] splitCommand = userCommand.trim().split(REGEX_WHITESPACE);
-		int idCount = splitCommand.length;
+		ParserFirstPass parseAllWords = new ParserFirstPass(userCommand);
+		ArrayList<String> allPhrases = parseAllWords.getFirstPassParsedResult();
+
+		int phraseCount = allPhrases.size();
 
 		ArrayList<Integer> list = new ArrayList<Integer>();
 
-		for (int i = 1; i < idCount; i++) {
+		for (int i = 1; i < phraseCount; i++) {
 
-			String nextCommand = splitCommand[i];
+			String nextCommand = allPhrases.get(i).toLowerCase();
+			
+			if (nextCommand.equals("-") || nextCommand.equals("to")) {
+				
+				try {
+					
+					int endID = Integer.parseInt(allPhrases.get(i + 1)) - 1;
+					int startID = list.get(list.size() - 1);
+					
+					startID++;
+					i++;
+					
+					while (startID <= endID) {
+						
+						list.add(startID);
+						startID++;
+					}
+					
+				} catch (NumberFormatException e) {
+					
+					System.out.println("Encountered unexpected non-number at <number> - ?");
+				} catch (IndexOutOfBoundsException e) {
+					
+					System.out.println("No number supplied after <number> -");
+				}
+			} else {
 
-			try {
-
-				int nextID = Integer.parseInt(nextCommand) - 1;
-
-				list.add(nextID);
-
-			} catch (NumberFormatException e) {
-				break;
+				try {
+	
+					int nextID = Integer.parseInt(nextCommand) - 1;
+	
+					list.add(nextID);
+	
+				} catch (NumberFormatException e) {
+					break;
+				}
 			}
 		}
 
+		System.out.println(list.toString());
 		return list;
 	}
 
