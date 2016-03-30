@@ -46,18 +46,22 @@ public class Constants {
 	 * 		Note: Place double quotes (E.g. Meet at "Gardens by the bay")
 	 * 
 	 */
-	public static final String MESSAGE_HELP_ADD = "";
-	public static final String MESSAGE_HELP_DELETE = "";
-	public static final String MESSAGE_HELP_SEARCH = "";
-	public static final String MESSAGE_HELP_UPDATE = "";
-	public static final String MESSAGE_HELP_UNDO = "";
-	public static final String MESSAGE_HELP_REDO = "";
-	public static final String MESSAGE_HELP_DONE = "";
-	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "";
-	public static final String MESSAGE_HELP_SHOW = "";
+	public static final String MESSAGE_HELP_ADD = "1. add <TaskName> on <time> by <date> at <location>\n"
+												+ "2. add <TaskName> from <start time> to <end time> by <date> at <location>";
+	public static final String MESSAGE_HELP_DELETE = "1. delete <TaskID> <more TaskIDs...>\n"
+													+ "2. delete <start TaskID> to <end TaskID>";
+	public static final String MESSAGE_HELP_SEARCH = "search <keyword> <more keywords...>";
+	public static final String MESSAGE_HELP_UPDATE = "edit <TaskID> <new TaskName> on <time> by <date> at <location>";
+	public static final String MESSAGE_HELP_UNDO = "undo";
+	public static final String MESSAGE_HELP_REDO = "redo";
+	public static final String MESSAGE_HELP_DONE = "done <TaskID>";
+	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "relocate <new file path>";
+	public static final String MESSAGE_HELP_SHOW = "1. show all\n"
+												+ "2. show today/tomrorow\n"
+												+ "3. show next [next ...] weeks/day";
 	public static final String MESSAGE_HELP_CHANGE_CATEGORY = "";
 	public static final String MESSAGE_HELP_HELP = "";
-	public static final String MESSAGE_HELP_EXIT = "";
+	public static final String MESSAGE_HELP_EXIT = "exit";
 	
 	
 	/*
