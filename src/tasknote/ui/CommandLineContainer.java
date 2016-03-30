@@ -116,6 +116,9 @@ public class CommandLineContainer extends HBox {
             @Override
             public void handle(KeyEvent key) {
                 switch (key.getCode()) {
+                    case ESCAPE:
+                        GuiController.executeCommand("show all");
+                        break;
                     case ENTER:
                         GuiController.retrieveCommand(_commandLine);
                         break;
