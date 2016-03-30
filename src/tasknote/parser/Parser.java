@@ -229,13 +229,29 @@ public class Parser {
 					switchString = "date";
 				}
 			}
-			
+
 			if (switchString.equals("locationtime")) {
-				
+
 				String[] maybeHourMinute = tryToParseTime(currentPhrase);
-				
+
 				if (maybeHourMinute[3].equals("maybeNotTime")) {
-					switchString = "location";
+
+					if (i + 1 < phraseCount) {
+						String nextLowerPhrase = allPhrases.get(i + 1)
+								.toLowerCase();
+
+						if (nextLowerPhrase.equals(KEYWORD_ON)
+								|| nextLowerPhrase.equals(KEYWORD_AT)
+								|| nextLowerPhrase.equals(KEYWORD_BY)
+								|| nextLowerPhrase.equals(KEYWORD_FROM)
+								|| nextLowerPhrase.equals(KEYWORD_TO)) {
+							switchString = "time";
+						} else {
+							switchString = "location";
+						}
+					} else {
+						switchString = "location";
+					}
 				} else {
 					switchString = "time";
 				}
@@ -320,8 +336,7 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12")
-							&& hourMinute[2].equals("0")) {
+					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
 						hourMinute[0] = "0";
 					}
 
@@ -411,8 +426,7 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12")
-							&& hourMinute[2].equals("0")) {
+					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
 						hourMinute[0] = "0";
 					}
 
@@ -626,14 +640,15 @@ public class Parser {
 			String currentPhrase = allPhrases.get(i);
 			String lowerPhrase = currentPhrase.toLowerCase();
 
-			if (lowerPhrase.equals(KEYWORD_ON) || lowerPhrase.equals(KEYWORD_BY)) {
+			if (lowerPhrase.equals(KEYWORD_ON)
+					|| lowerPhrase.equals(KEYWORD_BY)) {
 				switchString = "datetime";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_NOTIFY)) {
 				switchString = "notify";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_AT)) {
-				switchString = "location";
+				switchString = "locationtime";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
 				switchString = "timerangestart";
@@ -645,14 +660,8 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
-				if (!alteringName) {
-					alteringName = true;
-					name.delete(0, name.length());
-					name.append(currentPhrase);
-				} else {
-					name.append(REGEX_WHITESPACE);
-					name.append(currentPhrase);
-				}
+				name.append(REGEX_WHITESPACE);
+				name.append(currentPhrase);
 				continue;
 			}
 
@@ -668,18 +677,44 @@ public class Parser {
 				}
 			}
 
+			if (switchString.equals("locationtime")) {
+
+				String[] maybeHourMinute = tryToParseTime(currentPhrase);
+
+				if (maybeHourMinute[3].equals("maybeNotTime")) {
+
+					if (i + 1 < phraseCount) {
+						String nextLowerPhrase = allPhrases.get(i + 1)
+								.toLowerCase();
+
+						if (nextLowerPhrase.equals(KEYWORD_ON)
+								|| nextLowerPhrase.equals(KEYWORD_AT)
+								|| nextLowerPhrase.equals(KEYWORD_BY)
+								|| nextLowerPhrase.equals(KEYWORD_FROM)
+								|| nextLowerPhrase.equals(KEYWORD_TO)) {
+							switchString = "time";
+						} else {
+							switchString = "location";
+						}
+					} else {
+						switchString = "location";
+					}
+				} else {
+					switchString = "time";
+				}
+			}
+
 			if (switchString.equals("date")) {
 
 				String[] dayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
-				
 
 				try {
 					dateDay = Integer.parseInt(dayMonthYear[0]);
 					dateMonth = Integer.parseInt(dayMonthYear[1]);
 					dateYear = Integer.parseInt(dayMonthYear[2]);
 					int extraWordsUsed = Integer.parseInt(dayMonthYear[3]);
-					
+
 					i = i + extraWordsUsed;
 
 					if (dateDay < 0 || dateDay > 31 || dateMonth < 0
@@ -744,8 +779,7 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12")
-							&& hourMinute[2].equals("0")) {
+					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
 						hourMinute[0] = "0";
 					}
 
@@ -825,8 +859,7 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12")
-							&& hourMinute[2].equals("0")) {
+					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
 						hourMinute[0] = "0";
 					}
 
@@ -1405,43 +1438,44 @@ public class Parser {
 		dayMonthYear[4] = "maybeNotDate";
 
 		int extraWordsUsed = 0;
-		
+
 		if (currentPhrase.equals("today") || currentPhrase.equals("tdy")) {
-			
+
 			GregorianCalendar today = new GregorianCalendar();
 			int todayDate = today.get(Calendar.DAY_OF_MONTH);
 			int todayMonth = today.get(Calendar.MONTH) + 1;
 			int todayYear = today.get(Calendar.YEAR);
-			
+
 			dayMonthYear[0] = Integer.toString(todayDate);
 			dayMonthYear[1] = Integer.toString(todayMonth);
 			dayMonthYear[2] = Integer.toString(todayYear);
 			dayMonthYear[4] = "isDate";
-			
-		} else if (currentPhrase.equals("tomorrow") || currentPhrase.equals("tmr")) {
-			
+
+		} else if (currentPhrase.equals("tomorrow")
+				|| currentPhrase.equals("tmr")) {
+
 			GregorianCalendar tomorrow = new GregorianCalendar();
 			tomorrow.roll(Calendar.DAY_OF_MONTH, 1);
-			
+
 			int tomorrowDate = tomorrow.get(Calendar.DAY_OF_MONTH);
 			int tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
 			int tomorrowYear = tomorrow.get(Calendar.YEAR);
-			
+
 			if (tomorrowDate == 1) {
 				tomorrow.roll(Calendar.MONTH, 1);
 				tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
-				
+
 				if (tomorrowMonth == 1) {
 					tomorrow.roll(Calendar.YEAR, 1);
 					tomorrowYear = tomorrow.get(Calendar.YEAR);
 				}
 			}
-			
+
 			dayMonthYear[0] = Integer.toString(tomorrowDate);
 			dayMonthYear[1] = Integer.toString(tomorrowMonth);
 			dayMonthYear[2] = Integer.toString(tomorrowYear);
 			dayMonthYear[4] = "isDate";
-			
+
 		} else if (currentPhrase.contains("/")) {
 			String[] tempDayMonthYear = currentPhrase.split("/");
 			dayMonthYear[0] = tempDayMonthYear[0];
@@ -1532,7 +1566,7 @@ public class Parser {
 		int extraHours = 0;
 
 		if (currentPhrase.contains(":") || currentPhrase.contains(".")) {
-			
+
 			if (currentPhrase.contains(":")) {
 				String[] tempHourMinute = currentPhrase.split(":");
 				hourMinute[0] = tempHourMinute[0];
@@ -1549,7 +1583,7 @@ public class Parser {
 			if (hourMinute[1].endsWith("am")) {
 				hourMinute[1] = hourMinute[1].substring(0,
 						hourMinute[1].length() - 2);
-				
+
 				if (Parser.isNumber(hourMinute[1])) {
 					hourMinute[3] = "isTime";
 				}
@@ -1558,7 +1592,7 @@ public class Parser {
 				extraHours = 12;
 				hourMinute[1] = hourMinute[1].substring(0,
 						hourMinute[1].length() - 2);
-			
+
 				if (Parser.isNumber(hourMinute[1])) {
 					hourMinute[3] = "isTime";
 				}
@@ -1589,7 +1623,7 @@ public class Parser {
 				if (currentPhrase.endsWith("am")) {
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
-					
+
 					if (Parser.isNumber(hourMinute[0])) {
 						hourMinute[3] = "isTime";
 					}
@@ -1597,7 +1631,7 @@ public class Parser {
 					extraHours = 12;
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
-					
+
 					if (Parser.isNumber(hourMinute[0])) {
 						hourMinute[3] = "isTime";
 					}
@@ -1605,8 +1639,9 @@ public class Parser {
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = currentPhrase.substring(phraseSize - 2,
 							phraseSize);
-					
-					if (Parser.isNumber(hourMinute[0]) && Parser.isNumber(hourMinute[1])) {
+
+					if (Parser.isNumber(hourMinute[0])
+							&& Parser.isNumber(hourMinute[1])) {
 						hourMinute[3] = "isTime";
 					}
 				}
@@ -1618,10 +1653,6 @@ public class Parser {
 			if (phraseSize < 3) {
 				hourMinute[0] = currentPhrase;
 				hourMinute[1] = "0";
-				
-				if (Parser.isNumber(hourMinute[1])) {
-					hourMinute[3] = "isTime";
-				}
 			}
 		}
 
@@ -1629,15 +1660,15 @@ public class Parser {
 
 		return hourMinute;
 	}
-	
+
 	private static boolean isNumber(String stringToTest) {
-		
+
 		try {
 			Integer.parseInt(stringToTest);
-			
+
 			return true;
 		} catch (NumberFormatException e) {
-			
+
 			return false;
 		}
 	}
