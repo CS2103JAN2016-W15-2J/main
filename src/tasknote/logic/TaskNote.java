@@ -199,10 +199,11 @@ public class TaskNote {
 	public String searchTasks(ArrayList<Integer> searchIds) {
 		boolean isSuccess = true;
 		searchIdSize = searchIds.size();
+		reIntializeSearchList();
 		try {
 			assert (searchIdSize > Constants.EMPTY_LIST_SIZE);
 			for (int i = 0; i < searchIds.size(); i++) {
-				searchList.add(taskList.get(searchIds.get(i)));
+				searchList.add(displayList.get(searchIds.get(i)));
 			}
 			logger.log(Level.INFO, Constants.INFO_SEARCH_SUCCESSFUL);
 		} catch (Exception ex) {
