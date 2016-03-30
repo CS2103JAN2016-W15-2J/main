@@ -80,7 +80,7 @@ public class GuiController extends Application {
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
         
-        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
+        changeView(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
         
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
@@ -96,7 +96,7 @@ public class GuiController extends Application {
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
         
-        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
+        changeView(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
     }
     
     private void focusOnCommandLine(TextField commandLine) {
@@ -200,13 +200,17 @@ public class GuiController extends Application {
     }
     
     private static void changeView(String selected){
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
         
         // Prepare layout
-        if(selected.equals(SidebarContainer.NAVIGATION_TAG_SETTINGS)) {
-            // TODO
+        if(selected.equals(SidebarContainer.NAVIGATION_TAG_SETTINGS) || 
+                selected.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
+            floatingTasksContainer.setVisible(false);
+            floatingTasksContainer.setManaged(false);
         } else {
-            
+            floatingTasksContainer.setVisible(true);
+            floatingTasksContainer.setManaged(true);
         }
         
         switch(selected) {
