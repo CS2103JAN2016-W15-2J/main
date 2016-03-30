@@ -64,18 +64,17 @@ public class Storage{
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
 		
 		if(isPathForMac(textFileName)){
-			fileManipulator.changeFileName(textFileName);
-			return true;
+			return fileManipulator.changeFileName(textFileName);
+			
 		}
 		
 		String textFileNameForWindows = convertFilePathForWindows(textFileName);
 		
 		if(isPathForWindows(textFileNameForWindows)){
-			fileManipulator.changeFileName(textFileNameForWindows);
-			return true;
+			return fileManipulator.changeFileName(textFileNameForWindows);
 		}
 			
-		storageLog.log(Level.FINE, String.format(magicValuesRetriever.getWrongPathName(), textFileName));
+		storageLog.log(Level.WARNING, String.format(magicValuesRetriever.getWrongPathName(), textFileName));
 		return false;
 	}
 
