@@ -201,7 +201,7 @@ public class Parser {
 				switchString = "notify";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_AT)) {
-				switchString = "location";
+				switchString = "locationtime";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
 				switchString = "timerangestart";
@@ -227,6 +227,17 @@ public class Parser {
 					switchString = "time";
 				} else {
 					switchString = "date";
+				}
+			}
+			
+			if (switchString.equals("locationtime")) {
+				
+				String[] maybeHourMinute = tryToParseTime(currentPhrase);
+				
+				if (maybeHourMinute[3].equals("maybeNotTime")) {
+					switchString = "location";
+				} else {
+					switchString = "time";
 				}
 			}
 
@@ -1512,10 +1523,11 @@ public class Parser {
 
 	private static String[] tryToParseTime(String currentPhrase) {
 
-		String[] hourMinute = new String[3];
+		String[] hourMinute = new String[4];
 		hourMinute[0] = "-1";
 		hourMinute[1] = "-1";
 		hourMinute[2] = "0";
+		hourMinute[3] = "maybeNotTime";
 
 		int extraHours = 0;
 
@@ -1525,21 +1537,31 @@ public class Parser {
 				String[] tempHourMinute = currentPhrase.split(":");
 				hourMinute[0] = tempHourMinute[0];
 				hourMinute[1] = tempHourMinute[1];
+				hourMinute[3] = "isTime";
 			} else {
 				String[] tempHourMinute = currentPhrase.split("\\.");
 				hourMinute[0] = tempHourMinute[0];
 				hourMinute[1] = tempHourMinute[1];
+				hourMinute[3] = "isTime";
 			}
 
 			// Trim as required
 			if (hourMinute[1].endsWith("am")) {
 				hourMinute[1] = hourMinute[1].substring(0,
 						hourMinute[1].length() - 2);
+				
+				if (Parser.isNumber(hourMinute[1])) {
+					hourMinute[3] = "isTime";
+				}
 			} else if (hourMinute[1].endsWith("pm")) {
 
 				extraHours = 12;
 				hourMinute[1] = hourMinute[1].substring(0,
 						hourMinute[1].length() - 2);
+			
+				if (Parser.isNumber(hourMinute[1])) {
+					hourMinute[3] = "isTime";
+				}
 			}
 		} else {
 
@@ -1567,14 +1589,26 @@ public class Parser {
 				if (currentPhrase.endsWith("am")) {
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
+					
+					if (Parser.isNumber(hourMinute[0])) {
+						hourMinute[3] = "isTime";
+					}
 				} else if (currentPhrase.endsWith("pm")) {
 					extraHours = 12;
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
+					
+					if (Parser.isNumber(hourMinute[0])) {
+						hourMinute[3] = "isTime";
+					}
 				} else {
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = currentPhrase.substring(phraseSize - 2,
 							phraseSize);
+					
+					if (Parser.isNumber(hourMinute[0]) && Parser.isNumber(hourMinute[1])) {
+						hourMinute[3] = "isTime";
+					}
 				}
 			}
 
@@ -1584,11 +1618,27 @@ public class Parser {
 			if (phraseSize < 3) {
 				hourMinute[0] = currentPhrase;
 				hourMinute[1] = "0";
+				
+				if (Parser.isNumber(hourMinute[1])) {
+					hourMinute[3] = "isTime";
+				}
 			}
 		}
 
 		hourMinute[2] = Integer.toString(extraHours);
 
 		return hourMinute;
+	}
+	
+	private static boolean isNumber(String stringToTest) {
+		
+		try {
+			Integer.parseInt(stringToTest);
+			
+			return true;
+		} catch (NumberFormatException e) {
+			
+			return false;
+		}
 	}
 }
