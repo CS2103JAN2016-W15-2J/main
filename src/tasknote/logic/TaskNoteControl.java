@@ -231,10 +231,11 @@ public class TaskNoteControl {
 			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
 		}
 		
+		TaskObject oldTaskObject = null;
 		throwException = true;
 		if (taskNote.isValidTaskId(updateTaskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-			TaskObject oldTaskObject = displayList.get(updateTaskId);
+			oldTaskObject = displayList.get(updateTaskId);
 			try {
 				updatedTaskObject = Parser.parseUpdate(userCommand, oldTaskObject, throwException);
 			} catch (Exception e) {
@@ -245,8 +246,9 @@ public class TaskNoteControl {
 		} else {
 			updatedTaskObject = null;
 		}
-
-		command = new UpdateCommand(taskNote, updateTaskId, updatedTaskObject);
+		ArrayList<TaskObject> taskList = taskNote.getTaskList();
+		int originalUpdateTaskId = taskList.indexOf(oldTaskObject);
+		command = new UpdateCommand(taskNote, originalUpdateTaskId, updatedTaskObject);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
