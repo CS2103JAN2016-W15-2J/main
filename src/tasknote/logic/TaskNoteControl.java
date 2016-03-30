@@ -115,8 +115,7 @@ public class TaskNoteControl {
 			break;
 		case HELP:
 			//TODO: Parser
-			//response = executeHelp(userCommand);
-			response = "";
+			response = executeHelp(userCommand);
 			break;
 		case INVALID:
 			response = Constants.WARNING_INVALID_COMMAND;
