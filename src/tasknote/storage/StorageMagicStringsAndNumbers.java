@@ -21,14 +21,7 @@ public class StorageMagicStringsAndNumbers{
 														, "endDateYear:"
 														, "endDateHour:"
 														, "endDateMinute:"
-														, ""
-														/*
-														, "isNotified:"
-														, "isMarkedDone:"
-														, "firstDayOfWeek:"
-														, "timeZoneID:"
-														, "isDayLightTimeOn:"
-														, ""*/};
+														, "" };
 	
 	/**
 	 * Task Status
@@ -56,14 +49,6 @@ public class StorageMagicStringsAndNumbers{
 	private final String LOGGING_MESSAGE_FAILED_UNDO = "This is the maximum history you can undo.";
 	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum history you can redo.";
 	
-	/*
-	private final static String LOCALE_MONDAY = "Monday";
-	private final static String LOCALE_SUNDAY = "Sunday";
-	private final static String LOCALE_LANGAUGE = "en"; //assumption since we are not displaying other languages other than English
-	private final static int LOCALE_US = 1;
-	private final static int LOCALE_GB = 2;
-	*/
-	
 	/**
 	 * file/path name
 	 */
@@ -80,30 +65,6 @@ public class StorageMagicStringsAndNumbers{
 	private final int BUFFERSIZE = 32768;
 	
 	public StorageMagicStringsAndNumbers(){}
-	
-	/*
-	public String getLanguage(){
-		return LOCALE_LANGAUGE;
-	}
-	
-	public int getSundayFirstDayOfWeek(){
-		return LOCALE_US;
-	}
-	
-	public int getMondayFirstDayOfWeek(){
-		return LOCALE_GB;
-	}
-	
-	public String getStringOfFirstDayOfWeek(int localeValue){
-		switch(localeValue){
-			case LOCALE_US:
-				return LOCALE_SUNDAY;
-			case LOCALE_GB:
-				return LOCALE_MONDAY;
-		}
-		return "";
-	}
-	*/
 	
 	public String getTaskObjectTitle(int index){
 		return STRING_TASKOBJECT[index];
