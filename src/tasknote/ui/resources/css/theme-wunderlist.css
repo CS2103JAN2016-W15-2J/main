@@ -1,0 +1,160 @@
+/**************************************************
+ * Theme: Monotone-dark
+ **************************************************/
+* {
+	/*e.g. -fx-base1: #... */
+}
+
+.root {
+	-fx-font-size: 12pt;
+}
+
+/**************************************************
+ * COMMAND LINE CONTAINER
+ **************************************************/
+.commandline-container {
+	-fx-background-color: #1e2123;
+	-fx-padding: 10 15 10 15;
+}
+
+.commandline {
+	-fx-background-color: #313437;
+	-fx-text-inner-color: #ffffff;
+}
+
+.commandline-enter-button {
+	-fx-background-color: #313437;
+	-fx-font-weight: bold;
+	-fx-text-fill: #ffffff;
+}
+
+/**************************************************
+ * TASKS CONTAINER
+ **************************************************/
+ .tasks-container {
+ 	/* 
+ 	-fx-background-color: #26292c; */
+ 	-fx-padding: 3px;
+ 	-fx-padding: 10 15 10 15;
+ }
+ 
+ .tasks-list {
+ 	/* 
+ 	-fx-background-color: #313437;*/
+ 	-fx-padding: 3px;
+ 	-fx-background-color: inherit;
+ 	-fx-background-radius: 5;
+ }
+ 
+ /* TODO How to implement? */
+ /* 
+ .tasks-list.scroll-bar:vertical,
+ .tasks-list.scroll-bar:horizontal {
+ 	-fx-background-color:transparent;
+ }
+ 
+ .tasks-list.scroll-bar:increment-button,
+ .tasks-list.scroll-bar:decrement-button {
+ 	-fx-background-color:transparent;
+ }
+ */
+ 
+ .tasks-list-cell {
+ 	-fx-padding: 2px;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0px, 2px;
+ }
+ 
+ .tasks-list-cell:empty {
+    -fx-padding: 2px;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+ 
+/**************************************************
+ * SIDEBAR CONTAINER
+ **************************************************/
+ .sidebar-container {
+ 	-fx-padding: 10 15 10 15;
+ 	-fx-background-color: #26292c;
+ }
+ 
+ #sidebar-separator {
+ 	-fx-padding: 10 0 0 0;
+ }
+ 
+ #sidebar-navigation {
+ 	-fx-padding: 40 0 0 0;
+ 	-fx-background-color: #26292c;
+ }
+ 
+ #sidebar-navigation .list-cell:empty {
+ 	-fx-background-color: inherit;
+ }
+ 
+ #sidebar-navigation:focused .list-cell:filled:selected,
+ #sidebar-navigation:focused .list-cell:filled:selected .label,
+ #sidebar-navigation .list-cell:selected, 
+ #sidebar-navigation .list-cell:selected .label {
+ 	-fx-text-fill: #ffffff;
+ 	-fx-background-color: #313437;
+ }
+ 
+ .sidebar-navigation-cell {
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+/**************************************************
+ * CLOCK CONTAINER
+ **************************************************/
+ .clock-container {
+ 	
+ }
+ 
+ .clock-label-month-date {
+ 	-fx-text-fill: #ffffff;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-hour-minute-second {
+ 	-fx-text-fill: #ffffff;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-day-of-week {
+ 	-fx-text-fill: #ffffff;
+ 	-fx-font-size: 25pt;
+	-fx-font-weight: bold;
+ }
+ 
+/**************************************************
+ * NOTIFICATION
+ **************************************************/
+ .notification-content {
+	-fx-background-color: #1e2123;
+ 	-fx-background-radius: 10;
+ 	-fx-padding: 20 20 20 20;
+ }
+ 
+ .notification-title {
+ 	-fx-fill: #ffffff;
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button {
+ 	-fx-fill: #888888;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button:hover {
+ 	-fx-fill: #ffffff;
+ 	-fx-font-weight: bold;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-alert-message {
+ 	-fx-fill: #ffffff;
+ 	-fx-font-size: 12pt;
+ }

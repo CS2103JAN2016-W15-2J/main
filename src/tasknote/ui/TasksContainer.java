@@ -187,7 +187,8 @@ public class TasksContainer extends HBox {
                 if(taskIndex != null) {
                     taskIndex.setFill(LIGHT_GRAY);
                 }
-                taskNameValue.setFill(Color.ORANGE);
+                //taskNameValue.setFill(Color.ORANGE);
+                taskNameValue.setFill(Color.BLACK);
                 if(taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.WHITE);
                 }

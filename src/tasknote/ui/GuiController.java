@@ -13,6 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tasknote.logic.TaskNoteControl;
@@ -45,7 +50,16 @@ public class GuiController extends Application {
         
         _primaryWindow = stage;
         
-        scene.getStylesheets().add(getClass().getResource("resources/css/theme-monotone-dark.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("resources/css/theme-wunderlist.css").toExternalForm());
+        
+        
+        Image image = new Image(GuiController.class.getResourceAsStream("resources/image/wood-background.png"));
+        
+        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        Background background = new Background(backgroundImage);
+        frame.setBackground(background);
         
         //frame.setTop(MainMenuContainer.getInstance());
         frame.setLeft(_sidebarContainer);
