@@ -50,7 +50,8 @@ public class Constants {
 												+ "2. add <TaskName> from <start time> to <end time> by <date> at <location>";
 	public static final String MESSAGE_HELP_DELETE = "1. delete <TaskID> <more TaskIDs...>\n"
 													+ "2. delete <start TaskID> to <end TaskID>";
-	public static final String MESSAGE_HELP_SEARCH = "search <keyword> <more keywords...>";
+	public static final String MESSAGE_HELP_SEARCH = "1. search <keyword> <more keywords...>\n"
+													+ "2. search exact <keyword> <more keywords...>\n";
 	public static final String MESSAGE_HELP_UPDATE = "edit <TaskID> <new TaskName> on <time> by <date> at <location>";
 	public static final String MESSAGE_HELP_UNDO = "undo";
 	public static final String MESSAGE_HELP_REDO = "redo";
@@ -146,5 +147,6 @@ public class Constants {
 	public static final int ZERO_TIME_INTERVAL = 0;
 	public static final int DECREMENT_PRECEDING_OBJECTS = 1;
 	public static final int INCREMENT_DAY_TOMORROW = 1;
+	public static final int INVALID_VALUE_CONSTANT = -1;
 
 }

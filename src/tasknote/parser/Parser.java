@@ -660,6 +660,12 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
+				
+				if (!alteringName) {
+					name.delete(0, name.length());
+					alteringName = true;
+				}
+				
 				name.append(REGEX_WHITESPACE);
 				name.append(currentPhrase);
 				continue;
@@ -1136,18 +1142,46 @@ public class Parser {
 		for (int i = 0; i < itemCount; i++) {
 			indicesToReturn.add(i);
 		}
+		
+		String testKeyWord = allPhrases.get(1).toLowerCase();
+		boolean exactOnly = false;
+		
+		if (phraseCount > 2 && testKeyWord.equals("exact")) {
+			exactOnly = true;
+		}
 
 		for (int i = 1; i < phraseCount; i++) {
 
 			String currentPhrase = allPhrases.get(i).toLowerCase();
+			
+			if (exactOnly && i == 1) {
+				continue;
+			}
 
 			for (int j = 0; j < itemCount; j++) {
 				String currentTaskName = displayList.get(j).getTaskName()
 						.toLowerCase();
+				
 
-				if (!currentTaskName.contains(currentPhrase)) {
+				if (!exactOnly) {
+					
+					if (!currentTaskName.contains(currentPhrase)) {
+						indicesToRemove.add(j);	
+					}
+				} else {
+					
+					String[] splitTaskName = currentTaskName.split(REGEX_WHITESPACE);
+					
 					indicesToRemove.add(j);
+					
+					for (int k = 0; k < splitTaskName.length; k++) {
+						if (currentPhrase.equals(splitTaskName[k])) {
+							indicesToRemove.remove(j);
+							break;
+						}
+					}
 				}
+				
 			}
 
 			indicesToReturn.removeAll(indicesToRemove);
