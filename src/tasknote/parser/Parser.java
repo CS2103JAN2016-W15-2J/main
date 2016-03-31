@@ -660,6 +660,12 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
+				
+				if (!alteringName) {
+					name.delete(0, name.length());
+					alteringName = true;
+				}
+				
 				name.append(REGEX_WHITESPACE);
 				name.append(currentPhrase);
 				continue;
@@ -1140,7 +1146,7 @@ public class Parser {
 		String testKeyWord = allPhrases.get(1).toLowerCase();
 		boolean exactOnly = false;
 		
-		if (testKeyWord.equals("exact")) {
+		if (phraseCount > 2 && testKeyWord.equals("exact")) {
 			exactOnly = true;
 		}
 
