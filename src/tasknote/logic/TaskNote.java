@@ -516,7 +516,7 @@ public class TaskNote {
 			helpMessage = Constants.MESSAGE_HELP_CHANGE_CATEGORY;
 			break;
 		case HELP:
-			helpMessage = Constants.MESSAGE_HELP_HELP;
+			helpMessage = Constants.MESSAGE_HELP;
 			break;
 		case EXIT:
 			helpMessage = Constants.MESSAGE_HELP_EXIT;
