@@ -119,6 +119,10 @@ public class Parser {
 		int allPhraseCount = allPhrase.size();
 		String userCommandWord = "";
 
+		if (allPhraseCount == 1) {
+			return COMMAND_TYPE.HELP;
+		}
+		
 		if (allPhraseCount > 1) {
 			userCommandWord = allPhrase.get(1);
 		}
@@ -170,6 +174,7 @@ public class Parser {
 		int phraseCount = allPhrases.size();
 
 		String switchString = "name";
+		String oldSwitchString = "name";
 		String taskType = "floating";
 
 		if (phraseCount == 2) {
@@ -186,8 +191,13 @@ public class Parser {
 		int hourBefore = 0;
 		int duration = 0;
 
+		int endDateDay = -1;
+		int endDateMonth = -1;
+		int endDateYear = -1;
 		int endDateHour = -1;
 		int endDateMinute = -1;
+		
+		boolean toStartDateTime = true;
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -205,11 +215,12 @@ public class Parser {
 				switchString = "locationtime";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
-				switchString = "timerangestart";
+				switchString = "datetime";
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
-				switchString = "timerangeend";
+				switchString = "datetime";
+				toStartDateTime = false;
 				continue;
 			}
 
@@ -217,6 +228,11 @@ public class Parser {
 				name.append(REGEX_WHITESPACE);
 				name.append(currentPhrase);
 				continue;
+			}
+			
+			if (switchString.equals("time") || switchString.equals("date") || 
+					switchString.equals("location")) {
+					switchString = oldSwitchString;
 			}
 
 			if (switchString.equals("datetime")) {
@@ -226,8 +242,10 @@ public class Parser {
 
 				if (maybeDayMonthYear[4].equals("maybeNotDate")) {
 					switchString = "time";
+					oldSwitchString = "datetime";
 				} else {
 					switchString = "date";
+					oldSwitchString = "datetime";
 				}
 			}
 
@@ -247,14 +265,18 @@ public class Parser {
 								|| nextLowerPhrase.equals(KEYWORD_FROM)
 								|| nextLowerPhrase.equals(KEYWORD_TO)) {
 							switchString = "time";
+							oldSwitchString = "locationtime";
 						} else {
 							switchString = "location";
+							oldSwitchString = "locationtime";
 						}
 					} else {
 						switchString = "location";
+						oldSwitchString = "locationtime";
 					}
 				} else {
 					switchString = "time";
+					oldSwitchString = "locationtime";
 				}
 			}
 
@@ -267,16 +289,16 @@ public class Parser {
 				i = i + extraWordsUsed;
 
 				try {
-					dateDay = Integer.parseInt(dayMonthYear[0]);
-					dateMonth = Integer.parseInt(dayMonthYear[1]);
-					dateYear = Integer.parseInt(dayMonthYear[2]);
+					int holderDay = Integer.parseInt(dayMonthYear[0]);
+					int holderMonth = Integer.parseInt(dayMonthYear[1]);
+					int holderYear = Integer.parseInt(dayMonthYear[2]);
 
-					if (dateDay < 0 || dateDay > 31 || dateMonth < 0
-							|| dateMonth > 12) {
+					if (holderDay < 0 || holderDay > 31 || holderMonth < 0
+							|| holderMonth > 12) {
 
-						dateDay = -1;
-						dateMonth = -1;
-						dateYear = -1;
+						holderDay = -1;
+						holderMonth = -1;
+						holderYear = -1;
 
 						if (throwException) {
 							NumberFormatException e = new NumberFormatException(
@@ -285,12 +307,36 @@ public class Parser {
 							System.out.println(e);
 							throw e;
 						} else {
+							
+							if (toStartDateTime) {
+								dateYear = holderYear;
+								dateMonth = holderMonth;
+								dateDay = holderDay;
+							} else {
+								endDateYear = holderYear;
+								endDateMonth = holderMonth;
+								endDateDay = holderDay;
+							}
+							
 							switchString = "name";
 							continue;
 						}
 					}
+					
+					if (toStartDateTime) {
+						dateYear = holderYear;
+						dateMonth = holderMonth;
+						dateDay = holderDay;
 
-					taskType = "deadline";
+						taskType = "deadline";
+					} else {
+						endDateYear = holderYear;
+						endDateMonth = holderMonth;
+						endDateDay = holderDay;
+
+						taskType = "event";
+					}
+
 					continue;
 				} catch (NumberFormatException e) {
 
@@ -301,9 +347,17 @@ public class Parser {
 						System.out.println(e2);
 						throw e2;
 					} else {
-						dateDay = -1;
-						dateMonth = -1;
-						dateYear = -1;
+
+						if (toStartDateTime) {
+							dateYear = -1;
+							dateMonth = -1;
+							dateDay = -1;
+						} else {
+							endDateYear = -1;
+							endDateMonth = -1;
+							endDateDay = -1;
+						}
+						
 						switchString = "name";
 						continue;
 					}
@@ -318,9 +372,17 @@ public class Parser {
 						System.out.println(e2);
 						throw e2;
 					} else {
-						dateDay = -1;
-						dateMonth = -1;
-						dateYear = -1;
+
+						if (toStartDateTime) {
+							dateYear = -1;
+							dateMonth = -1;
+							dateDay = -1;
+						} else {
+							endDateYear = -1;
+							endDateMonth = -1;
+							endDateDay = -1;
+						}
+						
 						switchString = "name";
 						continue;
 					}
@@ -346,21 +408,21 @@ public class Parser {
 							&& hourMinute[2].equals("12")) {
 						extraHours = 12;
 					}
-
-					dateHour = Integer.parseInt(hourMinute[0]);
-					dateMinute = Integer.parseInt(hourMinute[1]);
+					
+					int holderHour = Integer.parseInt(hourMinute[0]);
+					int holderMinute = Integer.parseInt(hourMinute[1]);
 
 					// A delayed check prevents passing weird cases like
 					// -1pm
-					if (dateHour >= 0) {
-						dateHour = dateHour + extraHours;
+					if (holderHour >= 0) {
+						holderHour = holderHour + extraHours;
 					}
 
-					if (dateHour > 24 || dateHour < 0 || dateMinute > 60
-							|| dateMinute < 0) {
+					if (holderHour > 24 || holderHour < 0 || holderMinute > 60
+							|| holderMinute < 0) {
 
-						dateHour = -1;
-						dateMinute = -1;
+						holderHour = -1;
+						holderMinute = -1;
 
 						if (throwException) {
 							NumberFormatException e2 = new NumberFormatException(
@@ -370,18 +432,31 @@ public class Parser {
 							System.out.println(e2);
 							throw e2;
 						} else {
-							dateHour = -1;
-							dateMinute = -1;
+							
+							if (toStartDateTime) {
+								dateHour = -1;
+								dateMinute = -1;
+							} else {
+								endDateHour = -1;
+								endDateMinute = -1;
+								duration = 0;
+							}
 							switchString = "name";
 							continue;
 						}
 					}
-
-					if (switchString.equals("time")) {
+					
+					if (toStartDateTime) {
+						dateHour = holderHour;
+						dateMinute = holderMinute;
 						taskType = "deadline";
-					} else if (switchString.equals("timerangestart")) {
+					} else {
+						endDateHour = holderHour;
+						endDateMinute = holderMinute;
+						duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
 						taskType = "event";
 					}
+					
 					continue;
 
 				} catch (NumberFormatException e) {
@@ -591,9 +666,9 @@ public class Parser {
 
 		// set end datetime
 		if (duration > 0) {
-			taskObjectToBuild.setEndDateYear(dateYear);
-			taskObjectToBuild.setEndDateMonth(dateMonth);
-			taskObjectToBuild.setEndDateDay(dateDay);
+			taskObjectToBuild.setEndDateYear(endDateYear);
+			taskObjectToBuild.setEndDateMonth(endDateMonth);
+			taskObjectToBuild.setEndDateDay(endDateDay);
 			taskObjectToBuild.setEndDateHour(endDateHour);
 			taskObjectToBuild.setEndDateMinute(endDateMinute);
 		}
@@ -633,6 +708,8 @@ public class Parser {
 
 		boolean alteringName = false;
 		boolean alteringLocation = false;
+		
+		boolean toStartDateTime = true;
 
 		String switchString = "name";
 
@@ -657,6 +734,7 @@ public class Parser {
 			} else if (lowerPhrase.equals(KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
+				toStartDateTime = false;
 				continue;
 			} else if (lowerPhrase.equals(KEYWORD_REMOVE) ||
 					lowerPhrase.equals("rm")) {
@@ -1610,8 +1688,13 @@ public class Parser {
 
 			try {
 				int numericYear = Integer.parseInt(possibleYear);
-				dayMonthYear[2] = Integer.toString(numericYear);
-				extraWordsUsed++;
+				
+				if (numericYear > 1900 && numericYear < 2100) {
+					dayMonthYear[2] = Integer.toString(numericYear);
+					extraWordsUsed++;
+				} else {
+					throw new NumberFormatException();
+				}
 			} catch (NumberFormatException e) {
 				GregorianCalendar today = new GregorianCalendar();
 				dayMonthYear[2] = Integer.toString(today.get(Calendar.YEAR));
