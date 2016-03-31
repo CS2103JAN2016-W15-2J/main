@@ -37,6 +37,7 @@ public class Parser {
 	private static final String KEYWORD_TO = "to";
 	private static final String KEYWORD_IN = "in";
 	private static final String KEYWORD_NOTIFY = "notify";
+	private static final String KEYWORD_REMOVE = "remove";
 
 	// Here are the regex that are used by the
 	// parser for parsing all user commands
@@ -627,13 +628,13 @@ public class Parser {
 		int duration = reallyOldTaskObject.getDuration();
 		int endDateHour = reallyOldTaskObject.getEndDateHour();
 		int endDateMinute = reallyOldTaskObject.getEndDateMinute();
+		String taskType = reallyOldTaskObject.getTaskType();
 		TaskObject.TASK_STATUS taskStatus = reallyOldTaskObject.getTaskStatus();
 
 		boolean alteringName = false;
 		boolean alteringLocation = false;
 
 		String switchString = "name";
-		String taskType = reallyOldTaskObject.getTaskType();
 
 		for (int i = 2; i < phraseCount; i++) {
 
@@ -657,6 +658,39 @@ public class Parser {
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				continue;
+			} else if (lowerPhrase.equals(KEYWORD_REMOVE) ||
+					lowerPhrase.equals("rm")) {
+				switchString = "remove";
+				continue;
+			}
+			
+			if (switchString.equals("remove")) {
+				
+				if (lowerPhrase.equals("time")) {
+					dateHour = -1;
+					dateMinute = -1;
+					
+					if (dateYear == -1 && dateMonth == -1 && dateDay == -1) {
+						taskType = "floating";
+					}
+					continue;
+				} else if (lowerPhrase.equals("date")) {
+					dateYear = -1;
+					dateMonth = -1;
+					dateDay = -1;
+					
+					if (dateHour == -1 && dateMinute == -1) {
+						taskType = "floating";
+					}
+					continue;
+				} else if (lowerPhrase.equals("location")) {
+					location.delete(0, location.length());
+					continue;
+				} else {
+					switchString = "name";
+					i--;
+					continue;
+				}
 			}
 
 			if (switchString.equals("name")) {
