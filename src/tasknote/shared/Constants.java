@@ -46,6 +46,18 @@ public class Constants {
 	 * 		Note: Place double quotes (E.g. Meet at "Gardens by the bay")
 	 * 
 	 */
+	public static final String MESSAGE_HELP = "The Following are the List of Valid Commands: \n"
+											+ "1. To add task: Add\n"
+											+ "2. To edit task: Edit\n"
+											+ "3. To do a sub string search for tasks: Search\n"
+											+ "4. To do exact search for tasks: Search exact\n"
+											+ "5. To delete task: Delete\n"
+											+ "6. To reverse previous action: Undo\n"
+											+ "7. To reverse previous Undo action: Redo\n"
+											+ "8. To change file path: Relocate\n"
+											+ "9. To display deadline tasks within specified time interval: Show\n"
+											+ "10. To mark task as complete: Done\n\n"
+											+ "For specific usage of a command, enter: Help <Command>\n";
 	public static final String MESSAGE_HELP_ADD = "1. add <TaskName> on <time> by <date> at <location>\n"
 												+ "2. add <TaskName> from <start time> to <end time> by <date> at <location>";
 	public static final String MESSAGE_HELP_DELETE = "1. delete <TaskID> <more TaskIDs...>\n"
@@ -61,7 +73,6 @@ public class Constants {
 												+ "2. show today/tomrorow\n"
 												+ "3. show next [next ...] weeks/day";
 	public static final String MESSAGE_HELP_CHANGE_CATEGORY = "";
-	public static final String MESSAGE_HELP_HELP = "";
 	public static final String MESSAGE_HELP_EXIT = "exit";
 	
 	
