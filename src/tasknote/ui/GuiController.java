@@ -217,6 +217,7 @@ public class GuiController extends Application {
         FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
         
+        /*
         // Prepare layout
         if(selected.equals(SidebarContainer.NAVIGATION_TAG_SETTINGS) || 
                 selected.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
@@ -226,6 +227,7 @@ public class GuiController extends Application {
             floatingTasksContainer.setVisible(true);
             floatingTasksContainer.setManaged(true);
         }
+        */
         
         switch(selected) {
             case SidebarContainer.NAVIGATION_TAG_VIEW_ALL:

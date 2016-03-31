@@ -85,6 +85,7 @@ public class FloatingTasksContainer extends HBox {
                         this.getStyleClass().add("tasks-list-cell");
                         if (!isEmpty()) {
                             setGraphic(TasksContainer.getFormattedText(task));
+                            
                         } else {
                             // Prevent duplicate for a single entry
                             setText(null);

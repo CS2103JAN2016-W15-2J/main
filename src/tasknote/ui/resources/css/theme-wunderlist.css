@@ -60,9 +60,10 @@
  */
  
  .tasks-list-cell {
- 	-fx-padding: 2px;
-    -fx-background-color: transparent;
-    -fx-background-insets: 0px, 2px;
+ 	-fx-padding: 2px 0 2px 5px;
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0 2px 5px 0px;
  }
  
  .tasks-list-cell:empty {

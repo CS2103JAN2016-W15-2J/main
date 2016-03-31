@@ -1,5 +1,6 @@
 package tasknote.ui;
 
+import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
@@ -130,19 +131,24 @@ public class TasksContainer extends HBox {
         }
         
         if(!taskDate.isEmpty() && !taskTime.isEmpty()) {
-            taskDateTimeValue = new Text(taskDate + ", " + taskTime + newline);            
+            taskDateTimeValue = new Text("\t" + taskDate + ", " + taskTime + newline);        
+            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         } else if (!taskDate.isEmpty() && taskTime.isEmpty()){
-            taskDateTimeValue = new Text(taskDate + newline);  
+            taskDateTimeValue = new Text("\t" + taskDate + newline);  
+            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
         if(taskLocation == null || !taskLocation.isEmpty()) {
-            taskLocationValue = new Text(taskLocation + newline);
+            taskLocationValue = new Text("\t" + taskLocation + newline);
+            taskLocationValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
         if(!taskEndDate.isEmpty() && !taskEndTime.isEmpty()) {
-            taskEndDateTimeValue = new Text(taskEndDate + ", " + taskEndTime + newline);            
+            taskEndDateTimeValue = new Text("\t" + taskEndDate + ", " + taskEndTime + newline);
+            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         } else if (!taskEndDate.isEmpty() && taskEndTime.isEmpty()){
-            taskEndDateTimeValue = new Text(taskEndDate + newline);  
+            taskEndDateTimeValue = new Text("\t" + taskEndDate + newline);
+            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
         return colorise(taskStatus, taskIndex, taskNameValue, taskDateTimeValue, taskLocationValue, taskEndDateTimeValue);
@@ -150,7 +156,9 @@ public class TasksContainer extends HBox {
     
     private static TextFlow colorise(TASK_STATUS status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue, Text taskEndDateTimeValue) {
         TextFlow colorisedText = new TextFlow();
-
+        
+        colorisedText.setPrefWidth(0);
+        
         switch(status) {
             case TASK_OUTSTANDING:
                 if(taskIndex != null) {
@@ -190,13 +198,13 @@ public class TasksContainer extends HBox {
                 //taskNameValue.setFill(Color.ORANGE);
                 taskNameValue.setFill(Color.BLACK);
                 if(taskDateTimeValue != null) {
-                    taskDateTimeValue.setFill(Color.WHITE);
+                    taskDateTimeValue.setFill(Color.MAROON);
                 }
                 if(taskLocationValue != null) {
-                    taskLocationValue.setFill(Color.WHITE);
+                    taskLocationValue.setFill(Color.MAROON);
                 }
                 if(taskEndDateTimeValue != null) {
-                    taskEndDateTimeValue.setFill(Color.WHITE);
+                    taskEndDateTimeValue.setFill(Color.MAROON);
                 }
                 break;
         }
@@ -217,6 +225,8 @@ public class TasksContainer extends HBox {
         if (taskLocationValue != null) {
             colorisedText.getChildren().addAll(taskLocationValue);
         }
+        
+        colorisedText.autosize();
         
         return colorisedText;
     }
