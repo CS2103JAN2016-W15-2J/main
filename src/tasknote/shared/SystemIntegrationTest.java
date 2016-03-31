@@ -185,8 +185,8 @@ public class SystemIntegrationTest {
         assertTrue(observableEventList.isEmpty());
         
         
-        GuiController.executeCommand("add event task 1 at 1/1/2016 by 12:34");
-        TaskObject eventTask1 = Parser.parseAdd("add event task 1 at 1/1/2016 by 12:34", true);
+        GuiController.executeCommand("add event task 1 on 1/1/2016 by 12:34");
+        TaskObject eventTask1 = Parser.parseAdd("add event task 1 on 1/1/2016 by 12:34", true);
         // Check Storage
         try {
             assertTrue(storage.loadTasks().contains(floatingTask1));
@@ -203,7 +203,6 @@ public class SystemIntegrationTest {
         assertTrue(observableFloatList.size() == 1);
     }
     
-    /*
     @Test
     public void testSettingDoneTask() {
      // Get all the components here
@@ -217,10 +216,8 @@ public class SystemIntegrationTest {
         GuiController.executeCommand("add floating task 0");
         GuiController.executeCommand("done 1");
         // Check Parser
-        TaskObject floatingTask1 = Parser.parseAdd("add floating task 0");
+        TaskObject floatingTask1 = Parser.parseAdd("add floating task 0", true);
         floatingTask1.setIsMarkedDone(true);
-        
-        // TODO NB: Storage's task is not set as done, while logic's task is set as done.
         
         // Check Storage
         try {
@@ -235,7 +232,6 @@ public class SystemIntegrationTest {
         assertTrue(observableFloatList.size() == 1);
         assertTrue(observableEventList.isEmpty());
     }
-    */
     
     @Test
     public void testDeletingOfTask() {
