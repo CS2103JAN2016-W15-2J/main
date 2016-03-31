@@ -58,22 +58,55 @@ public class Constants {
 											+ "9. To display deadline tasks within specified time interval: Show\n"
 											+ "10. To mark task as complete: Done\n\n"
 											+ "For specific usage of a command, enter: Help <Command>\n";
-	public static final String MESSAGE_HELP_ADD = "1. add <TaskName> on <time> by <date> at <location>\n"
-												+ "2. add <TaskName> from <start time> to <end time> by <date> at <location>";
-	public static final String MESSAGE_HELP_DELETE = "1. delete <TaskID> <more TaskIDs...>\n"
-													+ "2. delete <start TaskID> to <end TaskID>";
-	public static final String MESSAGE_HELP_SEARCH = "1. search <keyword> <more keywords...>\n"
-													+ "2. search exact <keyword> <more keywords...>\n";
-	public static final String MESSAGE_HELP_UPDATE = "edit <TaskID> <new TaskName> on <time> by <date> at <location>";
-	public static final String MESSAGE_HELP_UNDO = "undo";
-	public static final String MESSAGE_HELP_REDO = "redo";
-	public static final String MESSAGE_HELP_DONE = "done <TaskID>";
-	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "relocate <new file path>";
-	public static final String MESSAGE_HELP_SHOW = "1. show all\n"
-												+ "2. show today/tomrorow\n"
-												+ "3. show next [next ...] weeks/day";
+	public static final String MESSAGE_HELP_ADD = "ADD\n"
+												+ "1. Add a Floating task (without deadline):\n"
+												+ "		add <TaskName>\n\n"
+												+ "2. Add a Deadline task:\n"
+												+ "		add <TaskName> on <time> by <date> at <location>\n\n"
+												+ "3. Add an Event task:\n"
+												+ "		add <TaskName> from <start time> to <end time> by <date> at <location>";
+	public static final String MESSAGE_HELP_DELETE = "DELETE\n"
+													+ "1. Delete space separated IDs:\n"
+													+ "		delete <TaskID> <more TaskIDs...>\n\n"
+													+ "2. Delete range of IDs:\n"
+													+ "		delete <start TaskID> to <end TaskID>";
+	public static final String MESSAGE_HELP_SEARCH = "SEARCH\n"
+												   + "1. Substring Search on single/multiple keywords:\n"
+												   + "		search <keyword> <more keywords...>\n\n"
+												   + "2. Exact search on single/multiple keywords:\n"
+												   + "		search exact <keyword> <more keywords...>";
+	public static final String MESSAGE_HELP_UPDATE = "EDIT\n"
+												   + "Edit Task properties:\n"
+												   + "		edit <TaskID> <new TaskName> on <time> by <date> at <location>";
+	public static final String MESSAGE_HELP_UNDO = "UNDO\n"
+												 + "Revert last operation:\n"
+												 + "	undo";
+	public static final String MESSAGE_HELP_REDO = "REDO\n"
+												 + "Revert last undo operation:\n"
+												 + "	redo";
+	public static final String MESSAGE_HELP_DONE = "DONE\n"
+												 + "Marked task with TaskID as Complete:\n"
+												 + "	done <TaskID>";
+	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "RELOCATE\n"
+															 + "Change file path:"
+															 + "	relocate <new file path>";
+	public static final String MESSAGE_HELP_SHOW = "SHOW\n"
+												+ "1. Show All Tasks:"
+												+ "		show all\n\n"
+												+ "2. Show Tasks that are due today:\n"
+												+ "		show today\n\n"
+												+ "3. Show Tasks that are due tomorrow:\n"
+												+ "		show tomorrow\n\n"
+												+ "4. Show tasks that are due within next <d> days\n"
+												+ "		show next <d> days\n"
+												+ "		show next [next ... ] days\n\n"
+												+ "3. Show tasks that are due within next <w> weeks\n"
+												+ "		show next <w> weeks\n"
+												+ "		show next [next ...] weeks";
 	public static final String MESSAGE_HELP_CHANGE_CATEGORY = "";
-	public static final String MESSAGE_HELP_EXIT = "exit";
+	public static final String MESSAGE_HELP_EXIT = "EXIT\n"
+												 + "Exit application:\n"
+												 + "	exit";
 	
 	
 	/*
