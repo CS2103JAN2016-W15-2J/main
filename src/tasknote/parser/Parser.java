@@ -230,8 +230,7 @@ public class Parser {
 				continue;
 			}
 			
-			if (switchString.equals("time") || switchString.equals("date") || 
-					switchString.equals("location")) {
+			if (switchString.equals("time") || switchString.equals("date")) {
 					switchString = oldSwitchString;
 			}
 
@@ -259,24 +258,21 @@ public class Parser {
 						String nextLowerPhrase = allPhrases.get(i + 1)
 								.toLowerCase();
 
-						if (nextLowerPhrase.equals(KEYWORD_ON)
+						if (Parser.isNumber(currentPhrase) &&
+								(nextLowerPhrase.equals(KEYWORD_ON)
 								|| nextLowerPhrase.equals(KEYWORD_AT)
 								|| nextLowerPhrase.equals(KEYWORD_BY)
 								|| nextLowerPhrase.equals(KEYWORD_FROM)
-								|| nextLowerPhrase.equals(KEYWORD_TO)) {
+								|| nextLowerPhrase.equals(KEYWORD_TO))) {
 							switchString = "time";
-							oldSwitchString = "locationtime";
 						} else {
 							switchString = "location";
-							oldSwitchString = "locationtime";
 						}
 					} else {
-						switchString = "location";
-						oldSwitchString = "locationtime";
+						switchString = "time";
 					}
 				} else {
 					switchString = "time";
-					oldSwitchString = "locationtime";
 				}
 			}
 
