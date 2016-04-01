@@ -149,6 +149,20 @@ public class CommandLineContainer extends HBox {
                         resetCommandHistoryIndex();
                         isDefaultCommandTruncated(_commandLine);
                         break;
+                    case Z:
+                        if (key.isControlDown()) {
+                            GuiController.executeCommand(COMMAND_UNDO);
+                        } else {
+                            resetCommandHistoryIndex();
+                        }
+                        break;
+                    case Y:
+                        if (key.isControlDown()) {
+                            GuiController.executeCommand(COMMAND_REDO);
+                        } else {
+                            resetCommandHistoryIndex();
+                        }
+                        break;
                     default:
                         resetCommandHistoryIndex();
                         break;
