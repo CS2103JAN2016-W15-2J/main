@@ -20,6 +20,8 @@ public class Constants {
 	public static final String MESSAGE_REDO_UNSUCCESSFUL = "Redo Command Failed to be executed";
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
 	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
+	public static final String MESSAGE_UNDONE_SUCCESSFUL = "Task \"%s\" has been marked as Incomplete Successfully";
+	public static final String MESSAGE_UNDONE_UNSUCCESSFUL = "Mark as Incomplete failed";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL = "%d Deadline Task(s) due [ %d %s ]";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE = "%d Deadline Task(s) due [ %s ]";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_ALL = "All Tasks are displayed";
@@ -126,6 +128,8 @@ public class Constants {
 	public static final String WARNING_EXECUTE_SEARCH_NO_RESULT = "No valid search results due to empty Search ID list received: %s";
 	public static final String WARNING_EXECUTE_COMPLETE_FAILURE = "Error occured while marking task as DONE: %s";
 	public static final String WARNING_EXECUTE_COMPLETE_INVALID_OBJECT = "Invalid Task Object Error(not found in task list): %s";
+	public static final String WARNING_EXECUTE_INCOMPLETE_FAILURE = "Error occured while marking task as UNDONE: %s";
+	public static final String WARNING_EXECUTE_INCOMPLETE_INVALID_OBJECT = "Invalid Task Object Error(not found in task list): %s";
 	public static final String WARNING_EXECUTE_UNDO = "Error occured while executing UNDO operation: %s";
 	public static final String WARNING_EXECUTE_REDO = "Error occured while executing REDO operation: %s";
 	public static final String WARNING_EXECUTE_SHOW_FAILURE = "Error while attempting to retrieve and SHOW taks for specifed time interval: %s";
@@ -145,7 +149,8 @@ public class Constants {
 	 */
 	public static final String INFO_DELETE_LIST = "No valid delete IDs have been specified. Size of Delete ID list = %d";
 	public static final String INFO_ADD_SUCCESSFUL = "Task added to task list successfully";
-	public static final String INFO_DONE_SUCCESSFUL = "Task marked as complete successfully";
+	public static final String INFO_DONE_SUCCESSFUL = "Task marked as COMPLETE successfully";
+	public static final String INFO_UNDONE_SUCCESSFUL = "Task marked as INCOMPLETE successfully";
 	public static final String INFO_SEARCH_SUCCESSFUL = "Search result(s) retrieved successfully";
 	public static final String INFO_UNDO_SUCCESSFUL = "Last operation is undone successfully";
 	public static final String INFO_REDO_SUCCESSFUL = "Last operation is re-done successfully";
