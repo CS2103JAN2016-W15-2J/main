@@ -8,16 +8,18 @@ public class DoneCommand implements Command  {
 	
 	private TaskNote taskNote;
 	private TaskObject taskObject;
+	private boolean isComplete;
 	private String statusOfOperation;
 
 	public DoneCommand(TaskNote taskNote, TaskObject taskObject) {
 		this.taskObject = taskObject;
 		this.taskNote = taskNote;
+		isComplete = true;
 		statusOfOperation = new String();
 	}
 	
 	public void execute() {
-		statusOfOperation = taskNote.markTaskAsCompleted(taskObject);
+		statusOfOperation = taskNote.setTaskCompletionStatus(taskObject, isComplete);
 	}
 
 	public void refreshDisplay() {
@@ -30,6 +32,4 @@ public class DoneCommand implements Command  {
 		}
 		return statusOfOperation;
 	}
-	
-
 }
