@@ -17,12 +17,12 @@ public class CommandHistory {
 	private static final COMMAND_TYPE undoAddCommand = COMMAND_TYPE.DELETE;
 	private static final COMMAND_TYPE undoDeleteCommand = COMMAND_TYPE.ADD;
 	private static final COMMAND_TYPE undoUpdateCommand = COMMAND_TYPE.UPDATE;
-	private static final COMMAND_TYPE undoDoneCommand = COMMAND_TYPE.DONE;
+	private static final COMMAND_TYPE undoTaskCompletionCommand = COMMAND_TYPE.DONE;
 	
 	private static final COMMAND_TYPE redoAddCommand = COMMAND_TYPE.ADD;
 	private static final COMMAND_TYPE redoDeleteCommand = COMMAND_TYPE.DELETE;
 	private static final COMMAND_TYPE redoUpdateCommand = COMMAND_TYPE.UPDATE;
-	private static final COMMAND_TYPE redoDoneCommand = COMMAND_TYPE.DONE;
+	private static final COMMAND_TYPE redoTaskCompletionCommand = COMMAND_TYPE.DONE;
 	
 	/*
 	 * This is the Integer Constant for the number of associated preceding 
@@ -117,8 +117,8 @@ public class CommandHistory {
 	 *
 	 * @param: taskObject
 	 */
-	public void pushDoneToUndo(TaskObject taskObject) {
-		undoStack.push(new CommandObject(undoDoneCommand, taskObject));
+	public void pushTaskCompletionToUndo(TaskObject taskObject) {
+		undoStack.push(new CommandObject(undoTaskCompletionCommand, taskObject));
 	}
 	
 	/**
@@ -127,8 +127,8 @@ public class CommandHistory {
 	 *
 	 * @param: taskObject
 	 */
-	public void pushDoneToRedo(TaskObject taskObject) {
-		redoStack.push(new CommandObject(redoDoneCommand, taskObject));
+	public void pushTaskCompletionToRedo(TaskObject taskObject) {
+		redoStack.push(new CommandObject(redoTaskCompletionCommand, taskObject));
 	}
 	
 	public CommandObject peekUndoStack() {
