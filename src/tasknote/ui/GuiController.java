@@ -79,18 +79,21 @@ public class GuiController extends Application {
         stage.setScene(scene);
         stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH))); 
         stage.show();
+        stage.setMaximized(true);
         stage.setMinWidth(WINDOW_MIN_WIDTH);
         stage.setMinHeight(WINDOW_MIN_HEIGHT);
     }
     
     public static void retrieveCommand(TextField commandLine) {
         String command = commandLine.getText();
+        CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         
         if(command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
             logger.log(Level.WARNING, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
             return;
         }
         
+        commandLineContainer.addCommandHistory(commandLine);
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(_primaryWindow, feedback);
         

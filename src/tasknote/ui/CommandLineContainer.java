@@ -13,6 +13,9 @@ import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 import static tasknote.ui.GuiConstant.UNINITIALIZED_STRING;
 import static tasknote.ui.GuiConstant.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -27,7 +30,10 @@ public class CommandLineContainer extends HBox {
     private final int INDEX_LAST_COMMAND = (commands.size() - 1);
     private final int INDEX_MODIFIED_COMMAND = -1;
     
+    private String SHOW_ALL_COMMAND = "show all";
     private String lastModifiedCommand = UNINITIALIZED_STRING;
+    private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(""));
+    private int historyCommandIndex = 0;
 
     private static CommandLineContainer _commandLineContainer = null;
     private TextField _commandLine = new TextField();
@@ -117,41 +123,54 @@ public class CommandLineContainer extends HBox {
             public void handle(KeyEvent key) {
                 switch (key.getCode()) {
                     case ESCAPE:
-                        GuiController.executeCommand("show all");
+                        resetCommandHistoryIndex();
+                        GuiController.executeCommand(SHOW_ALL_COMMAND);
                         break;
                     case ENTER:
+                        resetCommandHistoryIndex();
                         GuiController.retrieveCommand(_commandLine);
                         break;
                     case UP:
                         if (key.isControlDown()) {
-                            getPrevCommand(_commandLine);
-                        } 
+                            resetCommandHistoryIndex();
+                            getPrevValidCommand(_commandLine);
+                        } else {
+                            getPrevEnteredCommand(historyCommandEntered, _commandLine);
+                        }
                         break;
                     case DOWN:
                         if (key.isControlDown()) {
-                            getNextCommand(_commandLine);
+                            resetCommandHistoryIndex();
+                            getNextValidCommand(_commandLine);
+                        } else {
+                            getNextEnteredCommand(historyCommandEntered, _commandLine);
                         }
                         break;
                     case SPACE:
+                        resetCommandHistoryIndex();
                         isDefaultCommandTruncated(_commandLine);
                         break;
                     case Z:
+                        resetCommandHistoryIndex();
                         if (key.isControlDown()) {
                             GuiController.executeCommand(COMMAND_UNDO);
                         }
                         break;
                     case Y:
+                        resetCommandHistoryIndex();
                         if (key.isControlDown()) {
                             GuiController.executeCommand(COMMAND_REDO);
                         }
                         break;
                     case F:
+                        resetCommandHistoryIndex();
                         if (key.isControlDown()) {
                             _commandLine.setText(COMMAND_SEARCH + " ");
                             _commandLine.end();
                         }
                         break;
                     default:
+                        resetCommandHistoryIndex();
                         break;
                 }
             }
@@ -165,12 +184,47 @@ public class CommandLineContainer extends HBox {
         _enterButton.setOnAction(e -> GuiController.retrieveCommand(_commandLine));
     }
     
+    private void resetCommandHistoryIndex() {
+        historyCommandIndex = 0;
+    }
+    
+    public void addCommandHistory(TextField commandLine) {
+        String command = commandLine.getText();    
+        historyCommandEntered.add(command);
+    }
+    
+    private void getPrevEnteredCommand(ArrayList<String> history, TextField commandLine) {
+        int numberOfCommandsEntered = history.size();
+        
+        if(historyCommandIndex == 0) {
+            historyCommandIndex = (numberOfCommandsEntered - 1);
+        } else {
+            historyCommandIndex--;
+        }
+        
+        commandLine.setText(history.get(historyCommandIndex));
+        commandLine.end();
+    }
+    
+    private void getNextEnteredCommand(ArrayList<String> history, TextField commandLine) {
+        int numberOfCommandsEntered = history.size();
+        
+        if(historyCommandIndex == (numberOfCommandsEntered - 1)) {
+            historyCommandIndex = 0;
+        } else {
+            historyCommandIndex++;
+        }
+        
+        commandLine.setText(history.get(historyCommandIndex));
+        commandLine.end();
+    }
+    
     /*
      * getNextCommand() permits user to cycle through 
      * a list of valid commands, followed by the user's 
      * last edited command.
      */
-    private void getNextCommand(TextField commandLine) {
+    private void getNextValidCommand(TextField commandLine) {
         String originalCommand = commandLine.getText();
         String command = originalCommand.trim().toLowerCase();
 
@@ -195,7 +249,7 @@ public class CommandLineContainer extends HBox {
      * (in reverse) through the user's last edited command, 
      * followed by a list of valid commands.
      */
-    private void getPrevCommand(TextField commandLine) {
+    private void getPrevValidCommand(TextField commandLine) {
         String originalCommand = commandLine.getText();
         String command = originalCommand.trim().toLowerCase();
 
