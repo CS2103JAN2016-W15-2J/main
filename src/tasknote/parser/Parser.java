@@ -253,8 +253,10 @@ public class Parser {
 				String[] maybeHourMinute = tryToParseTime(currentPhrase);
 
 				if (maybeHourMinute[3].equals("maybeNotTime")) {
-
-					if (i + 1 < phraseCount) {
+					
+					if (!Parser.isNumber(currentPhrase)) {
+						switchString = "location";
+					} else if (i + 1 < phraseCount) {
 						String nextLowerPhrase = allPhrases.get(i + 1)
 								.toLowerCase();
 
@@ -772,9 +774,9 @@ public class Parser {
 				if (!alteringName) {
 					name.delete(0, name.length());
 					alteringName = true;
+				} else {
+					name.append(REGEX_WHITESPACE);
 				}
-				
-				name.append(REGEX_WHITESPACE);
 				name.append(currentPhrase);
 				continue;
 			}
