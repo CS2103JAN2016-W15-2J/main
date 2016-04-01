@@ -524,6 +524,9 @@ public class TaskNote {
 		case DONE:
 			helpMessage = Constants.MESSAGE_HELP_DONE;
 			break;
+		case UNDONE:
+			helpMessage = Constants.MESSAGE_HELP_UNDONE;
+			break;
 		case CHANGE_FILE_PATH:
 			helpMessage = Constants.MESSAGE_HELP_CHANGE_FILE_PATH;
 			break;

@@ -58,7 +58,8 @@ public class Constants {
 											+ "7. To reverse previous Undo action: Redo\n"
 											+ "8. To change file path: Relocate\n"
 											+ "9. To display deadline tasks within specified time interval: Show\n"
-											+ "10. To mark task as complete: Done\n\n"
+											+ "10. To mark task as complete: Done\n"
+											+ "11. To mark task as incomplete: Undone\n\n"
 											+ "For specific usage of a command, enter: Help <Command>\n";
 	public static final String MESSAGE_HELP_ADD = "ADD\n"
 												+ "1. Add a Floating task (without deadline):\n"
@@ -89,6 +90,9 @@ public class Constants {
 	public static final String MESSAGE_HELP_DONE = "DONE\n"
 												 + "Marked task with TaskID as Complete:\n"
 												 + "	done <TaskID>";
+	public static final String MESSAGE_HELP_UNDONE = "UNDONE\n"
+			 									 + "Marked task with TaskID as Incomplete:\n"
+			 									 + "	undone <TaskID>";
 	public static final String MESSAGE_HELP_CHANGE_FILE_PATH = "RELOCATE\n"
 															 + "Change file path:"
 															 + "	relocate <new file path>";
