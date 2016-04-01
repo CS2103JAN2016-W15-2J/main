@@ -173,7 +173,7 @@ public class TaskNoteTests {
 
 		// Case 1
 		populateTasks();
-		feedback = note.markTaskAsCompleted(new TaskObject("Some New Task"));
+		feedback = note.setTaskCompletionStatus(new TaskObject("Some New Task"), true);
 		output = String.format(Constants.MESSAGE_DONE_UNSUCCESSFUL);
 		Assert.assertEquals(output, feedback);
 
@@ -182,7 +182,7 @@ public class TaskNoteTests {
 		 * valid
 		 */
 
-		feedback = note.markTaskAsCompleted(new TaskObject("breakfast 10:00"));
+		feedback = note.setTaskCompletionStatus(new TaskObject("breakfast 10:00"), true);
 		output = String.format(Constants.MESSAGE_DONE_SUCCESSFUL, "breakfast 10:00");
 		Assert.assertEquals(output, feedback);
 
