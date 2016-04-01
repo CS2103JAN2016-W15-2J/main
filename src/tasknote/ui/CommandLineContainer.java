@@ -5,9 +5,13 @@ import static tasknote.ui.GuiConstant.COMMAND_DELETE;
 import static tasknote.ui.GuiConstant.COMMAND_DONE;
 import static tasknote.ui.GuiConstant.COMMAND_EDIT;
 import static tasknote.ui.GuiConstant.COMMAND_EXIT;
+import static tasknote.ui.GuiConstant.COMMAND_HELP;
 import static tasknote.ui.GuiConstant.COMMAND_REDO;
+import static tasknote.ui.GuiConstant.COMMAND_RELOCATE;
 import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
+import static tasknote.ui.GuiConstant.COMMAND_SHOW;
 import static tasknote.ui.GuiConstant.COMMAND_UNDO;
+import static tasknote.ui.GuiConstant.COMMAND_UNDONE;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 import static tasknote.ui.GuiConstant.UNINITIALIZED_STRING;
@@ -314,6 +318,23 @@ public class CommandLineContainer extends HBox {
                 return true;
             case (DEFAULT_COMMAND + COMMAND_EXIT):
                 commandLine.setText(COMMAND_EXIT);
+                commandLine.end();
+                return true;
+            //
+            case (DEFAULT_COMMAND + COMMAND_UNDONE):
+                commandLine.setText(COMMAND_UNDONE);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_HELP):
+                commandLine.setText(COMMAND_HELP);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_RELOCATE):
+                commandLine.setText(COMMAND_RELOCATE);
+                commandLine.end();
+                return true;
+            case (DEFAULT_COMMAND + COMMAND_SHOW):
+                commandLine.setText(COMMAND_SHOW);
                 commandLine.end();
                 return true;
             default:
