@@ -34,7 +34,6 @@ public class CommandLineContainer extends HBox {
     private final int INDEX_LAST_COMMAND = (commands.size() - 1);
     private final int INDEX_MODIFIED_COMMAND = -1;
     
-    private String SHOW_ALL_COMMAND = "show all";
     private String lastModifiedCommand = UNINITIALIZED_STRING;
     private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(""));
     private int historyCommandIndex = 0;
@@ -126,10 +125,6 @@ public class CommandLineContainer extends HBox {
             @Override
             public void handle(KeyEvent key) {
                 switch (key.getCode()) {
-                    case ESCAPE:
-                        resetCommandHistoryIndex();
-                        GuiController.executeCommand(SHOW_ALL_COMMAND);
-                        break;
                     case ENTER:
                         resetCommandHistoryIndex();
                         GuiController.retrieveCommand(_commandLine);
@@ -154,25 +149,6 @@ public class CommandLineContainer extends HBox {
                         resetCommandHistoryIndex();
                         isDefaultCommandTruncated(_commandLine);
                         break;
-                    case Z:
-                        resetCommandHistoryIndex();
-                        if (key.isControlDown()) {
-                            GuiController.executeCommand(COMMAND_UNDO);
-                        }
-                        break;
-                    case Y:
-                        resetCommandHistoryIndex();
-                        if (key.isControlDown()) {
-                            GuiController.executeCommand(COMMAND_REDO);
-                        }
-                        break;
-                    case F:
-                        resetCommandHistoryIndex();
-                        if (key.isControlDown()) {
-                            _commandLine.setText(COMMAND_SEARCH + " ");
-                            _commandLine.end();
-                        }
-                        break;
                     default:
                         resetCommandHistoryIndex();
                         break;
@@ -188,7 +164,7 @@ public class CommandLineContainer extends HBox {
         _enterButton.setOnAction(e -> GuiController.retrieveCommand(_commandLine));
     }
     
-    private void resetCommandHistoryIndex() {
+    public void resetCommandHistoryIndex() {
         historyCommandIndex = 0;
     }
     

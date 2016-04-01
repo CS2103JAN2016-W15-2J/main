@@ -1,6 +1,9 @@
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
+import static tasknote.ui.GuiConstant.COMMAND_REDO;
+import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
+import static tasknote.ui.GuiConstant.COMMAND_UNDO;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 
 import java.util.ArrayList;
@@ -9,10 +12,12 @@ import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -33,6 +38,8 @@ public class GuiController extends Application {
 
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
     private static Stage _primaryWindow = null;
+    
+    private String SHOW_ALL_COMMAND = "show all";
     
     private static final Logger logger = Logger.getLogger(GuiController.class.getName());
     private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "An invalid input (empty string, or simple \"add\") is passed for command execution.";
@@ -75,6 +82,9 @@ public class GuiController extends Application {
     }
     
     private void setStage(Stage stage, Scene scene) {
+        CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
+        TextField _commandLine = _commandLineContainer.getCommandLine();
+        
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
         stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH))); 
@@ -82,6 +92,36 @@ public class GuiController extends Application {
         stage.setMaximized(true);
         stage.setMinWidth(WINDOW_MIN_WIDTH);
         stage.setMinHeight(WINDOW_MIN_HEIGHT);
+        
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent key) {
+                switch(key.getCode()) {
+                    case ESCAPE:
+                        executeCommand(SHOW_ALL_COMMAND);
+                        break;
+                    case Z:
+                        if (key.isControlDown()) {
+                            executeCommand(COMMAND_UNDO);
+                        }
+                        break;
+                    case Y:
+                        if (key.isControlDown()) {
+                            executeCommand(COMMAND_REDO);
+                        }
+                        break;
+                    case F:
+                        if (key.isControlDown()) {
+                            _commandLineContainer.resetCommandHistoryIndex();
+                            _commandLine.setText(COMMAND_SEARCH + " ");
+                            _commandLine.end();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
     
     public static void retrieveCommand(TextField commandLine) {
