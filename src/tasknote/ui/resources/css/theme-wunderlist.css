@@ -58,13 +58,14 @@
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-background-insets: 0;
-    -fx-padding: 0 5px;
+    -fx-padding: 0 8px;
     -fx-shape: null;
  }
 
  .tasks-container .scroll-bar:horizontal .thumb,
  .tasks-container .scroll-bar:vertical .thumb {
     -fx-background-color: #fdfcee;
+    -fx-background-insets: 0 5px;
     -fx-opacity: 0.2;
 	-fx-background-radius: 20px;
  }
@@ -84,11 +85,11 @@
  	-fx-padding: 2px 0 2px 5px;
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
-    -fx-background-insets: 0 2px 5px 0px;
+    -fx-background-insets: 0 0 10px 0;
  }
  
  .tasks-list-cell:empty {
-    -fx-padding: 2px;
+    -fx-padding: 0px;
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 }
