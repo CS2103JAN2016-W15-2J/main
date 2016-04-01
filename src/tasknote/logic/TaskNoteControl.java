@@ -9,6 +9,7 @@ import tasknote.logic.Commands.HelpCommand;
 import tasknote.logic.Commands.SearchCommand;
 import tasknote.logic.Commands.UpdateCommand;
 import tasknote.logic.Commands.DoneCommand;
+import tasknote.logic.Commands.UndoneCommand;
 import tasknote.logic.Commands.UndoCommand;
 import tasknote.logic.Commands.RedoCommand;
 import tasknote.logic.Commands.ShowCommand;
@@ -22,16 +23,13 @@ import tasknote.shared.Constants;
 import java.util.ArrayList;
 
 /**
- * This class is used to interact directly with the UI to process 
- * and execute User Commands. 
- * The Command object will be used to create a new instance of the
- * corresponding Command Class. 
- * This Class interacts with the Parser Component, which parses the 
- * User Command and returns relevant data. 
- * Once each command is executed, the task list will be updated with 
- * the relevant task objects to be displayed to the User. 
- * Each method in this class that executes a command returns a 
- * feedback String to the caller.
+ * This class is used to interact directly with the UI to process and execute
+ * User Commands. The Command object will be used to create a new instance of
+ * the corresponding Command Class. This Class interacts with the Parser
+ * Component, which parses the User Command and returns relevant data. Once each
+ * command is executed, the task list will be updated with the relevant task
+ * objects to be displayed to the User. Each method in this class that executes
+ * a command returns a feedback String to the caller.
  *
  * @author Murali Girish Narayanan
  */
@@ -60,9 +58,9 @@ public class TaskNoteControl {
 	public String executeCommand(String userCommand) {
 		boolean throwException = true;
 		COMMAND_TYPE commandType;
-		try{
+		try {
 			commandType = Parser.getCommandType(userCommand, throwException);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throwException = false;
 			commandType = Parser.getCommandType(userCommand, throwException);
 		}
@@ -102,6 +100,9 @@ public class TaskNoteControl {
 		case DONE:
 			response = executeMarkAsComplete(userCommand);
 			break;
+		case UNDONE:
+			response = executeMarkAsIncomplete(userCommand);
+			break;
 		case CHANGE_FILE_PATH:
 			response = executeChangeFilePath(userCommand);
 			break;
@@ -109,12 +110,12 @@ public class TaskNoteControl {
 			response = executeShow(userCommand);
 			break;
 		case CHANGE_CATEGORY:
-			//TODO: Parser
-			//response = executeChangeCategory(userCommand);
+			// TODO: Parser
+			// response = executeChangeCategory(userCommand);
 			response = "";
 			break;
 		case HELP:
-			//TODO: Parser
+			// TODO: Parser
 			response = executeHelp(userCommand);
 			break;
 		case INVALID:
@@ -221,7 +222,7 @@ public class TaskNoteControl {
 		boolean throwException = true;
 		String parserUpdateIdFeedback = new String(" ");
 		String parserUpdateObjectFeedback = new String(" ");
-		
+
 		try {
 			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
 		} catch (Exception e) {
@@ -229,7 +230,7 @@ public class TaskNoteControl {
 			parserUpdateIdFeedback = e.getMessage();
 			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
 		}
-		
+
 		TaskObject oldTaskObject = null;
 		throwException = true;
 		if (taskNote.isValidTaskId(updateTaskId)) {
@@ -320,6 +321,41 @@ public class TaskNoteControl {
 		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
+	
+	/**
+	 * This operation executes the User's Mark As Incomplete command
+	 *
+	 * @param User
+	 *            Command
+	 * @return Status of Operation
+	 */
+	private static String executeMarkAsIncomplete(String userCommand) {
+		// TODO:Parser - change method name to getTaskId
+		int taskId;
+		boolean throwException = true;
+		String parserFeedback = new String(" ");
+		try {
+			// TODO:Parser - change method name to getTaskId
+			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+		} catch (Exception e) {
+			throwException = false;
+			parserFeedback = e.getMessage();
+			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+		}
+		TaskObject taskObject;
+		if (taskNote.isValidTaskId(taskId)) {
+			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
+			taskObject = displayList.get(taskId);
+		} else {
+			taskObject = null;
+		}
+		command = new UndoneCommand(taskNote, taskObject);
+		command.execute();
+		command.refreshDisplay();
+		String response = command.getFeedBack();
+		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		return response;
+	}
 
 	/**
 	 * This operation executes the User's request to change the directory the
@@ -333,7 +369,7 @@ public class TaskNoteControl {
 		String filePath;
 		boolean throwException = true;
 		String parserFeedback = new String(" ");
-		try{
+		try {
 			filePath = Parser.parseFilePath(userCommand, throwException);
 		} catch (Exception e) {
 			throwException = false;
@@ -347,22 +383,23 @@ public class TaskNoteControl {
 		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
-	
+
 	/**
-	 * This operation executes the User's request to show
-	 * all tasks whose deadlines are within the specified time interval
+	 * This operation executes the User's request to show all tasks whose
+	 * deadlines are within the specified time interval
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	
-	private static String executeShow(String userCommand){
+
+	private static String executeShow(String userCommand) {
 		ShowInterval timeInterval;
 		int countInterval;
 		boolean throwException = true;
 		String parserShowFeedback = new String(" ");
 		String parserIntervalFeedback = new String(" ");
-		
+
 		try {
 			timeInterval = Parser.parseShow(userCommand, throwException);
 		} catch (Exception e) {
@@ -370,7 +407,7 @@ public class TaskNoteControl {
 			parserShowFeedback = e.getMessage();
 			timeInterval = Parser.parseShow(userCommand, throwException);
 		}
-		
+
 		throwException = true;
 		try {
 			countInterval = Parser.getInterval(userCommand, throwException);
@@ -387,26 +424,28 @@ public class TaskNoteControl {
 		response = response.concat(Constants.NEW_LINE_STRING).concat(parserIntervalFeedback);
 		return response;
 	}
-	
-	
+
 	/**
-	 * This operation executes the User's request to show
-	 * all tasks whose deadlines are within the specified time interval
+	 * This operation executes the User's request to show all tasks whose
+	 * deadlines are within the specified time interval
 	 *
-	 * @param User Command
+	 * @param User
+	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeChangeCategory(String userCommand){
-		//TODO: Parser
+	private static String executeChangeCategory(String userCommand) {
+		// TODO: Parser
 		ShowCategory category;
 		boolean throwException = true;
 		String parserFeedback = new String(" ");
 		try {
-			//category = Parser.parseChangeCateogry(userCommand, throwException);
+			// category = Parser.parseChangeCateogry(userCommand,
+			// throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			//category = Parser.parseChangeCateogry(userCommand, throwException);
+			// category = Parser.parseChangeCateogry(userCommand,
+			// throwException);
 		}
 		category = parseChangeCategory(userCommand);
 		command = new ChangeCategoryCommand(taskNote, category);
@@ -416,19 +455,19 @@ public class TaskNoteControl {
 		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
 		return response;
 	}
-	
+
 	private static ShowCategory parseChangeCategory(String userCommand) {
 		String[] parts = userCommand.split("\\s+");
 		String category = parts[1];
-		if(category.equalsIgnoreCase("ALL")){
+		if (category.equalsIgnoreCase("ALL")) {
 			return ShowCategory.ALL;
-		}else if(category.equalsIgnoreCase("OUTSTANDING")){
+		} else if (category.equalsIgnoreCase("OUTSTANDING")) {
 			return ShowCategory.OUTSTANDING;
-		}else if(category.equalsIgnoreCase("OVERDUE")){
+		} else if (category.equalsIgnoreCase("OVERDUE")) {
 			return ShowCategory.OVERDUE;
-		}else if(category.equalsIgnoreCase("COMPLETED")){
+		} else if (category.equalsIgnoreCase("COMPLETED")) {
 			return ShowCategory.COMPLETED;
-		}else{
+		} else {
 			return ShowCategory.COMPLETED;
 		}
 	}

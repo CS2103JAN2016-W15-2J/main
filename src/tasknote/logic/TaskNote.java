@@ -275,7 +275,7 @@ public class TaskNote {
 					history.pushDeleteToUndo(oldTaskObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
 					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushDoneToRedo(taskObject);
+					history.pushTaskCompletionToRedo(taskObject);
 					taskList.remove(taskObject);
 					boolean isComplete = taskObject.getIsMarkedDone();
 					taskObject.setIsMarkedDone(!isComplete);
@@ -323,7 +323,7 @@ public class TaskNote {
 					history.pushDeleteToUndo(newTaskObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
 					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushDoneToUndo(taskObject);
+					history.pushTaskCompletionToUndo(taskObject);
 					taskList.remove(taskObject);
 					boolean isComplete = taskObject.getIsMarkedDone();
 					taskObject.setIsMarkedDone(!isComplete);
@@ -348,22 +348,40 @@ public class TaskNote {
 	 * @param TaskObject
 	 * @return status of the operation
 	 */
-	public String markTaskAsCompleted(TaskObject taskObject) {
+	public String setTaskCompletionStatus(TaskObject taskObject, boolean isComplete) {
+		String feedback = new String();
 		boolean isSuccess = true;
 		try {
 			assert (isValidTaskObject(taskObject) == isSuccess);
-			taskObject.setIsMarkedDone(isSuccess);
+			taskObject.setIsMarkedDone(isComplete);
+			history.pushTaskCompletionToUndo(taskObject);
 			sortAndSave(taskList);
-			history.pushDoneToUndo(taskObject);
-			logger.log(Level.INFO, Constants.INFO_DONE_SUCCESSFUL);
+			if(isComplete) {
+				logger.log(Level.INFO, Constants.INFO_DONE_SUCCESSFUL);
+			} else {
+				logger.log(Level.INFO, Constants.INFO_UNDONE_SUCCESSFUL);
+			}
 		} catch (Exception ex) {
 			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_FAILURE, ex));
+			if(isComplete) {
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_FAILURE, ex));
+			} else {
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_INCOMPLETE_FAILURE, ex));
+			}
 		} catch (Error er) {
 			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_INVALID_OBJECT, er));
+			if(isComplete) {
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_COMPLETE_INVALID_OBJECT, er));
+			} else {
+				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_INCOMPLETE_INVALID_OBJECT, er));
+			}
 		}
-		return showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+		if(isComplete) {
+			feedback = showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+		} else {
+			feedback = showFeedback(COMMAND_TYPE.UNDONE, isSuccess, taskObject);
+		}
+		return feedback;
 	}
 
 	/**
@@ -843,6 +861,13 @@ public class TaskNote {
 				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
 			} else {
 				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
+			}
+		case UNDONE:
+			if (isSuccess && task != null) {
+				String taskName = task.getTaskName();
+				return String.format(Constants.MESSAGE_UNDONE_SUCCESSFUL, taskName);
+			} else {
+				return Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
 			}
 		case CHANGE_FILE_PATH:
 			if (isSuccess) {
