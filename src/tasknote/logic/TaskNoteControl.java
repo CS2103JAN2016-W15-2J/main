@@ -8,7 +8,7 @@ import tasknote.logic.Commands.ChangeFilePathCommand;
 import tasknote.logic.Commands.HelpCommand;
 import tasknote.logic.Commands.SearchCommand;
 import tasknote.logic.Commands.UpdateCommand;
-import tasknote.logic.Commands.CompleteCommand;
+import tasknote.logic.Commands.DoneCommand;
 import tasknote.logic.Commands.UndoCommand;
 import tasknote.logic.Commands.RedoCommand;
 import tasknote.logic.Commands.ShowCommand;
@@ -313,7 +313,7 @@ public class TaskNoteControl {
 		} else {
 			taskObject = null;
 		}
-		command = new CompleteCommand(taskNote, taskObject);
+		command = new DoneCommand(taskNote, taskObject);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();

@@ -4,13 +4,13 @@ import tasknote.logic.TaskNote;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 
-public class CompleteCommand implements Command  {
+public class DoneCommand implements Command  {
 	
 	private TaskNote taskNote;
 	private TaskObject taskObject;
 	private String statusOfOperation;
 
-	public CompleteCommand(TaskNote taskNote, TaskObject taskObject) {
+	public DoneCommand(TaskNote taskNote, TaskObject taskObject) {
 		this.taskObject = taskObject;
 		this.taskNote = taskNote;
 		statusOfOperation = new String();
