@@ -27,6 +27,7 @@ public class Parser {
 	private static final String COMMAND_SHOW = "show";
 	private static final String COMMAND_RELOCATE = "relocate";
 	private static final String COMMAND_HELP = "help";
+	private static final String COMMAND_UNDONE = "undone";
 
 	// Here are the valid keywords accepted by
 	// the program
@@ -104,6 +105,8 @@ public class Parser {
 			return COMMAND_TYPE.CHANGE_FILE_PATH;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
 			return COMMAND_TYPE.HELP;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDONE)) {
+			return COMMAND_TYPE.UNDONE;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -159,6 +162,8 @@ public class Parser {
 			return COMMAND_TYPE.CHANGE_FILE_PATH;
 		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
 			return COMMAND_TYPE.HELP;
+		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDONE)) {
+			return COMMAND_TYPE.UNDONE;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -1545,7 +1550,7 @@ public class Parser {
 		}
 	}
 
-	public static int getUpdateTaskId(String userCommand, boolean throwException) {
+	public static int getTaskId(String userCommand, boolean throwException) {
 
 		String[] splitUserCommand = userCommand.trim().split(REGEX_WHITESPACE);
 
