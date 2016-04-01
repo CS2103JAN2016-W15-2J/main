@@ -32,36 +32,57 @@
  * TASKS CONTAINER
  **************************************************/
  .tasks-container {
- 	/* 
- 	-fx-background-color: #26292c; */
- 	-fx-padding: 3px;
  	-fx-padding: 10 15 10 15;
  }
  
+ .tasks-container .scroll-bar:vertical,
+ .tasks-container .scroll-bar:horizontal {
+ 	-fx-background-color: transparent;
+ }
+ 
+ .tasks-container .scroll-bar:horizontal .increment-button,
+ .tasks-container .scroll-bar:horizontal .increment-button:hover,
+ .tasks-container .scroll-bar:horizontal .decrement-button,
+ .tasks-container .scroll-bar:horizontal .decrement-button:hover{
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+ }
+ 
+ .tasks-container .scroll-bar .increment-arrow,
+ .tasks-container .scroll-bar .increment-arrow:hover,
+ .tasks-container .scroll-bar .decrement-arrow,
+ .tasks-container .scroll-bar .decrement-arrow:hover {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0 5px;
+    -fx-shape: null;
+ }
+
+ .tasks-container .scroll-bar:horizontal .thumb,
+ .tasks-container .scroll-bar:vertical .thumb {
+    -fx-background-color: #fdfcee;
+    -fx-opacity: 0.2;
+	-fx-background-radius: 20px;
+ }
+ 
+ .tasks-container .scroll-bar:horizontal .thumb:hover,
+ .tasks-container .scroll-bar:vertical .thumb:hover {
+    -fx-opacity: 0.3;
+ }
+ 
  .tasks-list {
- 	/* 
- 	-fx-background-color: #313437;*/
  	-fx-padding: 3px;
  	-fx-background-color: inherit;
  	-fx-background-radius: 5;
  }
  
- /* TODO How to implement? */
- /* 
- .tasks-list.scroll-bar:vertical,
- .tasks-list.scroll-bar:horizontal {
- 	-fx-background-color:transparent;
- }
- 
- .tasks-list.scroll-bar:increment-button,
- .tasks-list.scroll-bar:decrement-button {
- 	-fx-background-color:transparent;
- }
- */
- 
  .tasks-list-cell {
  	-fx-padding: 2px 0 2px 5px;
-    -fx-background-color: white;
+    -fx-background-color: #ffffff;
     -fx-background-radius: 10;
     -fx-background-insets: 0 2px 5px 0px;
  }
