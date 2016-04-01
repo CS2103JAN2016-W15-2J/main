@@ -224,11 +224,11 @@ public class TaskNoteControl {
 		String parserUpdateObjectFeedback = new String(" ");
 
 		try {
-			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
+			updateTaskId = Parser.getTaskId(userCommand, throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserUpdateIdFeedback = e.getMessage();
-			updateTaskId = Parser.getUpdateTaskId(userCommand, throwException);
+			updateTaskId = Parser.getTaskId(userCommand, throwException);
 		}
 
 		TaskObject oldTaskObject = null;
@@ -301,11 +301,11 @@ public class TaskNoteControl {
 		String parserFeedback = new String(" ");
 		try {
 			// TODO:Parser - change method name to getTaskId
-			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+			taskId = Parser.getTaskId(userCommand, throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+			taskId = Parser.getTaskId(userCommand, throwException);
 		}
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
@@ -336,11 +336,11 @@ public class TaskNoteControl {
 		String parserFeedback = new String(" ");
 		try {
 			// TODO:Parser - change method name to getTaskId
-			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+			taskId = Parser.getTaskId(userCommand, throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			taskId = Parser.getUpdateTaskId(userCommand, throwException);
+			taskId = Parser.getTaskId(userCommand, throwException);
 		}
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
