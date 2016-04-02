@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
@@ -22,6 +25,7 @@ public class FileManipulation{
 	
 	private static File textFile;
 	private static File pathFile;
+	private static File aliasFile;
 	
 	private String textFileName;
 
@@ -45,6 +49,7 @@ public class FileManipulation{
 	
 	private void initializeFiles(){
 		initializePathFile();
+		initializeAliasFile();
 		String fileName = extractCanonicalFileName();
 		fileName = handleEmptyFileNameExtracted(fileName);
 		initializeTextFile(fileName);
@@ -82,6 +87,14 @@ public class FileManipulation{
 
 	private void initializePathFile() {
 		pathFile = new File(getDefaultPathFileName());
+	}
+	
+	private void initializeAliasFile() {
+		pathFile = new File(getDefaultAliasFileName());
+	}
+	
+	private String getDefaultAliasFileName() {
+		return constants.getAliasFileName();
 	}
 
 	private String getDefaultPathFileName() {
@@ -205,6 +218,12 @@ public class FileManipulation{
 			throw new NullPointerException();
 		}
 	}
+	
+	private void throwNullPointerExceptionIfNoMoreLinesToRead(String lineRead) {
+		if(isNullString(lineRead)){
+			throw new NullPointerException();
+		}
+	}
 
 	private boolean isNullObject(String[] objectRead, int index) {
 		return objectRead[index] == null;
@@ -249,6 +268,31 @@ public class FileManipulation{
 			BufferedOutputStream fileWriter) throws IOException{
 			fileWriter.write(bufferMemory,0,bufferMemory.length);
 			fileWriter.flush();
+	}
+	
+	public HashMap<String, String> readAliasFromAliasFile() throws FileNotFoundException{
+		HashMap<String, String> alias = new HashMap<String, String>();
+		BufferedReader read = new BufferedReader(new FileReader(aliasFile));
+		try {
+			while(true){
+				String aliasLine = read.readLine();
+				throwNullPointerExceptionIfNoMoreLinesToRead(aliasLine);
+				String[] aliasPair = aliasLine.split(" ");
+				String command = aliasPair[0];
+				String aliasCommand = aliasPair[1];
+				alias.put(command, aliasCommand);
+			}
+		}catch(IOException ioe){
+			
+		}catch(NullPointerException npe){
+		}
+		
+		try{
+			read.close();
+		}catch(IOException ioe){
+			
+		}
+		return alias;
 	}
 
 	/**

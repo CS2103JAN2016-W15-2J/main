@@ -4,14 +4,17 @@ import tasknote.shared.TaskObject;
 import tasknote.shared.Constants;
 import tasknote.shared.TaskListIOException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Storage{
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
+	private AliasManipulation aliasManipulator;
 	private StorageConstants constants;
 	
 	private static final Logger storageLog = Logger.getLogger( Storage.class.getName() );
@@ -20,9 +23,8 @@ public class Storage{
 	 * constructor to construct FileManipulator to manipulate items from/to file
 	 */
 	public Storage(){
-		fileManipulator = new FileManipulation();
-		pathManipulator = new PathManipulation();
-		constants = new StorageConstants();
+		initializeFamilyClasses();
+		readAndSetAlias();
 	}
 	
 	/**
@@ -102,8 +104,35 @@ public class Storage{
 	}
 	
 	// private helper methods
+	private void initializeFamilyClasses() {
+		fileManipulator = new FileManipulation();
+		pathManipulator = new PathManipulation();
+		aliasManipulator = new AliasManipulation();
+		constants = new StorageConstants();
+	}
+	
+	private void readAndSetAlias() {
+		HashMap<String, String> alias = readAlias();
+		aliasManipulator.setAlias(alias);
+	}
+	
+	public HashMap<String, String> addAlias(String command, String aliasCommand){
+		aliasManipulator.addAlias(command, aliasCommand);
+		return aliasManipulator.getAlias();
+	}
+	
+	public HashMap<String, String> readAlias(){
+		try {
+			return fileManipulator.readAliasFromAliasFile();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new HashMap<String, String>();
+	}
+	
 	private boolean logFailedPathEntered(String textFileName) {
-		storageLog.log(Level.WARNING, String.format(constants.getWrongPathName(), textFileName));
+		storageLog.log(Level.WARNING, String.format(constants.getFailedPathChange(), textFileName));
 		return false;
 	}
 	

@@ -5,23 +5,23 @@ public class StorageConstants{
 	/**
 	 * Magic Strings for TaskObject
 	 */
-	private final static String[] STRING_TASKOBJECT = { "taskName:"
-														, "dateDay:"
-														, "dateMonth:"
-														, "dateYear:"
-														, "dateHour:"
-														, "dateMinute:"
-														, "duration:"
-														, "location:"
-														, "notifyTime:"
-														, "taskStatus:"
-														, "taskType:"
-														, "endDateDay:"
-														, "endDateMonth:"
-														, "endDateYear:"
-														, "endDateHour:"
-														, "endDateMinute:"
-														, "" };
+	private final String[] STRING_TASKOBJECT = {  "taskName:"
+												, "dateDay:"
+												, "dateMonth:"
+												, "dateYear:"
+												, "dateHour:"
+												, "dateMinute:"
+												, "duration:"
+												, "location:"
+												, "notifyTime:"
+												, "taskStatus:"
+												, "taskType:"
+												, "endDateDay:"
+												, "endDateMonth:"
+												, "endDateYear:"
+												, "endDateHour:"
+												, "endDateMinute:"
+												, "" };
 	
 	/**
 	 * Task Status
@@ -38,10 +38,10 @@ public class StorageConstants{
 	private final String STRING_NEWLINE = "\n";
 	private final String STRING_EMPTY_STRING = "";
 	private final String STRING_SLASH = "/";
-	private final String STRING_CURRENT_DIRECTORY = ".";
-	private final String STRING_PARENT_DIRECTORY = "..";
 	private final String STRING_PATH_SLASH = "\\";
 	private final String STRING_PATH_DIVISION = "\\\\";
+	private final String STRING_CURRENT_DIRECTORY = ".";
+	private final String STRING_PARENT_DIRECTORY = "..";
 	private final String STRING_TEXT_FILE_END = ".txt";
 	
 	/**
@@ -54,10 +54,11 @@ public class StorageConstants{
 	/**
 	 * file/path name
 	 */
-	private final String defaultFileName = "taskContents.txt";
-	private final String defaultPathFileName = "pathContents.txt";
+	private final String DEFAULT_FILE_NAME = "taskContents.txt";
+	private final String DEFAULT_PATH_FILE_NAME = "pathContents.txt";
+	private final String DEFAULT_ALIAS_FILE_NAME = "aliasContents.txt";
 	
-	private static final String FORMAT_PATH_NAME = "%1$s%2$s";
+	private final String FORMAT_PATH_NAME = "%1$s%2$s";
 	
 	/**
 	 * Magic Integers
@@ -112,8 +113,28 @@ public class StorageConstants{
 		return STRING_TEXT_FILE_END;
 	}
 	
-	public String addFileNameToPath(String pathName, String fileName){
-		return String.format(FORMAT_PATH_NAME, pathName, fileName);
+	public String getFailedPathChange(){
+		return LOGGING_MESSAGE_FAILED_PATH_CHANGE;
+	}
+	
+	public String getFailedUndo(){
+		return LOGGING_MESSAGE_FAILED_UNDO;
+	}
+	
+	public String getFailedRedo(){
+		return LOGGING_MESSAGE_FAILED_REDO;
+	}
+	
+	public String getFileName(){
+		return DEFAULT_FILE_NAME;
+	}
+	
+	public String getPathFileName(){
+		return DEFAULT_PATH_FILE_NAME;
+	}
+	
+	public String getAliasFileName(){
+		return DEFAULT_ALIAS_FILE_NAME;
 	}
 	
 	public int getBufferSize(){
@@ -128,24 +149,7 @@ public class StorageConstants{
 		return SUM_OF_TASK_STATUS;
 	}
 	
-	public String getFileName(){
-		return defaultFileName;
-	}
-	
-	public String getPathFileName(){
-		return defaultPathFileName;
-	}
-	
-	//Methods involving getting logging message
-	public String getWrongPathName(){
-		return LOGGING_MESSAGE_FAILED_PATH_CHANGE;
-	}
-	
-	public String getFailedUndo(){
-		return LOGGING_MESSAGE_FAILED_UNDO;
-	}
-	
-	public String getFailedRedo(){
-		return LOGGING_MESSAGE_FAILED_REDO;
+	public String addFileNameToPath(String pathName, String fileName){
+		return String.format(FORMAT_PATH_NAME, pathName, fileName);
 	}
 }
