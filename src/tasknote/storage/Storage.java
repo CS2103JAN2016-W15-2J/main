@@ -62,7 +62,6 @@ public class Storage{
 	 */
 	public boolean changePath(String newPathName){
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		System.out.println("full path name = " + textFileName);
 		if(isPathForMac(textFileName)){
 			return fileManipulator.changeFileName(textFileName);	
 		}
@@ -170,10 +169,8 @@ public class Storage{
 		String currentFullPath = fileManipulator.readFullPathFromPathFile();
 		String currentPath = extractCurrentPath(currentFullPath,previousTextFileName);
 		String newFullPath = constants.addFileNameToPath(currentPath, fileName);
-		System.out.println("fileName = " + fileName);
 		if(hasParentPath(pathName)){
 			String parentPath = pathManipulator.getParentPath(newFullPath);
-			System.out.println("parent path = " + parentPath);
 			return concatPathIfNeeded(parentPath,fileName);
 		}
 		return newFullPath;
