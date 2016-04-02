@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class Storage{
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
+	private StorageConstants constants;
 	
 	private static final Logger storageLog = Logger.getLogger( Storage.class.getName() );
 	
@@ -22,7 +22,7 @@ public class Storage{
 	public Storage(){
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
+		constants = new StorageConstants();
 	}
 	
 	/**
@@ -62,10 +62,9 @@ public class Storage{
 	 */
 	public boolean changePath(String newPathName){
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		
+		System.out.println("full path name = " + textFileName);
 		if(isPathForMac(textFileName)){
-			return fileManipulator.changeFileName(textFileName);
-			
+			return fileManipulator.changeFileName(textFileName);	
 		}
 		
 		String textFileNameForWindows = convertFilePathForWindows(textFileName);
@@ -74,20 +73,7 @@ public class Storage{
 			return fileManipulator.changeFileName(textFileNameForWindows);
 		}
 			
-		storageLog.log(Level.WARNING, String.format(magicValuesRetriever.getWrongPathName(), textFileName));
-		return false;
-	}
-
-	private String convertFilePathForWindows(String textFileName) {
-		return textFileName.replace(magicValuesRetriever.getSlash(), magicValuesRetriever.getPathSlash());
-	}
-
-	private boolean isPathForWindows(String textFileName) {
-		return pathManipulator.canChangePath(textFileName);
-	}
-
-	private boolean isPathForMac(String textFileName) {
-		return pathManipulator.canChangePath(textFileName);
+		return logFailedPathEntered(textFileName);
 	}
 	
 	/**
@@ -99,8 +85,7 @@ public class Storage{
 			String previousPath = pathManipulator.extractUndoPathString();
 			return fileManipulator.changeFileName(previousPath);
 		}catch(NullPointerException npe){
-			storageLog.log(Level.FINE, magicValuesRetriever.getFailedUndo());
-			return false;
+			return logUndoFailed();
 		}
 	}
 	
@@ -113,20 +98,122 @@ public class Storage{
 			String nextPath = pathManipulator.extractRedoPathString();
 			return fileManipulator.changeFileName(nextPath);
 		}catch(NullPointerException npe){
-			storageLog.log(Level.FINE, magicValuesRetriever.getFailedRedo());
-			return false;
+			return logRedoFailed();
 		}
 	}
 	
 	// private helper methods
+	private boolean logFailedPathEntered(String textFileName) {
+		storageLog.log(Level.WARNING, String.format(constants.getWrongPathName(), textFileName));
+		return false;
+	}
+	
+	private boolean logUndoFailed() {
+		storageLog.log(Level.FINE, constants.getFailedUndo());
+		return false;
+	}
+	
+	private boolean logRedoFailed() {
+		storageLog.log(Level.FINE, constants.getFailedRedo());
+		return false;
+	}
+	
+	private String convertFilePathForWindows(String textFileName) {
+		return textFileName.replace(constants.getSlash(), constants.getPathSlash());
+	}
+
+	private boolean isPathForWindows(String textFileName) {
+		return pathManipulator.canChangePath(textFileName);
+	}
+
+	private boolean isPathForMac(String textFileName) {
+		return pathManipulator.canChangePath(textFileName);
+	}
+	
 	private String concatPathIfNeeded(String pathName, String previousTextFileName){
-		if(pathName.endsWith(magicValuesRetriever.getTextFileEnding())){
-			return pathName;
-		}else if(pathName.endsWith(magicValuesRetriever.getSlash())){
-			return magicValuesRetriever.produceFullPathName(pathName, previousTextFileName);
+		if(isFileNameEntered(pathName) && hasCurrentOrParentDirectoryGiven(pathName)){
+			return produceFullPathWithDirectoryCommand(pathName, previousTextFileName);
+		}else if(isPathSlashEnteredAtTheEnd(pathName)){
+			return addFileNameAndProduceFullPath(pathName, previousTextFileName);
+		}else if(isFileNameEntered(pathName)){
+			return produceFullPathWithNewFileName(pathName, previousTextFileName);
 		}else{
-			pathName = pathName.concat(magicValuesRetriever.getSlash());
-			return concatPathIfNeeded(pathName, previousTextFileName);
+			return addSlashAndProduceFullPath(pathName, previousTextFileName);
 		}
+	}
+
+	private String produceFullPathWithNewFileName(String pathName, String previousTextFileName) {
+		String fileName = getFileName(pathName, previousTextFileName);
+		if(fileName.equals(pathName)){
+			String currentFullPath = fileManipulator.readFullPathFromPathFile();
+			String currentPath = extractCurrentPath(currentFullPath,previousTextFileName);
+			String newFullPath = constants.addFileNameToPath(currentPath, fileName);
+			return newFullPath;
+		}
+		return pathName;
+	}
+
+	private String getFileName(String pathName, String previousTextFileName) {
+		String fileName = fileManipulator.extractTextFileName(pathName);
+		if(isEmptyFileName(fileName)){
+			fileName = previousTextFileName;
+		}
+		return fileName;
+	}
+
+	private boolean isEmptyFileName(String fileName) {
+		return fileName == null;
+	}
+	
+	private String produceFullPathWithDirectoryCommand(String pathName, String previousTextFileName) {
+		String fileName = fileManipulator.extractTextFileName(pathName);
+		String currentFullPath = fileManipulator.readFullPathFromPathFile();
+		String currentPath = extractCurrentPath(currentFullPath,previousTextFileName);
+		String newFullPath = constants.addFileNameToPath(currentPath, fileName);
+		System.out.println("fileName = " + fileName);
+		if(hasParentPath(pathName)){
+			String parentPath = pathManipulator.getParentPath(newFullPath);
+			System.out.println("parent path = " + parentPath);
+			return concatPathIfNeeded(parentPath,fileName);
+		}
+		return newFullPath;
+	}
+
+	private boolean hasCurrentOrParentDirectoryGiven(String pathName) {
+		return hasParentPath(pathName) || hasCurrentPath(pathName);
+	}
+
+	private boolean hasCurrentPath(String pathName) {
+		return pathName.startsWith(constants.getCurrentDirectory());
+	}
+
+	private boolean hasParentPath(String pathName) {
+		return pathName.startsWith(constants.getParentDirectory());
+	}
+
+	private String extractCurrentPath(String currentFullPath, String previousTextFileName) {
+		return currentFullPath.replace(previousTextFileName, constants.getEmptyString());
+	}
+
+	private String addFileNameAndProduceFullPath(String pathName, String previousTextFileName) {
+		String newPath = constants.addFileNameToPath(pathName, previousTextFileName);
+		return concatPathIfNeeded(newPath,previousTextFileName);
+	}
+
+	private String addSlashAndProduceFullPath(String pathName, String previousTextFileName) {
+		pathName = addSlashToFullPath(pathName);
+		return concatPathIfNeeded(pathName, previousTextFileName);
+	}
+
+	private String addSlashToFullPath(String pathName) {
+		return pathName.concat(constants.getSlash());
+	}
+
+	private boolean isPathSlashEnteredAtTheEnd(String pathName) {
+		return pathName.endsWith(constants.getSlash()) || pathName.endsWith(constants.getPathSlash());
+	}
+
+	private boolean isFileNameEntered(String pathName) {
+		return pathName.endsWith(constants.getTextFileEnding());
 	}
 }

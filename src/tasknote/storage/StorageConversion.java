@@ -5,13 +5,13 @@ import java.io.IOException;
 import tasknote.shared.TaskObject;
 
 public class StorageConversion{
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
+	private StorageConstants constants;
     
 	/**
 	 * Constructor
 	 */
 	public StorageConversion(){
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
+		constants = new StorageConstants();
 	}
 	
 	/**
@@ -24,7 +24,7 @@ public class StorageConversion{
 	public TaskObject convertStringToTaskObject(String[] linesInTask) throws ClassNotFoundException, IOException{
 		TaskObject returnObject = new TaskObject();
 		
-		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < constants.getTotalTitles(); ++index){
 			storeItemIntoTaskObject(index, linesInTask[index], returnObject);
 		}
 		//setGregorianCalendar(returnObject, getGregorianCalendarFromTask(returnObject));
@@ -254,9 +254,9 @@ public class StorageConversion{
 
 	private void setTaskStatus(TaskObject returnObject, String[] content) {
 		String taskStatus = content[1].trim();
-		for(int indexEnum = 0; indexEnum < magicValuesRetriever.getTotalTaskStatus(); ++indexEnum){
-			if(taskStatus.equalsIgnoreCase(magicValuesRetriever.getTaskStatus(indexEnum))){
-				returnObject.setTaskStatus(magicValuesRetriever.getTaskStatus(indexEnum));
+		for(int indexEnum = 0; indexEnum < constants.getTotalTaskStatus(); ++indexEnum){
+			if(taskStatus.equalsIgnoreCase(constants.getTaskStatus(indexEnum))){
+				returnObject.setTaskStatus(constants.getTaskStatus(indexEnum));
 			}
 		}
 	}
@@ -307,7 +307,7 @@ public class StorageConversion{
 	}
 
 	private String[] extractContent(int index, String string) {
-		return string.split(magicValuesRetriever.getTaskObjectTitle(index));
+		return string.split(constants.getTaskObjectTitle(index));
 	}
 
 	private boolean isNullString(String string) {
@@ -324,7 +324,7 @@ public class StorageConversion{
 		//GregorianCalendar taskCalendar = getGregorianCalendarFromTask(task);
 		//TimeZone taskTimeZone = taskCalendar.getTimeZone();
 		
-		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < constants.getTotalTitles(); ++index){
 			convertedString.append(extractItemFromTaskObject(index, task));
 		}
 		
@@ -333,8 +333,8 @@ public class StorageConversion{
 	
 	private StringBuffer extractItemFromTaskObject(int taskObjectLine, TaskObject task){
 		StringBuffer tempBuffer = new StringBuffer("");
-		tempBuffer.append(magicValuesRetriever.getTaskObjectTitle(taskObjectLine));
-		tempBuffer.append(magicValuesRetriever.getSpace());
+		tempBuffer.append(constants.getTaskObjectTitle(taskObjectLine));
+		tempBuffer.append(constants.getSpace());
 		switch(taskObjectLine){
 			case 0:
 				writeTaskNameToStringBuffer(task, tempBuffer);
@@ -411,7 +411,7 @@ public class StorageConversion{
 			default:
 				break;
 		}
-		tempBuffer.append(magicValuesRetriever.getNewLine());
+		tempBuffer.append(constants.getNewLine());
 		return tempBuffer;
 	}
 

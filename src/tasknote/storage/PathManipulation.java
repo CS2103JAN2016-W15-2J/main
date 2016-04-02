@@ -1,6 +1,7 @@
 package tasknote.storage;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * This class manipulates the PATH of the storage file
@@ -37,5 +38,16 @@ public class PathManipulation{
 	
 	public String extractRedoPathString(){
 		return pathHistory.redo();
+	}
+	
+	public String getParentPath(String pathName){
+		try{
+			File tempFile = new File(pathName);
+			File parentFile = tempFile.getParentFile().getParentFile();
+			return parentFile.getCanonicalPath();
+		}catch(IOException ioe){
+			
+		}
+		return null;
 	}
 }

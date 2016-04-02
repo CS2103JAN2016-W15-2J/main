@@ -1,6 +1,6 @@
 package tasknote.storage;
 
-public class StorageMagicStringsAndNumbers{
+public class StorageConstants{
 	
 	/**
 	 * Magic Strings for TaskObject
@@ -38,6 +38,8 @@ public class StorageMagicStringsAndNumbers{
 	private final String STRING_NEWLINE = "\n";
 	private final String STRING_EMPTY_STRING = "";
 	private final String STRING_SLASH = "/";
+	private final String STRING_CURRENT_DIRECTORY = ".";
+	private final String STRING_PARENT_DIRECTORY = "..";
 	private final String STRING_PATH_SLASH = "\\";
 	private final String STRING_PATH_DIVISION = "\\\\";
 	private final String STRING_TEXT_FILE_END = ".txt";
@@ -64,7 +66,7 @@ public class StorageMagicStringsAndNumbers{
 	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
 	
-	public StorageMagicStringsAndNumbers(){}
+	public StorageConstants(){}
 	
 	public String getTaskObjectTitle(int index){
 		return STRING_TASKOBJECT[index];
@@ -98,11 +100,19 @@ public class StorageMagicStringsAndNumbers{
 		return STRING_PATH_DIVISION;
 	}
 	
+	public String getCurrentDirectory(){
+		return STRING_CURRENT_DIRECTORY;
+	}
+	
+	public String getParentDirectory(){
+		return STRING_PARENT_DIRECTORY;
+	}
+	
 	public String getTextFileEnding(){
 		return STRING_TEXT_FILE_END;
 	}
 	
-	public String produceFullPathName(String pathName, String fileName){
+	public String addFileNameToPath(String pathName, String fileName){
 		return String.format(FORMAT_PATH_NAME, pathName, fileName);
 	}
 	

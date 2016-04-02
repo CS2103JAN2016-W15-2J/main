@@ -17,7 +17,7 @@ import tasknote.shared.TaskObject;
 
 public class FileManipulation{
 	
-	private StorageMagicStringsAndNumbers magicValuesRetriever;
+	private StorageConstants constants;
 	private StorageConversion storageManipulator;
 	
 	private static File textFile;
@@ -39,7 +39,7 @@ public class FileManipulation{
 	}
 
 	private void initializeFamilyClasses() {
-		magicValuesRetriever = new StorageMagicStringsAndNumbers();
+		constants = new StorageConstants();
 		storageManipulator = new StorageConversion();
 	}
 	
@@ -53,7 +53,7 @@ public class FileManipulation{
 
 	private String handleEmptyFileNameExtracted(String fileName) {
 		if(isNullString(fileName)){
-			fileName = magicValuesRetriever.getFileName();
+			fileName = constants.getFileName();
 		}
 		return fileName;
 	}
@@ -67,9 +67,13 @@ public class FileManipulation{
 		textFileName = extractTextFileName(fileName);
 	}
 
-	private String extractTextFileName(String fileName) {
-		String[] pathListName = fileName.split(magicValuesRetriever.getPathDivision());
-		return pathListName[getLastIndexOfArray(pathListName)];
+	public String extractTextFileName(String fileName) {
+		String[] pathListNameForWindows = fileName.split(constants.getPathDivision());
+		String[] pathListNameForMac = fileName.split(constants.getSlash());
+		if(pathListNameForWindows[getLastIndexOfArray(pathListNameForWindows)].length() < pathListNameForMac[getLastIndexOfArray(pathListNameForMac)].length()){
+			return pathListNameForWindows[getLastIndexOfArray(pathListNameForWindows)];
+		}
+		return pathListNameForMac[getLastIndexOfArray(pathListNameForMac)];
 	}
 
 	private int getLastIndexOfArray(String[] pathListName) {
@@ -81,17 +85,17 @@ public class FileManipulation{
 	}
 
 	private String getDefaultPathFileName() {
-		return magicValuesRetriever.getPathFileName();
+		return constants.getPathFileName();
 	}
 	
 	private String extractCanonicalFileName(){
 		if(isFileNotExist(pathFile)){
-			return magicValuesRetriever.getFileName();
+			return constants.getFileName();
 		}
-		return readFileName();
+		return readFullPathFromPathFile();
 	}
 
-	private String readFileName() {
+	public String readFullPathFromPathFile() {
 		try{
 			BufferedReader fileReader = initializeFileReader();
 			String fileName = fileReader.readLine();
@@ -176,7 +180,7 @@ public class FileManipulation{
 			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
 		try{
 			while(true){
-				String[] objectRead = new String[magicValuesRetriever.getTotalTitles()];
+				String[] objectRead = new String[constants.getTotalTitles()];
 				iterateOnceToStoreOneObject(fileReader, objectRead);
 				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
 			}
@@ -190,7 +194,7 @@ public class FileManipulation{
 	}
 
 	private void iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException {
-		for(int index = 0; index < magicValuesRetriever.getTotalTitles(); ++index){
+		for(int index = 0; index < constants.getTotalTitles(); ++index){
 			objectRead[index] = fileReader.readLine();
 			throwNullPointerExceptionIfNoMoreLinesToRead(objectRead, index);
 		}
@@ -226,7 +230,7 @@ public class FileManipulation{
 			//initialize
 			byte[] bufferMemory = stringToFile.getBytes();
 			int totalNumberOfBytesToWrite = bufferMemory.length;
-			int maxWriteLength = magicValuesRetriever.getBufferSize();
+			int maxWriteLength = constants.getBufferSize();
 			BufferedOutputStream fileWriter = new BufferedOutputStream(initializeContinuousTextFileOutputStream());
 			
 			loopWriteOneObjectToFile(bufferMemory, totalNumberOfBytesToWrite, maxWriteLength, fileWriter);
@@ -298,7 +302,7 @@ public class FileManipulation{
 	private void copyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream)
 			throws IOException{
 		
-		byte[] bufferMemory = new byte[magicValuesRetriever.getBufferSize()];
+		byte[] bufferMemory = new byte[constants.getBufferSize()];
 		int length = inputStream.read(bufferMemory);
 		loopCopyFileContents(inputStream, outputStream, bufferMemory, length);
 	
