@@ -8,7 +8,7 @@ What exactly is TaskNote capable of?
 
 #####Want to use TaskNote?
 * User Guide
-* [Download TaskNote](https://github.com/CS2103JAN2016-W15-2J/main/blob/master/TaskNote.jar)
+* <a href="https://github.com/CS2103JAN2016-W15-2J/main/raw/master/TaskNote.jar" target="_blank">Download TaskNote</a>
 
 #####Want to contribute to TaskNote?
 * Developer Guide
