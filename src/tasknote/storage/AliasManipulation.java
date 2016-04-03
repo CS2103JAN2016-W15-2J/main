@@ -16,12 +16,20 @@ public class AliasManipulation{
 		return alias;
 	}
 	
+	public String getAlias(String command){
+		return alias.get(command);
+	}
+	
 	public void setAlias(HashMap<String, String> alias){
 		this.alias = alias;
 	}
 	
 	public HashMap<String,String> addAlias(String command, String aliasCommand){
-		alias.put(command, aliasCommand);
+		if(alias.containsKey(command)){
+			alias.replace(command, aliasCommand);
+		}else{
+			alias.put(command, aliasCommand);
+		}
 		aliasHistory.addHistory(alias);
 		return alias;
 	}
@@ -32,19 +40,19 @@ public class AliasManipulation{
 		return alias;
 	}
 	
-	public HashMap<String,String> undo(){
+	public boolean undo(){
 		if(aliasHistory.isUndoValid()){
 			alias = aliasHistory.undo();
-			return alias;
+			return true;
 		}
-		return null;
+		return false;
 	}
 	
-	public HashMap<String, String> redo(){
+	public boolean redo(){
 		if(aliasHistory.isRedoValid()){
 			alias = aliasHistory.redo();
-			return alias;
+			return true;
 		}
-		return null;
+		return false;
 	}
 }

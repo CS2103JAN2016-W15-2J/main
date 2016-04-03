@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import tasknote.shared.TaskListIOException;
@@ -268,6 +269,19 @@ public class FileManipulation{
 			BufferedOutputStream fileWriter) throws IOException{
 			fileWriter.write(bufferMemory,0,bufferMemory.length);
 			fileWriter.flush();
+	}
+	
+	public void writeAlias(HashMap<String,String> alias) throws IOException{
+		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(aliasFile));
+		Map<String,String> aliasMap = alias;
+		for(String command : aliasMap.keySet()){
+			String aliasCommand = alias.get(command);
+			String aliasPair = command + " " + aliasCommand + "\n";
+			byte[] bufferMemory = aliasPair.getBytes();
+			fileWriter.write(bufferMemory,0,bufferMemory.length);
+			fileWriter.flush();
+		}
+		fileWriter.close();
 	}
 	
 	public HashMap<String, String> readAliasFromAliasFile() throws FileNotFoundException{

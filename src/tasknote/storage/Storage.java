@@ -103,7 +103,46 @@ public class Storage{
 		}
 	}
 	
+	public HashMap<String, String> addAlias(String command, String aliasCommand){
+		aliasManipulator.addAlias(command, aliasCommand);
+		return aliasManipulator.getAlias();
+	}
+	
+	public boolean undoAlias(){
+		return aliasManipulator.undo();
+	}
+	
+	public boolean redoAlias(){
+		return aliasManipulator.redo();
+	}
+	
+	public String getAlias(String command){
+		return aliasManipulator.getAlias(command);
+	}
+	
+	public HashMap<String, String> getAlias(){
+		return aliasManipulator.getAlias();
+	}
+	
+	public HashMap<String,String> removeAlias(String command){
+		return aliasManipulator.removeAlias(command);
+	}
+	
+	public void saveAlias(HashMap<String,String> overrideAlias) throws IOException{
+		fileManipulator.writeAlias(overrideAlias);
+	}
+	
 	// private helper methods
+	private HashMap<String, String> readAlias(){
+		try {
+			return fileManipulator.readAliasFromAliasFile();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new HashMap<String, String>();
+	}
+	
 	private void initializeFamilyClasses() {
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
@@ -114,21 +153,6 @@ public class Storage{
 	private void readAndSetAlias() {
 		HashMap<String, String> alias = readAlias();
 		aliasManipulator.setAlias(alias);
-	}
-	
-	public HashMap<String, String> addAlias(String command, String aliasCommand){
-		aliasManipulator.addAlias(command, aliasCommand);
-		return aliasManipulator.getAlias();
-	}
-	
-	public HashMap<String, String> readAlias(){
-		try {
-			return fileManipulator.readAliasFromAliasFile();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new HashMap<String, String>();
 	}
 	
 	private boolean logFailedPathEntered(String textFileName) {
