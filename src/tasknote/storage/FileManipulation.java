@@ -294,7 +294,7 @@ public class FileManipulation{
 	private int iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException{
 		int numberOfLinesRead = 0;
 		String lineRead = attemptToReadLineOrEndRead(fileReader);
-		while(!lineRead.startsWith(constants.getSpace()) && numberOfLinesRead < constants.getTotalTitles()){
+		while(!lineRead.equals(constants.getEmptyString()) && !lineRead.startsWith(constants.getSpace()) && numberOfLinesRead < constants.getTotalTitles()){
 			objectRead[numberOfLinesRead] = lineRead;
 			++numberOfLinesRead;
 			lineRead = attemptToReadLineOrEndRead(fileReader);
