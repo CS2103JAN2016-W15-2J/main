@@ -129,12 +129,19 @@ public class FileManipulation{
 
 	private void createFileIfNotExist() {
 		createPathFileIfNotExist();
+		createAliasFileIfNotExist();
 		createTextFileIfNotExist();
 	}
 
 	private void createPathFileIfNotExist() {
 		if(isFileNotExist(pathFile)){
 			createNewFile(pathFile);
+		}
+	}
+	
+	private void createAliasFileIfNotExist() {
+		if(isFileNotExist(aliasFile)){
+			createNewFile(aliasFile);
 		}
 	}
 
