@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
+
 
 public class FileManipulation{
 	
@@ -29,9 +31,11 @@ public class FileManipulation{
 	private static File aliasFile;
 	
 	private String textFileName;
+	
+	private static final Logger fileLog = Logger.getLogger(FileManipulation.class.getName());
 
 	/**
-	 * Constructor to initialize file
+	 * Constructor to initialize file and classes
 	 */
 	public FileManipulation(){
 		initializeFamilyClasses();
@@ -39,10 +43,6 @@ public class FileManipulation{
 		createFileIfNotExist();
 	}
 	
-	public String getTextFileName(){
-		return textFileName;
-	}
-
 	private void initializeFamilyClasses() {
 		constants = new StorageConstants();
 		storageManipulator = new StorageConversion();
@@ -51,43 +51,17 @@ public class FileManipulation{
 	private void initializeFiles(){
 		initializePathFile();
 		initializeAliasFile();
-		String fileName = extractCanonicalFileName();
-		fileName = handleEmptyFileNameExtracted(fileName);
+		String fileName = extractFileName();
 		initializeTextFile(fileName);
 		storeNewTextFilePath();
 	}
-
-	private String handleEmptyFileNameExtracted(String fileName) {
-		if(isNullString(fileName)){
-			fileName = constants.getFileName();
-		}
-		return fileName;
-	}
 	
-	private boolean isNullString(String content){
-		return content == null;
-	}
-
-	private void initializeTextFile(String fileName) {
-		textFile = new File(fileName);
-		textFileName = extractTextFileName(fileName);
-	}
-
-	public String extractTextFileName(String fileName) {
-		String[] pathListNameForWindows = fileName.split(constants.getPathDivision());
-		String[] pathListNameForMac = fileName.split(constants.getSlash());
-		if(pathListNameForWindows[getLastIndexOfArray(pathListNameForWindows)].length() < pathListNameForMac[getLastIndexOfArray(pathListNameForMac)].length()){
-			return pathListNameForWindows[getLastIndexOfArray(pathListNameForWindows)];
-		}
-		return pathListNameForMac[getLastIndexOfArray(pathListNameForMac)];
-	}
-
-	private int getLastIndexOfArray(String[] pathListName) {
-		return pathListName.length-1;
-	}
-
 	private void initializePathFile() {
 		pathFile = new File(getDefaultPathFileName());
+	}
+	
+	private String getDefaultPathFileName() {
+		return constants.getPathFileName();
 	}
 	
 	private void initializeAliasFile() {
@@ -98,8 +72,10 @@ public class FileManipulation{
 		return constants.getAliasFileName();
 	}
 
-	private String getDefaultPathFileName() {
-		return constants.getPathFileName();
+	private String extractFileName() {
+		String fileName = extractCanonicalFileName();
+		fileName = handleEmptyFileNameExtracted(fileName);
+		return fileName;
 	}
 	
 	private String extractCanonicalFileName(){
@@ -108,25 +84,7 @@ public class FileManipulation{
 		}
 		return readFullPathFromPathFile();
 	}
-
-	public String readFullPathFromPathFile() {
-		try{
-			BufferedReader fileReader = initializeFileReader();
-			String fileName = fileReader.readLine();
-			fileReader.close();
-			return fileName;
-		}catch(IOException ioe){}
-		return null;
-	}
-
-	private BufferedReader initializeFileReader() throws FileNotFoundException {
-		return new BufferedReader(initializePathFileReader());
-	}
-
-	private FileReader initializePathFileReader() throws FileNotFoundException {
-		return new FileReader(pathFile);
-	}
-
+	
 	private void createFileIfNotExist() {
 		createPathFileIfNotExist();
 		createAliasFileIfNotExist();
@@ -167,16 +125,99 @@ public class FileManipulation{
 	private void storeNewTextFilePath(){
 		try{
 			BufferedOutputStream fileWriter = new BufferedOutputStream(initializePathFileOutputStream());
-			byte[] textFileCanonicalPathName = textFile.getCanonicalPath().getBytes();
+			byte[] textFileCanonicalPathName = getByteArrayOfFullPath();
 			fileWriter.write(textFileCanonicalPathName,0,textFileCanonicalPathName.length);
 			fileWriter.close();
 		}catch(IOException ioe){
-			
+			fileLog.log(Level.WARNING, constants.getFailedToStorePathFile());
 		}
+	}
+
+	private byte[] getByteArrayOfFullPath() throws IOException {
+		String fullPath = textFile.getCanonicalPath();
+		return fullPath.getBytes();
 	}
 	
 	private OutputStream initializePathFileOutputStream() throws FileNotFoundException {
 		return new FileOutputStream(pathFile);
+	}
+	
+	/**
+	 * read full path of the current text file from pathFile
+	 * @return String of current full path stored
+	 */
+	public String readFullPathFromPathFile() {
+		try{
+			return readPathFromPathFile();
+		}catch(IOException ioe){
+			fileLog.log(Level.WARNING, constants.getFailedToReadPathFile());
+			return null;
+		}
+	}
+
+	private String readPathFromPathFile() throws FileNotFoundException, IOException {
+		BufferedReader fileReader = initializeFileReader();
+		String fileName = fileReader.readLine();
+		fileReader.close();
+		return fileName;
+	}
+	
+	private BufferedReader initializeFileReader() throws FileNotFoundException {
+		return new BufferedReader(initializePathFileReader());
+	}
+
+	private FileReader initializePathFileReader() throws FileNotFoundException {
+		return new FileReader(pathFile);
+	}
+	
+	private String handleEmptyFileNameExtracted(String fileName) {
+		if(isNullString(fileName)){
+			return constants.getFileName();
+		}
+		return fileName;
+	}
+	
+	private boolean isNullString(String content){
+		return content == null;
+	}
+	
+	private void initializeTextFile(String fileName) {
+		textFile = new File(fileName);
+		textFileName = extractTextFileName(fileName);
+	}
+	
+	/**
+	 * extract textFile name from full PATH string
+	 * @param fullPath
+	 * @return String textFile name
+	 */
+	public String extractTextFileName(String fullPath) {
+		String[] pathListNameForWindows = fullPath.split(constants.getPathDivision());
+		String[] pathListNameForMac = fullPath.split(constants.getSlash());
+		if(isFileNameForWindows(pathListNameForWindows, pathListNameForMac)){
+			return pathListNameForWindows[getLastIndexOfArray(pathListNameForWindows)];
+		}
+		return pathListNameForMac[getLastIndexOfArray(pathListNameForMac)];
+	}
+
+	private boolean isFileNameForWindows(String[] pathListNameForWindows, String[] pathListNameForMac) {
+		return supposedTextFileLength(pathListNameForWindows) < supposedTextFileLength(pathListNameForMac);
+	}
+
+	private int supposedTextFileLength(String[] pathListName) {
+		return pathListName[getLastIndexOfArray(pathListName)].length();
+	}
+	
+	private int getLastIndexOfArray(String[] pathListName) {
+		return pathListName.length-1;
+	}
+	
+	/**
+	 * get textFile name
+	 * @return String textFile name
+	 */
+	public String getTextFileName(){
+		return textFileName;
 	}
 
 	/**
@@ -196,7 +237,8 @@ public class FileManipulation{
 		fileReader.close();
 		return returnTaskList;
 	}
-
+	
+	/*
 	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList,
 			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
 		try{
@@ -206,11 +248,11 @@ public class FileManipulation{
 				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
 			}
 		}catch(ClassNotFoundException cnfe){
-			cnfe.printStackTrace();
+			fileLog.log(Level.WARNING, constants.getStorageManipulatorNotInitialized());
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			fileLog.log(Level.WARNING, constants.getFailedToReadFromTextFile());
 		}catch(NullPointerException npe){
-			
+			//read success [NOT logged to avoid overcrowd console]
 		}
 	}
 
@@ -220,21 +262,57 @@ public class FileManipulation{
 			throwNullPointerExceptionIfNoMoreLinesToRead(objectRead, index);
 		}
 	}
-
+	
 	private void throwNullPointerExceptionIfNoMoreLinesToRead(String[] objectRead, int index) {
 		if(isNullObject(objectRead, index)){
 			throw new NullPointerException();
 		}
 	}
 	
-	private void throwNullPointerExceptionIfNoMoreLinesToRead(String lineRead) {
-		if(isNullString(lineRead)){
-			throw new NullPointerException();
-		}
-	}
-
 	private boolean isNullObject(String[] objectRead, int index) {
 		return objectRead[index] == null;
+	}
+	*/
+	
+	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList,
+			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
+		try{
+			while(true){
+				String[] objectRead = new String[constants.getTotalTitles()];
+				int linesRead = iterateOnceToStoreOneObject(fileReader, objectRead);
+				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead, linesRead));
+			}
+		}catch(ClassNotFoundException cnfe){
+			fileLog.log(Level.WARNING, constants.getStorageManipulatorNotInitialized());
+		}catch(IOException ioe){
+			fileLog.log(Level.WARNING, constants.getFailedToReadFromTextFile());
+		}catch(NullPointerException npe){
+			//read success [NOT logged to avoid overcrowd console]
+		}
+	}
+	
+	private int iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException{
+		int numberOfLinesRead = 0;
+		String lineRead = attemptToReadLineOrEndRead(fileReader);
+		while(!lineRead.startsWith(constants.getSpace()) && numberOfLinesRead < constants.getTotalTitles()){
+			objectRead[numberOfLinesRead] = lineRead;
+			++numberOfLinesRead;
+			lineRead = attemptToReadLineOrEndRead(fileReader);
+		}
+		return numberOfLinesRead;
+	}
+
+	private String attemptToReadLineOrEndRead(BufferedReader fileReader) throws IOException {
+		String lineRead = fileReader.readLine();
+		throwNullPointerExceptionIfNoMoreLinesToRead(lineRead);
+		return lineRead;
+	}
+	
+	private void throwNullPointerExceptionIfNoMoreLinesToRead(String lineRead) {
+		if(isNullString(lineRead)){
+			fileLog.log(Level.FINE, "Successfully read from text file");
+			throw new NullPointerException();
+		}
 	}
 	
 	/**
@@ -296,8 +374,7 @@ public class FileManipulation{
 		BufferedReader read = new BufferedReader(new FileReader(aliasFile));
 		try {
 			while(true){
-				String aliasLine = read.readLine();
-				throwNullPointerExceptionIfNoMoreLinesToRead(aliasLine);
+				String aliasLine = attemptToReadLineOrEndRead(read);
 				String[] aliasPair = aliasLine.split(" ");
 				if(aliasPair.length==2){
 					String command = aliasPair[0];
@@ -379,7 +456,6 @@ public class FileManipulation{
 			byte[] bufferMemory, int length) throws IOException {
 		
 		while (isPositive(length)) {
-			System.out.println(new String(bufferMemory));
 			outputStream.write(bufferMemory, 0, length);
 			length = inputStream.read(bufferMemory);
 			outputStream.flush();

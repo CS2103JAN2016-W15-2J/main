@@ -52,6 +52,11 @@ public class StorageConstants{
 	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum PATH history you can redo.";
 	private final String LOGGING_MESSAGE_FAILED_ALIAS_SAVE = "Failed to save modified alias.";
 	private final String LOGGING_MESSAGE_FAILED_TO_FIND_ALIAS_FILE = "Failed to find alias file.";
+	private final String LOGGING_MESSAGE_FAILED_TO_READ_PATH_FROM_FILE = "Failed to read path from path file.";
+	private final String LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE = "Failed to write path into path file.";
+	private final String LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED = "Storage Manipulator not intialized. Failed I/O.";
+	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE = "Failed to read from textfile";
+			
 	
 	/**
 	 * file/path name
@@ -133,6 +138,22 @@ public class StorageConstants{
 	
 	public String getFailedToFindAliasFile(){
 		return LOGGING_MESSAGE_FAILED_TO_FIND_ALIAS_FILE;
+	}
+	
+	public String getFailedToReadPathFile(){
+		return LOGGING_MESSAGE_FAILED_TO_READ_PATH_FROM_FILE;
+	}
+	
+	public String getFailedToStorePathFile(){
+		return LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE;
+	}
+	
+	public String getStorageManipulatorNotInitialized(){
+		return LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED;
+	}
+	
+	public String getFailedToReadFromTextFile(){
+		return LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE;
 	}
 	
 	public String getFileName(){

@@ -6,6 +6,27 @@ import tasknote.shared.TaskObject;
 
 public class StorageConversion{
 	private StorageConstants constants;
+	
+	/**
+	 * constants for TaskObject cases
+	 */
+	private final int CASE_TASK_NAME = 0;
+	private final int CASE_TASK_DATE_DAY = 1;
+	private final int CASE_TASK_DATE_MONTH = 2;
+	private final int CASE_TASK_DATE_YEAR = 3;
+	private final int CASE_TASK_DATE_HOUR = 4;
+	private final int CASE_TASK_DATE_MINUTE = 5;
+	private final int CASE_TASK_DURATION = 6;
+	private final int CASE_TASK_LOCATION = 7;
+	private final int CASE_TASK_NOTIFY_TIME = 8;
+	private final int CASE_TASK_STATUS = 9;
+	private final int CASE_TASK_TYPE = 10;
+	private final int CASE_TASK_END_DATE_DAY = 11;
+	private final int CASE_TASK_END_DATE_MONTH = 12;
+	private final int CASE_TASK_END_DATE_YEAR = 13;
+	private final int CASE_TASK_END_DATE_HOUR = 14;
+	private final int CASE_TASK_END_DATE_MINUTE = 15;
+	private final int CASE_TASK_END = 16;
     
 	/**
 	 * Constructor
@@ -21,98 +42,100 @@ public class StorageConversion{
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public TaskObject convertStringToTaskObject(String[] linesInTask) throws ClassNotFoundException, IOException{
+	public TaskObject convertStringToTaskObject(String[] taskLinesRead, int linesRead) throws ClassNotFoundException, IOException{
 		TaskObject returnObject = new TaskObject();
 		
-		for(int index = 0; index < constants.getTotalTitles(); ++index){
-			storeItemIntoTaskObject(index, linesInTask[index], returnObject);
+		for(int index = 0; index < linesRead; ++index){
+			storeItemIntoTaskObject(taskLinesRead[index], returnObject);
 		}
-		//setGregorianCalendar(returnObject, getGregorianCalendarFromTask(returnObject));
 		
 		return returnObject;
 	}
 	
-	private void storeItemIntoTaskObject(int taskObjectLine, String string, TaskObject returnObject) throws IOException, ClassNotFoundException {
-		String[] content;
-		if(isNullString(string)){
+	private void storeItemIntoTaskObject(String taskLine, TaskObject returnObject) throws IOException, ClassNotFoundException {		
+		
+		if(isNullString(taskLine)){
 			return;
-		}else{
-			content = extractContent(taskObjectLine, string);
 		}
+		
+		int taskOperation = extractTaskOperation(taskLine);
+		String[] content = extractContent(taskOperation, taskLine);
+		
 		if(isNoContentFound(content)){
 			return;
 		}
-		switch(taskObjectLine){
-			case 0:
+		
+		setTaskOperation(returnObject, taskOperation, content);
+	}
+
+	private void setTaskOperation(TaskObject returnObject, int taskOperation, String[] content) {
+		switch(taskOperation){
+			case CASE_TASK_NAME:
 				setTaskName(returnObject, content);
 				break;
-			case 1:
+			case CASE_TASK_DATE_DAY:
 				setTaskDay(returnObject, content);
 				break;
-			case 2:
+			case CASE_TASK_DATE_MONTH:
 				setTaskMonth(returnObject, content);
 				break;
-			case 3:
+			case CASE_TASK_DATE_YEAR:
 				setTaskYear(returnObject, content);
 				break;
-			case 4:
+			case CASE_TASK_DATE_HOUR:
 				setTaskHour(returnObject, content);
 				break;
-			case 5:
+			case CASE_TASK_DATE_MINUTE:
 				setTaskMinute(returnObject, content);
 				break;
-			case 6:
+			case CASE_TASK_DURATION:
 				setTaskDuration(returnObject, content);
 				break;
-			case 7:
+			case CASE_TASK_LOCATION:
 				setTaskLocation(returnObject, content);
 				break;
-			case 8:
+			case CASE_TASK_NOTIFY_TIME:
 				setTaskNotifyTime(returnObject, content);
 				break;
-			case 9: //note is enum!
+			case CASE_TASK_STATUS:
 				setTaskStatus(returnObject, content);
 				break;
-			case 10:
+			case CASE_TASK_TYPE:
 				setTaskType(returnObject, content);
 				break;
-			case 11:
+			case CASE_TASK_END_DATE_DAY:
 				setTaskEndDateDay(returnObject, content);
 				break;
-			case 12:
+			case CASE_TASK_END_DATE_MONTH:
 				setTaskEndDateMonth(returnObject, content);
 				break;
-			case 13:
+			case CASE_TASK_END_DATE_YEAR:
 				setTaskEndDateYear(returnObject, content);
 				break;
-			case 14:
+			case CASE_TASK_END_DATE_HOUR:
 				setTaskEndDateHour(returnObject, content);
 				break;
-			case 15:
+			case CASE_TASK_END_DATE_MINUTE:
 				setTaskEndDateMinute(returnObject, content);
 				break;
-			case 16:
+			case CASE_TASK_END:
 				break;
-			/*
-			case 19:
-				setTaskIsMarkedDone(returnObject, content);
-				break;
-			case 20:
-				setTaskIsNotified(returnObject, content);
-				break;
-			case 21:
-				setTaskLocale(returnObject, content);
-				break;
-			case 22:
-				setTaskGregorianCalendar(returnObject, content);
-				break;
-			case 23:
-				setTaskTimeZoneDayLightTime(returnObject, content);
-				break;
-			*/
 			default:
 				break;
 		}
+	}
+	
+	private int extractTaskOperation(String taskObjectLine){
+		for(int titleIndex = 0; titleIndex < constants.getTotalTitles(); ++titleIndex){
+			if(taskObjectLine.startsWith(constants.getTaskObjectTitle(titleIndex))){
+				return titleIndex;
+			}
+		}
+		return -1;
+	}
+	
+	private String[] extractContent(int index, String string) {
+		return string.split(constants.getTaskObjectTitle(index));
 	}
 	
 	private void setTaskEndDateMinute(TaskObject returnObject, String[] content) {
@@ -137,116 +160,6 @@ public class StorageConversion{
 	private void setTaskEndDateDay(TaskObject returnObject, String[] content) {
 		returnObject.setEndDateDay(Integer.parseInt(content[1].trim()));
 	}
-
-	/*
-	* GregorianCalendar Methods
-	
-	private boolean isTimeZoneUsingDayLightTime(String[] content) {
-		return content[1].trim().equalsIgnoreCase("true");
-	}
-	
-	private void setGregorianCalendar(TaskObject returnObject, GregorianCalendar returnCalendar) {
-		returnCalendar.set(returnObject.getDateYear(), returnObject.getDateMonth(), returnObject.getDateDay(), returnObject.getDateHour(), returnObject.getDateMinute());
-	}
-	
-	private void setTaskTimeZoneDayLightTime(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			getTimeZoneFromTask(returnObject).useDaylightTime();
-		}
-	}
-	
-	private void setTaskGregorianCalendar(TaskObject returnObject, String[] content) {
-		getTimeZoneFromTask(returnObject).setID(content[1].trim());
-	}
-	
-	private TimeZone getTimeZoneFromTask(TaskObject returnObject) {
-		return getGregorianCalendarFromTask(returnObject).getTimeZone();
-	}
-	
-	private GregorianCalendar getGregorianCalendarFromTask(TaskObject returnObject) {
-		return returnObject.getTaskObjectCalendar();
-	}
-	
-	private void setLocaleToTaskObjectCalendar(TaskObject returnObject, Locale locale) {
-		returnObject.setTaskObjectCalendar(new GregorianCalendar(locale));
-	}
-	
-	private void setTaskLocale(TaskObject returnObject, String[] content) {
-		String firstDayOfWeek = content[1].trim();
-		if(isLocaleSundayFirstDayOfWeek(firstDayOfWeek)){
-			Locale locale = getLocaleSundayFirstDayOfWeek();
-			setLocaleToTaskObjectCalendar(returnObject, locale);
-		}else if(isLocaleMondayFirstDayOfWeek(firstDayOfWeek)){
-			Locale locale = getLocaleMondayFirstDayOfWeek();
-			setLocaleToTaskObjectCalendar(returnObject, locale);
-		}
-	}
-
-	private Locale getLocaleMondayFirstDayOfWeek() {
-		return new Locale(magicValuesRetriever.getLanguage(),magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getMondayFirstDayOfWeek()));
-	}
-
-	private Locale getLocaleSundayFirstDayOfWeek() {
-		return new Locale(magicValuesRetriever.getLanguage(),magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
-	}
-
-	private boolean isLocaleMondayFirstDayOfWeek(String firstDayOfWeek) {
-		return firstDayOfWeek.equalsIgnoreCase(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getMondayFirstDayOfWeek()));
-	}
-
-	private boolean isLocaleSundayFirstDayOfWeek(String firstDayOfWeek) {
-		return firstDayOfWeek.equalsIgnoreCase(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
-	}
-	
-	private void writeTaskTimeZoneDayLightTime(TimeZone taskTimeZone, StringBuffer tempBuffer) {
-		tempBuffer.append(taskTimeZone.observesDaylightTime());
-	}
-
-	private void writeTaskTimeZoneID(TimeZone taskTimeZone, StringBuffer tempBuffer) {
-		tempBuffer.append(taskTimeZone.getID());
-	}
-
-	private boolean isLocaleMondayFirstDayOfWeek(GregorianCalendar taskCalendar) {
-		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getMondayFirstDayOfWeek();
-	}
-
-	private boolean isLocaleSundayFirstDayOfWeek(GregorianCalendar taskCalendar) {
-		return taskCalendar.getFirstDayOfWeek() == magicValuesRetriever.getSundayFirstDayOfWeek();
-	}
-
-	private void writeLocaleMondayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
-		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getMondayFirstDayOfWeek()));
-	}
-
-	private void writeLocaleSundayFirstDayOfWeekToStringBuffer(StringBuffer tempBuffer) {
-		tempBuffer.append(magicValuesRetriever.getStringOfFirstDayOfWeek(magicValuesRetriever.getSundayFirstDayOfWeek()));
-	}
-	
-	private void setTaskIsMarkedDone(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			returnObject.setIsMarkedDone(true);
-		}else{
-			returnObject.setIsMarkedDone(false);
-		}
-	}
-	
-	private void setTaskIsNotified(TaskObject returnObject, String[] content) {
-		if(isTimeZoneUsingDayLightTime(content)){
-			returnObject.setIsNotified(true);
-		}else{
-			returnObject.setIsNotified(false);
-		}
-	}
-	
-	private void writeIsMarkedDoneToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getIsMarkedDone());
-	}
-	
-	private void writeTaskIsNotifiedToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getIsNotified());
-	}
-	
-	*/
 
 	private void setTaskType(TaskObject returnObject, String[] content) {
 		returnObject.setTaskType(content[1].trim());
@@ -306,10 +219,6 @@ public class StorageConversion{
 		return content.length == 1;
 	}
 
-	private String[] extractContent(int index, String string) {
-		return string.split(constants.getTaskObjectTitle(index));
-	}
-
 	private boolean isNullString(String string) {
 		return string == null;
 	}
@@ -336,78 +245,56 @@ public class StorageConversion{
 		tempBuffer.append(constants.getTaskObjectTitle(taskObjectLine));
 		tempBuffer.append(constants.getSpace());
 		switch(taskObjectLine){
-			case 0:
+			case CASE_TASK_NAME:
 				writeTaskNameToStringBuffer(task, tempBuffer);
 				break;
-			case 1:
+			case CASE_TASK_DATE_DAY:
 				writeTaskDayToStringBuffer(task, tempBuffer);
 				break;
-			case 2:
+			case CASE_TASK_DATE_MONTH:
 				writeTaskMonthToStringBuffer(task, tempBuffer);
 				break;
-			case 3:
+			case CASE_TASK_DATE_YEAR:
 				writeTaskYearToStringBuffer(task, tempBuffer);
 				break;
-			case 4:
+			case CASE_TASK_DATE_HOUR:
 				writeTaskHourToStringBuffer(task, tempBuffer);
 				break;
-			case 5:
+			case CASE_TASK_DATE_MINUTE:
 				writeTaskMinuteToStringBuffer(task, tempBuffer);
 				break;
-			case 6:
+			case CASE_TASK_DURATION:
 				writeTaskDurationToStringBuffer(task, tempBuffer);
 				break;
-			case 7:
+			case CASE_TASK_LOCATION:
 				writeTaskLocationToStringBuffer(task, tempBuffer);
 				break;
-			case 8:
+			case CASE_TASK_NOTIFY_TIME:
 				writeTaskNotifyTimeToStringBuffer(task, tempBuffer);
 				break;
-			case 9:
+			case CASE_TASK_STATUS:
 				writeTaskGetStatusToStringBuffer(task, tempBuffer);
 				break;
-			case 10:
+			case CASE_TASK_TYPE:
 				writeGetTaskTypeToStringBuffer(task, tempBuffer);
 				break;
-			case 11:
+			case CASE_TASK_END_DATE_DAY:
 				writeGetTaskEndDateDayToStringBuffer(task, tempBuffer);
 				break;
-			case 12:
+			case CASE_TASK_END_DATE_MONTH:
 				writeGetTaskEndDateMonthToStringBuffer(task, tempBuffer);
 				break;
-			case 13:
+			case CASE_TASK_END_DATE_YEAR:
 				writeGetTaskEndDateYearToStringBuffer(task, tempBuffer);
 				break;
-			case 14:
+			case CASE_TASK_END_DATE_HOUR:
 				writeGetTaskEndDateHourToStringBuffer(task, tempBuffer);
 				break;
-			case 15:
+			case CASE_TASK_END_DATE_MINUTE:
 				writeGetTaskEndDateMinuteToStringBuffer(task, tempBuffer);
 				break;
-			case 16:
+			case CASE_TASK_END:
 				break;
-			
-			/*
-			case 9:
-				writeTaskIsNotifiedToStringBuffer(task, tempBuffer);
-				break;
-			case 12:
-				writeIsMarkedDoneToStringBuffer(task, tempBuffer);
-				break;
-			case 13:
-				if(isLocaleSundayFirstDayOfWeek(taskCalendar)){
-					writeLocaleSundayFirstDayOfWeekToStringBuffer(tempBuffer);
-				}else if(isLocaleMondayFirstDayOfWeek(taskCalendar)){
-					writeLocaleMondayFirstDayOfWeekToStringBuffer(tempBuffer);
-				}
-				break;
-			case 14:
-				writeTaskTimeZoneID(taskTimeZone, tempBuffer);
-				break;
-			case 15:
-				writeTaskTimeZoneDayLightTime(taskTimeZone, tempBuffer);
-				break;
-			*/
 			default:
 				break;
 		}

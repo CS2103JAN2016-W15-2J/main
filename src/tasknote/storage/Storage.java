@@ -34,7 +34,9 @@ public class Storage{
 	 * @throws TaskListIOException //there is something wrong with contents in the file
 	 */
 	public ArrayList<TaskObject> loadTasks() throws IOException, TaskListIOException{
-		return fileManipulator.getTasks();
+		ArrayList<TaskObject> tasks = fileManipulator.getTasks();
+		saveTasks(tasks);
+		return tasks;
 	}
 	
 	/**
