@@ -91,7 +91,7 @@ public class FileManipulation{
 	}
 	
 	private void initializeAliasFile() {
-		pathFile = new File(getDefaultAliasFileName());
+		aliasFile = new File(getDefaultAliasFileName());
 	}
 	
 	private String getDefaultAliasFileName() {
@@ -299,9 +299,11 @@ public class FileManipulation{
 				String aliasLine = read.readLine();
 				throwNullPointerExceptionIfNoMoreLinesToRead(aliasLine);
 				String[] aliasPair = aliasLine.split(" ");
-				String command = aliasPair[0];
-				String aliasCommand = aliasPair[1];
-				alias.put(command, aliasCommand);
+				if(aliasPair.length==2){
+					String command = aliasPair[0];
+					String aliasCommand = aliasPair[1];
+					alias.put(command, aliasCommand);
+				}
 			}
 		}catch(IOException ioe){
 			
