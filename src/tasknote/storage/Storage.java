@@ -170,7 +170,7 @@ public class Storage{
 		return isRedoSuccessful;
 	}
 	
-	/**
+	/*
 	 *  private helper methods
 	 */
 	
@@ -179,21 +179,6 @@ public class Storage{
 		pathManipulator = new PathManipulation();
 		aliasManipulator = new AliasManipulation();
 		constants = new StorageConstants();
-	}
-	
-	private void readAndSetAlias() {
-		HashMap<String, String> alias = readAlias();
-		aliasManipulator.setAlias(alias);
-	}
-	
-	private HashMap<String, String> readAlias(){
-		try {
-			return fileManipulator.readAliasFromAliasFile();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return new HashMap<String, String>();
 	}
 	
 	private String concatPathIfNeeded(String pathName, String previousTextFileName){
@@ -323,7 +308,22 @@ public class Storage{
 	private boolean isPathForWindows(String textFileName) {
 		return pathManipulator.canChangePath(textFileName);
 	}
-
+	
+	// alias related helper methods
+	
+	private void readAndSetAlias() {
+		HashMap<String, String> alias = readAlias();
+		aliasManipulator.setAlias(alias);
+	}
+	
+	private HashMap<String, String> readAlias(){
+		try {
+			return fileManipulator.readAliasFromAliasFile();
+		} catch (FileNotFoundException e) {
+			storageLog.log(Level.WARNING, constants.getFailedToFindAliasFile());
+		}
+		return new HashMap<String, String>();
+	}
 	
 	private void saveCurrentAlias() {
 		HashMap<String,String> alias = aliasManipulator.getAlias();

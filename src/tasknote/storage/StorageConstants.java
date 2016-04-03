@@ -51,6 +51,7 @@ public class StorageConstants{
 	private final String LOGGING_MESSAGE_FAILED_UNDO = "This is the maximum PATH history you can undo.";
 	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum PATH history you can redo.";
 	private final String LOGGING_MESSAGE_FAILED_ALIAS_SAVE = "Failed to save modified alias.";
+	private final String LOGGING_MESSAGE_FAILED_TO_FIND_ALIAS_FILE = "Failed to find alias file.";
 	
 	/**
 	 * file/path name
@@ -128,6 +129,10 @@ public class StorageConstants{
 	
 	public String getFailedAliasSave(){
 		return LOGGING_MESSAGE_FAILED_ALIAS_SAVE;
+	}
+	
+	public String getFailedToFindAliasFile(){
+		return LOGGING_MESSAGE_FAILED_TO_FIND_ALIAS_FILE;
 	}
 	
 	public String getFileName(){
