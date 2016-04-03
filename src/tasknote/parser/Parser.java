@@ -650,6 +650,14 @@ public class Parser {
 				dateYear = todayCalendar.get(Calendar.YEAR);
 			}
 		}
+		
+		if (endDateHour > 0 || endDateMinute > 0) {
+			if (endDateDay == -1 || endDateMonth == -1 || endDateYear == -1) {
+				endDateDay = dateDay;
+				endDateMonth = dateMonth;
+				endDateYear = dateYear;
+			}
+		}
 
 		// Set name
 		TaskObject taskObjectToBuild = new TaskObject(name.toString());
