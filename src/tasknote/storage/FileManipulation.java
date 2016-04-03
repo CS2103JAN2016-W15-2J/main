@@ -320,7 +320,7 @@ public class FileManipulation{
 	 *
 	 */
 	
-	public boolean changeFileName(String fileName){
+	public boolean moveFile(String fileName){
 		if(isFileNameAcceptable(fileName)){
 			copyFileAndDeletePrevious(fileName);
 			initializeTextFile(fileName);

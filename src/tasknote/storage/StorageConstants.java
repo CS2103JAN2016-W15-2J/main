@@ -48,8 +48,9 @@ public class StorageConstants{
 	 * Logging messages
 	 */
 	private final String LOGGING_MESSAGE_FAILED_PATH_CHANGE = "Invalid PATH. PATH trace entered: %1$s.";
-	private final String LOGGING_MESSAGE_FAILED_UNDO = "This is the maximum history you can undo.";
-	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum history you can redo.";
+	private final String LOGGING_MESSAGE_FAILED_UNDO = "This is the maximum PATH history you can undo.";
+	private final String LOGGING_MESSAGE_FAILED_REDO = "This is the maximum PATH history you can redo.";
+	private final String LOGGING_MESSAGE_FAILED_ALIAS_SAVE = "Failed to save modified alias.";
 	
 	/**
 	 * file/path name
@@ -123,6 +124,10 @@ public class StorageConstants{
 	
 	public String getFailedRedo(){
 		return LOGGING_MESSAGE_FAILED_REDO;
+	}
+	
+	public String getFailedAliasSave(){
+		return LOGGING_MESSAGE_FAILED_ALIAS_SAVE;
 	}
 	
 	public String getFileName(){
