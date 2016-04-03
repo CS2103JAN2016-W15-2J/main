@@ -135,6 +135,7 @@ public class CommandLineContainer extends HBox {
                             getPrevValidCommand(_commandLine);
                         } else {
                             getPrevEnteredCommand(historyCommandEntered, _commandLine);
+                            key.consume();
                         }
                         break;
                     case DOWN:
