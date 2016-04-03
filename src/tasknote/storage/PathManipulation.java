@@ -4,12 +4,19 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class manipulates the PATH of the storage file
+ * This class aid the PATH manipulation operations and initiate pathHistory
+ * to allow undo and redo of the PATH
+ * 
+ * @author User
+ *
  */
 
 public class PathManipulation{
 	private PathHistory pathHistory;
 	
+	/**
+	 * Constructor of PathManipulation
+	 */
 	public PathManipulation(){
 		initializeFamilyClasses();
 	}
