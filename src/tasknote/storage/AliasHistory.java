@@ -14,9 +14,14 @@ public class AliasHistory{
 		initializeStackHistory();
 	}
 	
+	private void initializeStackHistory() {
+		history = new Stack<HashMap<String,String>>();
+		backup = new Stack<HashMap<String,String>>();
+	}
+	
 	/**
 	 * add alias to history stack
-	 * @param newPath
+	 * @param alias
 	 */
 	public void addHistory(HashMap<String,String> alias){
 		history.push(alias);
@@ -63,10 +68,5 @@ public class AliasHistory{
 	 */
 	public boolean isRedoValid(){
 		return !backup.isEmpty();
-	}
-
-	private void initializeStackHistory() {
-		history = new Stack<HashMap<String,String>>();
-		backup = new Stack<HashMap<String,String>>();
 	}
 }

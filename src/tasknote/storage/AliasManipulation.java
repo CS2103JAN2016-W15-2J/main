@@ -7,6 +7,9 @@ public class AliasManipulation{
 	
 	private HashMap<String,String> alias;
 	
+	/**
+	 * Constructor for AliasManipulation
+	 */
 	public AliasManipulation(){
 		aliasHistory = new AliasHistory();
 		alias = new HashMap<String,String>();
