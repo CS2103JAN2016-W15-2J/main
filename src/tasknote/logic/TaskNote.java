@@ -703,10 +703,10 @@ public class TaskNote {
 		int taskHour = taskObject.getDateHour();
 		int taskMinute = taskObject.getDateMinute();
 		if(taskHour == Constants.INVALID_VALUE_CONSTANT) {
-			taskHour = 0;
+			taskHour = Constants.TIME_LATEST_HOUR;
 		}
 		if(taskMinute == Constants.INVALID_VALUE_CONSTANT) {
-			taskMinute = 0;
+			taskMinute = Constants.TIME_LATEST_MINUTE;
 		}
 		LocalDateTime taskDateTime = LocalDateTime.of(taskYear, taskMonth, taskDay, taskHour, taskMinute);
 		return taskDateTime;
