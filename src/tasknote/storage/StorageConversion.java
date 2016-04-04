@@ -118,8 +118,6 @@ public class StorageConversion{
 			case CASE_TASK_END_DATE_MINUTE:
 				setTaskEndDateMinute(returnObject, content);
 				break;
-			case CASE_TASK_END:
-				break;
 			default:
 				break;
 		}
