@@ -201,5 +201,7 @@ public class Constants {
 	public static final int DECREMENT_PRECEDING_OBJECTS = 1;
 	public static final int INCREMENT_DAY_TOMORROW = 1;
 	public static final int INVALID_VALUE_CONSTANT = -1;
+	public static final int TIME_LATEST_HOUR = 11;
+	public static final int TIME_LATEST_MINUTE = 59;
 
 }
