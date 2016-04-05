@@ -122,6 +122,11 @@
  	-fx-text-fill: #ffffff;
  	-fx-background-color: #313437;
  }
+
+ #sidebar-navigation .list-cell:filled,
+ #sidebar-navigation .list-cell:filled .label {
+ 	-fx-text-fill: #add8e6;
+ }
  
  .sidebar-navigation-cell {
  	-fx-font-weight: bold;
