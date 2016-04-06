@@ -1,6 +1,9 @@
 package tasknote.parser;
 
 import tasknote.logic.ShowInterval;
+import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.TaskObject;
+import tasknote.shared.Constants;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -9,40 +12,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
-import tasknote.shared.COMMAND_TYPE;
-import tasknote.shared.TaskObject;
-
 public class Parser {
-
-	// Here are the valid commands accepted by
-	// the program
-	private static final String COMMAND_ADD = "add";
-	private static final String COMMAND_EDIT = "edit";
-	private static final String COMMAND_DONE = "done";
-	private static final String COMMAND_DELETE = "delete";
-	private static final String COMMAND_UNDO = "undo";
-	private static final String COMMAND_REDO = "redo";
-	private static final String COMMAND_EXIT = "exit";
-	private static final String COMMAND_SEARCH = "search";
-	private static final String COMMAND_SHOW = "show";
-	private static final String COMMAND_RELOCATE = "relocate";
-	private static final String COMMAND_HELP = "help";
-	private static final String COMMAND_UNDONE = "undone";
-
-	// Here are the valid keywords accepted by
-	// the program
-	private static final String KEYWORD_BY = "by";
-	private static final String KEYWORD_AT = "at";
-	private static final String KEYWORD_ON = "on";
-	private static final String KEYWORD_FROM = "from";
-	private static final String KEYWORD_TO = "to";
-	private static final String KEYWORD_IN = "in";
-	private static final String KEYWORD_NOTIFY = "notify";
-	private static final String KEYWORD_REMOVE = "remove";
-
-	// Here are the regex that are used by the
-	// parser for parsing all user commands
-	private static final String REGEX_WHITESPACE = " ";
 
 	/**
 	 * This method accepts an entire String passed from the user through his
@@ -63,55 +33,47 @@ public class Parser {
 			boolean throwException) {
 
 		ParserFirstPass firstPassCommand = new ParserFirstPass(userCommand);
-		ArrayList<String> allPhrase = firstPassCommand
+		ArrayList<String> allPhrases = firstPassCommand
 				.getFirstPassParsedResult();
 
-		int allPhraseCount = allPhrase.size();
-		String userCommandWord = "";
+		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
 
-		if (allPhraseCount > 0) {
-			userCommandWord = allPhrase.get(0);
-		}
+		try {
 
-		// Finally, we check to see which COMMAND_TYPE
-		// matches the command given by the user
-		// If none of the COMMAND_TYPE matches, the
-		// INVALID COMMAND_TYPE is returned instead
-		if (userCommandWord.equalsIgnoreCase(COMMAND_ADD)) {
+			// This will throw an exception if the ArrayList is empty
+			String userCommandWord = allPhrases.get(0).toLowerCase();
 
-			if (allPhraseCount == 1) {
-				return COMMAND_TYPE.INVALID;
-			} else {
-				return COMMAND_TYPE.ADD;
+			// Finally, we check to see which COMMAND_TYPE
+			// matches the command given by the user
+			// If none of the COMMAND_TYPE matches, the
+			// INVALID COMMAND_TYPE is returned instead
+			returnValue = matchCommandTypeNoLengthCheck(userCommandWord);
+			
+			// Finally, we check if the given user command
+			// has the minimum required length to make the command
+			// a valid one
+			if (!hasValidInputLength(returnValue, allPhrases)) {
+				returnValue = COMMAND_TYPE.INVALID;
 			}
 
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EDIT)) {
-			return COMMAND_TYPE.UPDATE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DELETE)) {
-			return COMMAND_TYPE.DELETE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
-			return COMMAND_TYPE.SEARCH;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EXIT)) {
-			return COMMAND_TYPE.EXIT;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
-			return COMMAND_TYPE.DONE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_REDO)) {
-			return COMMAND_TYPE.REDO;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDO)) {
-			return COMMAND_TYPE.UNDO;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SHOW)) {
-			return COMMAND_TYPE.SHOW;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_RELOCATE)) {
-			return COMMAND_TYPE.CHANGE_FILE_PATH;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
-			return COMMAND_TYPE.HELP;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDONE)) {
-			return COMMAND_TYPE.UNDONE;
-		} else {
-			return COMMAND_TYPE.INVALID;
+			return returnValue;
+
+		} catch (IndexOutOfBoundsException e) {
+
+			if (throwException) {
+				IndexOutOfBoundsException exceptionToThrow = new IndexOutOfBoundsException(
+						"Command given was not recognised. "
+								+ "Consult the following command for assistance:\n help");
+
+				System.out.println(exceptionToThrow);
+				throw exceptionToThrow;
+			} else {
+				return COMMAND_TYPE.INVALID;
+			}
 		}
 	}
 
+	// parseHelp should only be called if the COMMAND_TYPE was valid
 	public static COMMAND_TYPE parseHelp(String userCommand,
 			boolean throwException) {
 
@@ -121,52 +83,26 @@ public class Parser {
 
 		int allPhraseCount = allPhrase.size();
 		String userCommandWord = "";
-
+		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
+		
+		// This handles the case where "help" is the only
+		// input supplied by the user
 		if (allPhraseCount == 1) {
 			return COMMAND_TYPE.HELP;
 		}
-		
+
+		// If not, get the words that comes after "help"
 		if (allPhraseCount > 1) {
-			userCommandWord = allPhrase.get(1);
+			userCommandWord = allPhrase.get(1).toLowerCase();
 		}
 
 		// Finally, we check to see which COMMAND_TYPE
 		// matches the command given by the user
 		// If none of the COMMAND_TYPE matches, the
 		// INVALID COMMAND_TYPE is returned instead
-		if (userCommandWord.equalsIgnoreCase(COMMAND_ADD)) {
-
-			if (allPhraseCount == 1) {
-				return COMMAND_TYPE.INVALID;
-			} else {
-				return COMMAND_TYPE.ADD;
-			}
-
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EDIT)) {
-			return COMMAND_TYPE.UPDATE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DELETE)) {
-			return COMMAND_TYPE.DELETE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SEARCH)) {
-			return COMMAND_TYPE.SEARCH;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_EXIT)) {
-			return COMMAND_TYPE.EXIT;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_DONE)) {
-			return COMMAND_TYPE.DONE;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_REDO)) {
-			return COMMAND_TYPE.REDO;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDO)) {
-			return COMMAND_TYPE.UNDO;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_SHOW)) {
-			return COMMAND_TYPE.SHOW;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_RELOCATE)) {
-			return COMMAND_TYPE.CHANGE_FILE_PATH;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_HELP)) {
-			return COMMAND_TYPE.HELP;
-		} else if (userCommandWord.equalsIgnoreCase(COMMAND_UNDONE)) {
-			return COMMAND_TYPE.UNDONE;
-		} else {
-			return COMMAND_TYPE.INVALID;
-		}
+		returnValue = matchCommandTypeNoLengthCheck(userCommandWord);
+		
+		return returnValue;
 	}
 
 	// Fixed command structure: add taskname <on date> <by time> <notify time>
@@ -201,7 +137,7 @@ public class Parser {
 		int endDateYear = -1;
 		int endDateHour = -1;
 		int endDateMinute = -1;
-		
+
 		boolean toStartDateTime = true;
 
 		for (int i = 2; i < phraseCount; i++) {
@@ -209,20 +145,20 @@ public class Parser {
 			String currentPhrase = allPhrases.get(i);
 			String lowerPhrase = currentPhrase.toLowerCase();
 
-			if (lowerPhrase.equals(KEYWORD_ON)
-					|| lowerPhrase.equals(KEYWORD_BY)) {
+			if (lowerPhrase.equals(ParserConstants.KEYWORD_ON)
+					|| lowerPhrase.equals(ParserConstants.KEYWORD_BY)) {
 				switchString = "datetime";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_NOTIFY)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_NOTIFY)) {
 				switchString = "notify";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_AT)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_AT)) {
 				switchString = "locationtime";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_FROM)) {
 				switchString = "datetime";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_TO)
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "datetime";
 				toStartDateTime = false;
@@ -230,13 +166,13 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
-				name.append(REGEX_WHITESPACE);
+				name.append(Constants.STRING_CONSTANT_SPACE);
 				name.append(currentPhrase);
 				continue;
 			}
-			
+
 			if (switchString.equals("time") || switchString.equals("date")) {
-					switchString = oldSwitchString;
+				switchString = oldSwitchString;
 			}
 
 			if (switchString.equals("datetime")) {
@@ -258,19 +194,23 @@ public class Parser {
 				String[] maybeHourMinute = tryToParseTime(currentPhrase);
 
 				if (maybeHourMinute[3].equals("maybeNotTime")) {
-					
+
 					if (!Parser.isNumber(currentPhrase)) {
 						switchString = "location";
 					} else if (i + 1 < phraseCount) {
 						String nextLowerPhrase = allPhrases.get(i + 1)
 								.toLowerCase();
 
-						if (Parser.isNumber(currentPhrase) &&
-								(nextLowerPhrase.equals(KEYWORD_ON)
-								|| nextLowerPhrase.equals(KEYWORD_AT)
-								|| nextLowerPhrase.equals(KEYWORD_BY)
-								|| nextLowerPhrase.equals(KEYWORD_FROM)
-								|| nextLowerPhrase.equals(KEYWORD_TO))) {
+						if (Parser.isNumber(currentPhrase)
+								&& (nextLowerPhrase
+										.equals(ParserConstants.KEYWORD_ON)
+										|| nextLowerPhrase
+												.equals(ParserConstants.KEYWORD_AT)
+										|| nextLowerPhrase
+												.equals(ParserConstants.KEYWORD_BY)
+										|| nextLowerPhrase
+												.equals(ParserConstants.KEYWORD_FROM) || nextLowerPhrase
+											.equals(ParserConstants.KEYWORD_TO))) {
 							switchString = "time";
 						} else {
 							switchString = "location";
@@ -310,7 +250,7 @@ public class Parser {
 							System.out.println(e);
 							throw e;
 						} else {
-							
+
 							if (toStartDateTime) {
 								dateYear = holderYear;
 								dateMonth = holderMonth;
@@ -320,12 +260,12 @@ public class Parser {
 								endDateMonth = holderMonth;
 								endDateDay = holderDay;
 							}
-							
+
 							switchString = "name";
 							continue;
 						}
 					}
-					
+
 					if (toStartDateTime) {
 						dateYear = holderYear;
 						dateMonth = holderMonth;
@@ -360,7 +300,7 @@ public class Parser {
 							endDateMonth = -1;
 							endDateDay = -1;
 						}
-						
+
 						switchString = "name";
 						continue;
 					}
@@ -385,7 +325,7 @@ public class Parser {
 							endDateMonth = -1;
 							endDateDay = -1;
 						}
-						
+
 						switchString = "name";
 						continue;
 					}
@@ -411,7 +351,7 @@ public class Parser {
 							&& hourMinute[2].equals("12")) {
 						extraHours = 12;
 					}
-					
+
 					int holderHour = Integer.parseInt(hourMinute[0]);
 					int holderMinute = Integer.parseInt(hourMinute[1]);
 
@@ -435,7 +375,7 @@ public class Parser {
 							System.out.println(e2);
 							throw e2;
 						} else {
-							
+
 							if (toStartDateTime) {
 								dateHour = -1;
 								dateMinute = -1;
@@ -448,7 +388,7 @@ public class Parser {
 							continue;
 						}
 					}
-					
+
 					if (toStartDateTime) {
 						dateHour = holderHour;
 						dateMinute = holderMinute;
@@ -456,10 +396,11 @@ public class Parser {
 					} else {
 						endDateHour = holderHour;
 						endDateMinute = holderMinute;
-						duration = 60 * (endDateHour - dateHour) + (endDateMinute - dateMinute);
+						duration = 60 * (endDateHour - dateHour)
+								+ (endDateMinute - dateMinute);
 						taskType = "event";
 					}
-					
+
 					continue;
 
 				} catch (NumberFormatException e) {
@@ -620,7 +561,7 @@ public class Parser {
 			}
 
 			if (switchString.equals("location")) {
-				location.append(REGEX_WHITESPACE);
+				location.append(Constants.STRING_CONSTANT_SPACE);
 				location.append(currentPhrase);
 				continue;
 			}
@@ -650,7 +591,7 @@ public class Parser {
 				dateYear = todayCalendar.get(Calendar.YEAR);
 			}
 		}
-		
+
 		if (endDateHour > 0 || endDateMinute > 0) {
 			if (endDateDay == -1 || endDateMonth == -1 || endDateYear == -1) {
 				endDateDay = dateDay;
@@ -719,7 +660,7 @@ public class Parser {
 
 		boolean alteringName = false;
 		boolean alteringLocation = false;
-		
+
 		boolean toStartDateTime = true;
 
 		String switchString = "name";
@@ -729,36 +670,36 @@ public class Parser {
 			String currentPhrase = allPhrases.get(i);
 			String lowerPhrase = currentPhrase.toLowerCase();
 
-			if (lowerPhrase.equals(KEYWORD_ON)
-					|| lowerPhrase.equals(KEYWORD_BY)) {
+			if (lowerPhrase.equals(ParserConstants.KEYWORD_ON)
+					|| lowerPhrase.equals(ParserConstants.KEYWORD_BY)) {
 				switchString = "datetime";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_NOTIFY)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_NOTIFY)) {
 				switchString = "notify";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_AT)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_AT)) {
 				switchString = "locationtime";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_FROM)) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_FROM)) {
 				switchString = "timerangestart";
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_TO)
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_TO)
 					&& (dateHour >= 0 && dateMinute >= 0)) {
 				switchString = "timerangeend";
 				toStartDateTime = false;
 				continue;
-			} else if (lowerPhrase.equals(KEYWORD_REMOVE) ||
-					lowerPhrase.equals("rm")) {
+			} else if (lowerPhrase.equals(ParserConstants.KEYWORD_REMOVE)
+					|| lowerPhrase.equals("rm")) {
 				switchString = "remove";
 				continue;
 			}
-			
+
 			if (switchString.equals("remove")) {
-				
+
 				if (lowerPhrase.equals("time")) {
 					dateHour = -1;
 					dateMinute = -1;
-					
+
 					if (dateYear == -1 && dateMonth == -1 && dateDay == -1) {
 						taskType = "floating";
 					}
@@ -767,7 +708,7 @@ public class Parser {
 					dateYear = -1;
 					dateMonth = -1;
 					dateDay = -1;
-					
+
 					if (dateHour == -1 && dateMinute == -1) {
 						taskType = "floating";
 					}
@@ -783,12 +724,12 @@ public class Parser {
 			}
 
 			if (switchString.equals("name")) {
-				
+
 				if (!alteringName) {
 					name.delete(0, name.length());
 					alteringName = true;
 				} else {
-					name.append(REGEX_WHITESPACE);
+					name.append(Constants.STRING_CONSTANT_SPACE);
 				}
 				name.append(currentPhrase);
 				continue;
@@ -816,11 +757,15 @@ public class Parser {
 						String nextLowerPhrase = allPhrases.get(i + 1)
 								.toLowerCase();
 
-						if (nextLowerPhrase.equals(KEYWORD_ON)
-								|| nextLowerPhrase.equals(KEYWORD_AT)
-								|| nextLowerPhrase.equals(KEYWORD_BY)
-								|| nextLowerPhrase.equals(KEYWORD_FROM)
-								|| nextLowerPhrase.equals(KEYWORD_TO)) {
+						if (nextLowerPhrase.equals(ParserConstants.KEYWORD_ON)
+								|| nextLowerPhrase
+										.equals(ParserConstants.KEYWORD_AT)
+								|| nextLowerPhrase
+										.equals(ParserConstants.KEYWORD_BY)
+								|| nextLowerPhrase
+										.equals(ParserConstants.KEYWORD_FROM)
+								|| nextLowerPhrase
+										.equals(ParserConstants.KEYWORD_TO)) {
 							switchString = "time";
 						} else {
 							switchString = "location";
@@ -1097,7 +1042,7 @@ public class Parser {
 					location.delete(0, location.length());
 					location.append(currentPhrase);
 				} else {
-					location.append(REGEX_WHITESPACE);
+					location.append(Constants.STRING_CONSTANT_SPACE);
 					location.append(currentPhrase);
 				}
 				continue;
@@ -1265,10 +1210,10 @@ public class Parser {
 		for (int i = 0; i < itemCount; i++) {
 			indicesToReturn.add(i);
 		}
-		
+
 		String testKeyWord = allPhrases.get(1).toLowerCase();
 		boolean exactOnly = false;
-		
+
 		if (phraseCount > 2 && testKeyWord.equals("exact")) {
 			exactOnly = true;
 		}
@@ -1276,7 +1221,7 @@ public class Parser {
 		for (int i = 1; i < phraseCount; i++) {
 
 			String currentPhrase = allPhrases.get(i).toLowerCase();
-			
+
 			if (exactOnly && i == 1) {
 				continue;
 			}
@@ -1284,19 +1229,19 @@ public class Parser {
 			for (int j = 0; j < itemCount; j++) {
 				String currentTaskName = displayList.get(j).getTaskName()
 						.toLowerCase();
-				
 
 				if (!exactOnly) {
-					
+
 					if (!currentTaskName.contains(currentPhrase)) {
-						indicesToRemove.add(j);	
+						indicesToRemove.add(j);
 					}
 				} else {
-					
-					String[] splitTaskName = currentTaskName.split(REGEX_WHITESPACE);
-					
+
+					String[] splitTaskName = currentTaskName
+							.split(Constants.STRING_CONSTANT_SPACE);
+
 					indicesToRemove.add(j);
-					
+
 					for (int k = 0; k < splitTaskName.length; k++) {
 						if (currentPhrase.equals(splitTaskName[k])) {
 							indicesToRemove.remove(j);
@@ -1304,7 +1249,7 @@ public class Parser {
 						}
 					}
 				}
-				
+
 			}
 
 			indicesToReturn.removeAll(indicesToRemove);
@@ -1560,7 +1505,8 @@ public class Parser {
 
 	public static int getTaskId(String userCommand, boolean throwException) {
 
-		String[] splitUserCommand = userCommand.trim().split(REGEX_WHITESPACE);
+		String[] splitUserCommand = userCommand.trim().split(
+				Constants.STRING_CONSTANT_SPACE);
 
 		try {
 
@@ -1667,23 +1613,16 @@ public class Parser {
 			if (i + 1 < phraseCount) {
 				possibleMonth = allPhrases.get(i + 1).toLowerCase();
 			}
-
-			String[] possibleMonthValues = { "jan", "january", "feb",
-					"february", "mar", "march", "apr", "april", "may", "may",
-					"jun", "june", "jul", "july", "aug", "august", "oct",
-					"october", "nov", "november", "dec", "december" };
-
-			for (int j = 0; j < possibleMonthValues.length; j++) {
-
-				if (possibleMonth.equals(possibleMonthValues[j])) {
-					foundMonth = true;
-					dayMonthYear[4] = "isDate";
-					int numericMonth = 1 + (j / 2);
-					dayMonthYear[1] = Integer.toString(numericMonth);
-					extraWordsUsed++;
-					break;
-				}
+			
+			int monthValue = ParserConstants.getMonthFromString(possibleMonth);
+			
+			if (ParserConstants.isValidMonth(monthValue)) {
+				foundMonth = true;
+				dayMonthYear[4] = "isDate";
+				dayMonthYear[1] = Integer.toString(monthValue);
+				extraWordsUsed++;
 			}
+
 
 			if (!foundMonth) {
 				GregorianCalendar today = new GregorianCalendar();
@@ -1699,7 +1638,7 @@ public class Parser {
 
 			try {
 				int numericYear = Integer.parseInt(possibleYear);
-				
+
 				if (numericYear > 1900 && numericYear < 2100) {
 					dayMonthYear[2] = Integer.toString(numericYear);
 					extraWordsUsed++;
@@ -1833,5 +1772,55 @@ public class Parser {
 
 			return false;
 		}
+	}
+
+	private static boolean hasValidInputLength(COMMAND_TYPE command,
+			ArrayList<String> allPhrases) {
+
+		int userCommandLength = allPhrases.size();
+		int expectedMinimumLength = ParserConstants.getMinimumCommandLength(command);
+
+		return userCommandLength >= expectedMinimumLength;
+	}
+
+	// This method does not throw exceptions or check for userCommand length
+	private static COMMAND_TYPE matchCommandTypeNoLengthCheck(String commandWord) {
+
+		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
+
+		// Finally, we check to see which COMMAND_TYPE
+		// matches the command given by the user
+		// If none of the COMMAND_TYPE matches, the
+		// INVALID COMMAND_TYPE is returned instead
+		if (commandWord.equals(ParserConstants.COMMAND_ADD)) {
+			returnValue = COMMAND_TYPE.ADD;
+		} else if (commandWord.equals(ParserConstants.COMMAND_EDIT)) {
+			return COMMAND_TYPE.UPDATE;
+		} else if (commandWord.equals(ParserConstants.COMMAND_DELETE)) {
+			return COMMAND_TYPE.DELETE;
+		} else if (commandWord.equals(ParserConstants.COMMAND_SEARCH)) {
+			return COMMAND_TYPE.SEARCH;
+		} else if (commandWord.equals(ParserConstants.COMMAND_EXIT)) {
+			return COMMAND_TYPE.EXIT;
+		} else if (commandWord.equals(ParserConstants.COMMAND_DONE)) {
+			return COMMAND_TYPE.DONE;
+		} else if (commandWord.equals(ParserConstants.COMMAND_REDO)) {
+			return COMMAND_TYPE.REDO;
+		} else if (commandWord.equals(ParserConstants.COMMAND_UNDO)) {
+			return COMMAND_TYPE.UNDO;
+		} else if (commandWord.equals(ParserConstants.COMMAND_SHOW)) {
+			return COMMAND_TYPE.SHOW;
+		} else if (commandWord.equals(ParserConstants.COMMAND_RELOCATE)) {
+			return COMMAND_TYPE.CHANGE_FILE_PATH;
+		} else if (commandWord.equals(ParserConstants.COMMAND_HELP)) {
+			return COMMAND_TYPE.HELP;
+		} else if (commandWord.equals(ParserConstants.COMMAND_UNDONE)) {
+			return COMMAND_TYPE.UNDONE;
+		} else {
+			return COMMAND_TYPE.INVALID;
+		}
+
+		return returnValue;
+
 	}
 }
