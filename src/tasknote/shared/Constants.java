@@ -189,8 +189,16 @@ public class Constants {
 	 * specific user operations
 	 */
 	
-	public static final String EMPTY_STRING = "";
-	public static final String NEW_LINE_STRING = "\n";
+	public static final String STRING_CONSTANT_EMPTY = "";
+	public static final String STRING_CONSTANT_SPACE = " ";
+	public static final String STRING_CONSTANT_NEWLINE = "\n";
+	public static final String STRING_CONSTANT_ESCAPED_DOUBLE_QUOTES = "\"";
+	
+	// TODO
+	// Quick fix for programs that still depend on the old constants
+	public static final String EMPTY_STRING = STRING_CONSTANT_EMPTY;
+	public static final String NEW_LINE_STRING = STRING_CONSTANT_NEWLINE;
+	
 	
 	/*
 	 * These are the integer constants used in the program while executing
