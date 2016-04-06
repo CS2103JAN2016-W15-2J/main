@@ -3,6 +3,8 @@ package tasknote.storage;
 import java.util.HashMap;
 import java.util.Stack;
 
+//@@author A0126172M
+
 public class AliasHistory{
 	Stack<HashMap<String,String>> history;
 	Stack<HashMap<String,String>> backup;

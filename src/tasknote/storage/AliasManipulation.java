@@ -2,11 +2,14 @@ package tasknote.storage;
 
 import java.util.HashMap;
 
+import tasknote.shared.AddDuplicateAliasException;
+
+//@author A0126172M
 /**
  * AliasManipulation stores the alias and interact with the AliasHistory
  * to allow undo/redo
  * 
- * @author User
+ * 
  *
  */
 public class AliasManipulation{
@@ -31,12 +34,12 @@ public class AliasManipulation{
 	}
 	
 	/**
-	 * get corresponding alias command from command
-	 * @param command
-	 * @return String alias command
+	 * get command from alias command
+	 * @param aliasCommand
+	 * @return String command
 	 */
-	public String getAlias(String command){
-		return alias.get(command);
+	public String getAlias(String aliasCommand){
+		return alias.get(aliasCommand);
 	}
 	
 	/**
@@ -53,19 +56,19 @@ public class AliasManipulation{
 	 * @param aliasCommand
 	 * @return HashMap<String,String> modified alias
 	 */
-	public HashMap<String,String> addAlias(String command, String aliasCommand){
-		addOrReplaceAlias(command, aliasCommand);
-		aliasHistory.addHistory(alias);
-		return alias;
+	public HashMap<String,String> addAlias(String command, String aliasCommand) throws AddDuplicateAliasException{
+		insertAliasToHashMap(command, aliasCommand);
+		aliasHistory.addHistory(this.alias);
+		return this.alias;
 	}
 	
 	/**
 	 * remove the command from the alias HashMap and return the current alias HashMap
-	 * @param command
+	 * @param aliasCommand
 	 * @return HashMap<String, String> modified alias
 	 */
-	public HashMap<String,String> removeAlias(String command){
-		alias.remove(command);
+	public HashMap<String,String> removeAlias(String aliasCommand){
+		alias.remove(aliasCommand);
 		aliasHistory.addHistory(alias);
 		return alias;
 	}
@@ -94,11 +97,12 @@ public class AliasManipulation{
 		return false;
 	}
 	
-	private void addOrReplaceAlias(String command, String aliasCommand) {
+	private void insertAliasToHashMap(String command, String aliasCommand)throws AddDuplicateAliasException{
 		if(alias.containsKey(command)){
-			alias.replace(command, aliasCommand);
+			throw new AddDuplicateAliasException();
 		}else{
-			alias.put(command, aliasCommand);
+			alias.put(aliasCommand, command);
 		}
 	}
+
 }

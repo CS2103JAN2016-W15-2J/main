@@ -52,8 +52,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	
 	private int duration;
 	
-	//private GregorianCalendar taskObjectCalendar;
-	
 	private String location;
 	
 	private int notifyTime;
@@ -84,8 +82,6 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		setDuration(0);
 		
-		//setTaskObjectCalendar(new GregorianCalendar());
-		
 		setLocation("");
 		
 		setNotifyTime(0);
@@ -114,8 +110,6 @@ public class TaskObject implements Comparable<TaskObject> {
 		setEndDateYear(DEFAULT_DATETIME_VALUE);
 		setEndDateHour(DEFAULT_DATETIME_VALUE);
 		setEndDateMinute(DEFAULT_DATETIME_VALUE);
-		
-		//setTaskObjectCalendar(new GregorianCalendar());
 		
 		setLocation("");
 		
@@ -309,24 +303,7 @@ public class TaskObject implements Comparable<TaskObject> {
 			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
 		}
 	}
-
-	/**
-	 * @return the taskObjectCalendar
-	 */
-	/*
-	public GregorianCalendar getTaskObjectCalendar() {
-		return this.taskObjectCalendar;
-	}
-	*/
-
-	/**
-	 * @param taskObjectCalendar the taskObjectCalendar to set
-	 */
-	/*
-	public void setTaskObjectCalendar(GregorianCalendar taskObjectCalendar) {
-		this.taskObjectCalendar = taskObjectCalendar;
-	}
-	*/
+	
 
 	/**
 	 * @return the dateMonth
@@ -399,15 +376,14 @@ public class TaskObject implements Comparable<TaskObject> {
 	}
 	
 	
-	
 	/**
 	 * @return the string for printing for debugging
+	 * 
 	 */
 	public String toString(){
 		return "task name = " + taskName
 				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
 				+ "\nEndDate = " + endDateDay + "/" + endDateMonth + "/" + endDateYear
-				//+ "\nGregorianCalendar = " + taskObjectCalendar
 				+ "\nTime = " + dateHour + " " + dateMinute
 				+ "\nDuration = " + duration
 				+ "\nlocation = " + location
@@ -416,9 +392,6 @@ public class TaskObject implements Comparable<TaskObject> {
 				+ "\ntaskStatus = " + taskStatus
 				+ "\ntaskType = " + taskType
 				+ "\nisMarkedDone = " + isMarkedDone;
-				//+ "\nFirstDayOfWeek = " +  taskObjectCalendar.getFirstDayOfWeek()
-				//+ "\nTimeZoneID = " + taskObjectCalendar.getTimeZone().getID()
-				//+ "\nisDayLightTimeOn = " + taskObjectCalendar.getTimeZone().observesDaylightTime() + "\n";
 	}
 	
     /**
@@ -657,13 +630,14 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		return true;
 	}
-
+	
+	
+	
 	private boolean isTaskObjectLocationNotSame(TaskObject comparingTaskObject) {
 		return (isNull(comparingTaskObject.getLocation()) && isNull(this.getLocation())) ? false : !comparingTaskObject.getLocation().equals(this.getLocation());
 	}
 
 	private boolean isTaskObjectNameNotSame(TaskObject comparingTaskObject) {
-		//return isNull(this.getTaskName()) ? false : true;
 		return (isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName())) ? false : !comparingTaskObject.getTaskName().equals(this.getTaskName());
 	}
 	
@@ -695,9 +669,6 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.setEndDateYear(sourceTaskObject.getEndDateYear());
 		this.setEndDateHour(sourceTaskObject.getEndDateHour());
 		this.setEndDateMinute(sourceTaskObject.getEndDateMinute());
-		
-		// Postponed
-		// set Gregorian Calendar
 	}
 
 	/**
