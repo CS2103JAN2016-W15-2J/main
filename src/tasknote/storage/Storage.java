@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//@author A0126172M
+//@@author A0126172M
 public class Storage{
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
@@ -66,7 +66,6 @@ public class Storage{
 	 */
 	public boolean changePath(String newPathName){
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		
 		if(handlePathChangeForMacAndWindows(textFileName)){
 			return true;
 		}

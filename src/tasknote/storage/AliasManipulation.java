@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import tasknote.shared.AddDuplicateAliasException;
 
-//@author A0126172M
+//@@author A0126172M
 /**
  * AliasManipulation stores the alias and interact with the AliasHistory
  * to allow undo/redo
