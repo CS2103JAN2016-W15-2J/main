@@ -98,7 +98,7 @@ public class AliasManipulation{
 	}
 	
 	private void insertAliasToHashMap(String command, String aliasCommand)throws AddDuplicateAliasException{
-		if(alias.containsKey(command)){
+		if(alias.containsKey(aliasCommand)){
 			throw new AddDuplicateAliasException();
 		}else{
 			alias.put(aliasCommand, command);

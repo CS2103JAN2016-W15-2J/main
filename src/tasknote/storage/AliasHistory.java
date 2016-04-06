@@ -8,6 +8,7 @@ import java.util.Stack;
 public class AliasHistory{
 	Stack<HashMap<String,String>> history;
 	Stack<HashMap<String,String>> backup;
+	HashMap<String,String> current;
 	
 	/**
 	 * constructor to initialize Stack for undo/redo
@@ -26,7 +27,10 @@ public class AliasHistory{
 	 * @param alias
 	 */
 	public void addHistory(HashMap<String,String> alias){
-		history.push(alias);
+		if(current!=null){
+			history.push(current);
+		}
+		current = alias;
 		backup.clear();
 	}
 	
@@ -39,7 +43,8 @@ public class AliasHistory{
 		if(history.isEmpty()){
 			return null;
 		}
-		backup.push(history.peek());
+		backup.push(current);
+		current = history.peek();
 		return history.pop();
 	}
 	
@@ -52,7 +57,8 @@ public class AliasHistory{
 		if(backup.isEmpty()){
 			return null;
 		}
-		history.push(backup.peek());
+		history.push(current);
+		current = backup.peek();
 		return backup.pop();
 	}
 	

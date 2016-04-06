@@ -77,10 +77,12 @@ public class Storage{
 	 * undo PATH operation
 	 * @return true if successfully undo PATH
 	 */
-	public boolean undoPath(){
+	public String undoPath(){
 		try{
 			String previousPath = pathManipulator.extractUndoPathString();
-			return fileManipulator.moveFile(previousPath);
+			
+			fileManipulator.moveFile(previousPath);
+			return previousPath;
 		}catch(NullPointerException npe){
 			return logUndoFailed();
 		}
@@ -90,10 +92,11 @@ public class Storage{
 	 * re-do PATH operation
 	 * @return true if successfully re-do PATH
 	 */
-	public boolean redoPath(){
+	public String redoPath(){
 		try{
 			String nextPath = pathManipulator.extractRedoPathString();
-			return fileManipulator.moveFile(nextPath);
+			fileManipulator.moveFile(nextPath);
+			return nextPath;
 		}catch(NullPointerException npe){
 			return logRedoFailed();
 		}
@@ -347,14 +350,14 @@ public class Storage{
 		return false;
 	}
 	
-	private boolean logUndoFailed() {
+	private String logUndoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedUndo());
-		return false;
+		return null;
 	}
 	
-	private boolean logRedoFailed() {
+	private String logRedoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedRedo());
-		return false;
+		return null;
 	}
 	
 	private void logSaveModifiedAliasFailed() {

@@ -12,6 +12,7 @@ import java.util.Stack;
 public class PathHistory{
 	Stack<String> history;
 	Stack<String> backup;
+	String current;
 	
 	/**
 	 * Constructor for PathHistory
@@ -30,7 +31,10 @@ public class PathHistory{
 	 * @param newPath
 	 */
 	public void addHistory(String newPath){
-		history.push(newPath);
+		if(current!=null){
+			history.push(current);
+		}
+		current = newPath;
 		backup.clear();
 	}
 	
@@ -43,7 +47,8 @@ public class PathHistory{
 		if(history.isEmpty()){
 			return null;
 		}
-		backup.push(history.peek());
+		backup.push(current);
+		current = history.peek();
 		return history.pop();
 	}
 	
@@ -56,7 +61,8 @@ public class PathHistory{
 		if(backup.isEmpty()){
 			return null;
 		}
-		history.push(backup.peek());
+		history.push(current);
+		current = backup.peek();
 		return backup.pop();
 	}
 }

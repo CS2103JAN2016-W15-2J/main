@@ -410,8 +410,8 @@ public class FileManipulation{
 		if(isFileNameAcceptable(fileName)){
 			copyFileAndDeletePrevious(fileName);
 			initializeTextFile(fileName);
+			createTextFileIfNotExist();
 			storeNewTextFilePath();
-			setNewFileEnvironment();
 			return true;
 		}
 		return false;
@@ -461,10 +461,6 @@ public class FileManipulation{
 			outputStream.flush();
 		}
 	
-	}
-	
-	private void setNewFileEnvironment(){
-		initializeFiles();
 	}
 
 	private void deleteOldFile() throws IOException{
