@@ -176,7 +176,7 @@ public class TaskNote {
 		deleteIdSize = deleteIds.size();
 		boolean isSuccess = true;
 		try {
-			assert (deleteIdSize > Constants.EMPTY_LIST_SIZE && isValidIdList(deleteIds));
+			assert (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT && isValidIdList(deleteIds));
 			deleteFromTaskList(deleteIds);
 			storage.saveTasks(taskList);
 		} catch (Exception ex) {
@@ -201,7 +201,7 @@ public class TaskNote {
 		searchIdSize = searchIds.size();
 		reIntializeSearchList();
 		try {
-			assert (searchIdSize > Constants.EMPTY_LIST_SIZE);
+			assert (searchIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT);
 			for (int i = 0; i < searchIds.size(); i++) {
 				searchList.add(displayList.get(searchIds.get(i)));
 			}
@@ -396,7 +396,7 @@ public class TaskNote {
 		boolean isSuccess;
 		filePath = newFilePath;
 		try {
-			assert (!filePath.equals(Constants.EMPTY_STRING) && isNotNullFilePath(filePath));
+			assert (!filePath.equals(Constants.STRING_CONSTANT_EMPTY) && isNotNullFilePath(filePath));
 			isSuccess = storage.changePath(filePath);
 			if (isSuccess) {
 				logger.log(Level.INFO, String.format(Constants.INFO_EXECUTE_CHANGE_PATH_SUCCESSFUL, filePath));
@@ -573,7 +573,7 @@ public class TaskNote {
 	 */
 	private void getTomorrowTasks() {
 		LocalDateTime now = LocalDateTime.now();
-		now = now.plusDays(Constants.INCREMENT_DAY_TOMORROW);
+		now = now.plusDays(Constants.INCREMENT_DAY_TOMORROW_CONSTANT);
 
 		int tomorrowYear = now.getYear();
 		int tomorrowMonth = now.getMonthValue();
@@ -598,7 +598,7 @@ public class TaskNote {
 	 */
 	private void getDayTasks(int days) {
 		try {
-			assert (days > Constants.ZERO_TIME_INTERVAL);
+			assert (days > Constants.ZERO_TIME_INTERVAL_CONSTANT);
 			LocalDateTime startDateTime = LocalDateTime.now();
 			LocalDateTime endDateTime = startDateTime.plusDays(days);
 			populateDayWeekShowList(startDateTime, endDateTime);
@@ -621,7 +621,7 @@ public class TaskNote {
 	 */
 	private void getWeekTasks(int weeks) {
 		try {
-			assert (weeks > Constants.ZERO_TIME_INTERVAL);
+			assert (weeks > Constants.ZERO_TIME_INTERVAL_CONSTANT);
 			LocalDateTime startDateTime = LocalDateTime.now();
 			LocalDateTime endDateTime = startDateTime.plusWeeks(weeks);
 			populateDayWeekShowList(startDateTime, endDateTime);
@@ -703,10 +703,10 @@ public class TaskNote {
 		int taskHour = taskObject.getDateHour();
 		int taskMinute = taskObject.getDateMinute();
 		if(taskHour == Constants.INVALID_VALUE_CONSTANT) {
-			taskHour = Constants.TIME_LATEST_HOUR;
+			taskHour = Constants.TIME_LATEST_HOUR_CONSTANT;
 		}
 		if(taskMinute == Constants.INVALID_VALUE_CONSTANT) {
-			taskMinute = Constants.TIME_LATEST_MINUTE;
+			taskMinute = Constants.TIME_LATEST_MINUTE_CONSTANT;
 		}
 		LocalDateTime taskDateTime = LocalDateTime.of(taskYear, taskMonth, taskDay, taskHour, taskMinute);
 		return taskDateTime;
@@ -755,12 +755,12 @@ public class TaskNote {
 			history.pushDeleteToUndo(taskObject);
 		}
 		CommandObject commandObject = history.peekUndoStack();
-		commandObject.setPrecedingObjects(deleteIdSize - Constants.DECREMENT_PRECEDING_OBJECTS);
+		commandObject.setPrecedingObjects(deleteIdSize - Constants.DECREMENT_PRECEDING_OBJECTS_CONSTANT);
 	}
 
 	public boolean isValidTaskId(int taskId) {
 		boolean isValid = true;
-		if (taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE) {
+		if (taskId >= displayList.size() || taskId < Constants.EMPTY_LIST_SIZE_CONSTANT) {
 			isValid = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_INVALID_DELETE_ID, taskId));
 		}
@@ -885,7 +885,7 @@ public class TaskNote {
 					if (showType == ShowInterval.ALL) {
 						return Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
 					} else {
-						if (showCountInterval > Constants.EMPTY_LIST_SIZE) {
+						if (showCountInterval > Constants.EMPTY_LIST_SIZE_CONSTANT) {
 							return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL, numTasks,
 									showCountInterval, showType);
 						} else {

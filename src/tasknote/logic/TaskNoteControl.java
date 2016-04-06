@@ -151,7 +151,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -177,7 +177,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -204,7 +204,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -252,8 +252,8 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserUpdateIdFeedback);
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserUpdateObjectFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserUpdateIdFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserUpdateObjectFeedback);
 		return response;
 	}
 
@@ -318,7 +318,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 	
@@ -353,7 +353,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -380,7 +380,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -420,8 +420,8 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserShowFeedback);
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserIntervalFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserShowFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserIntervalFeedback);
 		return response;
 	}
 
@@ -452,7 +452,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 
@@ -487,7 +487,7 @@ public class TaskNoteControl {
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
-		response = response.concat(Constants.NEW_LINE_STRING).concat(parserFeedback);
+		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
 }
