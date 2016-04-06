@@ -27,7 +27,7 @@ public class Constants {
 	public static final String MESSAGE_SHOW_SUCCESSFUL_ALL = "All Tasks are displayed";
 	public static final String MESSAGE_SHOW_NO_RESULTS = "No Deadline Tasks are due within this period";
 	public static final String MESSAGE_SHOW_UNSUCCESSFUL = "Unable to show deadline tasks within this period";
-	public static final String MESSAGE_CHANGE_PATH_SUCCESSFUL = "File path successfuly changed to: %s";
+	public static final String MESSAGE_CHANGE_PATH_SUCCESSFUL = "File path successfully changed to: %s";
 	public static final String MESSAGE_CHANGE_PATH_UNSUCCESSFUL = "Unsuccessful operation. Unable to change file path to: %s";
 	public static final String MESSAGE_CHANGE_CATEGORY_SUCCESSFUL = "%s tasks have been successfully displayed";
 	public static final String MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL = "Unsuccessful operation. Unable to display %s tasks";
@@ -49,18 +49,18 @@ public class Constants {
 	 * 
 	 */
 	public static final String MESSAGE_HELP = "The Following are the List of Valid Commands: \n"
-											+ "1. To add task: Add\n"
-											+ "2. To edit task: Edit\n"
-											+ "3. To do a sub string search for tasks: Search\n"
-											+ "4. To do exact search for tasks: Search exact\n"
-											+ "5. To delete task: Delete\n"
-											+ "6. To reverse previous action: Undo\n"
-											+ "7. To reverse previous Undo action: Redo\n"
-											+ "8. To change file path: Relocate\n"
-											+ "9. To display deadline tasks within specified time interval: Show\n"
-											+ "10. To mark task as complete: Done\n"
-											+ "11. To mark task as incomplete: Undone\n\n"
-											+ "For specific usage of a command, enter: Help <Command>\n";
+											+ "1. To add task: ADD\n"
+											+ "2. To edit task: EDIT\n"
+											+ "3. To do a sub string search for tasks: SEARCH\n"
+											+ "4. To do exact search for tasks: SEARCH EXACT\n"
+											+ "5. To delete task: DELETE\n"
+											+ "6. To reverse previous action: UNDO\n"
+											+ "7. To reverse previous Undo action: REDO\n"
+											+ "8. To change file path: RELOCATE\n"
+											+ "9. To display deadline tasks within specified time interval: SHOW\n"
+											+ "10. To mark task as complete: DONE\n"
+											+ "11. To mark task as incomplete: UNDONE\n\n"
+											+ "For specific usage of a command, enter: HELP <Command>\n";
 	public static final String MESSAGE_HELP_ADD = "ADD\n"
 												+ "1. Add a Floating task (without deadline):\n"
 												+ "		add <TaskName>\n\n"
@@ -194,22 +194,17 @@ public class Constants {
 	public static final String STRING_CONSTANT_NEWLINE = "\n";
 	public static final String STRING_CONSTANT_ESCAPED_DOUBLE_QUOTES = "\"";
 	
-	// TODO
-	// Quick fix for programs that still depend on the old constants
-	public static final String EMPTY_STRING = STRING_CONSTANT_EMPTY;
-	public static final String NEW_LINE_STRING = STRING_CONSTANT_NEWLINE;
-	
 	
 	/*
 	 * These are the integer constants used in the program while executing
 	 * specific user operations
 	 */
-	public static final int EMPTY_LIST_SIZE = 0;
-	public static final int ZERO_TIME_INTERVAL = 0;
-	public static final int DECREMENT_PRECEDING_OBJECTS = 1;
-	public static final int INCREMENT_DAY_TOMORROW = 1;
+	public static final int EMPTY_LIST_SIZE_CONSTANT = 0;
+	public static final int ZERO_TIME_INTERVAL_CONSTANT = 0;
+	public static final int DECREMENT_PRECEDING_OBJECTS_CONSTANT = 1;
+	public static final int INCREMENT_DAY_TOMORROW_CONSTANT = 1;
 	public static final int INVALID_VALUE_CONSTANT = -1;
-	public static final int TIME_LATEST_HOUR = 11;
-	public static final int TIME_LATEST_MINUTE = 59;
+	public static final int TIME_LATEST_HOUR_CONSTANT = 11;
+	public static final int TIME_LATEST_MINUTE_CONSTANT = 59;
 
 }
