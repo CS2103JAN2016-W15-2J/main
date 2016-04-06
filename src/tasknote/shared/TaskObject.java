@@ -740,4 +740,20 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setEndDateMinute(int endDateMinute) {
 		this.endDateMinute = endDateMinute;
 	}
+	
+	/**
+	 * @@author A0126172M
+	 * @return true if taskObject is a floating task
+	 */
+	public boolean isFloatingTask(){
+		return this.taskType.equals(TASK_TYPE_FLOATING);
+	}
+	
+	/**
+	 * @@author A0126172M
+	 * @return true if taskObject is completed
+	 */
+	public boolean isCompleted(){
+		return this.taskStatus == TASK_STATUS.TASK_COMPLETED;
+	}
 }

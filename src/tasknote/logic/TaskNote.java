@@ -395,6 +395,7 @@ public class TaskNote {
 	public String changeFilePath(String newFilePath) {
 		boolean isSuccess;
 		filePath = newFilePath;
+
 		try {
 			assert (!filePath.equals(Constants.STRING_CONSTANT_EMPTY) && isNotNullFilePath(filePath));
 			isSuccess = storage.changePath(filePath);
