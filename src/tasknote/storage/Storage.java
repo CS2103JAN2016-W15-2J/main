@@ -1,6 +1,7 @@
 package tasknote.storage;
 
 import tasknote.shared.TaskObject;
+import tasknote.shared.AddDuplicateAliasException;
 import tasknote.shared.TaskListIOException;
 
 import java.io.FileNotFoundException;
@@ -104,8 +105,8 @@ public class Storage{
 	 * @param command
 	 * @return String aliasCommand
 	 */
-	public String getAlias(String command){
-		return aliasManipulator.getAlias(command);
+	public String getAlias(String aliasCommand){
+		return aliasManipulator.getAlias(aliasCommand);
 	}
 	
 	/**
@@ -142,10 +143,10 @@ public class Storage{
 	 * @param aliasCommand
 	 * @return current alias HashMap
 	 */
-	public HashMap<String, String> addAlias(String command, String aliasCommand){
-		aliasManipulator.addAlias(command, aliasCommand);
+	public boolean addAlias(String command, String alias) throws AddDuplicateAliasException{
+		aliasManipulator.addAlias(command, alias);
 		saveCurrentAlias();
-		return aliasManipulator.getAlias();
+		return true;
 	}
 	
 	/**
