@@ -386,7 +386,6 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.CHANGE_FILE_PATH, isSuccess, null);
 	}
-
 	/**
 	 * This operation shows the tasks within the specified time interval
 	 *

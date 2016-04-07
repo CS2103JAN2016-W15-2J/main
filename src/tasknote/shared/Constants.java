@@ -188,7 +188,6 @@ public class Constants {
 	 * These are the String constants used in the program while executing
 	 * specific user operations
 	 */
-	
 	public static final String STRING_CONSTANT_EMPTY = "";
 	public static final String STRING_CONSTANT_SPACE = " ";
 	public static final String STRING_CONSTANT_NEWLINE = "\n";
