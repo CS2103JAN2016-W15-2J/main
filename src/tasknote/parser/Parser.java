@@ -193,9 +193,9 @@ public class Parser {
 
 			if (switchString.equals("locationtime")) {
 
-				String[] maybeHourMinute = tryToParseTime(currentPhrase);
+				TimeMessage maybeHourMinute = tryToParseTime(currentPhrase);
 
-				if (maybeHourMinute[3].equals("maybeNotTime")) {
+				if (maybeHourMinute.getMessage().equals("maybeNotTime")) {
 
 					if (!Parser.isNumber(currentPhrase)) {
 						switchString = "location";
@@ -238,12 +238,12 @@ public class Parser {
 					int holderMonth = dayMonthYear.getMonth();
 					int holderYear = dayMonthYear.getYear();
 
-					if (holderDay < 0 || holderDay > 31 || holderMonth < 0
-							|| holderMonth > 12) {
+					if (!(ParserConstants.isValidDay(holderDay) 
+							&& ParserConstants.isValidMonth(holderMonth))) {
 
-						holderDay = -1;
-						holderMonth = -1;
-						holderYear = -1;
+						holderDay = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
+						holderMonth = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
+						holderYear = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
 
 						if (throwException) {
 							NumberFormatException e = new NumberFormatException(
@@ -337,25 +337,25 @@ public class Parser {
 			if (switchString.equals("time")
 					|| switchString.equals("timerangestart")) {
 
-				String[] hourMinute = tryToParseTime(currentPhrase);
+				TimeMessage hourMinute = tryToParseTime(currentPhrase);
 
 				try {
 
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
-						hourMinute[0] = "0";
+					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+						hourMinute.setHour(0);
 					}
 
 					// For pm
-					if ((!hourMinute[0].equals("12"))
-							&& hourMinute[2].equals("12")) {
-						extraHours = 12;
+					if (hourMinute.getHour() != 12
+							&& hourMinute.getExtraHours() == 12) {
+						hourMinute.setExtraHours(12);
 					}
 
-					int holderHour = Integer.parseInt(hourMinute[0]);
-					int holderMinute = Integer.parseInt(hourMinute[1]);
+					int holderHour = hourMinute.getHour();
+					int holderMinute = hourMinute.getMinute();
 
 					// A delayed check prevents passing weird cases like
 					// -1pm
@@ -441,25 +441,26 @@ public class Parser {
 
 			if (switchString.equalsIgnoreCase("timerangeend")) {
 
-				String[] hourMinute = tryToParseTime(currentPhrase);
+				TimeMessage hourMinute = tryToParseTime(currentPhrase);
 
 				try {
 
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
-						hourMinute[0] = "0";
+					if (hourMinute.getHour() == 12 && 
+							hourMinute.getExtraHours() == 0) {
+						hourMinute.setHour(0);
 					}
 
 					// For pm
-					if ((!hourMinute[0].equals("12"))
-							&& hourMinute[2].equals("12")) {
-						extraHours = 12;
+					if (hourMinute.getHour() != 12
+							&& hourMinute.getExtraHours() == 12) {
+						hourMinute.setExtraHours(12);
 					}
 
-					endDateHour = Integer.parseInt(hourMinute[0]);
-					endDateMinute = Integer.parseInt(hourMinute[1]);
+					endDateHour = hourMinute.getHour();
+					endDateMinute = hourMinute.getMinute();
 
 					// A delayed check prevents passing weird cases like
 					// -1pm
@@ -751,9 +752,9 @@ public class Parser {
 
 			if (switchString.equals("locationtime")) {
 
-				String[] maybeHourMinute = tryToParseTime(currentPhrase);
+				TimeMessage maybeHourMinute = tryToParseTime(currentPhrase);
 
-				if (maybeHourMinute[3].equals("maybeNotTime")) {
+				if (maybeHourMinute.getMessage().equals("maybeNotTime")) {
 
 					if (i + 1 < phraseCount) {
 						String nextLowerPhrase = allPhrases.get(i + 1)
@@ -848,25 +849,25 @@ public class Parser {
 			if (switchString.equals("time")
 					|| switchString.equals("timerangestart")) {
 
-				String[] hourMinute = tryToParseTime(currentPhrase);
+				TimeMessage hourMinute = tryToParseTime(currentPhrase);
 
 				try {
 
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
-						hourMinute[0] = "0";
+					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+						hourMinute.setHour(0);
 					}
 
 					// For pm
-					if ((!hourMinute[0].equals("12"))
-							&& hourMinute[2].equals("12")) {
-						extraHours = 12;
+					if (hourMinute.getHour() != 12
+							&& hourMinute.getExtraHours() == 12) {
+						hourMinute.setExtraHours(12);
 					}
 
-					dateHour = Integer.parseInt(hourMinute[0]);
-					dateMinute = Integer.parseInt(hourMinute[1]);
+					dateHour = hourMinute.getHour();
+					dateMinute = hourMinute.getMinute();
 
 					// A delayed check prevents passing weird cases like
 					// -1pm
@@ -928,25 +929,25 @@ public class Parser {
 
 			if (switchString.equals("timerangeend")) {
 
-				String[] hourMinute = tryToParseTime(currentPhrase);
+				TimeMessage hourMinute = tryToParseTime(currentPhrase);
 
 				try {
 
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute[0].equals("12") && hourMinute[2].equals("0")) {
-						hourMinute[0] = "0";
+					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+						hourMinute.setHour(0);
 					}
 
 					// For pm
-					if ((!hourMinute[0].equals("12"))
-							&& hourMinute[2].equals("12")) {
-						extraHours = 12;
+					if (hourMinute.getHour() != 12
+							&& hourMinute.getExtraHours() == 12) {
+						hourMinute.setExtraHours(12);
 					}
 
-					endDateHour = Integer.parseInt(hourMinute[0]);
-					endDateMinute = Integer.parseInt(hourMinute[1]);
+					endDateHour = hourMinute.getHour();
+					endDateMinute = hourMinute.getMinute();
 
 					// A delayed check prevents passing weird cases like
 					// -1pm
@@ -1546,114 +1547,18 @@ public class Parser {
 		return returnMessage;
 	}
 
-	private static String[] tryToParseTime(String currentPhrase) {
+	private static TimeMessage tryToParseTime(String currentPhrase) {
 
-		String[] hourMinute = new String[4];
-		hourMinute[0] = ParserConstants.DEFAULT_INVALID_STRING_DATETIME;
-		hourMinute[1] = ParserConstants.DEFAULT_INVALID_STRING_DATETIME;
-		hourMinute[2] = "0";
-		hourMinute[3] = "maybeNotTime";
-
-		int extraHours = Constants.ZERO_TIME_INTERVAL;
-
-		if (currentPhrase.contains(ParserConstants.TIME_SEPARATOR_COLON) || 
-				currentPhrase.contains(ParserConstants.TIME_SEPARATOR_DOT)) {
-
-			if (currentPhrase.contains(ParserConstants.TIME_SEPARATOR_COLON)) {
-				String[] tempHourMinute = currentPhrase.split(ParserConstants.TIME_SEPARATOR_COLON);
-				hourMinute[0] = tempHourMinute[0];
-				hourMinute[1] = tempHourMinute[1];
-				hourMinute[3] = "isTime";
-			} else {
-				String[] tempHourMinute = currentPhrase.split(ParserConstants.TIME_SEPARATOR_ESCAPED_DOT);
-				hourMinute[0] = tempHourMinute[0];
-				hourMinute[1] = tempHourMinute[1];
-				hourMinute[3] = "isTime";
-			}
-
-			// Trim as required
-			if (hourMinute[1].endsWith(ParserConstants.HOUR_MOD_AM)) {
-				hourMinute[1] = hourMinute[1].substring(0,
-						hourMinute[1].length() - 2);
-
-				if (Parser.isNumber(hourMinute[1])) {
-					hourMinute[3] = "isTime";
-				}
-			} else if (hourMinute[1].endsWith(ParserConstants.HOUR_MOD_PM)) {
-
-				extraHours = 12;
-				hourMinute[1] = hourMinute[1].substring(0,
-						hourMinute[1].length() - 2);
-
-				if (Parser.isNumber(hourMinute[1])) {
-					hourMinute[3] = "isTime";
-				}
-			}
-		} else {
-
-			// Count character by character from the back
-			int phraseSize = currentPhrase.length();
-
-			// Five length and above case
-			// Must contain an am/pm suffix
-			// Trim and run it with shortest cases
-			if (phraseSize >= 5) {
-
-				if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
-					extraHours = 12;
-				}
-				currentPhrase = currentPhrase.substring(0,
-						currentPhrase.length() - 2);
-				phraseSize = phraseSize - 2;
-			}
-
-			// Triple and quad length case
-			// Might have either single/double digit + am/pm
-			// Or triple/quad digit 24hr time format
-			if (phraseSize >= 3) {
-
-				if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_AM)) {
-					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
-					hourMinute[1] = "0";
-
-					if (Parser.isNumber(hourMinute[0])) {
-						hourMinute[3] = "isTime";
-					}
-				} else if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
-					extraHours = 12;
-					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
-					hourMinute[1] = "0";
-
-					if (Parser.isNumber(hourMinute[0])) {
-						hourMinute[3] = "isTime";
-					}
-				} else {
-					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
-					hourMinute[1] = currentPhrase.substring(phraseSize - 2,
-							phraseSize);
-
-					if (Parser.isNumber(hourMinute[0])
-							&& Parser.isNumber(hourMinute[1])) {
-						hourMinute[3] = "isTime";
-					}
-				}
-			}
-
-			// Single and double length case
-			// e.g. 3, 11, 09
-			// Impossible: 1pm, 145
-			if (phraseSize < 3) {
-				hourMinute[0] = currentPhrase;
-				hourMinute[1] = "0";
-			}
-		}
-
-		hourMinute[2] = Integer.toString(extraHours);
-
-		return hourMinute;
+		TimeParser timeParser = new TimeParser();
+		timeParser.setCurrentPhrase(currentPhrase);
+		
+		TimeMessage returnMessage = timeParser.tryToParseTime();
+		
+		return returnMessage;
+		
 	}
 
-	private static boolean isNumber(String stringToTest) {
+	protected static boolean isNumber(String stringToTest) {
 
 		try {
 			Integer.parseInt(stringToTest);
