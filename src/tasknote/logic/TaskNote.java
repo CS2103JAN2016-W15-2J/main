@@ -258,29 +258,15 @@ public class TaskNote {
 				commandObject = history.popUndoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
 				if (commandType == COMMAND_TYPE.ADD) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushDeleteToRedo(taskObject);
-					taskList.add(taskObject);
+					undoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushAddToRedo(taskObject);
-					taskList.remove(taskObject);
+					undoDelete(commandObject);
 				} else if (commandType == COMMAND_TYPE.UPDATE) {
-					CommandObject oldObject = history.popUndoStack();
-					CommandObject newObject = history.popUndoStack();
-					TaskObject oldTaskObject = oldObject.getTaskObject();
-					TaskObject newTaskObject = newObject.getTaskObject();
-					history.pushUpdateToRedo(oldTaskObject, newTaskObject);
-					history.pushAddToUndo(newTaskObject);
-					history.pushDeleteToUndo(oldTaskObject);
+					undoUpdate(commandObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushTaskCompletionToRedo(taskObject);
-					taskList.remove(taskObject);
-					boolean isComplete = taskObject.getIsMarkedDone();
-					taskObject.setIsMarkedDone(!isComplete);
-					isComplete = taskObject.getIsMarkedDone();
-					taskList.add(taskObject);
+					undoDone(commandObject);
+				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+					undoChangeFilePath();
 				}
 				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
 				undoCount++;
@@ -306,29 +292,15 @@ public class TaskNote {
 				commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
 				if (commandType == COMMAND_TYPE.ADD) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushAddToUndo(taskObject);
-					taskList.add(taskObject);
+					redoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushDeleteToUndo(taskObject);
-					taskList.remove(taskObject);
+					redoDelete(commandObject);
 				} else if (commandType == COMMAND_TYPE.UPDATE) {
-					CommandObject oldObject = history.popRedoStack();
-					CommandObject newObject = history.popRedoStack();
-					TaskObject oldTaskObject = oldObject.getTaskObject();
-					TaskObject newTaskObject = newObject.getTaskObject();
-					history.pushUpdateToUndo(oldTaskObject, newTaskObject);
-					history.pushAddToUndo(oldTaskObject);
-					history.pushDeleteToUndo(newTaskObject);
+					redoUpdate(commandObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
-					TaskObject taskObject = commandObject.getTaskObject();
-					history.pushTaskCompletionToUndo(taskObject);
-					taskList.remove(taskObject);
-					boolean isComplete = taskObject.getIsMarkedDone();
-					taskObject.setIsMarkedDone(!isComplete);
-					isComplete = taskObject.getIsMarkedDone();
-					taskList.add(taskObject);
+					redoDone(commandObject);
+				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+					redoChangeFilePath();
 				}
 				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
 				redoCount++;
@@ -400,6 +372,7 @@ public class TaskNote {
 			assert (!filePath.equals(Constants.STRING_CONSTANT_EMPTY) && isNotNullFilePath(filePath));
 			isSuccess = storage.changePath(filePath);
 			if (isSuccess) {
+				history.pushChangeFilePathToUndo();
 				logger.log(Level.INFO, String.format(Constants.INFO_EXECUTE_CHANGE_PATH_SUCCESSFUL, filePath));
 			} else {
 				logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_CHANGE_PATH_FALSE, filePath));
@@ -500,7 +473,13 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.CHANGE_CATEGORY, isSuccess, null);
 	}
-
+	
+	/**
+	 * This operation displays help messages for each command
+	 *
+	 * @param commandType
+	 * @return help message for requested command
+	 */
 	public static String displayHelpMessage(COMMAND_TYPE commandType) {
 		String helpMessage;
 		switch(commandType) {
@@ -547,6 +526,182 @@ public class TaskNote {
 			helpMessage = new String();
 		}
 		return helpMessage;
+	}
+	
+	/**
+	 * This operation reverts the previous add command executed
+	 *
+	 * @param commandType
+	 */
+	private void undoAdd(CommandObject commandObject) {
+		try{
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushDeleteToRedo(taskObject);
+			taskList.add(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous delete command executed
+	 *
+	 * @param commandType
+	 */
+	private void undoDelete(CommandObject commandObject) {
+		try {
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushAddToRedo(taskObject);
+			taskList.remove(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous update command executed
+	 *
+	 * @param commandType
+	 */
+	private void undoUpdate(CommandObject commandObject) {
+		try {
+			CommandObject oldObject = history.popUndoStack();
+			CommandObject newObject = history.popUndoStack();
+			TaskObject oldTaskObject = oldObject.getTaskObject();
+			TaskObject newTaskObject = newObject.getTaskObject();
+			history.pushUpdateToRedo(oldTaskObject, newTaskObject);
+			history.pushAddToUndo(newTaskObject);
+			history.pushDeleteToUndo(oldTaskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous done command executed
+	 *
+	 * @param commandType
+	 */
+	private void undoDone(CommandObject commandObject) {
+		try {
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushTaskCompletionToRedo(taskObject);
+			taskList.remove(taskObject);
+			boolean isComplete = taskObject.getIsMarkedDone();
+			taskObject.setIsMarkedDone(!isComplete);
+			isComplete = taskObject.getIsMarkedDone();
+			taskList.add(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous change file path
+	 * command executed
+	 *
+	 * @param commandType
+	 */
+	private void undoChangeFilePath() {
+		try {
+			//TODO: Storage returns true if undo successful; otherwise throw error
+			boolean isPathUndone = storage.undoPath();
+			if (isPathUndone) {
+				history.pushChangeFilePathToRedo();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous undo command for 
+	 * Add operation
+	 *
+	 * @param commandType
+	 */
+	private void redoAdd(CommandObject commandObject) {
+		try{
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushAddToUndo(taskObject);
+			taskList.add(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous undo command for 
+	 * Delete operation
+	 *
+	 * @param commandType
+	 */
+	private void redoDelete(CommandObject commandObject) {
+		try{
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushDeleteToUndo(taskObject);
+			taskList.remove(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous undo command for 
+	 * Update operation
+	 *
+	 * @param commandType
+	 */
+	private void redoUpdate(CommandObject commandObject) {
+		try{
+			CommandObject oldObject = history.popRedoStack();
+			CommandObject newObject = history.popRedoStack();
+			TaskObject oldTaskObject = oldObject.getTaskObject();
+			TaskObject newTaskObject = newObject.getTaskObject();
+			history.pushUpdateToUndo(oldTaskObject, newTaskObject);
+			history.pushAddToUndo(oldTaskObject);
+			history.pushDeleteToUndo(newTaskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous undo command for 
+	 * Done operation
+	 *
+	 * @param commandType
+	 */
+	private void redoDone(CommandObject commandObject) {
+		try{
+			TaskObject taskObject = commandObject.getTaskObject();
+			history.pushTaskCompletionToUndo(taskObject);
+			taskList.remove(taskObject);
+			boolean isComplete = taskObject.getIsMarkedDone();
+			taskObject.setIsMarkedDone(!isComplete);
+			isComplete = taskObject.getIsMarkedDone();
+			taskList.add(taskObject);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation reverts the previous undo command for 
+	 * Change File Path operation
+	 *
+	 * @param commandType
+	 */
+	private void redoChangeFilePath() {
+		try{
+			//TODO: Storage returns true if redo successful; otherwise throw error
+			boolean isPathRedone = storage.redoPath();
+			if (isPathRedone) {
+				history.pushChangeFilePathToUndo();
+			}
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 	
 	/**
