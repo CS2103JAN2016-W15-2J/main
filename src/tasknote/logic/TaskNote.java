@@ -967,13 +967,13 @@ public class TaskNote {
 	 *
 	 * @return Feedback to the User
 	 */
-	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject task) {
+	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject taskObject) {
 
 		switch (commandType) {
 		case ADD:
-			if (isSuccess && task != null) {
-				int taskIndex = taskList.indexOf(task);
-				String taskName = task.getTaskName();
+			if (isSuccess && taskObject != null) {
+				int taskIndex = taskList.indexOf(taskObject);
+				String taskName = taskObject.getTaskName();
 				return String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
 			} else {
 				return Constants.MESSAGE_ADD_UNSUCCESSFUL;
@@ -991,7 +991,7 @@ public class TaskNote {
 				return Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
 			}
 		case UPDATE:
-			if (isSuccess && task != null) {
+			if (isSuccess && taskObject != null) {
 				// TODO: Feedback which fields were updated
 				return Constants.MESSAGE_UPDATE_SUCCESSFUL;
 			} else {
@@ -1015,15 +1015,15 @@ public class TaskNote {
 				return Constants.MESSAGE_REDO_UNSUCCESSFUL;
 			}
 		case DONE:
-			if (isSuccess && task != null) {
-				String taskName = task.getTaskName();
+			if (isSuccess && taskObject != null) {
+				String taskName = taskObject.getTaskName();
 				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
 			} else {
 				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
 			}
 		case UNDONE:
-			if (isSuccess && task != null) {
-				String taskName = task.getTaskName();
+			if (isSuccess && taskObject != null) {
+				String taskName = taskObject.getTaskName();
 				return String.format(Constants.MESSAGE_UNDONE_SUCCESSFUL, taskName);
 			} else {
 				return Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
