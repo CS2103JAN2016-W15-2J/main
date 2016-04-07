@@ -974,82 +974,23 @@ public class TaskNote {
 		case DELETE:
 			return getDeleteFeedback(isSuccess, taskObject);
 		case SEARCH:
-			if (isSuccess) {
-				return String.format(Constants.MESSAGE_SEARCH_SUCCESSFUL, searchIdSize);
-			} else {
-				return Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
-			}
+			return getSearchFeedback(isSuccess, taskObject);
 		case UPDATE:
-			if (isSuccess && taskObject != null) {
-				// TODO: Feedback which fields were updated
-				return Constants.MESSAGE_UPDATE_SUCCESSFUL;
-			} else {
-				// TODO
-				return Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
-			}
+			return getUpdateFeedback(isSuccess, taskObject);
 		case UNDO:
-			if (isSuccess) {
-				// TODO: Feedback what was undone
-				return Constants.MESSAGE_UNDO_SUCCESSFUL;
-			} else {
-				// TODO
-				return Constants.MESSAGE_UNDO_UNSUCCESSFUL;
-			}
+			return getUndoFeedback(isSuccess, taskObject);
 		case REDO:
-			if (isSuccess) {
-				// TODO: Feedback what was re-did
-				return Constants.MESSAGE_REDO_SUCCESSFUL;
-			} else {
-				// TODO
-				return Constants.MESSAGE_REDO_UNSUCCESSFUL;
-			}
+			return getRedoFeedback(isSuccess, taskObject);
 		case DONE:
-			if (isSuccess && taskObject != null) {
-				String taskName = taskObject.getTaskName();
-				return String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
-			} else {
-				return Constants.MESSAGE_DONE_UNSUCCESSFUL;
-			}
+			return getDoneFeedback(isSuccess, taskObject);
 		case UNDONE:
-			if (isSuccess && taskObject != null) {
-				String taskName = taskObject.getTaskName();
-				return String.format(Constants.MESSAGE_UNDONE_SUCCESSFUL, taskName);
-			} else {
-				return Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
-			}
+			return getUndoneFeedback(isSuccess, taskObject);
 		case CHANGE_FILE_PATH:
-			if (isSuccess) {
-				return String.format(Constants.MESSAGE_CHANGE_PATH_SUCCESSFUL, filePath);
-			} else {
-				return String.format(Constants.MESSAGE_CHANGE_PATH_UNSUCCESSFUL, filePath);
-			}
+			return getChangeFilePathFeedback(isSuccess, taskObject);
 		case SHOW:
-			if (isSuccess) {
-				int numTasks = showIntervalList.size();
-				if (numTasks > 0) {
-					if (showType == ShowInterval.ALL) {
-						return Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
-					} else {
-						if (showCountInterval > Constants.EMPTY_LIST_SIZE_CONSTANT) {
-							return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL, numTasks,
-									showCountInterval, showType);
-						} else {
-							return String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE, numTasks, showType);
-						}
-					}
-				} else {
-					return String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks, showType);
-				}
-
-			} else {
-				return String.format(Constants.MESSAGE_SHOW_UNSUCCESSFUL, showType);
-			}
+			return getShowFeedback(isSuccess, taskObject);
 		case CHANGE_CATEGORY:
-			if (isSuccess) {
-				return String.format(Constants.MESSAGE_CHANGE_CATEGORY_SUCCESSFUL, taskCategory);
-			} else {
-				return String.format(Constants.MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL, taskCategory);
-			}
+			return getChangeCategoryFeedback(isSuccess, taskObject);
 		default:
 			throw new Error("Unrecognized command type");
 		}
@@ -1080,49 +1021,114 @@ public class TaskNote {
 	
 	private static String getSearchFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			feedback = String.format(Constants.MESSAGE_SEARCH_SUCCESSFUL, searchIdSize);
+		} else {
+			feedback = Constants.MESSAGE_SEARCH_UNSUCCESSFUL;
+		}
 		return feedback;
 	}
 	
 	private static String getUpdateFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess && taskObject != null) {
+			// TODO: Feedback which fields were updated
+			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
+		} else {
+			// TODO
+			feedback = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
+		}
 		return feedback;
 	}
 	
 	private static String getUndoFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			// TODO: Feedback what was undone
+			feedback = Constants.MESSAGE_UNDO_SUCCESSFUL;
+		} else {
+			// TODO
+			feedback = Constants.MESSAGE_UNDO_UNSUCCESSFUL;
+		}
 		return feedback;
 	}
 	
 	private static String getRedoFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			// TODO: Feedback what was re-did
+			feedback = Constants.MESSAGE_REDO_SUCCESSFUL;
+		} else {
+			// TODO
+			feedback = Constants.MESSAGE_REDO_UNSUCCESSFUL;
+		}
 		return feedback;
 	}
 	
 	private static String getDoneFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess && taskObject != null) {
+			String taskName = taskObject.getTaskName();
+			feedback = String.format(Constants.MESSAGE_DONE_SUCCESSFUL, taskName);
+		} else {
+			feedback = Constants.MESSAGE_DONE_UNSUCCESSFUL;
+		}
+		return feedback;
+	}
+	
+	private static String getUndoneFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		if (isSuccess && taskObject != null) {
+			String taskName = taskObject.getTaskName();
+			feedback = String.format(Constants.MESSAGE_UNDONE_SUCCESSFUL, taskName);
+		} else {
+			feedback = Constants.MESSAGE_UNDONE_UNSUCCESSFUL;
+		}
 		return feedback;
 	}
 	
 	private static String getChangeFilePathFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			feedback = String.format(Constants.MESSAGE_CHANGE_PATH_SUCCESSFUL, filePath);
+		} else {
+			feedback = String.format(Constants.MESSAGE_CHANGE_PATH_UNSUCCESSFUL, filePath);
+		}
 		return feedback;
 	}
 	
 	private static String getShowFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			int numTasks = showIntervalList.size();
+			if (numTasks > 0) {
+				if (showType == ShowInterval.ALL) {
+					feedback = Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
+				} else {
+					if (showCountInterval > Constants.EMPTY_LIST_SIZE_CONSTANT) {
+						feedback = String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL, numTasks,
+								showCountInterval, showType);
+					} else {
+						feedback = String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE, numTasks, showType);
+					}
+				}
+			} else {
+				feedback = String.format(Constants.MESSAGE_SHOW_NO_RESULTS, numTasks, showType);
+			}
+
+		} else {
+			feedback = String.format(Constants.MESSAGE_SHOW_UNSUCCESSFUL, showType);
+		}
 		return feedback;
 	}
 	
 	private static String getChangeCategoryFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
-		//TODO
+		if (isSuccess) {
+			feedback = String.format(Constants.MESSAGE_CHANGE_CATEGORY_SUCCESSFUL, taskCategory);
+		} else {
+			feedback = String.format(Constants.MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL, taskCategory);
+		}
 		return feedback;
 	}
 	
