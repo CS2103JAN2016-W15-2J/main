@@ -14,9 +14,9 @@ public class Constants {
 	public static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
 	public static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated\n";
 	public static final String MESSAGE_UPDATE_UNSUCCESSFUL = "Update Failed";
-	public static final String MESSAGE_UNDO_SUCCESSFUL = "The Last Operation has been Undone Successfully";
+	public static final String MESSAGE_UNDO_SUCCESSFUL = "The Last %s Operation has been Undone Successfully\n\n";
 	public static final String MESSAGE_UNDO_UNSUCCESSFUL = "Undo Command Failed to be executed";
-	public static final String MESSAGE_REDO_SUCCESSFUL = "The Last Operation has been re-done Successfully";
+	public static final String MESSAGE_REDO_SUCCESSFUL = "The Last Undo [ %s ] Operation has been re-done Successfully\n\n";
 	public static final String MESSAGE_REDO_UNSUCCESSFUL = "Redo Command Failed to be executed";
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
 	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
@@ -41,7 +41,7 @@ public class Constants {
 	public static final String STRING_TASK_LOCATION = "\nLocation: \t%s";
 	public static final String STRING_TASK_DATE = "\nDate: \t\t%s";
 	public static final String STRING_TASK_TIME = "\nTime: \t\t%s";
-
+	
 	/*
 	 * These are the Messages to be displayed to inform user of valid 
 	 * command entries
@@ -211,6 +211,7 @@ public class Constants {
 	public static final int ZERO_TIME_INTERVAL_CONSTANT = 0;
 	public static final int DECREMENT_PRECEDING_OBJECTS_CONSTANT = 1;
 	public static final int INCREMENT_DAY_TOMORROW_CONSTANT = 1;
+	public static final int INCREMENT_COUNT_CONSTANT = 1;
 	public static final int INVALID_VALUE_CONSTANT = -1;
 	public static final int TIME_LATEST_HOUR_CONSTANT = 11;
 	public static final int TIME_LATEST_MINUTE_CONSTANT = 59;

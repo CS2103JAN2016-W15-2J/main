@@ -30,6 +30,9 @@ public class TaskNote {
 
 	private static ShowInterval showType;
 	private static ShowCategory taskCategory;
+	
+	private static COMMAND_TYPE undoCommandType;
+	private static COMMAND_TYPE redoCommandType;
 
 	/*
 	 * This is the storage object that will be used to load tasks into the
@@ -250,17 +253,22 @@ public class TaskNote {
 	public String undoLastCommand() {
 		boolean isSuccess = true;
 		int undoCount = 0;
+		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekUndoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
+			taskObject = commandObject.getTaskObject();
+			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+			setUndoCommandType(commandType);
 
 			while (undoCount <= numPrecedingObjects) {
 				commandObject = history.popUndoStack();
-				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				commandType = commandObject.getRevertCommandType();
 				if (commandType == COMMAND_TYPE.ADD) {
-					undoAdd(commandObject);
-				} else if (commandType == COMMAND_TYPE.DELETE) {
 					undoDelete(commandObject);
+				} else if (commandType == COMMAND_TYPE.DELETE) {
+					//deleteIdSize = numPrecedingObjects + Constants.INCREMENT_COUNT_CONSTANT;
+					undoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.UPDATE) {
 					undoUpdate(commandObject);
 				} else if (commandType == COMMAND_TYPE.DONE) {
@@ -278,7 +286,7 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UNDO, e));
 		}
 
-		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, null);
+		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, taskObject);
 	}
 
 	public String redoLastUndoCommand() {
@@ -291,6 +299,7 @@ public class TaskNote {
 			while (redoCount <= numPrecedingObjects) {
 				commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				setRedoCommandType(commandType);
 				if (commandType == COMMAND_TYPE.ADD) {
 					redoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
@@ -527,12 +536,32 @@ public class TaskNote {
 		return helpMessage;
 	}
 	
+	private void setUndoCommandType(COMMAND_TYPE commandType) {
+		if(commandType == COMMAND_TYPE.ADD) {
+			undoCommandType = COMMAND_TYPE.DELETE;
+		} else if(commandType == COMMAND_TYPE.DELETE) {
+			undoCommandType = COMMAND_TYPE.ADD;
+		}else {
+			undoCommandType = commandType;
+		}
+	}
+	
+	private void setRedoCommandType(COMMAND_TYPE commandType) {
+		if(commandType == COMMAND_TYPE.ADD) {
+			redoCommandType = COMMAND_TYPE.DELETE;
+		} else if(commandType == COMMAND_TYPE.DELETE) {
+			redoCommandType = COMMAND_TYPE.ADD;
+		}else {
+			redoCommandType = commandType;
+		}
+	}
+	
 	/**
 	 * This operation reverts the previous add command executed
 	 *
 	 * @param commandType
 	 */
-	private void undoAdd(CommandObject commandObject) {
+	private void undoDelete(CommandObject commandObject) {
 		try{
 			TaskObject taskObject = commandObject.getTaskObject();
 			history.pushDeleteToRedo(taskObject);
@@ -547,7 +576,7 @@ public class TaskNote {
 	 *
 	 * @param commandType
 	 */
-	private void undoDelete(CommandObject commandObject) {
+	private void undoAdd(CommandObject commandObject) {
 		try {
 			TaskObject taskObject = commandObject.getTaskObject();
 			history.pushAddToRedo(taskObject);
@@ -1033,6 +1062,8 @@ public class TaskNote {
 			// TODO: Feedback which fields were updated
 			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
 			feedback = getFeedbackDetails(feedback, taskObject);
+		} else if (isSuccess && taskObject == null) {
+			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
 		} else {
 			// TODO
 			feedback = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
@@ -1045,6 +1076,7 @@ public class TaskNote {
 		if (isSuccess) {
 			// TODO: Feedback what was undone
 			feedback = Constants.MESSAGE_UNDO_SUCCESSFUL;
+			feedback = getUndoFeedbackDetails(feedback, taskObject);
 		} else {
 			// TODO
 			feedback = Constants.MESSAGE_UNDO_UNSUCCESSFUL;
@@ -1057,6 +1089,7 @@ public class TaskNote {
 		if (isSuccess) {
 			// TODO: Feedback what was re-did
 			feedback = Constants.MESSAGE_REDO_SUCCESSFUL;
+			feedback = getRedoFeedbackDetails(feedback, taskObject);
 		} else {
 			// TODO
 			feedback = Constants.MESSAGE_REDO_UNSUCCESSFUL;
@@ -1131,15 +1164,31 @@ public class TaskNote {
 		return feedback;
 	}
 	
-	
 	private static String getFeedbackDetails(String feedback, TaskObject taskObject) {
-		String taskType = taskObject.getTaskType();
 		feedback = getFeedbackName(feedback, taskObject);
+		if(taskObject.getTaskType() != null) {
+			feedback = getFeedbackDateTime(feedback, taskObject);
+		}
+		feedback = getFeedbackLocation(feedback, taskObject);
+		return feedback;
+	}
+	
+	private static String getUndoFeedbackDetails(String feedback, TaskObject taskObject) {
+		String feedbackUndoOperation = String.format(feedback, undoCommandType);
+		return feedbackUndoOperation;
+	}
+	
+	private static String getRedoFeedbackDetails(String feedback, TaskObject taskObject) {
+		String feedbackUndoOperation = String.format(feedback, redoCommandType);
+		return feedbackUndoOperation;
+	}
+	
+	private static String getFeedbackDateTime(String feedback, TaskObject taskObject){
+		String taskType = taskObject.getTaskType();
 		if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)){
 			feedback = getFeedbackDate(feedback, taskObject);
 			feedback = getFeedbackTime(feedback,taskObject);
 		}
-		feedback = getFeedbackLocation(feedback, taskObject);
 		return feedback;
 	}
 	
