@@ -139,7 +139,7 @@ public class TaskNoteControl {
 	private static String executeAdd(String userCommand) {
 		TaskObject taskObject;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			taskObject = Parser.parseAdd(userCommand, throwException);
 		} catch (Exception e) {
@@ -165,7 +165,7 @@ public class TaskNoteControl {
 	private static String executeDelete(String userCommand) {
 		ArrayList<Integer> deleteIds;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			deleteIds = Parser.parseDelete(userCommand, throwException);
 		} catch (Exception e) {
@@ -192,7 +192,7 @@ public class TaskNoteControl {
 		ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 		ArrayList<Integer> searchIds;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			searchIds = Parser.parseSearch(userCommand, displayList, throwException);
 		} catch (Exception e) {
@@ -220,8 +220,8 @@ public class TaskNoteControl {
 		int updateTaskId;
 		TaskObject updatedTaskObject;
 		boolean throwException = true;
-		String parserUpdateIdFeedback = new String(" ");
-		String parserUpdateObjectFeedback = new String(" ");
+		String parserUpdateIdFeedback = new String(Constants.STRING_CONSTANT_SPACE);
+		String parserUpdateObjectFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 
 		try {
 			updateTaskId = Parser.getTaskId(userCommand, throwException);
@@ -298,7 +298,7 @@ public class TaskNoteControl {
 		// TODO:Parser - change method name to getTaskId
 		int taskId;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			// TODO:Parser - change method name to getTaskId
 			taskId = Parser.getTaskId(userCommand, throwException);
@@ -333,7 +333,7 @@ public class TaskNoteControl {
 		// TODO:Parser - change method name to getTaskId
 		int taskId;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			// TODO:Parser - change method name to getTaskId
 			taskId = Parser.getTaskId(userCommand, throwException);
@@ -368,7 +368,7 @@ public class TaskNoteControl {
 	private static String executeChangeFilePath(String userCommand) {
 		String filePath;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			filePath = Parser.parseFilePath(userCommand, throwException);
 		} catch (Exception e) {
@@ -397,8 +397,8 @@ public class TaskNoteControl {
 		ShowInterval timeInterval;
 		int countInterval;
 		boolean throwException = true;
-		String parserShowFeedback = new String(" ");
-		String parserIntervalFeedback = new String(" ");
+		String parserShowFeedback = new String(Constants.STRING_CONSTANT_SPACE);
+		String parserIntervalFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 
 		try {
 			timeInterval = Parser.parseShow(userCommand, throwException);
@@ -437,7 +437,7 @@ public class TaskNoteControl {
 		// TODO: Parser
 		ShowCategory category;
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			// category = Parser.parseChangeCateogry(userCommand,
 			// throwException);
@@ -474,7 +474,7 @@ public class TaskNoteControl {
 	
 	private static String executeHelp(String userCommand) {
 		boolean throwException = true;
-		String parserFeedback = new String(" ");
+		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		COMMAND_TYPE commandType;
 		try {
 			commandType = Parser.parseHelp(userCommand, throwException);
