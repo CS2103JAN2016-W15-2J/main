@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
+import com.sun.nio.sctp.PeerAddressChangeNotification;
+
 public class Parser {
 
 	/**
@@ -177,10 +179,10 @@ public class Parser {
 
 			if (switchString.equals("datetime")) {
 
-				String[] maybeDayMonthYear = tryToParseDate(allPhrases,
+				DateMessage maybeDayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
 
-				if (maybeDayMonthYear[4].equals("maybeNotDate")) {
+				if (maybeDayMonthYear.getMessage().equals("maybeNotDate")) {
 					switchString = "time";
 					oldSwitchString = "datetime";
 				} else {
@@ -225,16 +227,16 @@ public class Parser {
 
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = tryToParseDate(allPhrases,
+				DateMessage dayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
 
-				int extraWordsUsed = Integer.parseInt(dayMonthYear[3]);
+				int extraWordsUsed = dayMonthYear.getExtraWordsUsed();
 				i = i + extraWordsUsed;
 
 				try {
-					int holderDay = Integer.parseInt(dayMonthYear[0]);
-					int holderMonth = Integer.parseInt(dayMonthYear[1]);
-					int holderYear = Integer.parseInt(dayMonthYear[2]);
+					int holderDay = dayMonthYear.getDay();
+					int holderMonth = dayMonthYear.getMonth();
+					int holderYear = dayMonthYear.getYear();
 
 					if (holderDay < 0 || holderDay > 31 || holderMonth < 0
 							|| holderMonth > 12) {
@@ -737,10 +739,10 @@ public class Parser {
 
 			if (switchString.equals("datetime")) {
 
-				String[] maybeDayMonthYear = tryToParseDate(allPhrases,
+				DateMessage maybeDayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
 
-				if (maybeDayMonthYear[4].equals("maybeNotDate")) {
+				if (maybeDayMonthYear.getMessage().equals("maybeNotDate")) {
 					switchString = "time";
 				} else {
 					switchString = "date";
@@ -780,14 +782,14 @@ public class Parser {
 
 			if (switchString.equals("date")) {
 
-				String[] dayMonthYear = tryToParseDate(allPhrases,
+				DateMessage dayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
 
 				try {
-					dateDay = Integer.parseInt(dayMonthYear[0]);
-					dateMonth = Integer.parseInt(dayMonthYear[1]);
-					dateYear = Integer.parseInt(dayMonthYear[2]);
-					int extraWordsUsed = Integer.parseInt(dayMonthYear[3]);
+					dateDay = dayMonthYear.getDay();
+					dateMonth = dayMonthYear.getMonth();
+					dateYear = dayMonthYear.getYear();
+					int extraWordsUsed = dayMonthYear.getExtraWordsUsed();
 
 					i = i + extraWordsUsed;
 
@@ -1530,165 +1532,54 @@ public class Parser {
 		}
 	}
 
-	private static String[] tryToParseDate(ArrayList<String> allPhrases,
+	private static DateMessage tryToParseDate(ArrayList<String> allPhrases,
 			String currentPhrase, int i, int phraseCount) {
-
-		String[] dayMonthYear = new String[5];
-		dayMonthYear[0] = "-1";
-		dayMonthYear[1] = "-1";
-		dayMonthYear[2] = "-1";
-		dayMonthYear[3] = "0";
-		dayMonthYear[4] = "maybeNotDate";
-
-		int extraWordsUsed = 0;
-
-		if (currentPhrase.equals("today") || currentPhrase.equals("tdy")) {
-
-			GregorianCalendar today = new GregorianCalendar();
-			int todayDate = today.get(Calendar.DAY_OF_MONTH);
-			int todayMonth = today.get(Calendar.MONTH) + 1;
-			int todayYear = today.get(Calendar.YEAR);
-
-			dayMonthYear[0] = Integer.toString(todayDate);
-			dayMonthYear[1] = Integer.toString(todayMonth);
-			dayMonthYear[2] = Integer.toString(todayYear);
-			dayMonthYear[4] = "isDate";
-
-		} else if (currentPhrase.equals("tomorrow")
-				|| currentPhrase.equals("tmr")) {
-
-			GregorianCalendar tomorrow = new GregorianCalendar();
-			tomorrow.roll(Calendar.DAY_OF_MONTH, 1);
-
-			int tomorrowDate = tomorrow.get(Calendar.DAY_OF_MONTH);
-			int tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
-			int tomorrowYear = tomorrow.get(Calendar.YEAR);
-
-			if (tomorrowDate == 1) {
-				tomorrow.roll(Calendar.MONTH, 1);
-				tomorrowMonth = tomorrow.get(Calendar.MONTH) + 1;
-
-				if (tomorrowMonth == 1) {
-					tomorrow.roll(Calendar.YEAR, 1);
-					tomorrowYear = tomorrow.get(Calendar.YEAR);
-				}
-			}
-
-			dayMonthYear[0] = Integer.toString(tomorrowDate);
-			dayMonthYear[1] = Integer.toString(tomorrowMonth);
-			dayMonthYear[2] = Integer.toString(tomorrowYear);
-			dayMonthYear[4] = "isDate";
-
-		} else if (currentPhrase.contains("/")) {
-			String[] tempDayMonthYear = currentPhrase.split("/");
-			dayMonthYear[0] = tempDayMonthYear[0];
-			dayMonthYear[1] = tempDayMonthYear[1];
-			dayMonthYear[2] = tempDayMonthYear[2];
-			dayMonthYear[4] = "isDate";
-		} else if (currentPhrase.contains("-")) {
-			String[] tempDayMonthYear = currentPhrase.split("-");
-			dayMonthYear[0] = tempDayMonthYear[0];
-			dayMonthYear[1] = tempDayMonthYear[1];
-			dayMonthYear[2] = tempDayMonthYear[2];
-			dayMonthYear[4] = "isDate";
-		} else {
-
-			String possibleDay = currentPhrase;
-
-			// Trim stuff if required
-			if (possibleDay.endsWith("st") || possibleDay.endsWith("nd")
-					|| possibleDay.endsWith("rd") || possibleDay.endsWith("th")) {
-
-				possibleDay = possibleDay
-						.substring(0, possibleDay.length() - 2);
-
-				dayMonthYear[4] = "isDate";
-			}
-
-			dayMonthYear[0] = possibleDay;
-
-			boolean foundMonth = false;
-			String possibleMonth = "";
-
-			if (i + 1 < phraseCount) {
-				possibleMonth = allPhrases.get(i + 1).toLowerCase();
-			}
-			
-			int monthValue = ParserConstants.getMonthFromString(possibleMonth);
-			
-			if (ParserConstants.isValidMonth(monthValue)) {
-				foundMonth = true;
-				dayMonthYear[4] = "isDate";
-				dayMonthYear[1] = Integer.toString(monthValue);
-				extraWordsUsed++;
-			}
-
-
-			if (!foundMonth) {
-				GregorianCalendar today = new GregorianCalendar();
-				dayMonthYear[1] = Integer
-						.toString(today.get(Calendar.MONTH) + 1);
-			}
-
-			String possibleYear = "";
-
-			if (foundMonth && (i + 2) < phraseCount) {
-				possibleYear = allPhrases.get(i + 2);
-			}
-
-			try {
-				int numericYear = Integer.parseInt(possibleYear);
-
-				if (numericYear > 1900 && numericYear < 2100) {
-					dayMonthYear[2] = Integer.toString(numericYear);
-					extraWordsUsed++;
-				} else {
-					throw new NumberFormatException();
-				}
-			} catch (NumberFormatException e) {
-				GregorianCalendar today = new GregorianCalendar();
-				dayMonthYear[2] = Integer.toString(today.get(Calendar.YEAR));
-			}
-		}
-
-		dayMonthYear[3] = Integer.toString(extraWordsUsed);
-
-		return dayMonthYear;
+		
+		DateParser dateParser = new DateParser();
+		dateParser.setAllPhrases(allPhrases);
+		dateParser.setCurrentPhrase(currentPhrase);
+		dateParser.setListPointer(i);
+		dateParser.setPhraseCount(phraseCount);
+		
+		DateMessage returnMessage = dateParser.tryToParseDate();
+		
+		return returnMessage;
 	}
 
 	private static String[] tryToParseTime(String currentPhrase) {
 
 		String[] hourMinute = new String[4];
-		hourMinute[0] = "-1";
-		hourMinute[1] = "-1";
+		hourMinute[0] = ParserConstants.DEFAULT_INVALID_STRING_DATETIME;
+		hourMinute[1] = ParserConstants.DEFAULT_INVALID_STRING_DATETIME;
 		hourMinute[2] = "0";
 		hourMinute[3] = "maybeNotTime";
 
-		int extraHours = 0;
+		int extraHours = Constants.ZERO_TIME_INTERVAL;
 
-		if (currentPhrase.contains(":") || currentPhrase.contains(".")) {
+		if (currentPhrase.contains(ParserConstants.TIME_SEPARATOR_COLON) || 
+				currentPhrase.contains(ParserConstants.TIME_SEPARATOR_DOT)) {
 
-			if (currentPhrase.contains(":")) {
-				String[] tempHourMinute = currentPhrase.split(":");
+			if (currentPhrase.contains(ParserConstants.TIME_SEPARATOR_COLON)) {
+				String[] tempHourMinute = currentPhrase.split(ParserConstants.TIME_SEPARATOR_COLON);
 				hourMinute[0] = tempHourMinute[0];
 				hourMinute[1] = tempHourMinute[1];
 				hourMinute[3] = "isTime";
 			} else {
-				String[] tempHourMinute = currentPhrase.split("\\.");
+				String[] tempHourMinute = currentPhrase.split(ParserConstants.TIME_SEPARATOR_ESCAPED_DOT);
 				hourMinute[0] = tempHourMinute[0];
 				hourMinute[1] = tempHourMinute[1];
 				hourMinute[3] = "isTime";
 			}
 
 			// Trim as required
-			if (hourMinute[1].endsWith("am")) {
+			if (hourMinute[1].endsWith(ParserConstants.HOUR_MOD_AM)) {
 				hourMinute[1] = hourMinute[1].substring(0,
 						hourMinute[1].length() - 2);
 
 				if (Parser.isNumber(hourMinute[1])) {
 					hourMinute[3] = "isTime";
 				}
-			} else if (hourMinute[1].endsWith("pm")) {
+			} else if (hourMinute[1].endsWith(ParserConstants.HOUR_MOD_PM)) {
 
 				extraHours = 12;
 				hourMinute[1] = hourMinute[1].substring(0,
@@ -1708,7 +1599,7 @@ public class Parser {
 			// Trim and run it with shortest cases
 			if (phraseSize >= 5) {
 
-				if (currentPhrase.endsWith("pm")) {
+				if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
 					extraHours = 12;
 				}
 				currentPhrase = currentPhrase.substring(0,
@@ -1721,14 +1612,14 @@ public class Parser {
 			// Or triple/quad digit 24hr time format
 			if (phraseSize >= 3) {
 
-				if (currentPhrase.endsWith("am")) {
+				if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_AM)) {
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
 
 					if (Parser.isNumber(hourMinute[0])) {
 						hourMinute[3] = "isTime";
 					}
-				} else if (currentPhrase.endsWith("pm")) {
+				} else if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
 					extraHours = 12;
 					hourMinute[0] = currentPhrase.substring(0, phraseSize - 2);
 					hourMinute[1] = "0";
@@ -1778,7 +1669,8 @@ public class Parser {
 			ArrayList<String> allPhrases) {
 
 		int userCommandLength = allPhrases.size();
-		int expectedMinimumLength = ParserConstants.getMinimumCommandLength(command);
+		int expectedMinimumLength = ParserConstants
+				.getMinimumCommandLength(command);
 
 		return userCommandLength >= expectedMinimumLength;
 	}

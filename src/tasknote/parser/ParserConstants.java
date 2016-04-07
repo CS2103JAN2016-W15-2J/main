@@ -38,6 +38,13 @@ public class ParserConstants {
 	protected static final String KEYWORD_NOTIFY = "notify";
 	protected static final String KEYWORD_REMOVE = "remove";
 	
+	protected static final String SWITCH_STRING_DATETIME = "datetime";
+	protected static final String SWITCH_STRING_LOCATIONTIME = "locationtime";
+	protected static final String SWITCH_STRING_NAME = "name";
+	protected static final String SWITCH_STRING_DATE = "date";
+	protected static final String SWITCH_STRING_TIME = "time";
+	protected static final String SWITCH_STRING_LOCATION = "location";
+	
 	// Here are the valid month words accepted by Parser
 	protected static final String MONTH_LONG_JAN = "january";
 	protected static final String MONTH_LONG_FEB = "february";
@@ -89,6 +96,66 @@ public class ParserConstants {
 	protected static final int MINUTE_MIN = 0;
 	protected static final int MINUTE_MAX = 59;
 	
+	// Here are the default time value in String and Integer
+	protected static final int DEFAULT_VALID_INT_TIME = 0;
+	protected static final String DEFAULT_VALID_STRING_TIME = "0";
+	
+	// Here are the default invalid time value in String and Integer
+	protected static final int DEFAULT_INVALID_INT_DATETIME = -1;
+	protected static final String DEFAULT_INVALID_STRING_DATETIME = "-1";
+	
+	
+	// Here are the hour modifiers for time
+	protected static final String HOUR_MOD_AM = "am";
+	protected static final String HOUR_MOD_PM = "pm";
+	
+	// Here are the accepted time separators
+	protected static final String TIME_SEPARATOR_DOT = ".";
+	protected static final String TIME_SEPARATOR_ESCAPED_DOT = "\\.";
+	protected static final String TIME_SEPARATOR_COLON = ":";
+	
+	// Here are the accepeted date separators
+	protected static final String DATE_SEPARATOR_DASH = "-";
+	protected static final String DATE_SEPARATOR_SLASH = "/";
+	
+	// Here are the suffixes that might appear on a date day
+	protected static final String DATE_SUFFIX_ST = "st";
+	protected static final String DATE_SUFFIX_ND = "nd";
+	protected static final String DATE_SUFFIX_RD = "rd";
+	protected static final String DATE_SUFFIX_TH = "th";
+	
+	// Here are all the english date "modifiers"
+	protected static final String DATE_LONG_TODAY = "today";
+	protected static final String DATE_LONG_TOMORRROW = "tomorrow";
+	
+	protected static final String DATE_SHORT_TODAY = "tdy";
+	protected static final String DATE_SHORT_TOMORROW = "tmr";
+	
+	// Here is the date modification qualifier
+	protected static final String DATE_MOD_NEXT = "next";
+	
+	// Here is the date modification quantifier
+	protected static final String DATE_MOD_LONG_DAY = "day";
+	protected static final String DATE_MOD_LONG_DAYS = "days";
+	protected static final String DATE_MOD_LONG_WEEK = "week";
+	protected static final String DATE_MOD_LONG_WEEKS = "weeks";
+	protected static final String DATE_MOD_LONG_MONTH = "month";
+	protected static final String DATE_MOD_LONG_MONTHS = "months";
+	protected static final String DATE_MOD_LONG_YEAR = "year";
+	protected static final String DATE_MOD_LONG_YEARS = "years";
+	
+	protected static final String DATE_MOD_SHORT_DAY = "d";
+	protected static final String DATE_MOD_SHORT_WEEK = "w";
+	protected static final String DATE_MOD_SHORT_MONTH = "m";
+	protected static final String DATE_MOD_SHORT_YEAR = "y";
+	
+	// Here are the values used by message passing
+	// for DateMessage and TimeMessage
+	protected static final String MESSAGE_DATE_UNSURE = "maybeNotDate";
+	protected static final String MESSAGE_DATE_SURE = "isDate";
+	
+	protected static final String MESSAGE_TIME_UNSURE = "maybeNotTime";
+	protected static final String MESSAGE_TIME_SURE = "isTime";
 	
 	// Here are all the minimum length of the expected user command
 	protected static final int MINIMUM_ADD = 2;
