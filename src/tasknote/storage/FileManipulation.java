@@ -238,42 +238,6 @@ public class FileManipulation{
 		return returnTaskList;
 	}
 	
-	/*
-	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList,
-			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
-		try{
-			while(true){
-				String[] objectRead = new String[constants.getTotalTitles()];
-				iterateOnceToStoreOneObject(fileReader, objectRead);
-				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead));
-			}
-		}catch(ClassNotFoundException cnfe){
-			fileLog.log(Level.WARNING, constants.getStorageManipulatorNotInitialized());
-		}catch(IOException ioe){
-			fileLog.log(Level.WARNING, constants.getFailedToReadFromTextFile());
-		}catch(NullPointerException npe){
-			//read success [NOT logged to avoid overcrowd console]
-		}
-	}
-
-	private void iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException {
-		for(int index = 0; index < constants.getTotalTitles(); ++index){
-			objectRead[index] = fileReader.readLine();
-			throwNullPointerExceptionIfNoMoreLinesToRead(objectRead, index);
-		}
-	}
-	
-	private void throwNullPointerExceptionIfNoMoreLinesToRead(String[] objectRead, int index) {
-		if(isNullObject(objectRead, index)){
-			throw new NullPointerException();
-		}
-	}
-	
-	private boolean isNullObject(String[] objectRead, int index) {
-		return objectRead[index] == null;
-	}
-	*/
-	
 	private void loopToGetFullTaskList(ArrayList<TaskObject> returnTaskList,
 			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
 		try{

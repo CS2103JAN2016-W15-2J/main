@@ -3,6 +3,7 @@ package tasknote.storage;
 import java.io.IOException;
 
 import tasknote.shared.TaskObject;
+
 //@@author A0126172M
 public class StorageConversion{
 	private StorageConstants constants;
@@ -228,8 +229,6 @@ public class StorageConversion{
 	 */
 	public String convertTaskObjectToString(TaskObject task){
 		StringBuffer convertedString = new StringBuffer("");
-		//GregorianCalendar taskCalendar = getGregorianCalendarFromTask(task);
-		//TimeZone taskTimeZone = taskCalendar.getTimeZone();
 		
 		for(int index = 0; index < constants.getTotalTitles(); ++index){
 			convertedString.append(extractItemFromTaskObject(index, task));
