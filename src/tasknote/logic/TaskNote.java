@@ -999,9 +999,7 @@ public class TaskNote {
 	private static String getAddFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
 		if (isSuccess && taskObject != null) {
-			int taskIndex = taskList.indexOf(taskObject);
-			String taskName = taskObject.getTaskName();
-			feedback = String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
+			feedback = Constants.MESSAGE_ADD_SUCCESSFUL;
 			feedback = getFeedbackDetails(feedback, taskObject);
 		} else {
 			feedback =  Constants.MESSAGE_ADD_UNSUCCESSFUL;
@@ -1034,6 +1032,7 @@ public class TaskNote {
 		if (isSuccess && taskObject != null) {
 			// TODO: Feedback which fields were updated
 			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
+			feedback = getFeedbackDetails(feedback, taskObject);
 		} else {
 			// TODO
 			feedback = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
@@ -1135,11 +1134,20 @@ public class TaskNote {
 	
 	private static String getFeedbackDetails(String feedback, TaskObject taskObject) {
 		String taskType = taskObject.getTaskType();
+		feedback = getFeedbackName(feedback, taskObject);
 		if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)){
 			feedback = getFeedbackDate(feedback, taskObject);
 			feedback = getFeedbackTime(feedback,taskObject);
 		}
 		feedback = getFeedbackLocation(feedback, taskObject);
+		return feedback;
+	}
+	
+	private static String getFeedbackName(String feedback, TaskObject taskObject) {
+		int taskIndex = taskList.indexOf(taskObject);
+		String taskName = taskObject.getTaskName();
+		String feedbackName = String.format(Constants.STRING_TASK_NAME_INDEX, ++taskIndex, taskName);
+		feedback = feedback.concat(feedbackName);
 		return feedback;
 	}
 	

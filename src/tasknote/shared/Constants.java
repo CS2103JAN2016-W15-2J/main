@@ -6,15 +6,13 @@ public class Constants {
 	 * These are the String Constants that will be displayed before or after
 	 * each user operation
 	 */
-	public static final String MESSAGE_ADD_SUCCESSFUL = "Added Task Successfully\n"
-													  + "\nTask Index: \t%d"
-													  + "\nTask Name: \t%s";
+	public static final String MESSAGE_ADD_SUCCESSFUL = "Added Task Successfully\n";
 	public static final String MESSAGE_ADD_UNSUCCESSFUL = "Add Failed";
 	public static final String MESSAGE_DELETE_SUCCESSFUL = "Deleted %d task(s) Successfully";
 	public static final String MESSAGE_DELETE_UNSUCCESSFUL = "Deletion Failed";
 	public static final String MESSAGE_SEARCH_UNSUCCESSFUL = "No tasks contain the entered search string";
 	public static final String MESSAGE_SEARCH_SUCCESSFUL = "Search Successful: %d Result(s) Retrieved";
-	public static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated";
+	public static final String MESSAGE_UPDATE_SUCCESSFUL = "Task was Successfully Updated\n";
 	public static final String MESSAGE_UPDATE_UNSUCCESSFUL = "Update Failed";
 	public static final String MESSAGE_UNDO_SUCCESSFUL = "The Last Operation has been Undone Successfully";
 	public static final String MESSAGE_UNDO_UNSUCCESSFUL = "Undo Command Failed to be executed";
@@ -38,6 +36,8 @@ public class Constants {
 	/*
 	 * These are strings that are used to display about tasks to users in notifications
 	 */
+	public static final String STRING_TASK_NAME_INDEX = "\nTask Index: \t%d"
+			  										  + "\nTask Name: \t%s";
 	public static final String STRING_TASK_LOCATION = "\nLocation: \t%s";
 	public static final String STRING_TASK_DATE = "\nDate: \t\t%s";
 	public static final String STRING_TASK_TIME = "\nTime: \t\t%s";
