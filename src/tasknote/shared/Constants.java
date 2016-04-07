@@ -6,7 +6,9 @@ public class Constants {
 	 * These are the String Constants that will be displayed before or after
 	 * each user operation
 	 */
-	public static final String MESSAGE_ADD_SUCCESSFUL = "Added Successfully: %d. %s";
+	public static final String MESSAGE_ADD_SUCCESSFUL = "Added Task Successfully\n"
+													  + "\nTask Index: \t%d"
+													  + "\nTask Name: \t%s";
 	public static final String MESSAGE_ADD_UNSUCCESSFUL = "Add Failed";
 	public static final String MESSAGE_DELETE_SUCCESSFUL = "Deleted %d task(s) Successfully";
 	public static final String MESSAGE_DELETE_UNSUCCESSFUL = "Deletion Failed";
@@ -32,6 +34,13 @@ public class Constants {
 	public static final String MESSAGE_CHANGE_CATEGORY_SUCCESSFUL = "%s tasks have been successfully displayed";
 	public static final String MESSAGE_CHANGE_CATEGORY_UNSUCCESSFUL = "Unsuccessful operation. Unable to display %s tasks";
 	
+	
+	/*
+	 * These are strings that are used to display about tasks to users in notifications
+	 */
+	public static final String STRING_TASK_LOCATION = "\nLocation: \t%s";
+	public static final String STRING_TASK_DATE = "\nDate: \t\t%s";
+	public static final String STRING_TASK_TIME = "\nTime: \t\t%s";
 
 	/*
 	 * These are the Messages to be displayed to inform user of valid 

@@ -970,19 +970,9 @@ public class TaskNote {
 
 		switch (commandType) {
 		case ADD:
-			if (isSuccess && taskObject != null) {
-				int taskIndex = taskList.indexOf(taskObject);
-				String taskName = taskObject.getTaskName();
-				return String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
-			} else {
-				return Constants.MESSAGE_ADD_UNSUCCESSFUL;
-			}
+			return getAddFeedback(isSuccess, taskObject);
 		case DELETE:
-			if (isSuccess) {
-				return String.format(Constants.MESSAGE_DELETE_SUCCESSFUL, deleteIdSize);
-			} else {
-				return Constants.MESSAGE_DELETE_UNSUCCESSFUL;
-			}
+			return getDeleteFeedback(isSuccess, taskObject);
 		case SEARCH:
 			if (isSuccess) {
 				return String.format(Constants.MESSAGE_SEARCH_SUCCESSFUL, searchIdSize);
@@ -1063,5 +1053,111 @@ public class TaskNote {
 		default:
 			throw new Error("Unrecognized command type");
 		}
+	}
+	
+	private static String getAddFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		if (isSuccess && taskObject != null) {
+			int taskIndex = taskList.indexOf(taskObject);
+			String taskName = taskObject.getTaskName();
+			feedback = String.format(Constants.MESSAGE_ADD_SUCCESSFUL, ++taskIndex, taskName);
+			feedback = getFeedbackDetails(feedback, taskObject);
+		} else {
+			feedback =  Constants.MESSAGE_ADD_UNSUCCESSFUL;
+		}
+		return feedback;
+	}
+	
+	private static String getDeleteFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		if (isSuccess) {
+			feedback =  String.format(Constants.MESSAGE_DELETE_SUCCESSFUL, deleteIdSize);
+		} else {
+			feedback = Constants.MESSAGE_DELETE_UNSUCCESSFUL;
+		}
+		return feedback;
+	}
+	
+	private static String getSearchFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getUpdateFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getUndoFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getRedoFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getDoneFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getChangeFilePathFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getShowFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	private static String getChangeCategoryFeedback(boolean isSuccess, TaskObject taskObject) {
+		String feedback = new String();
+		//TODO
+		return feedback;
+	}
+	
+	
+	private static String getFeedbackDetails(String feedback, TaskObject taskObject) {
+		String taskType = taskObject.getTaskType();
+		if(taskType.equalsIgnoreCase(Constants.STRING_TASKTYPE_DEADLINE)){
+			feedback = getFeedbackDate(feedback, taskObject);
+			feedback = getFeedbackTime(feedback,taskObject);
+		}
+		feedback = getFeedbackLocation(feedback, taskObject);
+		return feedback;
+	}
+	
+	private static String getFeedbackDate(String feedback, TaskObject taskObject) {
+		if(!taskObject.getFormattedDate().equals(Constants.STRING_CONSTANT_EMPTY)){
+			String date = String.format(Constants.STRING_TASK_DATE, taskObject.getFormattedDate());
+			feedback = feedback.concat(date);
+		}
+		return feedback;
+	}
+	
+	private static String getFeedbackTime(String feedback, TaskObject taskObject) {
+		if(!taskObject.getFormattedTime().equals(Constants.STRING_CONSTANT_EMPTY)){
+			String time = String.format(Constants.STRING_TASK_TIME, taskObject.getFormattedTime());
+			feedback = feedback.concat(time);
+		}
+		return feedback;
+	}
+	
+	private static String getFeedbackLocation(String feedback, TaskObject taskObject) {
+		if(taskObject.getLocation() != null && !taskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			String location = String.format(Constants.STRING_TASK_LOCATION,taskObject.getLocation()); 
+			feedback = feedback.concat(location);
+		}
+		return feedback;
 	}
 }
