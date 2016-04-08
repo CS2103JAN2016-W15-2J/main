@@ -2,6 +2,7 @@ package tasknote.storage;
 
 import tasknote.shared.TaskObject;
 import tasknote.shared.AddDuplicateAliasException;
+import tasknote.shared.InvalidFilePathException;
 import tasknote.shared.TaskListIOException;
 
 import java.io.FileNotFoundException;
@@ -77,12 +78,10 @@ public class Storage{
 	 * undo PATH operation
 	 * @return true if successfully undo PATH
 	 */
-	public String undoPath(){
+	public boolean undoPath() throws InvalidFilePathException{
 		try{
-			String previousPath = pathManipulator.extractUndoPathString();
-			
-			fileManipulator.moveFile(previousPath);
-			return previousPath;
+			String previousPath = pathManipulator.extractUndoPathString();		
+			return fileManipulator.moveFile(previousPath);
 		}catch(NullPointerException npe){
 			return logUndoFailed();
 		}
@@ -92,11 +91,10 @@ public class Storage{
 	 * re-do PATH operation
 	 * @return true if successfully re-do PATH
 	 */
-	public String redoPath(){
+	public boolean redoPath() throws InvalidFilePathException{
 		try{
 			String nextPath = pathManipulator.extractRedoPathString();
-			fileManipulator.moveFile(nextPath);
-			return nextPath;
+			return fileManipulator.moveFile(nextPath);
 		}catch(NullPointerException npe){
 			return logRedoFailed();
 		}
@@ -350,14 +348,14 @@ public class Storage{
 		return false;
 	}
 	
-	private String logUndoFailed() {
+	private boolean logUndoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedUndo());
-		return null;
+		return false;
 	}
 	
-	private String logRedoFailed() {
+	private boolean logRedoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedRedo());
-		return null;
+		return false;
 	}
 	
 	private void logSaveModifiedAliasFailed() {

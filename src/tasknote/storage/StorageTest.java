@@ -9,6 +9,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import tasknote.shared.InvalidFilePathException;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 //@@author A0126172M
@@ -75,7 +76,7 @@ public class StorageTest {
 	}
 	
 	@Test
-	public final void test() throws IOException, TaskListIOException {
+	public final void test() throws IOException, TaskListIOException, InvalidFilePathException {
 		//assertTrue(false);
 		try{
 			//case 1: test loadTasks() is able to load something
@@ -112,16 +113,13 @@ public class StorageTest {
 			assertFalse(storage.changePath(PATH_NAME_INVALID));
 			
 			//case 9: undo PATH
-			System.out.println(storage.undoPath());
-			//assertTrue(storage.undoPath());
+			assertTrue(storage.undoPath());
 			
 			//case 10: redo PATH
-			System.out.println(storage.redoPath());
-			//assertTrue(storage.redoPath());
+			assertTrue(storage.redoPath());
 			
 			//case 11: redo PATH when there is no future history
-			System.out.println(storage.redoPath());
-			//assertFalse(storage.redoPath());
+			assertFalse(storage.redoPath());
 			
 		}catch(IOException ioe){
 			
