@@ -161,6 +161,69 @@ public class Parser {
 
 		return taskObjectToBuild;
 	}
+	
+	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
+		
+		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
+			throw new RuntimeException(
+					"Wrong method used for non-edit type input!");
+		}
+
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int phraseCount = allPhrases.size();
+		this.setListPointer(2);
+
+		String switchString = ParserConstants.SWITCH_STRING_NAME;
+		String oldSwitchString = ParserConstants.SWITCH_STRING_NAME;
+		String taskType = TaskObject.TASK_TYPE_FLOATING;
+		
+		TaskObject taskObjectToBuild = this.getObjectForThisCommand();
+
+		while (this.getListPointer() < phraseCount) {
+
+			if (switchString.equals(ParserConstants.SWITCH_STRING_NAME)) {
+				switchString = parseNameUntilSurrender();
+			} else if (switchString
+					.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
+				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMESTART);
+			} else if (switchString
+					.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMEEND);
+			} else if (switchString
+					.equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)) {
+				switchString = parseLocationTimeUntilSurrender();
+			} else {
+				this.setListPointer(this.getListPointer() + 1);
+			}
+		}
+		
+		// Overlay new TaskObject over old TaskObject
+		taskObjectToBuild = overlayTaskObject(reallyOldTaskObject, taskObjectToBuild);
+		
+		if (taskObjectToBuild.getDateHour() > ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& taskObjectToBuild.getDateMinute() > ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			if (taskObjectToBuild.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					|| taskObjectToBuild.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					|| taskObjectToBuild.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				GregorianCalendar todayOrTomorrow = new GregorianCalendar();
+				
+				int todayMinute = todayOrTomorrow.get(Calendar.HOUR_OF_DAY) * 60 + todayOrTomorrow.get(Calendar.MINUTE);
+				int taskMinute = taskObjectToBuild.getDateHour() * 60 + taskObjectToBuild.getDateMinute();
+				
+				if (todayMinute > taskMinute) {
+					DateParser tomorrowParser = new DateParser();
+					todayOrTomorrow = tomorrowParser.rollByDays(todayOrTomorrow, 1);
+				}
+				
+				taskObjectToBuild.setDateDay(todayOrTomorrow.get(Calendar.DAY_OF_MONTH));
+				taskObjectToBuild.setDateMonth(todayOrTomorrow.get(Calendar.MONTH) + 1);
+				taskObjectToBuild.setDateYear(todayOrTomorrow.get(Calendar.YEAR));
+			}
+		}
+
+		return taskObjectToBuild;
+
+	}
 
 	private String parseNameUntilSurrender() {
 
@@ -347,6 +410,47 @@ public class Parser {
 		
 		return decideNewSwitchString(currentPhrase);
 	}
+	
+	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		
+		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setTaskName(oldTaskObject.getTaskName());
+		}
+		
+		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setTaskName(oldTaskObject.getLocation());
+		}
+		
+		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateDay(oldTaskObject.getDateDay());
+			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
+			newTaskObject.setDateYear(oldTaskObject.getDateYear());
+		}
+		
+		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateHour(oldTaskObject.getDateHour());
+			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
+		}
+		
+		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateDay(oldTaskObject.getEndDateDay());
+			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
+			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
+		}
+		
+		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateHour(oldTaskObject.getDateHour());
+			newTaskObject.setDateMinute(oldTaskObject.getEndDateMinute());
+		}
+		
+		return newTaskObject;
+	}
 
 	private String decideNewSwitchString(String keyword) {
 
@@ -383,10 +487,6 @@ public class Parser {
 		this.setListPointer(listPointer + 1);
 
 		return returnValue;
-	}
-
-	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
-		return null;
 	}
 
 	public ArrayList<Integer> parseDelete(boolean throwException) {
