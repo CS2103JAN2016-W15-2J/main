@@ -6,6 +6,7 @@
 ###################################################
 ## Project Specifics
 ###################################################
+aliasContents.txt
 pathContents.txt
 taskContents.txt
 client_secret.json
