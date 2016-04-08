@@ -77,8 +77,7 @@ public class Notification {
 
     private static VBox setupNotificationContent(Popup notificationContainer, String title, String message) {
         VBox notificationContent = new VBox();
-        Text titleMessage = (title == null || title.isEmpty()) ? new Text(DEFAULT_NOTIFICATION_TITLE)
-                : new Text(message);
+        Text titleMessage = (title == null || title.isEmpty()) ? new Text(DEFAULT_NOTIFICATION_TITLE) : new Text(title);
         Text exitButton = new Text("x");
         Text alertMessage = new Text(message);
         Separator separator = new Separator();

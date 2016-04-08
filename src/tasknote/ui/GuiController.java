@@ -40,7 +40,6 @@ public class GuiController extends Application {
     private final double WINDOW_MIN_HEIGHT = 450.0;
 
     private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
-    private static Stage _primaryWindow = null;
     
     private String SHOW_ALL_COMMAND = "show all";
     
@@ -49,38 +48,36 @@ public class GuiController extends Application {
     
     @Override
     public void start(Stage stage) {
-        CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
-        TextField _commandLine = _commandLineContainer.getCommandLine();
-        TasksContainer _tasksContainer = TasksContainer.getInstance();
-        FloatingTasksContainer _floatingTasksContainer = FloatingTasksContainer.getInstance();
-        SidebarContainer _sidebarContainer = SidebarContainer.getInstance();
-        
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
         
-        _primaryWindow = stage;
-        
-        // Scheduler
-        Scheduler schedulerManager = new Scheduler(_tasknoteControl);
-        schedulerManager.runOutstandingTaskCheck();
-        
-        scene.getStylesheets().add(getClass().getResource(CSS_GUICONTROLLER).toExternalForm());
-        
-        frame.setBackground(setBackground());
-        frame.setLeft(_sidebarContainer);
-        frame.setCenter(_tasksContainer);
-        frame.setRight(_floatingTasksContainer);
-        frame.setBottom(_commandLineContainer);
-        
-        setSidebarNavigationBehaviour();
-        setStagePresentation(stage, scene);
+        setFramePresentation(frame);
         setSceneBehaviour(scene);
+        setSceneAndStagePresentation(stage, scene);
         
         changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
-        focusOnCommandLine(_commandLine);
+
+        setSidebarNavigationBehaviour();
+        setSchedulerBehaviour();
+        focusOnCommandLine();
     }
     
-    private Background setBackground() {
+    private void setFramePresentation(BorderPane frame) {
+        CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
+        TasksContainer tasksContainer = TasksContainer.getInstance();
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        SidebarContainer sidebarContainer = SidebarContainer.getInstance();
+        
+        Background background = setBackgroundPresentation();
+        
+        frame.setBackground(background);
+        frame.setLeft(sidebarContainer);
+        frame.setCenter(tasksContainer);
+        frame.setRight(floatingTasksContainer);
+        frame.setBottom(commandLineContainer);
+    }
+    
+    private Background setBackgroundPresentation() {
         Image image = new Image(GuiController.class.getResourceAsStream(APPLICATION_BACKGROUND_IMAGE));
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
@@ -88,8 +85,15 @@ public class GuiController extends Application {
         
         return background;
     }
+    
+    private void setSchedulerBehaviour() {
+        Scheduler schedulerManager = new Scheduler(_tasknoteControl);
+        schedulerManager.runOutstandingTaskCheck();
+    }
 
-    private void setStagePresentation(Stage stage, Scene scene) {
+    private void setSceneAndStagePresentation(Stage stage, Scene scene) {
+        scene.getStylesheets().add(getClass().getResource(CSS_GUICONTROLLER).toExternalForm());
+        
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
         stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH)));
@@ -100,8 +104,8 @@ public class GuiController extends Application {
     }
     
     private void setSceneBehaviour(Scene scene) {
-        CommandLineContainer _commandLineContainer = CommandLineContainer.getInstance();
-        TextField _commandLine = _commandLineContainer.getCommandLine();
+        CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
+        TextField commandLine = commandLineContainer.getCommandLine();
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent key) {
@@ -121,9 +125,9 @@ public class GuiController extends Application {
                         break;
                     case F:
                         if (key.isControlDown()) {
-                            _commandLineContainer.resetCommandHistoryIndex();
-                            _commandLine.setText(COMMAND_SEARCH + " ");
-                            _commandLine.end();
+                            commandLineContainer.resetCommandHistoryIndex();
+                            commandLine.setText(COMMAND_SEARCH + " ");
+                            commandLine.end();
                         }
                         break;
                     default:
@@ -140,10 +144,9 @@ public class GuiController extends Application {
         executeCommand(command);
         
         commandLineContainer.addCommandHistory(commandLine);
-
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
-        CommandLineContainer.getInstance().clearLastModifiedCommand();
+        commandLineContainer.clearLastModifiedCommand();
     }
 
     public static void executeCommand(String command) {
@@ -152,13 +155,18 @@ public class GuiController extends Application {
             return;
         }
 
+        Stage primaryWindow = (Stage) CommandLineContainer.getInstance().getScene().getWindow();
+        
         String feedback = _tasknoteControl.executeCommand(command);
-        Notification.setupNotification(_primaryWindow, feedback);
+        Notification.setupNotification(primaryWindow, feedback);
 
         changeView(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
     }
 
-    private void focusOnCommandLine(TextField commandLine) {
+    private void focusOnCommandLine() {
+        CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
+        TextField commandLine = commandLineContainer.getCommandLine();
+        
         if (commandLine != null) {
             commandLine.requestFocus();
             commandLine.end();
