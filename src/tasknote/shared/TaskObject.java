@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 
 import javax.management.InvalidAttributeValueException;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class TaskObject implements Comparable<TaskObject> {
     public final int DEFAULT_DATETIME_VALUE = -1;
     
@@ -57,7 +59,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	private int notifyTime;
 	private boolean isNotified;
 	
-	private TASK_STATUS taskStatus;
+	private SimpleStringProperty taskStatus = new SimpleStringProperty();
 	private String taskType;
 	
 	private boolean isMarkedDone;
@@ -205,19 +207,56 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setIsNotified(boolean isNotified) {
 		this.isNotified = isNotified;
 	}
+	
+	public SimpleStringProperty getObservableTaskStatus() {
+	    return this.taskStatus;
+	}
 
 	/**
 	 * @return the taskStatus
 	 */
 	public TASK_STATUS getTaskStatus() {
-		return this.taskStatus;
+		String status = this.taskStatus.get();
+		
+		switch(status) {
+            case Constants.STRING_TASKSTATUS_DEFAULT:
+                return TASK_STATUS.TASK_DEFAULT;
+            case Constants.STRING_TASKSTATUS_OUTSTANDING:
+                return TASK_STATUS.TASK_OUTSTANDING;
+            case Constants.STRING_TASKSTATUS_OVERDUE:
+                return TASK_STATUS.TASK_OVERDUE;
+            case Constants.STRING_TASKSTATUS_COMPLETED:
+                return TASK_STATUS.TASK_COMPLETED;
+            case Constants.STRING_TASKSTATUS_INVALID_STORAGE:
+                return TASK_STATUS.TASK_INVALID_STORAGE;
+            default:
+                return null;
+		}
 	}
 
 	/**
 	 * @param taskStatus the taskStatus to set
 	 */
 	public void setTaskStatus(TASK_STATUS taskStatus) {
-		this.taskStatus = taskStatus;
+	    switch(taskStatus) {
+	        case TASK_DEFAULT:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_DEFAULT);
+	            return;
+	        case TASK_OUTSTANDING:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OUTSTANDING);
+	            return;
+	        case TASK_OVERDUE:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OVERDUE);
+	            return;
+	        case TASK_COMPLETED:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_COMPLETED);
+	            return;
+	        case TASK_INVALID_STORAGE:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_INVALID_STORAGE);
+	            return;
+	        default:
+	            return;
+	    }
 	}
 	
 	/**
@@ -225,23 +264,23 @@ public class TaskObject implements Comparable<TaskObject> {
 	 */
 	public void setTaskStatus(String taskStatus){
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_DEFAULT)){
-			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
+		    setTaskStatus(TASK_STATUS.TASK_DEFAULT);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING)){
-			this.taskStatus = TASK_STATUS.TASK_OUTSTANDING;
+		    setTaskStatus(TASK_STATUS.TASK_OUTSTANDING);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OVERDUE)){
-			this.taskStatus = TASK_STATUS.TASK_OVERDUE;
+		    setTaskStatus(TASK_STATUS.TASK_OVERDUE);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED)){
-			this.taskStatus = TASK_STATUS.TASK_COMPLETED;
+		    setTaskStatus(TASK_STATUS.TASK_COMPLETED);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_INVALID_STORAGE)){
-			this.taskStatus = TASK_STATUS.TASK_INVALID_STORAGE;
+		    setTaskStatus(TASK_STATUS.TASK_INVALID_STORAGE);
 			return;
 		}
 	}
@@ -298,9 +337,9 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setIsMarkedDone(boolean isMarkedDone) {
 		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
-		    this.taskStatus = TASK_STATUS.TASK_COMPLETED;
+		    setTaskStatus(TASK_STATUS.TASK_COMPLETED);
 		} else {
-			this.taskStatus = TASK_STATUS.TASK_DEFAULT;
+		    setTaskStatus(TASK_STATUS.TASK_DEFAULT);
 		}
 	}
 	
@@ -754,6 +793,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	 * @return true if taskObject is completed
 	 */
 	public boolean isCompleted(){
-		return this.taskStatus == TASK_STATUS.TASK_COMPLETED;
+		return getTaskStatus() == TASK_STATUS.TASK_COMPLETED;
 	}
 }

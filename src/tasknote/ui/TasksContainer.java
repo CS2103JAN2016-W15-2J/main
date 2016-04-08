@@ -4,6 +4,9 @@ import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
+import java.util.ArrayList;
+
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
@@ -21,7 +24,11 @@ public class TasksContainer extends HBox {
     
     private static TasksContainer _tasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
-    private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList();
+    private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList(
+            taskobject->
+            new Observable[] {
+                    taskobject.getObservableTaskStatus()
+                });
     
     private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
     private static final Color RED = Color.rgb(255, 100, 100);

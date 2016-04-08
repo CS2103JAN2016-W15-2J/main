@@ -2,6 +2,7 @@ package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
@@ -14,7 +15,11 @@ import tasknote.shared.TaskObject;
 public class FloatingTasksContainer extends HBox {
     private static FloatingTasksContainer _floatingTasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
-    private ObservableList<TaskObject> _floatingTasksList = FXCollections.observableArrayList();
+    private ObservableList<TaskObject> _floatingTasksList = FXCollections.observableArrayList(
+            taskobject->
+            new Observable[] {
+                    taskobject.getObservableTaskStatus()
+                });
     
     private FloatingTasksContainer() {
         // Only one instance of FloatingTasksContainer is permitted

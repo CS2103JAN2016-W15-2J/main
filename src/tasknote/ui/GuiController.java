@@ -7,10 +7,12 @@ import static tasknote.ui.GuiConstant.COMMAND_UNDO;
 import static tasknote.ui.GuiConstant.DEFAULT_COMMAND;
 
 import java.util.ArrayList;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -56,6 +58,10 @@ public class GuiController extends Application {
         Scene scene = new Scene(frame);
         
         _primaryWindow = stage;
+        
+        // Scheduler
+        Scheduler schedulerManager = new Scheduler(_tasknoteControl);
+        schedulerManager.runOutstandingTaskCheck();
         
         scene.getStylesheets().add(getClass().getResource("resources/css/theme-wunderlist.css").toExternalForm());
         
@@ -291,6 +297,16 @@ public class GuiController extends Application {
                 break;
         }
     }
+    
+    /*
+    @Override
+    public void stop() {
+        Platform.exit();
+        
+        timer.cancel(); 
+        timer.purge(); 
+    }
+    */
     
     public static void main(String[] argv) {
         launch(argv);
