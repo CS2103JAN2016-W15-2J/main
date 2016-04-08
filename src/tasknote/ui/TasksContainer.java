@@ -32,7 +32,7 @@ public class TasksContainer extends HBox {
                 });
     
     private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
-    private static final Color RED = Color.rgb(255, 100, 100);
+    private static final Color RED = Color.rgb(240, 100, 100);
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted

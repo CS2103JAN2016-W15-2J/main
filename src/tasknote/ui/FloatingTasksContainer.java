@@ -13,7 +13,6 @@ import javafx.util.Callback;
 import tasknote.shared.TaskObject;
 
 public class FloatingTasksContainer extends HBox {
-    
     private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
     private String CSS_CLASS_TASKS_LIST = "tasks-list";
     private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";

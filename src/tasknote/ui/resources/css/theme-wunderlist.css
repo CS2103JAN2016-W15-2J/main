@@ -82,7 +82,7 @@
  }
  
  .tasks-list-cell {
- 	-fx-padding: 2px 0 2px 5px;
+ 	-fx-padding: 7px 0 0 10px;
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
     -fx-background-insets: 0 0 10px 0;
@@ -115,17 +115,17 @@
  	-fx-background-color: inherit;
  }
  
+ #sidebar-navigation .list-cell:filled,
+ #sidebar-navigation .list-cell:filled .label {
+ 	-fx-text-fill: #9d9d9d;
+ }
+ 
  #sidebar-navigation:focused .list-cell:filled:selected,
  #sidebar-navigation:focused .list-cell:filled:selected .label,
  #sidebar-navigation .list-cell:selected, 
  #sidebar-navigation .list-cell:selected .label {
  	-fx-text-fill: #ffffff;
  	-fx-background-color: #313437;
- }
-
- #sidebar-navigation .list-cell:filled,
- #sidebar-navigation .list-cell:filled .label {
- 	-fx-text-fill: #add8e6;
  }
  
  .sidebar-navigation-cell {
