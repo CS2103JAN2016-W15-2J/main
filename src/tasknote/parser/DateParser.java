@@ -192,11 +192,9 @@ public class DateParser {
 		String[] temporaryDateHolder;
 
 		if (currentPhrase.contains(ParserConstants.DATE_SEPARATOR_SLASH)) {
-			temporaryDateHolder = currentPhrase
-					.split(ParserConstants.DATE_SEPARATOR_SLASH);
+			temporaryDateHolder = currentPhrase.split(ParserConstants.DATE_SEPARATOR_SLASH);
 		} else if (currentPhrase.contains(ParserConstants.DATE_SEPARATOR_DASH)) {
-			temporaryDateHolder = currentPhrase
-					.split(ParserConstants.DATE_SEPARATOR_DASH);
+			temporaryDateHolder = currentPhrase.split(ParserConstants.DATE_SEPARATOR_DASH);
 		} else {
 			return tryToParseAsWritten(passedMessage);
 		}
@@ -205,13 +203,17 @@ public class DateParser {
 			givenDay = Integer.parseInt(temporaryDateHolder[0]);
 			givenMonth = Integer.parseInt(temporaryDateHolder[1]);
 			givenYear = Integer.parseInt(temporaryDateHolder[2]);
-
-			passedMessage.setDay(givenDay);
-			passedMessage.setMonth(givenMonth);
-			passedMessage.setYear(givenYear);
-			passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
-
+			
+			if (ParserConstants.isValidDay(givenDay) 
+					&& ParserConstants.isValidMonth(givenMonth)) {
+				passedMessage.setDay(givenDay);
+				passedMessage.setMonth(givenMonth);
+				passedMessage.setYear(givenYear);
+				passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
+			}
+			
 			return passedMessage;
+			
 		} catch (NumberFormatException e) {
 
 			return tryToParseAsWritten(passedMessage);
@@ -294,9 +296,11 @@ public class DateParser {
 
 		try {
 			int numericDay = Integer.parseInt(possibleDay);
-			passedMessage.setDay(numericDay);
-			passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
-
+			
+			if (ParserConstants.isValidDay(numericDay)) {
+				passedMessage.setDay(numericDay);
+				passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
+			}
 			return true;
 		} catch (NumberFormatException e) {
 			return false;

@@ -50,7 +50,7 @@ public class Parser {
 			// If none of the COMMAND_TYPE matches, the
 			// INVALID COMMAND_TYPE is returned instead
 			returnValue = matchCommandTypeNoLengthCheck(userCommandWord);
-			
+
 			// Finally, we check if the given user command
 			// has the minimum required length to make the command
 			// a valid one
@@ -86,7 +86,7 @@ public class Parser {
 		int allPhraseCount = allPhrase.size();
 		String userCommandWord = "";
 		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
-		
+
 		// This handles the case where "help" is the only
 		// input supplied by the user
 		if (allPhraseCount == 1) {
@@ -103,7 +103,7 @@ public class Parser {
 		// If none of the COMMAND_TYPE matches, the
 		// INVALID COMMAND_TYPE is returned instead
 		returnValue = matchCommandTypeNoLengthCheck(userCommandWord);
-		
+
 		return returnValue;
 	}
 
@@ -139,6 +139,9 @@ public class Parser {
 		int endDateYear = -1;
 		int endDateHour = -1;
 		int endDateMinute = -1;
+		
+		DateMessage startDate;
+		DateMessage endDate;
 
 		boolean toStartDateTime = true;
 
@@ -230,102 +233,31 @@ public class Parser {
 				DateMessage dayMonthYear = tryToParseDate(allPhrases,
 						currentPhrase, i, phraseCount);
 
-				int extraWordsUsed = dayMonthYear.getExtraWordsUsed();
-				i = i + extraWordsUsed;
+				if (ParserConstants.isValidDay(dayMonthYear.getDay())
+						&& ParserConstants.isValidMonth(dayMonthYear.getMonth())) {
 
-				try {
-					int holderDay = dayMonthYear.getDay();
-					int holderMonth = dayMonthYear.getMonth();
-					int holderYear = dayMonthYear.getYear();
-
-					if (!(ParserConstants.isValidDay(holderDay) 
-							&& ParserConstants.isValidMonth(holderMonth))) {
-
-						holderDay = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
-						holderMonth = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
-						holderYear = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
-
-						if (throwException) {
-							NumberFormatException e = new NumberFormatException(
-									"Invalid date or month given. "
-											+ "Consult the following command for assistance:\n help add");
-							System.out.println(e);
-							throw e;
-						} else {
-
-							if (toStartDateTime) {
-								dateYear = holderYear;
-								dateMonth = holderMonth;
-								dateDay = holderDay;
-							} else {
-								endDateYear = holderYear;
-								endDateMonth = holderMonth;
-								endDateDay = holderDay;
-							}
-
-							switchString = "name";
-							continue;
-						}
-					}
+					i = i + dayMonthYear.getExtraWordsUsed();
 
 					if (toStartDateTime) {
-						dateYear = holderYear;
-						dateMonth = holderMonth;
-						dateDay = holderDay;
-
+						startDate = dayMonthYear;
 						taskType = "deadline";
 					} else {
-						endDateYear = holderYear;
-						endDateMonth = holderMonth;
-						endDateDay = holderDay;
-
+						endDate = dayMonthYear;
 						taskType = "event";
 					}
-
 					continue;
-				} catch (NumberFormatException e) {
-
+				} else {
 					if (throwException) {
-						NumberFormatException e2 = new NumberFormatException(
-								"Could not parse date value given. "
+						NumberFormatException e = new NumberFormatException(
+								"Invalid date or month given. "
 										+ "Consult the following command for assistance:\n help add");
-						System.out.println(e2);
-						throw e2;
+						System.out.println(e);
+						throw e;
 					} else {
-
 						if (toStartDateTime) {
-							dateYear = -1;
-							dateMonth = -1;
-							dateDay = -1;
+							startDate = dayMonthYear;
 						} else {
-							endDateYear = -1;
-							endDateMonth = -1;
-							endDateDay = -1;
-						}
-
-						switchString = "name";
-						continue;
-					}
-
-				} catch (ArrayIndexOutOfBoundsException e) {
-
-					if (throwException) {
-						ArrayIndexOutOfBoundsException e2 = new ArrayIndexOutOfBoundsException(
-								"Could not parse "
-										+ "date value given. Consult the following "
-										+ "command for assistance:\n help add");
-						System.out.println(e2);
-						throw e2;
-					} else {
-
-						if (toStartDateTime) {
-							dateYear = -1;
-							dateMonth = -1;
-							dateDay = -1;
-						} else {
-							endDateYear = -1;
-							endDateMonth = -1;
-							endDateDay = -1;
+							endDate = dayMonthYear;
 						}
 
 						switchString = "name";
@@ -344,7 +276,8 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+					if (hourMinute.getHour() == 12
+							&& hourMinute.getExtraHours() == 0) {
 						hourMinute.setHour(0);
 					}
 
@@ -448,8 +381,8 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute.getHour() == 12 && 
-							hourMinute.getExtraHours() == 0) {
+					if (hourMinute.getHour() == 12
+							&& hourMinute.getExtraHours() == 0) {
 						hourMinute.setHour(0);
 					}
 
@@ -856,7 +789,8 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+					if (hourMinute.getHour() == 12
+							&& hourMinute.getExtraHours() == 0) {
 						hourMinute.setHour(0);
 					}
 
@@ -936,7 +870,8 @@ public class Parser {
 					int extraHours = 0;
 
 					// For 12am
-					if (hourMinute.getHour() == 12 && hourMinute.getExtraHours() == 0) {
+					if (hourMinute.getHour() == 12
+							&& hourMinute.getExtraHours() == 0) {
 						hourMinute.setHour(0);
 					}
 
@@ -1535,15 +1470,15 @@ public class Parser {
 
 	private static DateMessage tryToParseDate(ArrayList<String> allPhrases,
 			String currentPhrase, int i, int phraseCount) {
-		
+
 		DateParser dateParser = new DateParser();
 		dateParser.setAllPhrases(allPhrases);
 		dateParser.setCurrentPhrase(currentPhrase);
 		dateParser.setListPointer(i);
 		dateParser.setPhraseCount(phraseCount);
-		
+
 		DateMessage returnMessage = dateParser.tryToParseDate();
-		
+
 		return returnMessage;
 	}
 
@@ -1551,11 +1486,11 @@ public class Parser {
 
 		TimeParser timeParser = new TimeParser();
 		timeParser.setCurrentPhrase(currentPhrase);
-		
+
 		TimeMessage returnMessage = timeParser.tryToParseTime();
-		
+
 		return returnMessage;
-		
+
 	}
 
 	protected static boolean isNumber(String stringToTest) {
