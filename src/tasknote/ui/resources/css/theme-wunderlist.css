@@ -1,8 +1,8 @@
 /**************************************************
- * Theme: Monotone-dark
+ * Theme: Wunderlist
  **************************************************/
 * {
-	/*e.g. -fx-base1: #... */
+	-fx-default-text-color: #ffffff;
 }
 
 .root {
@@ -19,13 +19,13 @@
 
 .commandline {
 	-fx-background-color: #313437;
-	-fx-text-inner-color: #ffffff;
+	-fx-text-inner-color: -fx-default-text-color;
 }
 
 .commandline-enter-button {
 	-fx-background-color: #313437;
 	-fx-font-weight: bold;
-	-fx-text-fill: #ffffff;
+	-fx-text-fill: -fx-default-text-color;
 }
 
 /**************************************************
@@ -82,8 +82,8 @@
  }
  
  .tasks-list-cell {
- 	-fx-padding: 7px 0 0 10px;
-    -fx-background-color: #ffffff;
+ 	-fx-padding: 5px 0 20px 15px;
+    -fx-background-color: -fx-default-text-color;
     -fx-background-radius: 10;
     -fx-background-insets: 0 0 10px 0;
  }
@@ -124,7 +124,7 @@
  #sidebar-navigation:focused .list-cell:filled:selected .label,
  #sidebar-navigation .list-cell:selected, 
  #sidebar-navigation .list-cell:selected .label {
- 	-fx-text-fill: #ffffff;
+ 	-fx-text-fill: -fx-default-text-color;
  	-fx-background-color: #313437;
  }
  
@@ -141,17 +141,17 @@
  }
  
  .clock-label-month-date {
- 	-fx-text-fill: #ffffff;
+ 	-fx-text-fill: -fx-default-text-color;
  	-fx-font-size: 16pt;
  }
  
  .clock-label-hour-minute-second {
- 	-fx-text-fill: #ffffff;
+ 	-fx-text-fill: -fx-default-text-color;
  	-fx-font-size: 16pt;
  }
  
  .clock-label-day-of-week {
- 	-fx-text-fill: #ffffff;
+ 	-fx-text-fill: -fx-default-text-color;
  	-fx-font-size: 25pt;
 	-fx-font-weight: bold;
  }
@@ -166,7 +166,7 @@
  }
  
  .notification-title {
- 	-fx-fill: #ffffff;
+ 	-fx-fill: -fx-default-text-color;
  	-fx-font-weight: bold;
 	-fx-font-size: 12pt;
  }
@@ -177,12 +177,12 @@
  }
  
  .notification-exit-button:hover {
- 	-fx-fill: #ffffff;
+ 	-fx-fill: -fx-default-text-color;
  	-fx-font-weight: bold;
  	-fx-font-size: 12pt;
  }
  
  .notification-alert-message {
- 	-fx-fill: #ffffff;
+ 	-fx-fill: -fx-default-text-color;
  	-fx-font-size: 12pt;
  }

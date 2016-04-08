@@ -24,6 +24,10 @@ public class TasksContainer extends HBox {
     private String CSS_CLASS_TASKS_LIST = "tasks-list";
     private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
     
+    private static final String FORMAT_TASK_DATE_TIME_PROPERTY = "%n\t%1$s, %2$s";
+    private static final String FORMAT_TASK_DATE_PROPERTY = "%n\t%1$s";
+    private static final String FORMAT_TASK_LOCATION_PROPERTY = "%n\t%1$s";
+    
     private static TasksContainer _tasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList(
@@ -115,12 +119,10 @@ public class TasksContainer extends HBox {
         });
     }
     
-    public static TextFlow getFormattedText(TaskObject task) {
-        String newline = System.lineSeparator();
-        
+    public static TextFlow getFormattedText(TaskObject task) {        
         TASK_STATUS taskStatus = task.getTaskStatus();
         Text taskIndex = null;
-        Text taskNameValue = new Text(task.getTaskName() + newline);
+        Text taskNameValue = new Text(task.getTaskName());
         Text taskDateTimeValue = null;
         Text taskLocationValue = null;
         Text taskEndDateTimeValue = null;
@@ -136,24 +138,26 @@ public class TasksContainer extends HBox {
             taskIndex.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold"));
         }
         
+        
+        
         if(!taskDate.isEmpty() && !taskTime.isEmpty()) {
-            taskDateTimeValue = new Text("\t" + taskDate + ", " + taskTime + newline);        
+            taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskDate, taskTime));
             taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         } else if (!taskDate.isEmpty() && taskTime.isEmpty()){
-            taskDateTimeValue = new Text("\t" + taskDate + newline);  
+            taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskDate));
             taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
         if(taskLocation == null || !taskLocation.isEmpty()) {
-            taskLocationValue = new Text("\t" + taskLocation + newline);
+            taskLocationValue = new Text(String.format(FORMAT_TASK_LOCATION_PROPERTY, taskLocation));
             taskLocationValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
         if(!taskEndDate.isEmpty() && !taskEndTime.isEmpty()) {
-            taskEndDateTimeValue = new Text("\t" + taskEndDate + ", " + taskEndTime + newline);
+            taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskEndDate, taskEndTime));
             taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         } else if (!taskEndDate.isEmpty() && taskEndTime.isEmpty()){
-            taskEndDateTimeValue = new Text("\t" + taskEndDate + newline);
+            taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskEndDate));
             taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
         
@@ -201,7 +205,6 @@ public class TasksContainer extends HBox {
                 if(taskIndex != null) {
                     taskIndex.setFill(LIGHT_GRAY);
                 }
-                //taskNameValue.setFill(Color.ORANGE);
                 taskNameValue.setFill(Color.BLACK);
                 if(taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.MAROON);
