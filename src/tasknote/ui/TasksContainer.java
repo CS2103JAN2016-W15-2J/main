@@ -4,8 +4,6 @@ import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_WEIGHT;
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
 
-import java.util.ArrayList;
-
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,11 +20,14 @@ import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class TasksContainer extends HBox {
     
+    private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
+    private String CSS_CLASS_TASKS_LIST = "tasks-list";
+    private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
+    
     private static TasksContainer _tasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList(
-            taskobject->
-            new Observable[] {
+            taskobject-> new Observable[] {
                     taskobject.getObservableTaskStatus()
                 });
     
@@ -38,10 +39,9 @@ public class TasksContainer extends HBox {
     }
     
     /**
-     * getInstance() allows user to get an instance of 
-     * TasksContainer.
+     * getInstance() allows user to get an instance of TasksContainer.
      * 
-     * @return          The one instance of TasksContainer.
+     * @return The one instance of TasksContainer.
      */
     public static TasksContainer getInstance() {
         if (_tasksContainer == null) {
@@ -50,63 +50,62 @@ public class TasksContainer extends HBox {
         }
         return _tasksContainer;
     }
-    
+
     /**
-     * getTasksList() allows user to get the observable
-     * list contained within TasksContainer.
+     * getTasksList() allows user to get the observable list contained within
+     * TasksContainer.
      * 
-     * @return          The ObservableList in TasksContainer.
+     * @return The ObservableList in TasksContainer.
      */
     public ObservableList<TaskObject> getTasksList() {
         return _tasksList;
     }
-    
+
     /*
      * As per name, set up tasks container.
      */
     private void setupTasksContainer() {
         setTasksContainerPresentation();
         setTaskListPresentation();
-        
+
         setTaskListBehaviour();
-        
+
         this.getChildren().addAll(_observableListRepresentation);
     }
-    
+
     /*
      * Set up the presentation of the tasks container.
      */
     private void setTasksContainerPresentation() {
-        this.getStyleClass().add("tasks-container");
+        this.getStyleClass().add(CSS_CLASS_TASKS_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
-        // this.setStyle(String.format(PROPERTY_BACKGROUND_COLOR, "#26292c") + String.format("-fx-font-family: \"%1$s\";", "Consolas"));
     }
-    
+
     /*
-     * Set up the presentation of the (observable) list containing all the tasks.
+     * Set up the presentation of the (observable) list containing all the
+     * tasks.
      */
     private void setTaskListPresentation() {
-        _observableListRepresentation.getStyleClass().add("tasks-list");
+        _observableListRepresentation.getStyleClass().add(CSS_CLASS_TASKS_LIST);
         _observableListRepresentation.setItems(_tasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
-    
+
     /*
      * Set up the behaviour of the (observable) list.
      */
     private void setTaskListBehaviour() {
         _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
             @Override
-            public ListCell<TaskObject> call(ListView<TaskObject>param) {
+            public ListCell<TaskObject> call(ListView<TaskObject> param) {
                 return new ListCell<TaskObject>() {
                     @Override
                     public void updateItem(TaskObject task, boolean empty) {
                         super.updateItem(task, empty);
-                        this.getStyleClass().add("tasks-list-cell");
+                        this.getStyleClass().add(CSS_CLASS_TASKS_LIST_CELL);
                         if (!isEmpty()) {
                             setGraphic(getFormattedText(task));
                         } else {
-                            // Prevent duplicate for a single entry
                             setText(null);
                             setGraphic(null);
                         }

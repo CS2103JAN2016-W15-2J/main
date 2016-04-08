@@ -34,6 +34,10 @@ public class CommandLineContainer extends HBox {
     private final int INDEX_LAST_COMMAND = (commands.size() - 1);
     private final int INDEX_MODIFIED_COMMAND = -1;
     
+    private String CSS_CLASS_COMMANDLINE_CONTAINER = "commandline-container";
+    private String CSS_CLASS_COMMANDLINE_ENTER_BUTTON = "commandline-enter-button";
+    private String CSS_CLASS_COMMANDLINE = "commandline";
+    
     private String lastModifiedCommand = UNINITIALIZED_STRING;
     private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(""));
     private int historyCommandIndex = 0;
@@ -45,12 +49,11 @@ public class CommandLineContainer extends HBox {
     private CommandLineContainer() {
         // Only one instance of CommandLineContainer is permitted
     }
-    
+
     /**
-     * getInstance() allows user to get an instance of 
-     * CommandLineContainer.
+     * getInstance() allows user to get an instance of CommandLineContainer.
      * 
-     * @return          The one instance of CommandLineContainer.
+     * @return The one instance of CommandLineContainer.
      */
     public static CommandLineContainer getInstance() {
         if (_commandLineContainer == null) {
@@ -59,25 +62,25 @@ public class CommandLineContainer extends HBox {
         }
         return _commandLineContainer;
     }
-    
+
     /**
-     * getCommandLine() allows user to get the command line
-     * contained within CommandLineContainer.
+     * getCommandLine() allows user to get the command line contained within
+     * CommandLineContainer.
      * 
-     * @return          The command line in CommandLineContainer.
+     * @return The command line in CommandLineContainer.
      */
     public TextField getCommandLine() {
         return _commandLine;
     }
-    
+
     /**
-     * clearLastModifiedCommand() set the last modified
-     * command to be an empty string, effectively clearing it.
+     * clearLastModifiedCommand() set the last modified command to be an empty
+     * string, effectively clearing it.
      */
     public void clearLastModifiedCommand() {
         setLastModifiedCommand(UNINITIALIZED_STRING);
     }
-    
+
     /*
      * As per name, set up command line container.
      */
@@ -85,38 +88,38 @@ public class CommandLineContainer extends HBox {
         setCommandLineContainerPresentation();
         setCommandLinePresentation();
         setEnterButtonPresentation();
-        
+
         setCommandLineBehaviour();
         setEnterButtonBehaviour();
-        
+
         this.getChildren().addAll(_commandLine, _enterButton);
     }
-    
+
     /*
      * Set up the presentation of the command line container.
      */
     private void setCommandLineContainerPresentation() {
-        this.getStyleClass().add("commandline-container");
+        this.getStyleClass().add(CSS_CLASS_COMMANDLINE_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
     }
-    
+
     /*
      * Set up the presentation of the command line itself.
      */
     private void setCommandLinePresentation() {
-        _commandLine.getStyleClass().add("commandline");
+        _commandLine.getStyleClass().add(CSS_CLASS_COMMANDLINE);
         _commandLine.setText(DEFAULT_COMMAND);
         HBox.setHgrow(_commandLine, Priority.ALWAYS);
     }
-    
+
     /*
      * Set up the presentation of the "enter" button.
      */
     private void setEnterButtonPresentation() {
-        _enterButton.getStyleClass().add("commandline-enter-button");
+        _enterButton.getStyleClass().add(CSS_CLASS_COMMANDLINE_ENTER_BUTTON);
         _enterButton.setText(BUTTON_SUBMIT_COMMAND);
     }
-    
+
     /*
      * Set up the behaviour of the command line.
      */
@@ -171,32 +174,32 @@ public class CommandLineContainer extends HBox {
             }
         });
     }
-    
+
     /*
      * Set up the behaviour of the enter button.
      */
     private void setEnterButtonBehaviour() {
         _enterButton.setOnAction(e -> GuiController.retrieveCommand(_commandLine));
     }
-    
+
     public void resetCommandHistoryIndex() {
         historyCommandIndex = 0;
     }
-    
+
     public void addCommandHistory(TextField commandLine) {
-        String command = commandLine.getText();    
+        String command = commandLine.getText();
         historyCommandEntered.add(command);
     }
-    
+
     private void getPrevEnteredCommand(ArrayList<String> history, TextField commandLine) {
         int numberOfCommandsEntered = history.size();
-        
-        if(historyCommandIndex == 0) {
+
+        if (historyCommandIndex == 0) {
             historyCommandIndex = (numberOfCommandsEntered - 1);
         } else {
             historyCommandIndex--;
         }
-        
+
         commandLine.setText(history.get(historyCommandIndex));
         commandLine.end();
     }
@@ -215,9 +218,8 @@ public class CommandLineContainer extends HBox {
     }
     
     /*
-     * getNextCommand() permits user to cycle through 
-     * a list of valid commands, followed by the user's 
-     * last edited command.
+     * getNextCommand() permits user to cycle through a list of valid commands,
+     * followed by the user's last edited command.
      */
     private void getNextValidCommand(TextField commandLine) {
         String originalCommand = commandLine.getText();
@@ -235,14 +237,12 @@ public class CommandLineContainer extends HBox {
             String newCommand = commands.get(position + 1);
             commandLine.setText(newCommand + " ");
         }
-        // Set the cursor at the end of the text
         commandLine.end();
     }
     
     /*
-     * Similarly, getPrevCommand() permits user to cycle 
-     * (in reverse) through the user's last edited command, 
-     * followed by a list of valid commands.
+     * Similarly, getPrevCommand() permits user to cycle (in reverse) through
+     * the user's last edited command, followed by a list of valid commands.
      */
     private void getPrevValidCommand(TextField commandLine) {
         String originalCommand = commandLine.getText();
@@ -311,7 +311,6 @@ public class CommandLineContainer extends HBox {
                 commandLine.setText(COMMAND_EXIT);
                 commandLine.end();
                 return true;
-            //
             case (DEFAULT_COMMAND + COMMAND_UNDONE):
                 commandLine.setText(COMMAND_UNDONE);
                 commandLine.end();

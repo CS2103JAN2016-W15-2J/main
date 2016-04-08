@@ -13,11 +13,15 @@ import javafx.util.Callback;
 import tasknote.shared.TaskObject;
 
 public class FloatingTasksContainer extends HBox {
+    
+    private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
+    private String CSS_CLASS_TASKS_LIST = "tasks-list";
+    private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
+    
     private static FloatingTasksContainer _floatingTasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _floatingTasksList = FXCollections.observableArrayList(
-            taskobject->
-            new Observable[] {
+            taskobject-> new Observable[] {
                     taskobject.getObservableTaskStatus()
                 });
     
@@ -26,10 +30,9 @@ public class FloatingTasksContainer extends HBox {
     }
     
     /**
-     * getInstance() allows user to get an instance of 
-     * FloatingTasksContainer.
+     * getInstance() allows user to get an instance of FloatingTasksContainer.
      * 
-     * @return          The one instance of FloatingTasksContainer.
+     * @return The one instance of FloatingTasksContainer.
      */
     public static FloatingTasksContainer getInstance() {
         if (_floatingTasksContainer == null) {
@@ -40,10 +43,10 @@ public class FloatingTasksContainer extends HBox {
     }
     
     /**
-     * getFloatingTasksList() allows user to get the observable
-     * list contained within FloatingTasksContainer.
+     * getFloatingTasksList() allows user to get the observable list contained
+     * within FloatingTasksContainer.
      * 
-     * @return          The ObservableList in FloatingTasksContainer.
+     * @return The ObservableList in FloatingTasksContainer.
      */
     public ObservableList<TaskObject> getFloatingTasksList() {
         return _floatingTasksList;
@@ -55,9 +58,9 @@ public class FloatingTasksContainer extends HBox {
     private void setupFloatingTasksContainer() {
         setFloatingTasksContainerPresentation();
         setFloatingTasksListPresentation();
-        
+
         setFloatListBehaviour();
-        
+
         this.getChildren().addAll(_observableListRepresentation);
     }
     
@@ -65,34 +68,32 @@ public class FloatingTasksContainer extends HBox {
      * Set up the presentation of the floating tasks container.
      */
     private void setFloatingTasksContainerPresentation() {
-        this.getStyleClass().add("tasks-container");
+        this.getStyleClass().add(CSS_CLASS_TASKS_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
     }
-    
+
     /*
      * Set up the presentation of the (observable) list containing all the
      * floating tasks.
      */
     private void setFloatingTasksListPresentation() {
-        _observableListRepresentation.getStyleClass().addAll("tasks-list");
+        _observableListRepresentation.getStyleClass().add(CSS_CLASS_TASKS_LIST);
         _observableListRepresentation.setItems(_floatingTasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
-    
+
     private void setFloatListBehaviour() {
         _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
             @Override
-            public ListCell<TaskObject> call(ListView<TaskObject>param) {
+            public ListCell<TaskObject> call(ListView<TaskObject> param) {
                 return new ListCell<TaskObject>() {
                     @Override
                     public void updateItem(TaskObject task, boolean empty) {
                         super.updateItem(task, empty);
-                        this.getStyleClass().add("tasks-list-cell");
+                        this.getStyleClass().add(CSS_CLASS_TASKS_LIST_CELL);
                         if (!isEmpty()) {
                             setGraphic(TasksContainer.getFormattedText(task));
-                            
                         } else {
-                            // Prevent duplicate for a single entry
                             setText(null);
                             setGraphic(null);
                         }

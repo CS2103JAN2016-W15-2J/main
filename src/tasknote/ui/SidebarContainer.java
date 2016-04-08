@@ -25,6 +25,11 @@ public class SidebarContainer extends VBox{
     private ObservableList<String> _navigationMenu = FXCollections.observableArrayList();
     private Separator _separator = new Separator();
     
+    private String CSS_CLASS_SIDEBAR_CONTAINER = "sidebar-container";
+    private String CSS_CLASS_SIDEBAR_SEPARATOR = "sidebar-separator";
+    private String CSS_CLASS_SIDEBAR_NAVIGATION = "sidebar-navigation";
+    private String CSS_CLASS_SIDEBAR_NAVIGATION_CELL = "sidebar-navigation-cell";
+    
     public final static String NAVIGATION_TAG_VIEW_ALL = "View All";
     public final static String NAVIGATION_TAG_OUTSTANDING = "Outstanding";
     public final static String NAVIGATION_TAG_OVERDUE = "Overdue";
@@ -81,17 +86,16 @@ public class SidebarContainer extends VBox{
     }
     
     private void setSidebarContainerPresentation() {
-        this.getStyleClass().add("sidebar-container");
+        this.getStyleClass().add(CSS_CLASS_SIDEBAR_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
     }
     
     private void setSeparatorPresentation() {
-        _separator.setId("sidebar-separator");
+        _separator.setId(CSS_CLASS_SIDEBAR_SEPARATOR);
     }
     
     private void setNavigationPresentation() {
-        _observableListRepresentation.setId("sidebar-navigation");
-        //_navigationMenu.addAll(NAVIGATION_TAG_VIEW_ALL, NAVIGATION_TAG_OUTSTANDING, NAVIGATION_TAG_OVERDUE, NAVIGATION_TAG_COMPLETED, "", NAVIGATION_TAG_SETTINGS);
+        _observableListRepresentation.setId(CSS_CLASS_SIDEBAR_NAVIGATION);
         _navigationMenu.addAll(NAVIGATION_TAG_VIEW_ALL, NAVIGATION_TAG_OUTSTANDING, NAVIGATION_TAG_OVERDUE, NAVIGATION_TAG_COMPLETED);
         _observableListRepresentation.setItems(_navigationMenu);
     }
@@ -104,13 +108,12 @@ public class SidebarContainer extends VBox{
                     @Override
                     public void updateItem(String value, boolean empty) {
                         super.updateItem(value, empty);
-                        this.getStyleClass().add("sidebar-container");
+                        this.getStyleClass().add(CSS_CLASS_SIDEBAR_CONTAINER);
                         if (!isEmpty() && !value.isEmpty()) {
                             setGraphic(setNavigationCellPresentation(value));
                         } else if (!isEmpty() && value.isEmpty()) {
                             this.setDisable(true);
                         } else {
-                            // Prevent duplicate for a single entry
                             setText(null);
                             setGraphic(null);
                         }
@@ -129,13 +132,13 @@ public class SidebarContainer extends VBox{
             Icons icon = getIcon(value);
             FxIconicsLabel nvigationIcon = (FxIconicsLabel) new FxIconicsLabel.Builder(icon).size(24).color(MaterialColor.GREY_500).build();
             Label navigationText = new Label(value);
-            navigationText.getStyleClass().add("sidebar-navigation-cell");
+            navigationText.getStyleClass().add(CSS_CLASS_SIDEBAR_NAVIGATION_CELL);
             box.getChildren().addAll(nvigationIcon, navigationText);
         } else if (value.equals(NAVIGATION_TAG_SETTINGS)) {
             com.pepperonas.fxiconics.oct.FxFontOcticons.Icons icon = FxFontOcticons.Icons.oct_gear;
             FxIconicsLabel nvigationIcon = (FxIconicsLabel) new FxIconicsLabel.Builder(icon).size(24).color(MaterialColor.GREY_500).build();
             Label navigationText = new Label(value);
-            navigationText.getStyleClass().add("sidebar-navigation-cell");
+            navigationText.getStyleClass().add(CSS_CLASS_SIDEBAR_NAVIGATION_CELL);
             box.getChildren().addAll(nvigationIcon, navigationText);
         }
         
@@ -152,8 +155,8 @@ public class SidebarContainer extends VBox{
                 return Icons.cmd_comment_alert;
             case NAVIGATION_TAG_COMPLETED:
                 return Icons.cmd_checkbox_multiple_marked;
+            default:
+                return null;
         }
-        
-        return null;
     }
 }

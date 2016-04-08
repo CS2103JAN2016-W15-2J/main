@@ -21,6 +21,11 @@ public class ClockContainer extends GridPane {
 
     private final int INTERVAL_SECOND_ANIMATION = 1;
     private final int MAXIMUM_WORD_LENGTH = 3;
+    
+    private String CSS_CLASS_CLOCK_CONTAINER = "clock-container";
+    private String CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND = "clock-label-hour-minute-second";
+    private String CSS_CLASS_CLOCK_LABEL_MONTH_DATE = "clock-label-month-date";
+    private String CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK = "clock-label-day-of-week";
 
     private static final Calendar _currentTime = Calendar.getInstance();
     private static ClockContainer _timerContainer = null;
@@ -29,14 +34,13 @@ public class ClockContainer extends GridPane {
     private static Label _dayOfWeekLabel = new Label();
 
     private ClockContainer() {
-     // Only one instance of ClockContainer is permitted
+        // Only one instance of ClockContainer is permitted
     }
 
     /**
-     * getInstance() allows user to get an instance of 
-     * ClockContainer.
+     * getInstance() allows user to get an instance of ClockContainer.
      * 
-     * @return       The one instance of ClockContainer.
+     * @return The one instance of ClockContainer.
      */
     public static ClockContainer getInstance() {
         if (_timerContainer == null) {
@@ -58,9 +62,9 @@ public class ClockContainer extends GridPane {
 
         setLabelAnimation();
     }
-    
+
     private void setClockContainerPresentation() {
-        this.getStyleClass().add("clock-container");
+        this.getStyleClass().add(CSS_CLASS_CLOCK_CONTAINER);
         this.setHgap(SPACING_BETWEEN_COMPONENTS);
     }
 
@@ -68,14 +72,14 @@ public class ClockContainer extends GridPane {
      * Set up the presentation of the labels in ClockContainer.
      */
     private void setLabelsPresentation() {
-         _monthAndDateLabel.getStyleClass().add("clock-label-month-date");
-         _hourMinuteAndSecondLabel.getStyleClass().add("clock-label-hour-minute-second");
-         _dayOfWeekLabel.getStyleClass().add("clock-label-day-of-week");
-         GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
-         GridPane.setConstraints(_monthAndDateLabel, 1, 0);
-         GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
-         
-         setLabelsToCurrentTime();
+        _monthAndDateLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_MONTH_DATE);
+        _hourMinuteAndSecondLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND);
+        _dayOfWeekLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK);
+        GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
+        GridPane.setConstraints(_monthAndDateLabel, 1, 0);
+        GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
+
+        setLabelsToCurrentTime();
     }
 
     /*
@@ -96,12 +100,13 @@ public class ClockContainer extends GridPane {
     private void setLabelsToCurrentTime() {
         _currentTime.setTimeInMillis(System.currentTimeMillis());
         
-        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, MAXIMUM_WORD_LENGTH);
-        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, MAXIMUM_WORD_LENGTH);
         int dayOfMonth = _currentTime.get(Calendar.DAY_OF_MONTH);
         int hours = _currentTime.get(Calendar.HOUR) == 0 ? 12 : _currentTime.get(Calendar.HOUR);
         int minutes = _currentTime.get(Calendar.MINUTE);
         int seconds = _currentTime.get(Calendar.SECOND);
+        
+        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, MAXIMUM_WORD_LENGTH);
+        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, MAXIMUM_WORD_LENGTH);
         String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
         
         _dayOfWeekLabel.setText(String.format(FORMAT_DAY, dayOfWeek));

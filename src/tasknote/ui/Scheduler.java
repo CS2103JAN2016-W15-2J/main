@@ -19,13 +19,14 @@ public class Scheduler {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
     private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd MMMMM yyyy hh:mma"); 
     
+    private int INTERVAL_SECOND_CHECK_OVERDUE_TASK = 5;
+    
     public Scheduler(TaskNoteControl logic) {
         this._logic = logic;
     }
     
     public void runOutstandingTaskCheck() {
-        // TODO Fragile, may break on date/time formatting changes
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(INTERVAL_SECOND_CHECK_OVERDUE_TASK), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 runCheck();
@@ -43,20 +44,6 @@ public class Scheduler {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        // TODO Rough workaround - manually set the list again
-        ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
-        ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
-
-        for (TaskObject task : displayList) {
-            if (task.getTaskType().equals("floating")) {
-                floatsList.add(task);
-            } else {
-                tasksList.add(task);
-            }
-        }
-        TasksContainer.getInstance().getTasksList().setAll(tasksList);
-        FloatingTasksContainer.getInstance().getFloatingTasksList().setAll(floatsList);
     }
     
     private void checkForOutstandingTasks(ArrayList<TaskObject> taskObjectList) throws ParseException {
@@ -64,7 +51,7 @@ public class Scheduler {
         long currentTimeInMillisecond = System.currentTimeMillis();
         
         for(TaskObject task : taskObjectList) {
-            if(task.getTaskType() == "floating" || task.getTaskStatus()== TASK_STATUS.TASK_COMPLETED) {
+            if(task.getTaskType() == "floating" || task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
                 continue;
             }
             // TODO Use millisecond comparison in future

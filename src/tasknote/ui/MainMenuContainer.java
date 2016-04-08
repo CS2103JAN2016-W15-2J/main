@@ -11,7 +11,7 @@ public class MainMenuContainer extends MenuBar {
     private static MainMenuContainer _mainMenuContainer = null;
     
     private MainMenuContainer() {
-        // Prevent instantiation of Notification
+        // Prevent instantiation of MainMenuContainer
     }
     
     public static MainMenuContainer getInstance() {
