@@ -329,7 +329,7 @@ public class DateParser {
 		return true;
 	}
 
-	private GregorianCalendar rollByDays(GregorianCalendar initialCalendar,
+	protected GregorianCalendar rollByDays(GregorianCalendar initialCalendar,
 			int numberOfDaysToRoll) {
 
 		// Maximum values for current calendar

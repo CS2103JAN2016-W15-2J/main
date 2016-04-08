@@ -40,6 +40,8 @@ public class TimeParser {
 		}
 
 		TimeMessage returnMessage = new TimeMessage();
+		int givenHour = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
+		int givenMinute = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
 
 		String currentPhrase = this.getCurrentPhrase();
 		int extraHours = 0;
@@ -70,55 +72,66 @@ public class TimeParser {
 			}
 
 			try {
-				int givenHour = Integer.parseInt(tempHourMinute[0])
-						+ extraHours;
-				int givenMinute = Integer.parseInt(tempHourMinute[1]);
+				givenHour = Integer.parseInt(tempHourMinute[0]) + extraHours;
+				givenMinute = Integer.parseInt(tempHourMinute[1]);
 
-				returnMessage.setHour(givenHour);
-				returnMessage.setMinute(givenMinute);
 				returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
 			} catch (NumberFormatException e) {
 				return returnMessage;
 			}
-		}
+		} else {
+			
+			if (currentPhrase.length() >= 3) {
 
-		if (currentPhrase.length() >= 3) {
+				String hourString = currentPhrase.substring(0,
+						currentPhrase.length() - 2);
+				String minuteString = currentPhrase.substring(
+						currentPhrase.length() - 2, currentPhrase.length());
 
-			String hourString = currentPhrase.substring(0,
-					currentPhrase.length() - 2);
-			String minuteString = currentPhrase.substring(
-					currentPhrase.length() - 2, currentPhrase.length());
+				try {
+					givenHour = Integer.parseInt(hourString) + extraHours;
+					givenMinute = Integer.parseInt(minuteString);
 
-			try {
-				int givenHour = Integer.parseInt(hourString) + extraHours;
-				int givenMinute = Integer.parseInt(minuteString);
-
-				returnMessage.setHour(givenHour);
-				returnMessage.setMinute(givenMinute);
-				returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
-			} catch (NumberFormatException e) {
-				return returnMessage;
+					returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
+				} catch (NumberFormatException e) {
+					return returnMessage;
+				}
 			}
-		}
 
-		if (currentPhrase.length() < 3) {
+			if (currentPhrase.length() < 3) {
 
-			try {
-				int givenHour = Integer.parseInt(currentPhrase) + extraHours;
-				int givenMinute = 0;
+				try {
+					givenHour = Integer.parseInt(currentPhrase) + extraHours;
+					givenMinute = 0;
 
-				returnMessage.setHour(givenHour);
-				returnMessage.setMinute(givenMinute);
-				returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
-			} catch (NumberFormatException e) {
-				return returnMessage;
+					returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
+				} catch (NumberFormatException e) {
+					return returnMessage;
 
+				}
 			}
+
 		}
-		
+
+		if (givenHour == 24) {
+			givenHour = 12;
+		} else if (givenHour == 12) {
+			givenHour = 0;
+		}
+
+		if (!ParserConstants.isValidMinute(givenMinute)
+				|| !ParserConstants.isValidHour(givenHour)) {
+			returnMessage.setHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+			returnMessage
+					.setMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+			returnMessage.setMessage(ParserConstants.MESSAGE_TIME_UNSURE);
+		} else {
+			returnMessage.setHour(givenHour);
+			returnMessage.setMinute(givenMinute);
+		}
+
 		return returnMessage;
-		
-		
+
 	}
 
 }

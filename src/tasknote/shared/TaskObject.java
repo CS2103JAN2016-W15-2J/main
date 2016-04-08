@@ -66,7 +66,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	 * For Storage
 	 */
 	public TaskObject(){
-		setTaskName(taskName);
+		setTaskName(Constants.STRING_CONSTANT_EMPTY);
 		
 		setDateDay(DEFAULT_DATETIME_VALUE);
 		setDateMonth(DEFAULT_DATETIME_VALUE);

@@ -11,15 +11,19 @@ import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
 
 public class ParserAddTest {
+	
+	Parser testParser = new Parser();
 
 	@Test
 	public void testAddBasicFloatingTask() {
 		
 		String userCommand = "add longtaskname";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longtaskname");
+		TaskObject actualResult = this.testParser.parseAdd(false);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -29,6 +33,7 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add longdeadline by 23:59";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longdeadline");
 		
@@ -41,9 +46,9 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		expectedResult.equals(Parser.parseAdd(userCommand, true));
+		TaskObject actualResult = this.testParser.parseAdd(false);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -53,19 +58,12 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add baddeadlinehourminute by 76:90";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("baddeadlinehourminute");
+		TaskObject actualResult = this.testParser.parseAdd(false);
 		
-		/*
-		GregorianCalendar today = new GregorianCalendar();
-		expectedResult.setDateYear(today.get(Calendar.YEAR));
-		expectedResult.setDateMonth(today.get(Calendar.MONTH));
-		expectedResult.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-		expectedResult.setDateHour(23);
-		expectedResult.setDateMinute(59);
-		*/
-		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -75,19 +73,12 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add baddeadlinehour by 76:31";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("baddeadlinehour");
+		TaskObject actualResult = this.testParser.parseAdd(false);
 		
-		/*
-		GregorianCalendar today = new GregorianCalendar();
-		expectedResult.setDateYear(today.get(Calendar.YEAR));
-		expectedResult.setDateMonth(today.get(Calendar.MONTH));
-		expectedResult.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-		expectedResult.setDateHour(23);
-		expectedResult.setDateMinute(59);
-		*/
-		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -97,19 +88,12 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add baddeadlineminute by 15:99";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("baddeadlineminute");
+		TaskObject actualResult = this.testParser.parseAdd(false);
 		
-		/*
-		GregorianCalendar today = new GregorianCalendar();
-		expectedResult.setDateYear(today.get(Calendar.YEAR));
-		expectedResult.setDateMonth(today.get(Calendar.MONTH));
-		expectedResult.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-		expectedResult.setDateHour(23);
-		expectedResult.setDateMinute(59);
-		*/
-		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -119,6 +103,7 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add longerdeadline on 1/2/2001 by 5:30";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longerdeadline");
 		
@@ -129,9 +114,11 @@ public class ParserAddTest {
 		expectedResult.setDateHour(5);
 		expectedResult.setDateMinute(30);
 		
-		expectedResult.setTaskType("deadline");
+		expectedResult.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		TaskObject actualResult = this.testParser.parseAdd(false);
+		
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -141,6 +128,7 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add longerdeadlinebadday on 45/2/2001 by 23:59";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longerdeadlinebadday");
 		
@@ -151,9 +139,11 @@ public class ParserAddTest {
 		expectedResult.setDateHour(23);
 		expectedResult.setDateMinute(59);
 		
-		expectedResult.setTaskType("deadline");
+		expectedResult.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		TaskObject actualResult = this.testParser.parseAdd(false);
+		
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -163,6 +153,7 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add longerdeadlinebadmonth on 15/22/2001 by 23:59";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longerdeadlinebadmonth");
 		
@@ -173,9 +164,10 @@ public class ParserAddTest {
 		expectedResult.setDateHour(23);
 		expectedResult.setDateMinute(59);
 		
-		expectedResult.setTaskType("deadline");
+		expectedResult.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		TaskObject actualResult = this.testParser.parseAdd(false);
+		
 	}
 	
 	@Test
@@ -185,6 +177,7 @@ public class ParserAddTest {
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
 		String userCommand = "add longerdeadlinebaddaybadmonth on 49/22/2001 by 23:59";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("longerdeadlinebaddaybadmonth");
 		
@@ -197,7 +190,9 @@ public class ParserAddTest {
 		
 		expectedResult.setTaskType("deadline");
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		TaskObject actualResult = this.testParser.parseAdd(false);
+		
+		assertEquals(expectedResult, actualResult);
 	}
 	
 	@Test
@@ -206,6 +201,7 @@ public class ParserAddTest {
 		// In this case, the TaskObject is still assigned
 		// the date field, but the GUI will ignore it
 		String userCommand = "add badtask on 2/3/2002";
+		this.testParser.setInputString(userCommand);
 		
 		TaskObject expectedResult = new TaskObject("badtask");
 		
@@ -214,6 +210,8 @@ public class ParserAddTest {
 		expectedResult.setDateMonth(3);
 		expectedResult.setDateDay(2);
 		
-		assertEquals(Parser.parseAdd(userCommand, true), expectedResult);
+		TaskObject actualResult = this.testParser.parseAdd(false);
+		
+		assertEquals(expectedResult, actualResult);
 	}
 }
