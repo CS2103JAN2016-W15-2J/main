@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import java.util.Arrays;
@@ -6,9 +7,9 @@ import java.util.List;
 
 public abstract class GuiConstant {
     private GuiConstant() {
-        // Prevent instantiation of GuiConstant
+        // Prevent instantiation of GuiConstant.
     }
-      
+    
     public static final String COMMAND_ADD = "add";
     public static final String COMMAND_EDIT = "edit";
     public static final String COMMAND_DONE = "done";
@@ -37,10 +38,5 @@ public abstract class GuiConstant {
     public static final String PROPERTY_TEXT_INNER_COLOR = "-fx-text-inner-color: %1$s;";
     public static final String PROPERTY_TEXT_FILL = "-fx-text-fill: %1$s;";
     
-    public static final String COLOR_HEX_CODE_WHITE = "#ffffff";
-    
-    public static int PADDING_HORIZONTAL = 10;
-    public static int PADDING_VERTICAL = 15;
-    public static int PADDING_REMOVED = 0;
     public static int SPACING_BETWEEN_COMPONENTS = 10;
 }

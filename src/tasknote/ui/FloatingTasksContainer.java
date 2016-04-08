@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -13,16 +14,16 @@ import javafx.util.Callback;
 import tasknote.shared.TaskObject;
 
 public class FloatingTasksContainer extends HBox {
-    private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
-    private String CSS_CLASS_TASKS_LIST = "tasks-list";
-    private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
-    
     private static FloatingTasksContainer _floatingTasksContainer = null;
     private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
     private ObservableList<TaskObject> _floatingTasksList = FXCollections.observableArrayList(
             taskobject-> new Observable[] {
                     taskobject.getObservableTaskStatus()
                 });
+    
+    private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
+    private String CSS_CLASS_TASKS_LIST = "tasks-list";
+    private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
     
     private FloatingTasksContainer() {
         // Only one instance of FloatingTasksContainer is permitted

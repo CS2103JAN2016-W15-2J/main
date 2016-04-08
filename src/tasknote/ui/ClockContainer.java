@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -15,23 +16,23 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 public class ClockContainer extends GridPane {
-    private final String FORMAT_TIME = "%1$02d:%2$02d:%3$02d %4$s";
-    private final String FORMAT_DATE = "%1$3s %2$ 2d";
-    private final String FORMAT_DAY = "%1$3s";
-
-    private final int INTERVAL_SECOND_ANIMATION = 1;
-    private final int MAXIMUM_WORD_LENGTH = 3;
-    
-    private String CSS_CLASS_CLOCK_CONTAINER = "clock-container";
-    private String CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND = "clock-label-hour-minute-second";
-    private String CSS_CLASS_CLOCK_LABEL_MONTH_DATE = "clock-label-month-date";
-    private String CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK = "clock-label-day-of-week";
-
     private static final Calendar _currentTime = Calendar.getInstance();
     private static ClockContainer _timerContainer = null;
     private static Label _monthAndDateLabel = new Label();
     private static Label _hourMinuteAndSecondLabel = new Label();
     private static Label _dayOfWeekLabel = new Label();
+    
+    private final int INTERVAL_SECOND_ANIMATION = 1;
+    private final int MAXIMUM_WORD_LENGTH = 3;
+    
+    private final String FORMAT_TIME = "%1$02d:%2$02d:%3$02d %4$s";
+    private final String FORMAT_DATE = "%1$3s %2$ 2d";
+    private final String FORMAT_DAY = "%1$3s";
+
+    private String CSS_CLASS_CLOCK_CONTAINER = "clock-container";
+    private String CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND = "clock-label-hour-minute-second";
+    private String CSS_CLASS_CLOCK_LABEL_MONTH_DATE = "clock-label-month-date";
+    private String CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK = "clock-label-day-of-week";
 
     private ClockContainer() {
         // Only one instance of ClockContainer is permitted
@@ -51,9 +52,6 @@ public class ClockContainer extends GridPane {
         return _timerContainer;
     }
 
-    /*
-     * As per name, set up clock container.
-     */
     private void setupClockContainer() {
         setClockContainerPresentation();
         setLabelsPresentation();
@@ -68,13 +66,11 @@ public class ClockContainer extends GridPane {
         this.setHgap(SPACING_BETWEEN_COMPONENTS);
     }
 
-    /*
-     * Set up the presentation of the labels in ClockContainer.
-     */
     private void setLabelsPresentation() {
         _monthAndDateLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_MONTH_DATE);
         _hourMinuteAndSecondLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND);
         _dayOfWeekLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK);
+        
         GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
         GridPane.setConstraints(_monthAndDateLabel, 1, 0);
         GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);
@@ -82,9 +78,6 @@ public class ClockContainer extends GridPane {
         setLabelsToCurrentTime();
     }
 
-    /*
-     * Set up the labels to update every second.
-     */
     private void setLabelAnimation() {
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.seconds(INTERVAL_SECOND_ANIMATION), new EventHandler<ActionEvent>() {
@@ -105,8 +98,10 @@ public class ClockContainer extends GridPane {
         int minutes = _currentTime.get(Calendar.MINUTE);
         int seconds = _currentTime.get(Calendar.SECOND);
         
-        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH).substring(0, MAXIMUM_WORD_LENGTH);
-        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH).toUpperCase().substring(0, MAXIMUM_WORD_LENGTH);
+        String monthString = _currentTime.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH)
+                          .substring(0, MAXIMUM_WORD_LENGTH);
+        String dayOfWeek = _currentTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.ENGLISH)
+                          .toUpperCase().substring(0, MAXIMUM_WORD_LENGTH);
         String ampmString = _currentTime.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
         
         _dayOfWeekLabel.setText(String.format(FORMAT_DAY, dayOfWeek));

@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
@@ -28,23 +29,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 public class CommandLineContainer extends HBox {
+    private static CommandLineContainer _commandLineContainer = null;
+    private TextField _commandLine = new TextField();
+    private Button _enterButton = new Button();
+    
     private final String BUTTON_SUBMIT_COMMAND = "enter";
     
+    /** For methods getPrevValidCommand() & getNextValidCommand(). */
     private final int INDEX_FIRST_COMMAND = 0;
     private final int INDEX_LAST_COMMAND = (commands.size() - 1);
     private final int INDEX_MODIFIED_COMMAND = -1;
-    
+    /** Saves last command input in command line upon cycling through various valid commands.*/
+    private String lastModifiedCommand = UNINITIALIZED_STRING;
+
     private String CSS_CLASS_COMMANDLINE_CONTAINER = "commandline-container";
     private String CSS_CLASS_COMMANDLINE_ENTER_BUTTON = "commandline-enter-button";
     private String CSS_CLASS_COMMANDLINE = "commandline";
     
-    private String lastModifiedCommand = UNINITIALIZED_STRING;
-    private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(""));
+    /** For command history.*/
+    private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(UNINITIALIZED_STRING));
     private int historyCommandIndex = 0;
-
-    private static CommandLineContainer _commandLineContainer = null;
-    private TextField _commandLine = new TextField();
-    private Button _enterButton = new Button();
 
     private CommandLineContainer() {
         // Only one instance of CommandLineContainer is permitted
@@ -80,10 +84,24 @@ public class CommandLineContainer extends HBox {
     public void clearLastModifiedCommand() {
         setLastModifiedCommand(UNINITIALIZED_STRING);
     }
-
-    /*
-     * As per name, set up command line container.
+    
+    /**
+     * resetCommandHistoryIndex() indicates that user is currently not trying to recover 
+     * commands used.
      */
+    public void resetCommandHistoryIndex() {
+        historyCommandIndex = 0;
+    }
+
+    /**
+     * Adds command executed in the command line. 
+     * @param commandLine Command Line of the program.
+     */
+    public void addCommandHistory(TextField commandLine) {
+        String command = commandLine.getText();
+        historyCommandEntered.add(command);
+    }
+
     private void setupCommandLineContainer() {
         setCommandLineContainerPresentation();
         setCommandLinePresentation();
@@ -95,34 +113,22 @@ public class CommandLineContainer extends HBox {
         this.getChildren().addAll(_commandLine, _enterButton);
     }
 
-    /*
-     * Set up the presentation of the command line container.
-     */
     private void setCommandLineContainerPresentation() {
         this.getStyleClass().add(CSS_CLASS_COMMANDLINE_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
     }
 
-    /*
-     * Set up the presentation of the command line itself.
-     */
     private void setCommandLinePresentation() {
         _commandLine.getStyleClass().add(CSS_CLASS_COMMANDLINE);
         _commandLine.setText(DEFAULT_COMMAND);
         HBox.setHgrow(_commandLine, Priority.ALWAYS);
     }
 
-    /*
-     * Set up the presentation of the "enter" button.
-     */
     private void setEnterButtonPresentation() {
         _enterButton.getStyleClass().add(CSS_CLASS_COMMANDLINE_ENTER_BUTTON);
         _enterButton.setText(BUTTON_SUBMIT_COMMAND);
     }
 
-    /*
-     * Set up the behaviour of the command line.
-     */
     private void setCommandLineBehaviour() {
         _commandLine.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -175,25 +181,14 @@ public class CommandLineContainer extends HBox {
         });
     }
 
-    /*
-     * Set up the behaviour of the enter button.
-     */
     private void setEnterButtonBehaviour() {
         _enterButton.setOnAction(e -> GuiController.retrieveCommand(_commandLine));
     }
 
-    public void resetCommandHistoryIndex() {
-        historyCommandIndex = 0;
-    }
-
-    public void addCommandHistory(TextField commandLine) {
-        String command = commandLine.getText();
-        historyCommandEntered.add(command);
-    }
-
     private void getPrevEnteredCommand(ArrayList<String> history, TextField commandLine) {
         int numberOfCommandsEntered = history.size();
-
+        // Permits cycling through command history by wrapping 
+        // historyCommandIndex around variable history's size.
         if (historyCommandIndex == 0) {
             historyCommandIndex = (numberOfCommandsEntered - 1);
         } else {
@@ -206,7 +201,8 @@ public class CommandLineContainer extends HBox {
     
     private void getNextEnteredCommand(ArrayList<String> history, TextField commandLine) {
         int numberOfCommandsEntered = history.size();
-        
+        // Permits cycling through command history by wrapping 
+        // historyCommandIndex around variable history's size.
         if(historyCommandIndex == (numberOfCommandsEntered - 1)) {
             historyCommandIndex = 0;
         } else {
@@ -275,6 +271,10 @@ public class CommandLineContainer extends HBox {
         return lastModifiedCommand;
     }
     
+    /*
+     * Truncate text in command line if it fits the following format:
+     * "add <command> " -> "<command> "
+     */
     private boolean isDefaultCommandTruncated(TextField commandLine) {
         String command = commandLine.getText();
         
