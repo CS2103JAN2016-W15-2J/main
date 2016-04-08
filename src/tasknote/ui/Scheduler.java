@@ -51,7 +51,7 @@ public class Scheduler {
         long currentTimeInMillisecond = System.currentTimeMillis();
         
         for(TaskObject task : taskObjectList) {
-            if(task.getTaskType() == "floating" || task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
+            if(task.getTaskType() == TaskObject.TASK_TYPE_FLOATING || task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
                 continue;
             }
             // TODO Use millisecond comparison in future

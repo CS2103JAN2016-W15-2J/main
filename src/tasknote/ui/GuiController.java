@@ -86,23 +86,6 @@ public class GuiController extends Application {
         return background;
     }
     
-    private void setSchedulerBehaviour() {
-        Scheduler schedulerManager = new Scheduler(_tasknoteControl);
-        schedulerManager.runOutstandingTaskCheck();
-    }
-
-    private void setSceneAndStagePresentation(Stage stage, Scene scene) {
-        scene.getStylesheets().add(getClass().getResource(CSS_GUICONTROLLER).toExternalForm());
-        
-        stage.setTitle(APPLICATION_NAME);
-        stage.setScene(scene);
-        stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH)));
-        stage.show();
-        stage.setMaximized(true);
-        stage.setMinWidth(WINDOW_MIN_WIDTH);
-        stage.setMinHeight(WINDOW_MIN_HEIGHT);
-    }
-    
     private void setSceneBehaviour(Scene scene) {
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         TextField commandLine = commandLineContainer.getCommandLine();
@@ -135,6 +118,23 @@ public class GuiController extends Application {
                 }
             }
         });
+    }
+    
+    private void setSceneAndStagePresentation(Stage stage, Scene scene) {
+        scene.getStylesheets().add(getClass().getResource(CSS_GUICONTROLLER).toExternalForm());
+        
+        stage.setTitle(APPLICATION_NAME);
+        stage.setScene(scene);
+        stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH)));
+        stage.show();
+        stage.setMaximized(true);
+        stage.setMinWidth(WINDOW_MIN_WIDTH);
+        stage.setMinHeight(WINDOW_MIN_HEIGHT);
+    }
+    
+    private void setSchedulerBehaviour() {
+        Scheduler schedulerManager = new Scheduler(_tasknoteControl);
+        schedulerManager.runOutstandingTaskCheck();
     }
 
     public static void retrieveCommand(TextField commandLine) {
@@ -267,17 +267,10 @@ public class GuiController extends Application {
     }
 
     private static void changeView(String selected) {
-        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
-
-        if (selected.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
-            floatingTasksContainer.setVisible(false);
-            floatingTasksContainer.setManaged(false);
-        } else {
-            floatingTasksContainer.setVisible(true);
-            floatingTasksContainer.setManaged(true);
-        }
-
+        
+        setVisibilityOfFloatingTaskContainer(selected);
+        
         switch (selected) {
             case SidebarContainer.NAVIGATION_TAG_VIEW_ALL:
                 sidebarContainer.selectNavigationCell(0);
@@ -295,6 +288,18 @@ public class GuiController extends Application {
                 sidebarContainer.selectNavigationCell(3);
                 displayTaskList(selected);
                 break;
+        }
+    }
+    
+    private static void setVisibilityOfFloatingTaskContainer(String selectedTab) {
+        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
+        
+        if (selectedTab.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
+            floatingTasksContainer.setVisible(false);
+            floatingTasksContainer.setManaged(false);
+        } else {
+            floatingTasksContainer.setVisible(true);
+            floatingTasksContainer.setManaged(true);
         }
     }
     

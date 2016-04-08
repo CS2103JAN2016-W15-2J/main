@@ -29,6 +29,8 @@ public class Notification {
     private static String CSS_CLASS_NOTIFICATION_TITLE = "notification-title";
     private static String CSS_CLASS_NOTIFICATION_EXIT_BUTTON = "notification-exit-button";
     private static String CSS_CLASS_NOTIFICATION_ALERT_MESSAGE = "notification-alert-message";
+    
+    private static String NOTIFICATION_CLOSE_BUTTON = "x";
 
     private Notification() {
         // Prevent instantiation of Notification
@@ -78,7 +80,7 @@ public class Notification {
     private static VBox setupNotificationContent(Popup notificationContainer, String title, String message) {
         VBox notificationContent = new VBox();
         Text titleMessage = (title == null || title.isEmpty()) ? new Text(DEFAULT_NOTIFICATION_TITLE) : new Text(title);
-        Text exitButton = new Text("x");
+        Text exitButton = new Text(NOTIFICATION_CLOSE_BUTTON);
         Text alertMessage = new Text(message);
         Separator separator = new Separator();
 
