@@ -137,16 +137,9 @@ public class GuiController extends Application {
         String command = commandLine.getText();
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
 
-        if (command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
-            logger.log(Level.WARNING, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
-            return;
-        }
-
+        executeCommand(command);
+        
         commandLineContainer.addCommandHistory(commandLine);
-        String feedback = _tasknoteControl.executeCommand(command);
-        Notification.setupNotification(_primaryWindow, feedback);
-
-        changeView(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
 
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
