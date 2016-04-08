@@ -1,32 +1,40 @@
 /**************************************************
  * Theme: Wunderlist
  **************************************************/
-* {
+ * { 
+	-fx-commandline-container-background: #1e2123;
+	-fx-commandline-node: #313437;
+	-fx-task-container-scrollbar: #fdfcee;
+	-fx-sidebar-container-background: #26292c;
+	-fx-sidebar-unselected-text-color: #9d9d9d;
+	-fx-sidebar-selected-node: #313437;
+	-fx-notification-background: #1e2123;
+	-fx-notification-exit-node: #888888;
 	-fx-default-text-color: #ffffff;
-}
+ }
 
-.root {
-	-fx-font-size: 12pt;
-}
+ .root {
+	-fx-font-size: 12pt; 
+ }
 
 /**************************************************
  * COMMAND LINE CONTAINER
  **************************************************/
-.commandline-container {
-	-fx-background-color: #1e2123;
+ .commandline-container {
+	-fx-background-color: -fx-commandline-container-background;
 	-fx-padding: 10 15 10 15;
-}
+ }
 
-.commandline {
-	-fx-background-color: #313437;
+ .commandline {
+	-fx-background-color: -fx-commandline-node;
 	-fx-text-inner-color: -fx-default-text-color;
-}
+ }
 
-.commandline-enter-button {
-	-fx-background-color: #313437;
+ .commandline-enter-button {
+	-fx-background-color: -fx-commandline-node;
 	-fx-font-weight: bold;
 	-fx-text-fill: -fx-default-text-color;
-}
+ }
 
 /**************************************************
  * TASKS CONTAINER
@@ -64,7 +72,7 @@
 
  .tasks-container .scroll-bar:horizontal .thumb,
  .tasks-container .scroll-bar:vertical .thumb {
-    -fx-background-color: #fdfcee;
+    -fx-background-color: -fx-task-container-scrollbar;
     -fx-background-insets: 0 5px;
     -fx-opacity: 0.2;
 	-fx-background-radius: 20px;
@@ -89,17 +97,17 @@
  }
  
  .tasks-list-cell:empty {
-    -fx-padding: 0px;
+    -fx-padding: 0;
     -fx-background-color: transparent;
     -fx-background-insets: 0;
-}
+ }
  
 /**************************************************
  * SIDEBAR CONTAINER
  **************************************************/
  .sidebar-container {
  	-fx-padding: 10 15 10 15;
- 	-fx-background-color: #26292c;
+ 	-fx-background-color: -fx-sidebar-container-background;
  }
  
  #sidebar-separator {
@@ -108,7 +116,7 @@
  
  #sidebar-navigation {
  	-fx-padding: 40 0 0 0;
- 	-fx-background-color: #26292c;
+ 	-fx-background-color: -fx-sidebar-container-background;
  }
  
  #sidebar-navigation .list-cell:empty {
@@ -117,7 +125,7 @@
  
  #sidebar-navigation .list-cell:filled,
  #sidebar-navigation .list-cell:filled .label {
- 	-fx-text-fill: #9d9d9d;
+ 	-fx-text-fill: -fx-sidebar-unselected-text-color;
  }
  
  #sidebar-navigation:focused .list-cell:filled:selected,
@@ -125,7 +133,7 @@
  #sidebar-navigation .list-cell:selected, 
  #sidebar-navigation .list-cell:selected .label {
  	-fx-text-fill: -fx-default-text-color;
- 	-fx-background-color: #313437;
+ 	-fx-background-color: -fx-sidebar-selected-node;
  }
  
  .sidebar-navigation-cell {
@@ -160,7 +168,7 @@
  * NOTIFICATION
  **************************************************/
  .notification-content {
-	-fx-background-color: #1e2123;
+	-fx-background-color: -fx-notification-background;
  	-fx-background-radius: 10;
  	-fx-padding: 20 20 20 20;
  }
@@ -172,7 +180,7 @@
  }
  
  .notification-exit-button {
- 	-fx-fill: #888888;
+ 	-fx-fill: -fx-notification-exit-node;
  	-fx-font-size: 12pt;
  }
  
