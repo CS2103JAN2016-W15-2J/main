@@ -3,13 +3,13 @@ package tasknote.storage;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import tasknote.shared.InvalidFilePathException;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 //@@author A0126172M
@@ -76,7 +76,7 @@ public class StorageTest {
 	}
 	
 	@Test
-	public final void test() throws IOException, TaskListIOException, InvalidFilePathException {
+	public final void test() throws IOException, TaskListIOException, InvalidPathException {
 		//assertTrue(false);
 		try{
 			//case 1: test loadTasks() is able to load something
