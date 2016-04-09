@@ -26,6 +26,11 @@ public class SidebarContainer extends VBox{
     public static final String NAVIGATION_TAG_COMPLETED = "Completed";
     public static final String NAVIGATION_TAG_SETTINGS = "Settings";
     
+    public static final int NAVIGATION_TAG_VIEW_ALL_INDEX = 0;
+    public static final int NAVIGATION_TAG_OUTSTANDING_INDEX = 1;
+    public static final int NAVIGATION_TAG_OVERDUE_INDEX = 2;
+    public static final int NAVIGATION_TAG_COMPLETED_INDEX = 3;
+    
     private static SidebarContainer _sidebarContainer = null;
     private ClockContainer _clock = ClockContainer.getInstance();
     private ListView<String> _observableListRepresentation = new ListView<String>();

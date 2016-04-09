@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.PROPERTY_FONT_SIZE;
@@ -19,29 +20,28 @@ import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class TasksContainer extends HBox {
-    
-    private String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
-    private String CSS_CLASS_TASKS_LIST = "tasks-list";
-    private String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
-    
+    private static final String FORMAT_TASK_INDEX = "%1$d. ";
     private static final String FORMAT_TASK_DATE_TIME_PROPERTY = "%n\t%1$s, %2$s";
     private static final String FORMAT_TASK_DATE_PROPERTY = "%n\t%1$s";
     private static final String FORMAT_TASK_LOCATION_PROPERTY = "%n\t%1$s";
     
-    private static TasksContainer _tasksContainer = null;
-    private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
-    private ObservableList<TaskObject> _tasksList = FXCollections.observableArrayList(
-            taskobject-> new Observable[] {
-                    taskobject.getObservableTaskStatus()
-                });
-    
+    /** Color(s) are used in formatting task(s) appearance */
     private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
     private static final Color RED = Color.rgb(240, 100, 100);
+    
+    private static TasksContainer _tasksContainer = null;
+    private ListView<TaskObject> _observableListRepresentation = new ListView<TaskObject>();
+    private ObservableList<TaskObject> _tasksList = FXCollections
+            .observableArrayList(taskobject -> new Observable[] { taskobject.getObservableTaskStatus() });
+    
+    private final String CSS_CLASS_TASKS_CONTAINER = "tasks-container";
+    private final String CSS_CLASS_TASKS_LIST = "tasks-list";
+    private final String CSS_CLASS_TASKS_LIST_CELL = "tasks-list-cell";
     
     private TasksContainer() {
         // Only one instance of TasksContainer is permitted
     }
-    
+
     /**
      * getInstance() allows user to get an instance of TasksContainer.
      * 
@@ -65,9 +65,6 @@ public class TasksContainer extends HBox {
         return _tasksList;
     }
 
-    /*
-     * As per name, set up tasks container.
-     */
     private void setupTasksContainer() {
         setTasksContainerPresentation();
         setTaskListPresentation();
@@ -77,27 +74,17 @@ public class TasksContainer extends HBox {
         this.getChildren().addAll(_observableListRepresentation);
     }
 
-    /*
-     * Set up the presentation of the tasks container.
-     */
     private void setTasksContainerPresentation() {
         this.getStyleClass().add(CSS_CLASS_TASKS_CONTAINER);
         this.setSpacing(SPACING_BETWEEN_COMPONENTS);
     }
 
-    /*
-     * Set up the presentation of the (observable) list containing all the
-     * tasks.
-     */
     private void setTaskListPresentation() {
         _observableListRepresentation.getStyleClass().add(CSS_CLASS_TASKS_LIST);
         _observableListRepresentation.setItems(_tasksList);
         HBox.setHgrow(_observableListRepresentation, Priority.ALWAYS);
     }
 
-    /*
-     * Set up the behaviour of the (observable) list.
-     */
     private void setTaskListBehaviour() {
         _observableListRepresentation.setCellFactory(new Callback<ListView<TaskObject>, ListCell<TaskObject>>() {
             @Override
@@ -119,6 +106,14 @@ public class TasksContainer extends HBox {
         });
     }
     
+    /**
+     * Create a formatted TextFlow, based on the TaskObject passed to it.
+     * Color(s) will vary based on Task_Status set.
+     * 
+     * @param task
+     *            The TaskObject to be formatted.
+     * @return The formatted text (size, color), in the form of a TextFlow.
+     */
     public static TextFlow getFormattedText(TaskObject task) {        
         TASK_STATUS taskStatus = task.getTaskStatus();
         Text taskIndex = null;
@@ -126,117 +121,119 @@ public class TasksContainer extends HBox {
         Text taskDateTimeValue = null;
         Text taskLocationValue = null;
         Text taskEndDateTimeValue = null;
-        
+
         String taskDate = task.getFormattedDate();
         String taskTime = task.getFormattedTime();
         String taskLocation = task.getLocation();
         String taskEndDate = task.getFormattedEndDate();
         String taskEndTime = task.getFormattedEndTime();
-        
-        if(task.getTaskID() > 0) {
-            taskIndex = new Text(task.getTaskID() + ". ");
+
+        if (task.getTaskID() > 0) {
+            taskIndex = new Text(String.format(FORMAT_TASK_INDEX, task.getTaskID()));
             taskIndex.setStyle(String.format(PROPERTY_FONT_WEIGHT, "bold"));
         }
-        
-        
-        
-        if(!taskDate.isEmpty() && !taskTime.isEmpty()) {
+
+        if (!taskDate.isEmpty() && !taskTime.isEmpty()) {
             taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskDate, taskTime));
             taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
-        } else if (!taskDate.isEmpty() && taskTime.isEmpty()){
+        } else if (!taskDate.isEmpty() && taskTime.isEmpty()) {
             taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskDate));
             taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
-        
-        if(taskLocation == null || !taskLocation.isEmpty()) {
+
+        if (taskLocation == null || !taskLocation.isEmpty()) {
             taskLocationValue = new Text(String.format(FORMAT_TASK_LOCATION_PROPERTY, taskLocation));
             taskLocationValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
-        
-        if(!taskEndDate.isEmpty() && !taskEndTime.isEmpty()) {
+
+        if (!taskEndDate.isEmpty() && !taskEndTime.isEmpty()) {
             taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskEndDate, taskEndTime));
             taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
-        } else if (!taskEndDate.isEmpty() && taskEndTime.isEmpty()){
+        } else if (!taskEndDate.isEmpty() && taskEndTime.isEmpty()) {
             taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskEndDate));
             taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
         }
-        
+
         return colorise(taskStatus, taskIndex, taskNameValue, taskDateTimeValue, taskLocationValue, taskEndDateTimeValue);
     }
     
+    /**
+     * Set the different color(s) for the individual components of Text in
+     * TextFlow according to the Task_Status that was assigned.
+     */
     private static TextFlow colorise(TASK_STATUS status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue, Text taskEndDateTimeValue) {
         TextFlow colorisedText = new TextFlow();
-        
+
         colorisedText.setPrefWidth(0);
-        
-        switch(status) {
+
+        switch (status) {
             case TASK_OUTSTANDING:
-                if(taskIndex != null) {
+                if (taskIndex != null) {
                     taskIndex.setFill(RED);
                 }
                 taskNameValue.setFill(RED);
-                if(taskDateTimeValue != null) {
+                if (taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(RED);
                 }
-                if(taskLocationValue != null) {
+                if (taskLocationValue != null) {
                     taskLocationValue.setFill(RED);
                 }
-                if(taskEndDateTimeValue != null) {
+                if (taskEndDateTimeValue != null) {
                     taskEndDateTimeValue.setFill(RED);
                 }
                 break;
             case TASK_COMPLETED:
-                if(taskIndex != null) {
+                if (taskIndex != null) {
                     taskIndex.setFill(Color.GRAY);
                 }
                 taskNameValue.setFill(Color.GRAY);
-                if(taskDateTimeValue != null) {
+                if (taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.GRAY);
                 }
-                if(taskLocationValue != null) {
+                if (taskLocationValue != null) {
                     taskLocationValue.setFill(Color.GRAY);
                 }
-                if(taskEndDateTimeValue != null) {
+                if (taskEndDateTimeValue != null) {
                     taskEndDateTimeValue.setFill(Color.GRAY);
                 }
                 break;
             case TASK_DEFAULT:
             default:
-                if(taskIndex != null) {
+                if (taskIndex != null) {
                     taskIndex.setFill(LIGHT_GRAY);
                 }
                 taskNameValue.setFill(Color.BLACK);
-                if(taskDateTimeValue != null) {
+                if (taskDateTimeValue != null) {
                     taskDateTimeValue.setFill(Color.MAROON);
                 }
-                if(taskLocationValue != null) {
+                if (taskLocationValue != null) {
                     taskLocationValue.setFill(Color.MAROON);
                 }
-                if(taskEndDateTimeValue != null) {
+                if (taskEndDateTimeValue != null) {
                     taskEndDateTimeValue.setFill(Color.MAROON);
                 }
                 break;
         }
-        
-        if(taskIndex != null) {
+
+        if (taskIndex != null) {
             colorisedText.getChildren().addAll(taskIndex);
-        } 
+        }
         colorisedText.getChildren().addAll(taskNameValue);
-        
-        if(taskDateTimeValue != null) {
+
+        if (taskDateTimeValue != null) {
             colorisedText.getChildren().addAll(taskDateTimeValue);
-        } 
-        
-        if(taskEndDateTimeValue != null) {
+        }
+
+        if (taskEndDateTimeValue != null) {
             colorisedText.getChildren().addAll(taskEndDateTimeValue);
-        } 
-        
+        }
+
         if (taskLocationValue != null) {
             colorisedText.getChildren().addAll(taskLocationValue);
         }
-        
+
         colorisedText.autosize();
-        
+
         return colorisedText;
     }
 }
