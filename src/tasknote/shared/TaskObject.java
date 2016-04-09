@@ -19,7 +19,7 @@ public class TaskObject implements Comparable<TaskObject> {
     private final String FORMAT_TIME_MORNING = "%1$02d:%2$02dAM";
     private final String FORMAT_TIME_EVENING = "%1$02d:%2$02dPM";
     
-    public static enum TASK_STATUS {
+    public static enum TaskStatus {
         TASK_DEFAULT, TASK_OUTSTANDING, TASK_COMPLETED, TASK_OVERDUE, TASK_INVALID_STORAGE
     };
     
@@ -75,7 +75,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setNotifyTime(0);
 		setIsNotified(false);
 		
-		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
+		setTaskStatus(TaskStatus.TASK_DEFAULT);
 		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
@@ -104,7 +104,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setNotifyTime(0);
 		setIsNotified(false);
 		
-		setTaskStatus(TASK_STATUS.TASK_DEFAULT);
+		setTaskStatus(TaskStatus.TASK_DEFAULT);
 		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
@@ -197,20 +197,20 @@ public class TaskObject implements Comparable<TaskObject> {
 	/**
 	 * @return the taskStatus
 	 */
-	public TASK_STATUS getTaskStatus() {
+	public TaskStatus getTaskStatus() {
 		String status = this.taskStatus.get();
 		
 		switch(status) {
             case Constants.STRING_TASKSTATUS_DEFAULT:
-                return TASK_STATUS.TASK_DEFAULT;
+                return TaskStatus.TASK_DEFAULT;
             case Constants.STRING_TASKSTATUS_OUTSTANDING:
-                return TASK_STATUS.TASK_OUTSTANDING;
+                return TaskStatus.TASK_OUTSTANDING;
             case Constants.STRING_TASKSTATUS_OVERDUE:
-                return TASK_STATUS.TASK_OVERDUE;
+                return TaskStatus.TASK_OVERDUE;
             case Constants.STRING_TASKSTATUS_COMPLETED:
-                return TASK_STATUS.TASK_COMPLETED;
+                return TaskStatus.TASK_COMPLETED;
             case Constants.STRING_TASKSTATUS_INVALID_STORAGE:
-                return TASK_STATUS.TASK_INVALID_STORAGE;
+                return TaskStatus.TASK_INVALID_STORAGE;
             default:
                 return null;
 		}
@@ -219,7 +219,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	/**
 	 * @param taskStatus the taskStatus to set
 	 */
-	public void setTaskStatus(TASK_STATUS taskStatus) {
+	public void setTaskStatus(TaskStatus taskStatus) {
 	    switch(taskStatus) {
 	        case TASK_DEFAULT:
 	            this.taskStatus.set(Constants.STRING_TASKSTATUS_DEFAULT);
@@ -246,23 +246,23 @@ public class TaskObject implements Comparable<TaskObject> {
 	 */
 	public void setTaskStatus(String taskStatus){
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_DEFAULT)){
-		    setTaskStatus(TASK_STATUS.TASK_DEFAULT);
+		    setTaskStatus(TaskStatus.TASK_DEFAULT);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING)){
-		    setTaskStatus(TASK_STATUS.TASK_OUTSTANDING);
+		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OVERDUE)){
-		    setTaskStatus(TASK_STATUS.TASK_OVERDUE);
+		    setTaskStatus(TaskStatus.TASK_OVERDUE);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED)){
-		    setTaskStatus(TASK_STATUS.TASK_COMPLETED);
+		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 			return;
 		}
 		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_INVALID_STORAGE)){
-		    setTaskStatus(TASK_STATUS.TASK_INVALID_STORAGE);
+		    setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
 			return;
 		}
 	}
@@ -294,9 +294,9 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setIsMarkedDone(boolean isMarkedDone) {
 		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
-		    setTaskStatus(TASK_STATUS.TASK_COMPLETED);
+		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 		} else {
-		    setTaskStatus(TASK_STATUS.TASK_DEFAULT);
+		    setTaskStatus(TaskStatus.TASK_DEFAULT);
 		}
 	}
 	
@@ -758,6 +758,6 @@ public class TaskObject implements Comparable<TaskObject> {
      * @return true if taskObject is completed
      */
     public boolean isCompleted() {
-        return getTaskStatus() == TASK_STATUS.TASK_COMPLETED;
+        return getTaskStatus() == TaskStatus.TASK_COMPLETED;
     }
 }

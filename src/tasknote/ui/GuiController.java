@@ -28,7 +28,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
-import tasknote.shared.TaskObject.TASK_STATUS;
+import tasknote.shared.TaskObject.TaskStatus;
 
 public class GuiController extends Application {
     private static final Logger logger = Logger.getLogger(GuiController.class.getName());
@@ -239,17 +239,17 @@ public class GuiController extends Application {
         ArrayList<TaskObject> tasksList = new ArrayList<TaskObject>();
         ArrayList<TaskObject> floatsList = new ArrayList<TaskObject>();
 
-        TASK_STATUS taskTypeRequired = null;
+        TaskStatus taskTypeRequired = null;
 
         switch (navigationTag) {
             case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
-                taskTypeRequired = TASK_STATUS.TASK_DEFAULT;
+                taskTypeRequired = TaskStatus.TASK_DEFAULT;
                 break;
             case SidebarContainer.NAVIGATION_TAG_OVERDUE:
-                taskTypeRequired = TASK_STATUS.TASK_OUTSTANDING;
+                taskTypeRequired = TaskStatus.TASK_OUTSTANDING;
                 break;
             case SidebarContainer.NAVIGATION_TAG_COMPLETED:
-                taskTypeRequired = TASK_STATUS.TASK_COMPLETED;
+                taskTypeRequired = TaskStatus.TASK_COMPLETED;
         }
 
         for (TaskObject task : displayList) {

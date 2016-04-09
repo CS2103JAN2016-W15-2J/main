@@ -13,7 +13,7 @@ import javafx.event.EventHandler;
 import javafx.util.Duration;
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
-import tasknote.shared.TaskObject.TASK_STATUS;
+import tasknote.shared.TaskObject.TaskStatus;
 
 public class Scheduler {
     private TaskNoteControl _logic = null;
@@ -64,7 +64,7 @@ public class Scheduler {
 
         for (TaskObject task : taskObjectList) {
             if (task.getTaskType() == TaskObject.TASK_TYPE_FLOATING
-                    || task.getTaskStatus() == TASK_STATUS.TASK_COMPLETED) {
+                    || task.getTaskStatus() == TaskStatus.TASK_COMPLETED) {
                 continue;
             }
 
@@ -82,7 +82,7 @@ public class Scheduler {
             }
 
             if (dateObject != null && dateObject.getTime() < currentTimeInMillisecond) {
-                task.setTaskStatus(TASK_STATUS.TASK_OUTSTANDING);
+                task.setTaskStatus(TaskStatus.TASK_OUTSTANDING);
             }
         }
     }

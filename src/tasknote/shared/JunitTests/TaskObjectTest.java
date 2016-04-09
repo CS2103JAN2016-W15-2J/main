@@ -11,7 +11,7 @@ import org.junit.rules.ExpectedException;
 
 import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
-import tasknote.shared.TaskObject.TASK_STATUS;
+import tasknote.shared.TaskObject.TaskStatus;
 
 public class TaskObjectTest {
 
@@ -168,23 +168,23 @@ public class TaskObjectTest {
     public void testSetTaskStatus() {
         TaskObject testTaskObjectSetStatusWithEnum = new TaskObject("Task 1");
         TaskObject testTaskObjectSetStatusWithString = new TaskObject("Task 2");
-        assertEquals(TASK_STATUS.TASK_DEFAULT, testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertEquals(TaskStatus.TASK_DEFAULT, testTaskObjectSetStatusWithEnum.getTaskStatus());
         assertTrue(
                 testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
 
-        testTaskObjectSetStatusWithEnum.setTaskStatus(TASK_STATUS.TASK_OUTSTANDING);
+        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_OUTSTANDING);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_OUTSTANDING);
         assertTrue(
                 testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
-        testTaskObjectSetStatusWithEnum.setTaskStatus(TASK_STATUS.TASK_OVERDUE);
+        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_OVERDUE);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_OVERDUE);
         assertTrue(
                 testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
-        testTaskObjectSetStatusWithEnum.setTaskStatus(TASK_STATUS.TASK_COMPLETED);
+        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_COMPLETED);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_COMPLETED);
         assertTrue(
                 testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
-        testTaskObjectSetStatusWithEnum.setTaskStatus(TASK_STATUS.TASK_INVALID_STORAGE);
+        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_INVALID_STORAGE);
         assertTrue(
                 testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());

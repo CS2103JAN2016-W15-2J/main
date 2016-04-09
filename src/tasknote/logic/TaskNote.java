@@ -2,7 +2,7 @@ package tasknote.logic;
 
 import tasknote.storage.Storage;
 import tasknote.shared.TaskObject;
-import tasknote.shared.TaskObject.TASK_STATUS;
+import tasknote.shared.TaskObject.TaskStatus;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.Constants;
 import tasknote.logic.History.CommandHistory;
@@ -458,15 +458,15 @@ public class TaskNote {
 				taskCategory = ShowCategory.ALL;
 				break;
 			case OUTSTANDING:
-				displayTasks(TASK_STATUS.TASK_OUTSTANDING);
+				displayTasks(TaskStatus.TASK_OUTSTANDING);
 				taskCategory = ShowCategory.OUTSTANDING;
 				break;
 			case OVERDUE:
-				displayTasks(TASK_STATUS.TASK_OVERDUE);
+				displayTasks(TaskStatus.TASK_OVERDUE);
 				taskCategory = ShowCategory.OVERDUE;
 				break;
 			case COMPLETED:
-				displayTasks(TASK_STATUS.TASK_COMPLETED);
+				displayTasks(TaskStatus.TASK_COMPLETED);
 				taskCategory = ShowCategory.COMPLETED;
 				break;
 			default:
@@ -841,7 +841,7 @@ public class TaskNote {
 	 * @param: taskStatus
 	 * 
 	 */
-	private void displayTasks(TASK_STATUS taskStatus) {
+	private void displayTasks(TaskStatus taskStatus) {
 		ArrayList<TaskObject> list = new ArrayList<TaskObject>();
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject task = taskList.get(i);

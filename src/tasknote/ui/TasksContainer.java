@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 import tasknote.shared.TaskObject;
-import tasknote.shared.TaskObject.TASK_STATUS;
+import tasknote.shared.TaskObject.TaskStatus;
 
 public class TasksContainer extends HBox {
     private static final String FORMAT_TASK_INDEX = "%1$d. ";
@@ -115,7 +115,7 @@ public class TasksContainer extends HBox {
      * @return The formatted text (size, color), in the form of a TextFlow.
      */
     public static TextFlow getFormattedText(TaskObject task) {        
-        TASK_STATUS taskStatus = task.getTaskStatus();
+        TaskStatus taskStatus = task.getTaskStatus();
         Text taskIndex = null;
         Text taskNameValue = new Text(task.getTaskName());
         Text taskDateTimeValue = null;
@@ -161,7 +161,7 @@ public class TasksContainer extends HBox {
      * Set the different color(s) for the individual components of Text in
      * TextFlow according to the Task_Status that was assigned.
      */
-    private static TextFlow colorise(TASK_STATUS status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue, Text taskEndDateTimeValue) {
+    private static TextFlow colorise(TaskStatus status, Text taskIndex, Text taskNameValue, Text taskDateTimeValue, Text taskLocationValue, Text taskEndDateTimeValue) {
         TextFlow colorisedText = new TextFlow();
 
         colorisedText.setPrefWidth(0);

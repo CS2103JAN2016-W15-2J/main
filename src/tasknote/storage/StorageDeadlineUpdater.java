@@ -80,7 +80,7 @@ public class StorageDeadlineUpdater{
 
 	private void setOverdue(boolean notOverdue) {
 		if(!notOverdue){
-			taskObject.setTaskStatus(TaskObject.TASK_STATUS.TASK_OVERDUE);
+			taskObject.setTaskStatus(TaskObject.TaskStatus.TASK_OVERDUE);
 		}
 	}
 
