@@ -365,6 +365,18 @@ public class Parser {
 		do {
 
 			TimeMessage potentialTimeMessage = tryToParseTime();
+			
+			if ((listPointer + 1) >= phraseCount 
+					&& ParserConstants.isValidHour(potentialTimeMessage.getHour())
+					&& ParserConstants.isValidMinute(potentialTimeMessage.getMinute())) {
+				potentialTimeMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
+			} else {
+				String nextPhrase = allPhrases.get(listPointer + 1);
+				
+				if (ParserConstants.KEYWORD_SET_UNMODIFIABLE.contains(nextPhrase)) {
+					potentialTimeMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
+				}
+			}
 
 			if (potentialTimeMessage.getMessage().equals(
 					ParserConstants.MESSAGE_TIME_SURE)) {
@@ -384,6 +396,7 @@ public class Parser {
 				}
 			} else {
 				currentPhrase = allPhrases.get(listPointer);
+				
 				locationBuilder.append(currentPhrase);
 				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
 			}
@@ -490,7 +503,6 @@ public class Parser {
 	}
 
 	public ArrayList<Integer> parseDelete(boolean throwException) {
-		// TODO Auto-generated method stub
 		
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
 			throw new RuntimeException("Wrong method used for non-add type input!");
@@ -842,15 +854,13 @@ public class Parser {
 		}
 	}
 
-	public static String parseFilePath(String userCommand,
-			boolean throwException) {
+	public String parseFilePath(boolean throwException) {
 
-		ParserFirstPass scanAllWords = new ParserFirstPass(userCommand);
-		ArrayList<String> allPhrases = scanAllWords.getFirstPassParsedResult();
-
+		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
+		int listPointer = this.getListPointer();
 
-		for (int i = 1; i < phraseCount; i++) {
+		for (int i = listPointer; i < phraseCount; i++) {
 
 			String currentPhrase = allPhrases.get(i);
 
@@ -874,20 +884,19 @@ public class Parser {
 		} else {
 
 			// Default value
-			return "";
+			return Constants.STRING_CONSTANT_EMPTY;
 		}
 	}
 
-	public static int getTaskId(String userCommand, boolean throwException) {
-
-		String[] splitUserCommand = userCommand.trim().split(
-				Constants.STRING_CONSTANT_SPACE);
+	public int getTaskId(boolean throwException) {
+		
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int listPointer = this.getListPointer();
+		String currentPhrase = allPhrases.get(listPointer);
 
 		try {
 
-			String givenID = splitUserCommand[1];
-
-			int returnValue = Integer.parseInt(givenID) - 1;
+			int returnValue = Integer.parseInt(currentPhrase) - 1;
 
 			return returnValue;
 		} catch (NumberFormatException e) {
@@ -939,7 +948,7 @@ public class Parser {
 
 	}
 
-	protected static boolean isNumber(String stringToTest) {
+	protected boolean isNumber(String stringToTest) {
 
 		try {
 			Integer.parseInt(stringToTest);

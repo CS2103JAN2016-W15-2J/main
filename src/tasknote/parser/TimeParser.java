@@ -55,6 +55,7 @@ public class TimeParser {
 				|| currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
 			currentPhrase = currentPhrase.substring(0,
 					currentPhrase.length() - 2);
+			returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
 		}
 
 		// Try as colon separated or dash separated
@@ -104,7 +105,6 @@ public class TimeParser {
 					givenHour = Integer.parseInt(currentPhrase) + extraHours;
 					givenMinute = 0;
 
-					returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
 				} catch (NumberFormatException e) {
 					return returnMessage;
 
