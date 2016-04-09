@@ -1,5 +1,5 @@
 //@@author A0129561A
-package tasknote.shared;
+package tasknote.shared.JunitTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -9,6 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import tasknote.shared.Constants;
+import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class TaskObjectTest {

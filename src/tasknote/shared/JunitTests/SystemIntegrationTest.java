@@ -1,5 +1,5 @@
 //@@author A0129561A
-package tasknote.shared;
+package tasknote.shared.JunitTests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +20,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
 import tasknote.logic.TaskNoteControl;
 import tasknote.parser.Parser;
+import tasknote.shared.TaskListIOException;
+import tasknote.shared.TaskObject;
 import tasknote.storage.Storage;
 import tasknote.ui.CommandLineContainer;
 import tasknote.ui.FloatingTasksContainer;
