@@ -112,13 +112,15 @@ public class SystemIntegrationTest {
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         TextField commandLine = commandLineContainer.getCommandLine();
         TaskNoteControl logic = new TaskNoteControl();
+        Parser parser = new Parser();
         Storage storage = new Storage();
         
         String commandAddingFloatingTask = "add floating task 0";
 
         commandLine.setText(commandAddingFloatingTask);
         GuiController.retrieveCommand(commandLine);
-        TaskObject floatingTask1 = Parser.parseAdd(commandAddingFloatingTask, true);
+        parser.setInputString(commandAddingFloatingTask);
+        TaskObject floatingTask1 = parser.parseAdd(true);
         try {
             assertTrue(storage.loadTasks().contains(floatingTask1));
         } catch (IOException | TaskListIOException e) {
@@ -136,14 +138,16 @@ public class SystemIntegrationTest {
         FloatingTasksContainer floating = FloatingTasksContainer.getInstance();
         ObservableList<TaskObject> observableFloatList = floating.getFloatingTasksList();
         TaskNoteControl logic = new TaskNoteControl();
+        Parser parser = new Parser();
         Storage storage = new Storage();
         
         String commandAddingFloatingTask = "add floating task 0";
-        String commandAddingDeadlineTask = "add deadline task 1 on 1/1/2016 by 12:34";
+        String commandAddingDeadlineTask = "add deadline task 1 on 1/1/2050 by 12:34";
 
         // Testing Gui, Logic, Parser and Storage on adding a floating task.
         GuiController.executeCommand(commandAddingFloatingTask);
-        TaskObject floatingTask1 = Parser.parseAdd(commandAddingFloatingTask, true);
+        parser.setInputString(commandAddingFloatingTask);
+        TaskObject floatingTask1 = parser.parseAdd(true);
         assertTrue(floatingTask1.getTaskType().equals(TaskObject.TASK_TYPE_FLOATING));
         try {
             assertTrue(storage.loadTasks().contains(floatingTask1));
@@ -157,9 +161,10 @@ public class SystemIntegrationTest {
 
         // Testing Gui, Logic, Parser and Storage on adding a deadline task.
         GuiController.executeCommand(commandAddingDeadlineTask);
-        TaskObject eventTask1 = Parser.parseAdd(commandAddingDeadlineTask, true);
+        parser.setInputString(commandAddingDeadlineTask);
+        TaskObject deadlineTask1 = parser.parseAdd(true);
         try {
-            assertTrue(storage.loadTasks().contains(floatingTask1));
+            assertTrue(storage.loadTasks().contains(deadlineTask1));
         } catch (IOException | TaskListIOException e) {
             e.printStackTrace();
         }
@@ -167,11 +172,9 @@ public class SystemIntegrationTest {
         assertTrue(logic.getDisplayList().size() == 2);
         assertTrue(observableFloatList.contains(floatingTask1));
         assertTrue(observableFloatList.size() == 1);
-        assertTrue(observableEventList.contains(eventTask1));
+        assertTrue(observableEventList.contains(deadlineTask1));
         assertTrue(observableFloatList.size() == 1);
-    }
-    
-    
+    }    
 
     @Test
     public void testDeletingOfTask() {
@@ -253,6 +256,7 @@ public class SystemIntegrationTest {
         ObservableList<TaskObject> observableEventList = events.getTasksList();
         FloatingTasksContainer floating = FloatingTasksContainer.getInstance();
         ObservableList<TaskObject> observableFloatList = floating.getFloatingTasksList();
+        Parser parser = new Parser();
         TaskNoteControl logic = new TaskNoteControl();
         
         String searchQuery = "search man";
@@ -260,14 +264,19 @@ public class SystemIntegrationTest {
         String expectedQueryResultExactMatch = "add Watch man";
         String expectedQueryResultIgnoreCase = "add mAN";
         String expectedQuerySubstring = "add Watch Batman vs Superman: Dawn Of Justice on 1/1/2017 by 3pm at Cathay";
-        TaskObject taskObjectExactMatch = Parser.parseAdd(expectedQueryResultExactMatch, true);
-        TaskObject taskObjectIgnoreCase = Parser.parseAdd(expectedQueryResultIgnoreCase, true);
-        TaskObject taskObjectSubstring = Parser.parseAdd(expectedQuerySubstring, true);
+        parser.setInputString(expectedQueryResultExactMatch);
+        TaskObject taskObjectExactMatch = parser.parseAdd(true);
+        parser.setInputString(expectedQueryResultIgnoreCase);
+        TaskObject taskObjectIgnoreCase = parser.parseAdd(true);
+        parser.setInputString(expectedQuerySubstring);
+        TaskObject taskObjectSubstring = parser.parseAdd(true);
         
         String taskNotContainingQuery = "add irrelevant task";
         String taskQuerySplitByPunctuation = "add M.anderson is coming to town";
-        TaskObject taskObjectNotContainingQuery = Parser.parseAdd(taskNotContainingQuery, true);
-        TaskObject taskObjectSplitByPunctuation = Parser.parseAdd(taskQuerySplitByPunctuation, true);
+        parser.setInputString(taskNotContainingQuery);
+        TaskObject taskObjectNotContainingQuery = parser.parseAdd(true);
+        parser.setInputString(taskQuerySplitByPunctuation);
+        TaskObject taskObjectSplitByPunctuation = parser.parseAdd(true);
         
         ArrayList<TaskObject> searchQueryResult = null;
 
