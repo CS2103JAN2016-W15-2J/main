@@ -2,6 +2,9 @@ package tasknote.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 //@@author A0126172M
 /**
  * This class aid the PATH manipulation operations and initiate pathHistory
@@ -25,18 +28,21 @@ public class PathManipulation{
 		pathHistory = new PathHistory();
 	}
 	
-	public boolean canChangePath(String newPathName){
-		if(iSFilePathValid(newPathName)){
-			pathHistory.addHistory(newPathName);
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean iSFilePathValid(String pathName){
+	public boolean isValidFilePath(String pathName){
 		File tempFile = new File(pathName);
 		File directory = tempFile.getParentFile();
 		return directory.exists();
+	}
+	
+	public boolean isAbsolutePath(String pathName) throws InvalidPathException, NullPointerException{
+		Path path = Paths.get(pathName);
+		return path.isAbsolute();
+	}
+	
+	public void pushHistory(String pathName){
+		if(isValidFilePath(pathName)){
+			pathHistory.addHistory(pathName);
+		}
 	}
 	
 	public String extractUndoPathString(){
@@ -47,14 +53,18 @@ public class PathManipulation{
 		return pathHistory.redo();
 	}
 	
-	public String getParentPath(String pathName){
-		try{
-			File tempFile = new File(pathName);
-			File parentFile = tempFile.getParentFile().getParentFile();
-			return parentFile.getCanonicalPath();
-		}catch(IOException ioe){
-			
-		}
-		return null;
+	public String getParentPath(String pathName) throws IOException{
+		File tempFile = new File(pathName);
+		File parentFile = tempFile.getParentFile().getParentFile();
+		return parentFile.getCanonicalPath();
+	}
+
+	public String extractNewFullPath(String newPath, String oldPath) {
+		Path previousPath = Paths.get(oldPath);
+		Path nextPath = Paths.get(newPath);
+		Path newFullPath = previousPath.relativize(previousPath.resolve(nextPath));
+		newFullPath = newFullPath.normalize();
+		newFullPath = previousPath.resolve(newFullPath).normalize();
+		return newFullPath.toString();
 	}
 }

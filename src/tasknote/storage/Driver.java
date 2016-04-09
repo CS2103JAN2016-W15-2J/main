@@ -8,7 +8,6 @@ public class Driver{
 			storageTestMainFrame.setUp();
 			storageTestMainFrame.test();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

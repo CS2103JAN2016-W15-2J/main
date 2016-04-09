@@ -3,20 +3,24 @@ package tasknote.storage;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import tasknote.shared.InvalidFilePathException;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 //@@author A0126172M
 public class StorageTest {
+	private static final String PATH_NAME_DEFAULT = "C:\\NUS\\CS2103T\\main\\taskContents.txt";
 	private static final String PATH_NAME_INVALID = "C:/hello";
 	private static final String PATH_NAME_WITH_TEXT_FILE = "C:/NUS/hello.txt";
-	private static final String PATH_NAME_WITHOUT_SLASH = "C:/NUS/CS2103T/main/java.txt";
+	private static final String PATH_NAME_WITHOUT_SLASH = "C:/NUS/CS2103T/main";
+	private static final String PATH_NAME_ABSOLUTE = "./.././../CS2101";
+	private static final String PATH_NAME_TEXT_FILE_ONLY = "W152JGroup.txt";
+	private static final String PATH_NAME_ABSOLUTE_ONLY = "..";
 	private static final int BASE_DATE = 1;
 	private static final int BASE_YEAR = 1980;
 	private static final int RAND_RANGE_MINUTE = 60;
@@ -25,6 +29,8 @@ public class StorageTest {
 	private static final int RAND_RANGE_MONTH = 12;
 	private static final int RAND_RANGE_YEAR = 40;
 	Storage storage;
+	FileManipulation fileManipulator;
+	PathManipulation pathManipulator;
 	Random random;
 	
 	//local variables
@@ -41,6 +47,8 @@ public class StorageTest {
 	public void setUp() throws Exception {
 		//set up class
 		storage = new Storage();
+		fileManipulator = new FileManipulation();
+		pathManipulator = new PathManipulation();
 		random = new Random();
 		
 		//add a specific item
@@ -76,7 +84,7 @@ public class StorageTest {
 	}
 	
 	@Test
-	public final void test() throws IOException, TaskListIOException, InvalidFilePathException {
+	public final void test() throws IOException, TaskListIOException, InvalidPathException {
 		//assertTrue(false);
 		try{
 			//case 1: test loadTasks() is able to load something
@@ -90,7 +98,6 @@ public class StorageTest {
 			storage.saveTasks(new ArrayList<TaskObject>());
 			assertTrue(storage.loadTasks().equals(new ArrayList<TaskObject>()));
 			
-			
 			//case 3: add an ArrayList<TaskObject> with an item
 			storage.saveTasks(tempArrayList1);
 			assertTrue(storage.loadTasks().equals(tempArrayList1));
@@ -100,26 +107,40 @@ public class StorageTest {
 			assertTrue(storage.loadTasks().equals(tempArrayList2));
 			
 			//case 5: undo PATH where there is no history
-			System.out.println(storage.undoPath());
-			//assertFalse(storage.undoPath());
+			assertFalse(storage.undoPath());
 			
 			//case 6: change PATH with a correct PATH
 			assertTrue(storage.changePath(PATH_NAME_WITHOUT_SLASH));
+			String fullPathNameWithoutSlash = fileManipulator.readFullPathFromPathFile();
+			assertTrue(pathManipulator.isValidFilePath(fullPathNameWithoutSlash));
 			
 			//case 7: change PATH with a different file
 			assertTrue(storage.changePath(PATH_NAME_WITH_TEXT_FILE));
+			String fullPathNameWithTextFile = fileManipulator.readFullPathFromPathFile();
+			assertTrue(pathManipulator.isValidFilePath(fullPathNameWithTextFile));
 			
 			//case 8: change PATH to an invalid PATH
 			assertFalse(storage.changePath(PATH_NAME_INVALID));
 			
 			//case 9: undo PATH
 			assertTrue(storage.undoPath());
-			
+
 			//case 10: redo PATH
 			assertTrue(storage.redoPath());
-			
+
 			//case 11: redo PATH when there is no future history
 			assertFalse(storage.redoPath());
+			
+			//case 12: change PATH to original PATH
+			assertTrue(storage.changePath(PATH_NAME_DEFAULT));
+			String fullPathNameDefault = fileManipulator.readFullPathFromPathFile();
+			assertTrue(pathManipulator.isValidFilePath(fullPathNameDefault));
+			
+			//case 13: change PATH with absolute PATH
+			assertTrue(storage.changePath(PATH_NAME_ABSOLUTE));
+			
+			//case 14: change PATH with ONLY fileName
+			assertTrue(storage.changePath(PATH_NAME_TEXT_FILE_ONLY));
 			
 		}catch(IOException ioe){
 			

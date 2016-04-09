@@ -150,6 +150,15 @@ public class FileManipulation{
 		try{
 			return readPathFromPathFile();
 		}catch(IOException ioe){
+			return handleEmptyPathFile();
+		}
+	}
+
+	private String handleEmptyPathFile(){
+		try{
+			initializeFiles();
+			return readPathFromPathFile();
+		}catch(IOException ioe){
 			fileLog.log(Level.WARNING, constants.getFailedToReadPathFile());
 			return null;
 		}
@@ -370,7 +379,7 @@ public class FileManipulation{
 	 *
 	 */
 	
-	public boolean moveFile(String fileName){
+	public boolean moveFile(String fileName) throws IOException{
 		if(isFileNameAcceptable(fileName)){
 			copyFileAndDeletePrevious(fileName);
 			initializeTextFile(fileName);
@@ -390,21 +399,15 @@ public class FileManipulation{
 		return false;
 	}
 
-	private void copyFileAndDeletePrevious(String newFileName) {
-		try{
+	private void copyFileAndDeletePrevious(String newFileName) throws IOException{
+		File tempFile = new File(newFileName);
+		BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(textFile));
+		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
 			
-			//initialize
-			File tempFile = new File(newFileName);
-			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(textFile));
-			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
-			
-			copyFileContents(inputStream, outputStream);
-			closeStream(inputStream,outputStream);
-			deleteOldFile();
-			
-		}catch(IOException e){
-			// do nothing
-		}
+		copyFileContents(inputStream, outputStream);
+		closeStream(inputStream,outputStream);
+		deleteOldFile();
+
 	}
 
 	private void copyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream)
@@ -413,7 +416,7 @@ public class FileManipulation{
 		byte[] bufferMemory = new byte[constants.getBufferSize()];
 		int length = inputStream.read(bufferMemory);
 		loopCopyFileContents(inputStream, outputStream, bufferMemory, length);
-	
+		
 	}
 
 	private void loopCopyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream,
@@ -454,3 +457,4 @@ public class FileManipulation{
 		return new FileOutputStream(textFile);
 	}
 }
+

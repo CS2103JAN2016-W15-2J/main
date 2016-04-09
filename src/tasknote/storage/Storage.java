@@ -7,6 +7,8 @@ import tasknote.shared.TaskListIOException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -65,9 +67,11 @@ public class Storage{
 	 * @param newPathName
 	 * @return true if path successfully changed
 	 */
-	public boolean changePath(String newPathName){
+	public boolean changePath(String newPathName)throws IOException{
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
+		System.out.println(textFileName);
 		if(handlePathChangeForMacAndWindows(textFileName)){
+			pathManipulator.pushHistory(textFileName);
 			return true;
 		}
 		
@@ -77,11 +81,15 @@ public class Storage{
 	/**
 	 * undo PATH operation
 	 * @return true if successfully undo PATH
+	 * @throws IOException 
 	 */
-	public boolean undoPath() throws InvalidFilePathException{
+	public boolean undoPath() throws InvalidPathException, IOException{
 		try{
 			String previousPath = pathManipulator.extractUndoPathString();		
-			return fileManipulator.moveFile(previousPath);
+			if(pathManipulator.isValidFilePath(previousPath)){
+				return fileManipulator.moveFile(previousPath);
+			}
+			throw new InvalidPathException(previousPath,constants.getFailedValidPathUsed(previousPath));
 		}catch(NullPointerException npe){
 			return logUndoFailed();
 		}
@@ -90,11 +98,15 @@ public class Storage{
 	/**
 	 * re-do PATH operation
 	 * @return true if successfully re-do PATH
+	 * @throws IOException 
 	 */
-	public boolean redoPath() throws InvalidFilePathException{
+	public boolean redoPath() throws InvalidPathException, IOException{
 		try{
 			String nextPath = pathManipulator.extractRedoPathString();
-			return fileManipulator.moveFile(nextPath);
+			if(pathManipulator.isValidFilePath(nextPath)){
+				return fileManipulator.moveFile(nextPath);
+			}
+			throw new InvalidPathException(nextPath,constants.getFailedValidPathUsed(nextPath));
 		}catch(NullPointerException npe){
 			return logRedoFailed();
 		}
@@ -184,50 +196,37 @@ public class Storage{
 		constants = new StorageConstants();
 	}
 	
-	private String concatPathIfNeeded(String pathName, String previousTextFileName){
-		if(isFullPathWithUnixCommand(pathName)){
-			return produceFullPathWithDirectoryCommand(pathName, previousTextFileName);
+	private String concatPathIfNeeded(String pathName, String textFileName) throws InvalidPathException, NullPointerException, IOException{
+		textFileName = getFileName(pathName, textFileName);
+		if(!pathManipulator.isAbsolutePath(pathName)){
+			return produceFullPathWithDirectoryCommand(pathName, textFileName);
 		}else if(isPathSlashEnteredAtTheEnd(pathName)){
-			return addFileNameAndProduceFullPath(pathName, previousTextFileName);
+			return addFileNameAndProduceFullPath(pathName, textFileName);
 		}else if(isFileNameEntered(pathName)){
-			return produceFullPathWithNewFileName(pathName, previousTextFileName);
+			return produceFullPathWithNewFileName(pathName, textFileName);
 		}else{
-			return addSlashAndProduceFullPath(pathName, previousTextFileName);
+			return addSlashAndProduceFullPath(pathName, textFileName);
 		}
-	}
-
-	private boolean isFullPathWithUnixCommand(String pathName) {
-		return isFileNameEntered(pathName) && hasCurrentOrParentDirectoryGiven(pathName);
 	}
 	
 	private boolean isFileNameEntered(String pathName) {
 		return pathName.endsWith(constants.getTextFileEnding());
 	}
 	
-	private boolean hasCurrentOrParentDirectoryGiven(String pathName) {
-		return hasParentPath(pathName) || hasCurrentPath(pathName);
-	}
-
-	private boolean hasCurrentPath(String pathName) {
-		return pathName.startsWith(constants.getCurrentDirectory());
-	}
-
-	private boolean hasParentPath(String pathName) {
-		return pathName.startsWith(constants.getParentDirectory());
-	}
-	
 	private boolean isPathSlashEnteredAtTheEnd(String pathName) {
 		return pathName.endsWith(constants.getSlash()) || pathName.endsWith(constants.getPathSlash());
 	}
 	
-	private String produceFullPathWithDirectoryCommand(String pathName, String previousTextFileName) {
-		String fileName = fileManipulator.extractTextFileName(pathName);
-		String newCurrentFullPath = extractNewCurrentFullPath(previousTextFileName, fileName);
-		
-		if(hasParentPath(pathName)){
-			return replaceParentDirectoryAndProduceFullPath(fileName, newCurrentFullPath);
+	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName) throws IOException{
+		if(isFileNameEntered(newPath)){
+			String newFileName = fileManipulator.extractTextFileName(newPath);
+			newPath = extractCurrentPath(newPath, newFileName);
 		}
-		return newCurrentFullPath;
+		System.out.println("XXX Previous Text File Name = " + previousTextFileName);
+		String currentPath = extractCurrentPath(previousTextFileName);
+		System.out.println(newPath + " " + currentPath);
+		String newFullPath = pathManipulator.extractNewFullPath(newPath,currentPath);
+		return concatPathIfNeeded(newFullPath, previousTextFileName);
 	}
 
 	private String extractNewCurrentFullPath(String previousTextFileName, String fileName) {
@@ -245,14 +244,8 @@ public class Storage{
 		return currentFullPath.replace(previousTextFileName, constants.getEmptyString());
 	}
 	
-	private String replaceParentDirectoryAndProduceFullPath(String fileName, String newFullPath) {
-		String parentPath = pathManipulator.getParentPath(newFullPath);
-		return concatPathIfNeeded(parentPath,fileName);
-	}
-	
-	private String addFileNameAndProduceFullPath(String pathName, String previousTextFileName) {
-		String newPath = constants.addFileNameToPath(pathName, previousTextFileName);
-		return concatPathIfNeeded(newPath,previousTextFileName);
+	private String addFileNameAndProduceFullPath(String pathName, String previousTextFileName) throws IOException{
+		return constants.addFileNameToPath(pathName, previousTextFileName);
 	}
 	
 	private String produceFullPathWithNewFileName(String pathName, String previousTextFileName) {
@@ -265,18 +258,21 @@ public class Storage{
 	}
 	
 	private String getFileName(String pathName, String previousTextFileName) {
-		String fileName = fileManipulator.extractTextFileName(pathName);
-		if(isEmptyFileName(fileName)){
-			fileName = previousTextFileName;
+		if(isFileNameEntered(pathName)){
+			String fileName = fileManipulator.extractTextFileName(pathName);
+			if(isEmptyFileName(fileName)){
+				fileName = previousTextFileName;
+			}
+			return fileName;
 		}
-		return fileName;
+		return previousTextFileName;
 	}
 	
 	private boolean isEmptyFileName(String fileName) {
 		return fileName == null;
 	}
 	
-	private String addSlashAndProduceFullPath(String pathName, String previousTextFileName) {
+	private String addSlashAndProduceFullPath(String pathName, String previousTextFileName)throws IOException {
 		pathName = addSlashToFullPath(pathName);
 		return concatPathIfNeeded(pathName, previousTextFileName);
 	}
@@ -285,7 +281,7 @@ public class Storage{
 		return pathName.concat(constants.getSlash());
 	}
 	
-	private boolean handlePathChangeForMacAndWindows(String textFileName) {
+	private boolean handlePathChangeForMacAndWindows(String textFileName) throws IOException {
 		
 		if(isPathForMac(textFileName)){
 			return fileManipulator.moveFile(textFileName);
@@ -301,7 +297,7 @@ public class Storage{
 	}
 	
 	private boolean isPathForMac(String textFileName) {
-		return pathManipulator.canChangePath(textFileName);
+		return pathManipulator.isValidFilePath(textFileName);
 	}
 	
 	private String convertFilePathForWindows(String textFileName) {
@@ -309,7 +305,7 @@ public class Storage{
 	}
 
 	private boolean isPathForWindows(String textFileName) {
-		return pathManipulator.canChangePath(textFileName);
+		return pathManipulator.isValidFilePath(textFileName);
 	}
 	
 	// alias related helper methods
