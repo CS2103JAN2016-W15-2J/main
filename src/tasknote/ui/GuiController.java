@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.COMMAND_ADD;
@@ -30,62 +31,62 @@ import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TASK_STATUS;
 
 public class GuiController extends Application {
+    private static final Logger logger = Logger.getLogger(GuiController.class.getName());
+    private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "An invalid input (empty string, or simple \"add\") is passed for command execution.";
+    private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
+
     private final String APPLICATION_NAME = "TaskNote";
     private final String APPLICATION_ICON_PATH = "resources/image/tasknote-icon.png";
     private final String APPLICATION_BACKGROUND_IMAGE = "resources/image/wood-background.png";
-    
-    private String CSS_GUICONTROLLER = "resources/css/theme-wunderlist.css";
-    
+
+    private final String CSS_GUICONTROLLER = "resources/css/theme-wunderlist.css";
+
     private final double WINDOW_MIN_WIDTH = 450.0;
     private final double WINDOW_MIN_HEIGHT = 450.0;
 
-    private static TaskNoteControl _tasknoteControl = new TaskNoteControl();
-    
-    private String SHOW_ALL_COMMAND = "show all";
-    
-    private static final Logger logger = Logger.getLogger(GuiController.class.getName());
-    private static final String WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT = "An invalid input (empty string, or simple \"add\") is passed for command execution.";
-    
+    private final String SHOW_ALL_COMMAND = "show all";
+
     @Override
     public void start(Stage stage) {
         BorderPane frame = new BorderPane();
         Scene scene = new Scene(frame);
-        
+
         setFramePresentation(frame);
         setSceneBehaviour(scene);
         setSceneAndStagePresentation(stage, scene);
-        
-        changeView(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
 
         setSidebarNavigationBehaviour();
+        changeViewOfSidebarNavigation(SidebarContainer.NAVIGATION_TAG_OUTSTANDING);
+
         setSchedulerBehaviour();
         focusOnCommandLine();
     }
-    
+
     private void setFramePresentation(BorderPane frame) {
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         TasksContainer tasksContainer = TasksContainer.getInstance();
         FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
-        
+
         Background background = setBackgroundPresentation();
-        
+
         frame.setBackground(background);
         frame.setLeft(sidebarContainer);
         frame.setCenter(tasksContainer);
         frame.setRight(floatingTasksContainer);
         frame.setBottom(commandLineContainer);
     }
-    
+
     private Background setBackgroundPresentation() {
         Image image = new Image(GuiController.class.getResourceAsStream(APPLICATION_BACKGROUND_IMAGE));
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, true);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         Background background = new Background(backgroundImage);
-        
+
         return background;
     }
-    
+
     private void setSceneBehaviour(Scene scene) {
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         TextField commandLine = commandLineContainer.getCommandLine();
@@ -119,10 +120,10 @@ public class GuiController extends Application {
             }
         });
     }
-    
+
     private void setSceneAndStagePresentation(Stage stage, Scene scene) {
         scene.getStylesheets().add(getClass().getResource(CSS_GUICONTROLLER).toExternalForm());
-        
+
         stage.setTitle(APPLICATION_NAME);
         stage.setScene(scene);
         stage.getIcons().add(new Image(GuiController.class.getResourceAsStream(APPLICATION_ICON_PATH)));
@@ -131,24 +132,34 @@ public class GuiController extends Application {
         stage.setMinWidth(WINDOW_MIN_WIDTH);
         stage.setMinHeight(WINDOW_MIN_HEIGHT);
     }
-    
+
     private void setSchedulerBehaviour() {
         Scheduler schedulerManager = new Scheduler(_tasknoteControl);
         schedulerManager.runOutstandingTaskCheck();
     }
 
+    /**
+     * Pass commands to TaskNoteController for command execution based on text input.
+     * 
+     * @param commandLine Pass the command line which will extract the text for command execution.
+     */
     public static void retrieveCommand(TextField commandLine) {
         String command = commandLine.getText();
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
 
         executeCommand(command);
-        
+
         commandLineContainer.addCommandHistory(commandLine);
         commandLine.setText(DEFAULT_COMMAND);
         commandLine.end();
         commandLineContainer.clearLastModifiedCommand();
     }
 
+    /**
+     * Pass string to TaskNOteController for command execution.
+     * 
+     * @param command String meant for execution.
+     */
     public static void executeCommand(String command) {
         if (command == null || command.trim().equals(COMMAND_ADD) || command.isEmpty()) {
             logger.log(Level.WARNING, WARNING_ATTEMPT_TO_EXECUTE_INVALID_INPUT);
@@ -156,23 +167,27 @@ public class GuiController extends Application {
         }
 
         Stage primaryWindow = (Stage) CommandLineContainer.getInstance().getScene().getWindow();
-        
+
         String feedback = _tasknoteControl.executeCommand(command);
         Notification.setupNotification(primaryWindow, feedback);
 
-        changeView(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
+        changeViewOfSidebarNavigation(SidebarContainer.NAVIGATION_TAG_VIEW_ALL);
     }
 
     private void focusOnCommandLine() {
         CommandLineContainer commandLineContainer = CommandLineContainer.getInstance();
         TextField commandLine = commandLineContainer.getCommandLine();
-        
+
         if (commandLine != null) {
             commandLine.requestFocus();
             commandLine.end();
         }
     }
 
+    /*
+     * Segregate them based on floating, or non-floating tasks.
+     * This method will not filter task(s) based on task status.
+     */
     private static void displayUpdatedTaskList() {
         TasksContainer tasksContainer = TasksContainer.getInstance();
         ObservableList<TaskObject> tasksListToBeDisplayed = tasksContainer.getTasksList();
@@ -206,6 +221,10 @@ public class GuiController extends Application {
         floatingTasksListToBeDisplayed.setAll(floatsList);
     }
 
+    /*
+     * Filter tasks based on TaskStatus, then segregate them based on floating,
+     * or non-floating tasks.
+     */
     private static void displayTaskList(String navigationTag) {
         ArrayList<TaskObject> displayList = _tasknoteControl.getDisplayList();
         TasksContainer tasksContainer = TasksContainer.getInstance();
@@ -261,39 +280,44 @@ public class GuiController extends Application {
 
         sidebarNavigation.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                changeView(newSelection);
+                changeViewOfSidebarNavigation(newSelection);
             }
         });
     }
 
-    private static void changeView(String selected) {
+    /*
+     * Set the selection of the sidebar container, and the corresponding task
+     * container (i.e. the appropriate tasks based on task status will be
+     * displayed).
+     */
+    private static void changeViewOfSidebarNavigation(String selected) {
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
-        
+
         setVisibilityOfFloatingTaskContainer(selected);
-        
+
         switch (selected) {
             case SidebarContainer.NAVIGATION_TAG_VIEW_ALL:
-                sidebarContainer.selectNavigationCell(0);
+                sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_VIEW_ALL_INDEX);
                 displayUpdatedTaskList();
                 break;
             case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
-                sidebarContainer.selectNavigationCell(1);
+                sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_OUTSTANDING_INDEX);
                 displayTaskList(selected);
                 break;
             case SidebarContainer.NAVIGATION_TAG_OVERDUE:
-                sidebarContainer.selectNavigationCell(2);
+                sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_OVERDUE_INDEX);
                 displayTaskList(selected);
                 break;
             case SidebarContainer.NAVIGATION_TAG_COMPLETED:
-                sidebarContainer.selectNavigationCell(3);
+                sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_COMPLETED_INDEX);
                 displayTaskList(selected);
                 break;
         }
     }
-    
+
     private static void setVisibilityOfFloatingTaskContainer(String selectedTab) {
         FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
-        
+
         if (selectedTab.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
             floatingTasksContainer.setVisible(false);
             floatingTasksContainer.setManaged(false);
@@ -302,7 +326,7 @@ public class GuiController extends Application {
             floatingTasksContainer.setManaged(true);
         }
     }
-    
+
     public static void main(String[] argv) {
         launch(argv);
     }
