@@ -192,7 +192,13 @@ public class FileManipulation{
 	
 	private void initializeTextFile(String fileName) {
 		textFile = new File(fileName);
-		textFileName = extractTextFileName(fileName);
+		if(isFileNameEntered(fileName)){
+			textFileName = extractTextFileName(fileName);
+		}
+	}
+	
+	private boolean isFileNameEntered(String fileName) {
+		return fileName.endsWith(constants.getTextFileEnding());
 	}
 	
 	/**

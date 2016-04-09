@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Stack;
 
 //@@author A0126172M
-
+/**
+ * This class deals with undo/redo of alias command
+ */
 public class AliasHistory{
 	Stack<HashMap<String,String>> history;
 	Stack<HashMap<String,String>> backup;

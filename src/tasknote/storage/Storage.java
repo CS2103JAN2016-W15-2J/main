@@ -2,13 +2,11 @@ package tasknote.storage;
 
 import tasknote.shared.TaskObject;
 import tasknote.shared.AddDuplicateAliasException;
-import tasknote.shared.InvalidFilePathException;
 import tasknote.shared.TaskListIOException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -69,7 +67,6 @@ public class Storage{
 	 */
 	public boolean changePath(String newPathName)throws IOException{
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		System.out.println(textFileName);
 		if(handlePathChangeForMacAndWindows(textFileName)){
 			pathManipulator.pushHistory(textFileName);
 			return true;
@@ -196,10 +193,10 @@ public class Storage{
 		constants = new StorageConstants();
 	}
 	
-	private String concatPathIfNeeded(String pathName, String textFileName) throws InvalidPathException, NullPointerException, IOException{
-		textFileName = getFileName(pathName, textFileName);
+	private String concatPathIfNeeded(String pathName, String previousTextFileName) throws InvalidPathException, NullPointerException, IOException{
+		String textFileName = getFileName(pathName, previousTextFileName);
 		if(!pathManipulator.isAbsolutePath(pathName)){
-			return produceFullPathWithDirectoryCommand(pathName, textFileName);
+			return produceFullPathWithDirectoryCommand(pathName, previousTextFileName, textFileName);
 		}else if(isPathSlashEnteredAtTheEnd(pathName)){
 			return addFileNameAndProduceFullPath(pathName, textFileName);
 		}else if(isFileNameEntered(pathName)){
@@ -217,16 +214,14 @@ public class Storage{
 		return pathName.endsWith(constants.getSlash()) || pathName.endsWith(constants.getPathSlash());
 	}
 	
-	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName) throws IOException{
+	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName, String textFileName) throws IOException{
 		if(isFileNameEntered(newPath)){
 			String newFileName = fileManipulator.extractTextFileName(newPath);
 			newPath = extractCurrentPath(newPath, newFileName);
 		}
-		System.out.println("XXX Previous Text File Name = " + previousTextFileName);
 		String currentPath = extractCurrentPath(previousTextFileName);
-		System.out.println(newPath + " " + currentPath);
 		String newFullPath = pathManipulator.extractNewFullPath(newPath,currentPath);
-		return concatPathIfNeeded(newFullPath, previousTextFileName);
+		return addSlashAndProduceFullPath(newFullPath, textFileName);
 	}
 
 	private String extractNewCurrentFullPath(String previousTextFileName, String fileName) {
