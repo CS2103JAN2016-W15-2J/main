@@ -73,6 +73,7 @@ public class StorageConstants{
 	private final int SUM_OF_TASKOBJECT_ITEMS = 17;
 	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
+	private final int INTEGER_MONTH_NORMALIZE_CONSTANT = 1;
 	
 	public StorageConstants(){}
 	
@@ -186,5 +187,9 @@ public class StorageConstants{
 	
 	public String addFileNameToPath(String pathName, String fileName){
 		return String.format(FORMAT_PATH_NAME, pathName, fileName);
+	}
+
+	public int getNormalizedMonth(int month) {
+		return month + INTEGER_MONTH_NORMALIZE_CONSTANT;
 	}
 }

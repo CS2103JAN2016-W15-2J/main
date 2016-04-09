@@ -7,6 +7,7 @@ import tasknote.shared.TaskObject;
 //@@author A0126172M
 public class StorageConversion{
 	private StorageConstants constants;
+	private StorageDeadlineUpdater deadlineUpdater;
 	
 	/**
 	 * constants for TaskObject cases
@@ -34,6 +35,7 @@ public class StorageConversion{
 	 */
 	public StorageConversion(){
 		constants = new StorageConstants();
+		deadlineUpdater = new StorageDeadlineUpdater();
 	}
 	
 	/**
@@ -50,6 +52,7 @@ public class StorageConversion{
 			storeItemIntoTaskObject(taskLinesRead[index], returnObject);
 		}
 		
+		deadlineUpdater.update(returnObject);
 		return returnObject;
 	}
 	
