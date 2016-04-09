@@ -7,16 +7,21 @@ import java.util.ArrayList;
 
 public class ParserDeleteTest {
 	
+	Parser testParser = new Parser();
+	
 	@Test
 	public void testDeleteRange() {
 		
 		String userCommand = "delete 1 - 3";
+		this.testParser.setInputString(userCommand);
 		
 		ArrayList<Integer> expectedResult = new ArrayList<>();
+		expectedResult.add(0);
 		expectedResult.add(1);
 		expectedResult.add(2);
-		expectedResult.add(3);
 		
-		assertEquals(Parser.parseDelete(userCommand, true), expectedResult);
+		ArrayList<Integer> actualResult = this.testParser.parseDelete(false);
+		
+		assertEquals(expectedResult, actualResult);
 	}
 }

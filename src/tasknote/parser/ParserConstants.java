@@ -38,7 +38,16 @@ public class ParserConstants {
 	protected static final String KEYWORD_NOTIFY = "notify";
 	protected static final String KEYWORD_REMOVE = "remove";
 	
+	protected static final String[] KEYWORDS_ALL = {KEYWORD_BY, KEYWORD_AT, KEYWORD_ON,
+		KEYWORD_FROM, KEYWORD_TO, KEYWORD_IN, KEYWORD_NOTIFY, KEYWORD_REMOVE};
+	
+	protected static final HashSet<String> KEYWORD_SET = new HashSet<>(Arrays.asList(KEYWORDS_ALL));
+	protected static final Set<String> KEYWORD_SET_UNMODIFIABLE = 
+			Collections.unmodifiableSet(KEYWORD_SET);
+	
 	protected static final String SWITCH_STRING_DATETIME = "datetime";
+	protected static final String SWITCH_STRING_DATETIMESTART = "datetimestart";
+	protected static final String SWITCH_STRING_DATETIMEEND = "datetimeend";
 	protected static final String SWITCH_STRING_LOCATIONTIME = "locationtime";
 	protected static final String SWITCH_STRING_NAME = "name";
 	protected static final String SWITCH_STRING_DATE = "date";
@@ -130,6 +139,11 @@ public class ParserConstants {
 	
 	protected static final String DATE_SHORT_TODAY = "tdy";
 	protected static final String DATE_SHORT_TOMORROW = "tmr";
+	
+	// Here are all the interval constants
+	protected static final String INTERVAL_LONG_TODAY = "today";
+	protected static final String INTERVAL_LONG_TOMORROW = "tomorrow";
+	protected static final String INTERVAL_LONG_ALL = "all";
 	
 	// Here is the date modification qualifier
 	protected static final String DATE_MOD_NEXT = "next";
