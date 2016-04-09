@@ -243,10 +243,10 @@ public class GuiController extends Application {
 
         switch (navigationTag) {
             case SidebarContainer.NAVIGATION_TAG_OUTSTANDING:
-                taskTypeRequired = TaskStatus.TASK_DEFAULT;
+                taskTypeRequired = TaskStatus.TASK_OUTSTANDING;
                 break;
             case SidebarContainer.NAVIGATION_TAG_OVERDUE:
-                taskTypeRequired = TaskStatus.TASK_OUTSTANDING;
+                taskTypeRequired = TaskStatus.TASK_OVERDUE;
                 break;
             case SidebarContainer.NAVIGATION_TAG_COMPLETED:
                 taskTypeRequired = TaskStatus.TASK_COMPLETED;

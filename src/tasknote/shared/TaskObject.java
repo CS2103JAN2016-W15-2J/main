@@ -75,7 +75,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setNotifyTime(0);
 		setIsNotified(false);
 		
-		setTaskStatus(TaskStatus.TASK_DEFAULT);
+		setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
@@ -104,7 +104,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setNotifyTime(0);
 		setIsNotified(false);
 		
-		setTaskStatus(TaskStatus.TASK_DEFAULT);
+		setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
@@ -296,7 +296,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		if(isMarkedDone) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 		} else {
-		    setTaskStatus(TaskStatus.TASK_DEFAULT);
+		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		}
 	}
 	

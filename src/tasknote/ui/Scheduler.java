@@ -63,8 +63,7 @@ public class Scheduler {
         long currentTimeInMillisecond = System.currentTimeMillis();
 
         for (TaskObject task : taskObjectList) {
-            if (task.getTaskType() == TaskObject.TASK_TYPE_FLOATING
-                    || task.getTaskStatus() == TaskStatus.TASK_COMPLETED) {
+            if (task.getTaskType() == TaskObject.TASK_TYPE_FLOATING || task.getTaskStatus() == TaskStatus.TASK_COMPLETED) {
                 continue;
             }
 
@@ -82,7 +81,7 @@ public class Scheduler {
             }
 
             if (dateObject != null && dateObject.getTime() < currentTimeInMillisecond) {
-                task.setTaskStatus(TaskStatus.TASK_OUTSTANDING);
+                task.setTaskStatus(TaskStatus.TASK_OVERDUE);
             }
         }
     }

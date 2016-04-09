@@ -167,7 +167,7 @@ public class TasksContainer extends HBox {
         colorisedText.setPrefWidth(0);
 
         switch (status) {
-            case TASK_OUTSTANDING:
+            case TASK_OVERDUE:
                 if (taskIndex != null) {
                     taskIndex.setFill(RED);
                 }
@@ -197,7 +197,7 @@ public class TasksContainer extends HBox {
                     taskEndDateTimeValue.setFill(Color.GRAY);
                 }
                 break;
-            case TASK_DEFAULT:
+            case TASK_OUTSTANDING:
             default:
                 if (taskIndex != null) {
                     taskIndex.setFill(LIGHT_GRAY);

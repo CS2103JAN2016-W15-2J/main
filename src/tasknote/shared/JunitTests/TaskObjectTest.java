@@ -168,26 +168,24 @@ public class TaskObjectTest {
     public void testSetTaskStatus() {
         TaskObject testTaskObjectSetStatusWithEnum = new TaskObject("Task 1");
         TaskObject testTaskObjectSetStatusWithString = new TaskObject("Task 2");
-        assertEquals(TaskStatus.TASK_DEFAULT, testTaskObjectSetStatusWithEnum.getTaskStatus());
-        assertTrue(
-                testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
-
-        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_OUTSTANDING);
-        testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_OUTSTANDING);
-        assertTrue(
-                testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertEquals(TaskStatus.TASK_OUTSTANDING, testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertTrue(testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        
         testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_OVERDUE);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_OVERDUE);
-        assertTrue(
-                testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertTrue(testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        
         testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_COMPLETED);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_COMPLETED);
-        assertTrue(
-                testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertTrue(testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        
         testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
         testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_INVALID_STORAGE);
-        assertTrue(
-                testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        assertTrue(testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
+        
+        testTaskObjectSetStatusWithEnum.setTaskStatus(TaskStatus.TASK_OUTSTANDING);
+        testTaskObjectSetStatusWithString.setTaskStatus(Constants.STRING_TASKSTATUS_OUTSTANDING);
+        assertTrue(testTaskObjectSetStatusWithString.getTaskStatus() == testTaskObjectSetStatusWithEnum.getTaskStatus());
     }
 
     @Test
