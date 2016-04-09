@@ -607,7 +607,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setEndDateMinute(int endDateMinute) {
 		this.endDateMinute = endDateMinute;
 	}
-	
+
     /**
      * @@author A0129561
      * @return Returns the TaskStatus, as represented by a class implementing
@@ -616,147 +616,148 @@ public class TaskObject implements Comparable<TaskObject> {
     public SimpleStringProperty getObservableTaskStatus() {
         return this.taskStatus;
     }
-	
+
     private boolean isYearMonthDayDefault() {
-        return (getDateYear() == DEFAULT_DATETIME_VALUE && getDateMonth() == DEFAULT_DATETIME_VALUE 
+        return (getDateYear() == DEFAULT_DATETIME_VALUE && getDateMonth() == DEFAULT_DATETIME_VALUE
                 && getDateDay() == DEFAULT_DATETIME_VALUE);
     }
-    
+
     private boolean isYearMonthDayNonDefault() {
         return (getDateYear() != DEFAULT_DATETIME_VALUE && getDateMonth() != DEFAULT_DATETIME_VALUE
                 && getDateDay() != DEFAULT_DATETIME_VALUE);
     }
-    
+
     private boolean isEndYearMonthDayNonDefault() {
-        return (getEndDateDay() != DEFAULT_DATETIME_VALUE && getEndDateMonth() != DEFAULT_DATETIME_VALUE 
+        return (getEndDateDay() != DEFAULT_DATETIME_VALUE && getEndDateMonth() != DEFAULT_DATETIME_VALUE
                 && getEndDateYear() != DEFAULT_DATETIME_VALUE);
     }
-    
+
     private boolean isHourMinuteDefault() {
         return (getDateHour() == DEFAULT_DATETIME_VALUE && getDateMinute() == DEFAULT_DATETIME_VALUE);
     }
-    
+
     private boolean isHourMinuteNonDefault() {
         return (getDateHour() != DEFAULT_DATETIME_VALUE && getDateMinute() != DEFAULT_DATETIME_VALUE);
     }
-    
+
     private boolean isEndHourMinuteNonDefault() {
         return (getEndDateMinute() != DEFAULT_DATETIME_VALUE && getEndDateHour() != DEFAULT_DATETIME_VALUE);
     }
-    
-	/**
-     * @@author A0129561
-     * Set the taskType based on its current properties.
+
+    /**
+     * @@author A0129561 Set the taskType based on its current properties.
      * @return If TaskObject is set to either floating, deadline, or event.
      */
     public boolean isTaskTypeSet() {
         if (isYearMonthDayDefault() && isHourMinuteDefault() && getDuration() == DEFAULT_DURATION_VALUE) {
-            this.taskType = TASK_TYPE_FLOATING;
+            setTaskType(TASK_TYPE_FLOATING);
             return true;
         } else if (isYearMonthDayNonDefault() && getDuration() == DEFAULT_DURATION_VALUE) {
-            this.taskType = TASK_TYPE_DEADLINE;
+            setTaskType(TASK_TYPE_DEADLINE);
             return true;
         } else if (isYearMonthDayNonDefault() && isHourMinuteNonDefault() && getDuration() > DEFAULT_DURATION_VALUE) {
-            this.taskType = TASK_TYPE_EVENT;
+            setTaskType(TASK_TYPE_EVENT);
             return true;
         } else {
             return false;
         }
     }
-	
+
     /**
      * @@author A0129561
      * @return Get formatted date. If date is not set, will return empty string.
      */
     public String getFormattedDate() {
         String taskDate = "";
-        
-        if(isYearMonthDayNonDefault()) {
-            assert(0 <= dateDay && dateDay <= 31);
-            assert(0 <= dateMonth && dateMonth <= 12);
-            
+
+        if (isYearMonthDayNonDefault()) {
+            assert (0 <= dateDay && dateDay <= 31);
+            assert (0 <= dateMonth && dateMonth <= 12);
+
             taskDate = String.format(FORMAT_DATE, dateDay, monthInString[dateMonth], dateYear);
-        } 
-        
+        }
+
         return taskDate;
     }
-    
+
     /**
      * @@author A0129561
      * @return Get formatted time. If time is not set, will return empty string.
      */
     public String getFormattedTime() {
         String taskTime = "";
-        
-        if(isHourMinuteNonDefault()) {
-            assert(0 <= dateMinute && dateMinute <= 59);
-            assert(0 <= dateHour && dateHour <= 23);
-            
-            if(dateHour < 12) {
+
+        if (isHourMinuteNonDefault()) {
+            assert (0 <= dateMinute && dateMinute <= 59);
+            assert (0 <= dateHour && dateHour <= 23);
+
+            if (dateHour < 12) {
                 taskTime = String.format(FORMAT_TIME_MORNING, dateHour, dateMinute);
-            } else if(dateHour == 12) {
+            } else if (dateHour == 12) {
                 taskTime = String.format(FORMAT_TIME_EVENING, dateHour, dateMinute);
-            } else if(dateHour > 12){
+            } else if (dateHour > 12) {
                 taskTime = String.format(FORMAT_TIME_EVENING, (dateHour - 12), dateMinute);
             }
-        } 
-        
+        }
+
         return taskTime;
     }
-    
+
     /**
      * @@author A0129561
-     * @return Get formatted end date. If end date is not set, will return empty string.
+     * @return Get formatted end date. If end date is not set, will return empty
+     *         string.
      */
     public String getFormattedEndDate() {
         String taskDate = "";
-        
-        if(isEndYearMonthDayNonDefault()) {
-            assert(0 <= endDateDay && endDateDay <= 31);
-            assert(0 <= endDateMonth && endDateMonth <= 12);
-            
+
+        if (isEndYearMonthDayNonDefault()) {
+            assert (0 <= endDateDay && endDateDay <= 31);
+            assert (0 <= endDateMonth && endDateMonth <= 12);
+
             taskDate = String.format(FORMAT_DATE, endDateDay, monthInString[endDateMonth], endDateYear);
-        } 
-        
+        }
+
         return taskDate;
     }
-    
+
     /**
      * @@author A0129561
-     * @return Get formatted end time. If end time is not set, will return empty string.
+     * @return Get formatted end time. If end time is not set, will return empty
+     *         string.
      */
     public String getFormattedEndTime() {
         String taskTime = "";
-        
-        if(isEndHourMinuteNonDefault()) {
-            assert(0 <= endDateMinute && endDateMinute <= 59);
-            assert(0 <= endDateHour && endDateHour <= 23);
-            
-            if(endDateHour < 12) {
+
+        if (isEndHourMinuteNonDefault()) {
+            assert (0 <= endDateMinute && endDateMinute <= 59);
+            assert (0 <= endDateHour && endDateHour <= 23);
+
+            if (endDateHour < 12) {
                 taskTime = String.format(FORMAT_TIME_MORNING, endDateHour, endDateMinute);
-            } else if(endDateHour == 12) {
+            } else if (endDateHour == 12) {
                 taskTime = String.format(FORMAT_TIME_EVENING, endDateHour, endDateMinute);
-            } else if(endDateHour > 12){
+            } else if (endDateHour > 12) {
                 taskTime = String.format(FORMAT_TIME_EVENING, (endDateHour - 12), endDateMinute);
             }
-        } 
-        
+        }
+
         return taskTime;
     }
-	
-	/**
-	 * @@author A0126172M
-	 * @return true if taskObject is a floating task
-	 */
-	public boolean isFloatingTask(){
-		return this.taskType.equals(TASK_TYPE_FLOATING);
-	}
-	
-	/**
-	 * @@author A0126172M
-	 * @return true if taskObject is completed
-	 */
-	public boolean isCompleted(){
-		return getTaskStatus() == TASK_STATUS.TASK_COMPLETED;
-	}
+
+    /**
+     * @@author A0126172M
+     * @return true if taskObject is a floating task
+     */
+    public boolean isFloatingTask() {
+        return this.taskType.equals(TASK_TYPE_FLOATING);
+    }
+
+    /**
+     * @@author A0126172M
+     * @return true if taskObject is completed
+     */
+    public boolean isCompleted() {
+        return getTaskStatus() == TASK_STATUS.TASK_COMPLETED;
+    }
 }
