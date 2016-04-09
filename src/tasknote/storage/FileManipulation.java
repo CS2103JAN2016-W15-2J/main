@@ -150,15 +150,6 @@ public class FileManipulation{
 		try{
 			return readPathFromPathFile();
 		}catch(IOException ioe){
-			return handleEmptyPathFile();
-		}
-	}
-
-	private String handleEmptyPathFile(){
-		try{
-			initializeFiles();
-			return readPathFromPathFile();
-		}catch(IOException ioe){
 			fileLog.log(Level.WARNING, constants.getFailedToReadPathFile());
 			return null;
 		}

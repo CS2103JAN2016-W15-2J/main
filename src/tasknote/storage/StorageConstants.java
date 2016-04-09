@@ -56,7 +56,7 @@ public class StorageConstants{
 	private final String LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE = "Failed to write path into path file.";
 	private final String LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED = "Storage Manipulator not intialized. Failed I/O.";
 	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE = "Failed to read from textfile";
-	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH: %1$s";		
+	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH. PATH%1$s";		
 	
 	/**
 	 * file/path name
@@ -154,10 +154,6 @@ public class StorageConstants{
 	
 	public String getFailedToReadFromTextFile(){
 		return LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE;
-	}
-	
-	public String getFailedValidPathUsed(String path){
-		return String.format(LOGGING_MESSAGE_INVALID_PATH, path);
 	}
 	
 	public String getFileName(){
