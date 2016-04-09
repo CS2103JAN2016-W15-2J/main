@@ -629,8 +629,9 @@ public class TaskNote {
 	 * command executed
 	 *
 	 * @param commandType
+	 * @throws Exception 
 	 */
-	private void undoChangeFilePath() {
+	private void undoChangeFilePath() throws Exception {
 		try {
 			//TODO: Storage returns true if undo successful; otherwise throw error
 			boolean isPathUndone = storage.undoPath();
@@ -719,8 +720,9 @@ public class TaskNote {
 	 * Change File Path operation
 	 *
 	 * @param commandType
+	 * @throws Exception 
 	 */
-	private void redoChangeFilePath() {
+	private void redoChangeFilePath() throws Exception {
 		try{
 			//TODO: Storage returns true if redo successful; otherwise throw error
 			boolean isPathRedone = storage.redoPath();
