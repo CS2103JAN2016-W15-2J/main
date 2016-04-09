@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -21,16 +22,21 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Notification {
-    private final static int DURATION_IN_SECOND_NOTIFICATION = 5;
-    private final static int MINIMUM_NOTIFICATION_WIDTH = 400;
-    private final static String DEFAULT_NOTIFICATION_TITLE = "Notification";
-
-    private static String CSS_CLASS_NOTIFICATION_CONTENT = "notification-content";
-    private static String CSS_CLASS_NOTIFICATION_TITLE = "notification-title";
-    private static String CSS_CLASS_NOTIFICATION_EXIT_BUTTON = "notification-exit-button";
-    private static String CSS_CLASS_NOTIFICATION_ALERT_MESSAGE = "notification-alert-message";
+    private static final int DURATION_IN_SECOND_NOTIFICATION = 5;
+    private static final int MINIMUM_NOTIFICATION_WIDTH = 400;
+    private static final String DEFAULT_NOTIFICATION_TITLE = "Notification";
+  
+    private static final double DROPDOWN_RADIUS = 5.0;
+    private static final double DROPDOWN_X_OFFSET = 3.0;
+    private static final double DROPDOWN_Y_OFFSET = 3.0;
+    private static final Color Black = Color.rgb(19, 18, 20);
     
-    private static String NOTIFICATION_CLOSE_BUTTON = "x";
+    private static final String NOTIFICATION_CLOSE_BUTTON = "x";
+    
+    private static final String CSS_CLASS_NOTIFICATION_CONTENT = "notification-content";
+    private static final String CSS_CLASS_NOTIFICATION_TITLE = "notification-title";
+    private static final String CSS_CLASS_NOTIFICATION_EXIT_BUTTON = "notification-exit-button";
+    private static final String CSS_CLASS_NOTIFICATION_ALERT_MESSAGE = "notification-alert-message";
 
     private Notification() {
         // Prevent instantiation of Notification
@@ -119,10 +125,10 @@ public class Notification {
 
     private static void setNotificationContentPresentation(VBox notificationContent) {
         DropShadow dropShadow = new DropShadow();
-        dropShadow.setRadius(5.0);
-        dropShadow.setOffsetX(3.0);
-        dropShadow.setOffsetY(3.0);
-        dropShadow.setColor(Color.rgb(18, 19, 21));
+        dropShadow.setRadius(DROPDOWN_RADIUS);
+        dropShadow.setOffsetX(DROPDOWN_X_OFFSET);
+        dropShadow.setOffsetY(DROPDOWN_Y_OFFSET);
+        dropShadow.setColor(Black);
 
         notificationContent.setEffect(dropShadow);
 

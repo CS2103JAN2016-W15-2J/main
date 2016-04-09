@@ -1,3 +1,4 @@
+/** @@author A0129561A */
 package tasknote.ui;
 
 import static tasknote.ui.GuiConstant.SPACING_BETWEEN_COMPONENTS;
@@ -19,6 +20,12 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 public class SidebarContainer extends VBox{
+    public static final String NAVIGATION_TAG_VIEW_ALL = "View All";
+    public static final String NAVIGATION_TAG_OUTSTANDING = "Outstanding";
+    public static final String NAVIGATION_TAG_OVERDUE = "Overdue";
+    public static final String NAVIGATION_TAG_COMPLETED = "Completed";
+    public static final String NAVIGATION_TAG_SETTINGS = "Settings";
+    
     private static SidebarContainer _sidebarContainer = null;
     private ClockContainer _clock = ClockContainer.getInstance();
     private ListView<String> _observableListRepresentation = new ListView<String>();
@@ -29,22 +36,15 @@ public class SidebarContainer extends VBox{
     private String CSS_CLASS_SIDEBAR_SEPARATOR = "sidebar-separator";
     private String CSS_CLASS_SIDEBAR_NAVIGATION = "sidebar-navigation";
     private String CSS_CLASS_SIDEBAR_NAVIGATION_CELL = "sidebar-navigation-cell";
-    
-    public final static String NAVIGATION_TAG_VIEW_ALL = "View All";
-    public final static String NAVIGATION_TAG_OUTSTANDING = "Outstanding";
-    public final static String NAVIGATION_TAG_OVERDUE = "Overdue";
-    public final static String NAVIGATION_TAG_COMPLETED = "Completed";
-    public final static String NAVIGATION_TAG_SETTINGS = "Settings";
-    
+       
     private SidebarContainer() {
         // Only one instance of SidebarContainer is permitted
     }
     
     /**
-     * getInstance() allows user to get an instance of 
-     * SidebarContainer.
+     * getInstance() allows user to get an instance of SidebarContainer.
      * 
-     * @return          The one instance of SidebarContainer.
+     * @return The one instance of SidebarContainer.
      */
     public static SidebarContainer getInstance() {
         if (_sidebarContainer == null) {
@@ -55,10 +55,10 @@ public class SidebarContainer extends VBox{
     }
     
     /**
-     * getNavigationList() allows user to get the observable
-     * list contained within SidebarContainer.
+     * getNavigationList() allows user to get the observable list contained
+     * within SidebarContainer.
      * 
-     * @return          The ObservableList in SidebarContainer.
+     * @return The ObservableList in SidebarContainer.
      */
     public ListView<String> getNavigationList() {
         return _observableListRepresentation;
@@ -67,6 +67,8 @@ public class SidebarContainer extends VBox{
     /**
      * This method allows the caller to select the 
      * list item based on the item index.
+     * 
+     * @param index Index of item in navigation bar.
      */
     public void selectNavigationCell(int index) {
         if(index > _navigationMenu.size()) {

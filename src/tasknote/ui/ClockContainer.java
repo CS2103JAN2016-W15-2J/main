@@ -21,10 +21,10 @@ public class ClockContainer extends GridPane {
     private static Label _monthAndDateLabel = new Label();
     private static Label _hourMinuteAndSecondLabel = new Label();
     private static Label _dayOfWeekLabel = new Label();
-    
+
     private final int INTERVAL_SECOND_ANIMATION = 1;
     private final int MAXIMUM_WORD_LENGTH = 3;
-    
+
     private final String FORMAT_TIME = "%1$02d:%2$02d:%3$02d %4$s";
     private final String FORMAT_DATE = "%1$3s %2$ 2d";
     private final String FORMAT_DAY = "%1$3s";
@@ -70,7 +70,7 @@ public class ClockContainer extends GridPane {
         _monthAndDateLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_MONTH_DATE);
         _hourMinuteAndSecondLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_HOUR_MINUTE_SECOND);
         _dayOfWeekLabel.getStyleClass().add(CSS_CLASS_CLOCK_LABEL_DAY_OF_WEEK);
-        
+
         GridPane.setConstraints(_dayOfWeekLabel, 0, 0);
         GridPane.setConstraints(_monthAndDateLabel, 1, 0);
         GridPane.setConstraints(_hourMinuteAndSecondLabel, 1, 1);

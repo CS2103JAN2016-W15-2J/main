@@ -32,21 +32,21 @@ public class CommandLineContainer extends HBox {
     private static CommandLineContainer _commandLineContainer = null;
     private TextField _commandLine = new TextField();
     private Button _enterButton = new Button();
-    
+
     private final String BUTTON_SUBMIT_COMMAND = "enter";
-    
+
     /** For methods getPrevValidCommand() & getNextValidCommand(). */
     private final int INDEX_FIRST_COMMAND = 0;
     private final int INDEX_LAST_COMMAND = (commands.size() - 1);
     private final int INDEX_MODIFIED_COMMAND = -1;
-    /** Saves last command input in command line upon cycling through various valid commands.*/
+    /** Saves last command input in command line upon cycling through various valid commands. */
     private String lastModifiedCommand = UNINITIALIZED_STRING;
 
     private String CSS_CLASS_COMMANDLINE_CONTAINER = "commandline-container";
     private String CSS_CLASS_COMMANDLINE_ENTER_BUTTON = "commandline-enter-button";
     private String CSS_CLASS_COMMANDLINE = "commandline";
-    
-    /** For command history.*/
+
+    /** For command history. */
     private ArrayList<String> historyCommandEntered = new ArrayList<String>(Arrays.asList(UNINITIALIZED_STRING));
     private int historyCommandIndex = 0;
 
@@ -187,7 +187,7 @@ public class CommandLineContainer extends HBox {
 
     private void getPrevEnteredCommand(ArrayList<String> history, TextField commandLine) {
         int numberOfCommandsEntered = history.size();
-        // Permits cycling through command history by wrapping 
+        // Permits cycling through command history by wrapping
         // historyCommandIndex around variable history's size.
         if (historyCommandIndex == 0) {
             historyCommandIndex = (numberOfCommandsEntered - 1);
@@ -198,21 +198,21 @@ public class CommandLineContainer extends HBox {
         commandLine.setText(history.get(historyCommandIndex));
         commandLine.end();
     }
-    
+
     private void getNextEnteredCommand(ArrayList<String> history, TextField commandLine) {
         int numberOfCommandsEntered = history.size();
-        // Permits cycling through command history by wrapping 
+        // Permits cycling through command history by wrapping
         // historyCommandIndex around variable history's size.
-        if(historyCommandIndex == (numberOfCommandsEntered - 1)) {
+        if (historyCommandIndex == (numberOfCommandsEntered - 1)) {
             historyCommandIndex = 0;
         } else {
             historyCommandIndex++;
         }
-        
+
         commandLine.setText(history.get(historyCommandIndex));
         commandLine.end();
     }
-    
+
     /*
      * getNextCommand() permits user to cycle through a list of valid commands,
      * followed by the user's last edited command.
@@ -222,7 +222,7 @@ public class CommandLineContainer extends HBox {
         String command = originalCommand.trim().toLowerCase();
 
         int position = commands.lastIndexOf(command);
-        
+
         if (position == INDEX_MODIFIED_COMMAND) {
             String newCommand = commands.get(0);
             commandLine.setText(newCommand);
@@ -235,7 +235,7 @@ public class CommandLineContainer extends HBox {
         }
         commandLine.end();
     }
-    
+
     /*
      * Similarly, getPrevCommand() permits user to cycle (in reverse) through
      * the user's last edited command, followed by a list of valid commands.
@@ -252,14 +252,14 @@ public class CommandLineContainer extends HBox {
             setLastModifiedCommand(originalCommand);
         } else if (position == INDEX_FIRST_COMMAND && !getLastModifiedCommand().isEmpty()) {
             commandLine.setText(getLastModifiedCommand());
-        } else if(position == INDEX_FIRST_COMMAND && getLastModifiedCommand().isEmpty()) {
+        } else if (position == INDEX_FIRST_COMMAND && getLastModifiedCommand().isEmpty()) {
             String newCommand = commands.get(INDEX_LAST_COMMAND);
             commandLine.setText(newCommand + " ");
         } else {
             String newCommand = (position == 1) ? (commands.get(position - 1)) : (commands.get(position - 1) + " ");
             commandLine.setText(newCommand);
         }
-        
+
         commandLine.end();
     }
 
@@ -277,8 +277,8 @@ public class CommandLineContainer extends HBox {
      */
     private boolean isDefaultCommandTruncated(TextField commandLine) {
         String command = commandLine.getText();
-        
-        switch(command) {
+
+        switch (command) {
             case (DEFAULT_COMMAND + COMMAND_ADD):
                 commandLine.setText(COMMAND_ADD);
                 commandLine.end();
