@@ -30,6 +30,7 @@ public class TaskNoteTests {
 		output = Constants.MESSAGE_ADD_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
 		
+		
 
 		/*
 		 * The following is a test case that is part of the partition that is
@@ -37,7 +38,9 @@ public class TaskNoteTests {
 		 */
 		
 		feedback = note.addTask(new TaskObject("New Task Object"));
-		output = String.format(Constants.MESSAGE_ADD_SUCCESSFUL, 1, "New Task Object");
+		output = Constants.MESSAGE_ADD_SUCCESSFUL;
+		String name = String.format(Constants.STRING_TASK_NAME_INDEX, 1, "New Task Object");
+		output = output.concat(name);
 		Assert.assertEquals(output, feedback);
 	}
 	
@@ -143,19 +146,16 @@ public class TaskNoteTests {
 		output = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
 
-		// Case 4
-		id = 1;
-		feedback = note.updateTask(id, new TaskObject());
-		output = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
-		Assert.assertEquals(output, feedback);
-
 		/*
 		 * The following is a test case that is part of the partition that is
 		 * valid
 		 */
 		id = 1;
 		feedback = note.updateTask(id, new TaskObject("New Task"));
+		feedback = feedback.trim();
 		output = Constants.MESSAGE_UPDATE_SUCCESSFUL;
+		String name = String.format(Constants.STRING_TASK_NAME_INDEX, 1, "New Task");
+		output = output.concat(name);
 		Assert.assertEquals(output, feedback);
 	}
 

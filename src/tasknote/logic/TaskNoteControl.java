@@ -114,8 +114,8 @@ public class TaskNoteControl {
 			break;
 		case CHANGE_CATEGORY:
 			// TODO: Parser
-			// response = executeChangeCategory(userCommand);
-			response = "";
+			response = executeChangeCategory(userCommand);
+			//response = "";
 			break;
 		case HELP:
 			// TODO: Parser
@@ -226,11 +226,11 @@ public class TaskNoteControl {
 		String parserUpdateObjectFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 
 		try {
-			updateTaskId = Parser.getTaskId(userCommand, throwException);
+			updateTaskId = parser.getTaskId(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserUpdateIdFeedback = e.getMessage();
-			updateTaskId = Parser.getTaskId(userCommand, throwException);
+			updateTaskId = parser.getTaskId(throwException);
 		}
 
 		TaskObject oldTaskObject = null;
@@ -301,11 +301,11 @@ public class TaskNoteControl {
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
-			taskId = Parser.getTaskId(userCommand, throwException);
+			taskId = parser.getTaskId(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			taskId = Parser.getTaskId(userCommand, throwException);
+			taskId = parser.getTaskId(throwException);
 		}
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
@@ -336,11 +336,11 @@ public class TaskNoteControl {
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
 			// TODO:Parser - change method name to getTaskId
-			taskId = Parser.getTaskId(userCommand, throwException);
+			taskId = parser.getTaskId(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			taskId = Parser.getTaskId(userCommand, throwException);
+			taskId = parser.getTaskId(throwException);
 		}
 		TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
@@ -370,11 +370,11 @@ public class TaskNoteControl {
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
-			filePath = Parser.parseFilePath(userCommand, throwException);
+			filePath = parser.parseFilePath(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			filePath = Parser.parseFilePath(userCommand, throwException);
+			filePath = parser.parseFilePath(throwException);
 		}
 		command = new ChangeFilePathCommand(taskNote, filePath);
 		command.execute();
