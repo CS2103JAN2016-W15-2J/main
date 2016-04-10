@@ -1,7 +1,5 @@
 package tasknote.parser;
 
-import tasknote.shared.Constants;
-
 public class TimeParser {
 
 	// Here are the constants that are specific to TimeParser

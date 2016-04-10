@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
 
 public class ParserAddTest {
@@ -130,7 +129,6 @@ public class ParserAddTest {
 
 		TaskObject expectedResult = new TaskObject("longerdeadline");
 
-		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(2001);
 		expectedResult.setDateMonth(2);
 		expectedResult.setDateDay(1);
@@ -190,7 +188,8 @@ public class ParserAddTest {
 		expectedResult.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 
 		TaskObject actualResult = this.testParser.parseAdd(false);
-
+		
+		assertEquals(expectedResult, actualResult);
 	}
 
 	@Test
@@ -228,7 +227,6 @@ public class ParserAddTest {
 
 		TaskObject expectedResult = new TaskObject("badtask");
 
-		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(2002);
 		expectedResult.setDateMonth(3);
 		expectedResult.setDateDay(2);
@@ -269,9 +267,8 @@ public class ParserAddTest {
 		TaskObject expectedResult = new TaskObject("breakfast with mk");
 
 		GregorianCalendar tomorrow = new GregorianCalendar();
-		DateParser tomorrowRoller = new DateParser();
 
-		tomorrow = tomorrowRoller.rollByDays(tomorrow, 1);
+		tomorrow = DateParser.rollByDays(tomorrow, 1);
 
 		expectedResult.setDateYear(tomorrow.get(Calendar.YEAR));
 		expectedResult.setDateMonth(tomorrow.get(Calendar.MONTH) + 1);

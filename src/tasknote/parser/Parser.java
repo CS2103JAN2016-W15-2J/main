@@ -1,6 +1,5 @@
 package tasknote.parser;
 
-import sun.awt.datatransfer.ToolkitThreadBlockedHandler;
 import tasknote.logic.ShowCategory;
 import tasknote.logic.ShowInterval;
 import tasknote.shared.COMMAND_TYPE;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-
-import com.sun.nio.sctp.PeerAddressChangeNotification;
 
 public class Parser {
 
@@ -29,11 +26,6 @@ public class Parser {
 		this.setListPointer(-1);
 		this.setCommandType(COMMAND_TYPE.INVALID);
 		this.setObjectForThisCommand(null);
-	}
-
-	private boolean isNotReady() {
-		return this.getAllPhrases().equals(null) || this.getListPointer() == -1
-				|| this.getCommandType().equals(COMMAND_TYPE.INVALID);
 	}
 
 	public void setInputString(String userCommand) {

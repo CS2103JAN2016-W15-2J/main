@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-
-import sun.util.resources.cldr.ss.CurrencyNames_ss;
-import tasknote.shared.Constants;
 
 public class ForwardCheckerWithBacktracking {
 	
@@ -264,7 +260,7 @@ public class ForwardCheckerWithBacktracking {
 			try {
 				int potentialDayNumeric = Integer.parseInt(potentialDay);
 				int potentialMonthNumeric = Integer.parseInt(potentialMonth);
-				int potentialYearNumeric = Integer.parseInt(potentialYear);
+				Integer.parseInt(potentialYear);
 				
 				if (!ParserConstants.isValidDay(potentialDayNumeric)
 						|| !ParserConstants.isValidMonth(potentialMonthNumeric)) {
@@ -303,7 +299,7 @@ public class ForwardCheckerWithBacktracking {
 		// If it contains neither date suffix, nor time suffix, and is not a
 		// month then it is either a number (day, year) or String
 		try {
-			int possibleDayOrYear = Integer.parseInt(currentPhrase);
+			Integer.parseInt(currentPhrase);
 			return ParserConstants.SWITCH_STRING_DATE;
 		} catch (NumberFormatException e) {
 			return ParserConstants.SWITCH_STRING_NAME;
