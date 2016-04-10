@@ -10,8 +10,6 @@ import java.nio.file.Paths;
  * This class aid the PATH manipulation operations and initiate pathHistory
  * to allow undo and redo of the PATH
  * 
- * @author User
- *
  */
 
 public class PathManipulation{
@@ -28,43 +26,88 @@ public class PathManipulation{
 		pathHistory = new PathHistory();
 	}
 	
+	/**
+	 * This method checks if the path is valid
+	 * @param pathName
+	 * @return true if it is a valid path
+	 */
 	public boolean isValidFilePath(String pathName){
 		File tempFile = new File(pathName);
 		File directory = tempFile.getParentFile();
 		return directory.exists();
 	}
 	
+	/**
+	 * This method checks if the path is an absolute path
+	 * @param pathName
+	 * @return true if the path is an absolute path
+	 * @throws InvalidPathException implies the the user entered path is not in a path format
+	 * @throws NullPointerException implies the user entered path is a null string
+	 */
 	public boolean isAbsolutePath(String pathName) throws InvalidPathException, NullPointerException{
 		Path path = Paths.get(pathName);
 		return path.isAbsolute();
 	}
 	
+	/**
+	 * this method push the pathName into history
+	 * @param pathName
+	 */
 	public void pushHistory(String pathName){
 		if(isValidFilePath(pathName)){
 			pathHistory.addHistory(pathName);
 		}
 	}
 	
+	/**
+	 * this method calls PathHistory to get the previous valid PATH
+	 * @return previous valid PATH change
+	 */
 	public String extractUndoPathString(){
 		return pathHistory.undo();
 	}
 	
+	/**
+	 * this method calls PathHistroy to get the undo-ed previous valid PATH
+	 * @return undo-ed valid PATH change
+	 */
 	public String extractRedoPathString(){
 		return pathHistory.redo();
 	}
 	
+	/**
+	 * this method returns the parentPath of the given path string
+	 * @param pathName
+	 * @return path of parent directory
+	 * @throws IOException when failed to get canonical path of parent file
+	 */
 	public String getParentPath(String pathName) throws IOException{
 		File tempFile = new File(pathName);
 		File parentFile = tempFile.getParentFile().getParentFile();
 		return parentFile.getCanonicalPath();
 	}
-
+	
+	/**
+	 * this methods finds the absolute path of the new path with reference to the old path
+	 * @param newPath
+	 * @param oldPath
+	 * @return absolute path of the relative new path with reference to the old path
+	 */
 	public String extractNewFullPath(String newPath, String oldPath) {
 		Path previousPath = Paths.get(oldPath);
 		Path nextPath = Paths.get(newPath);
-		Path newFullPath = previousPath.relativize(previousPath.resolve(nextPath));
-		newFullPath = newFullPath.normalize();
+		Path newFullPath = extractFullLocalizedPath(previousPath, nextPath);
+		return extractAbsoluteNewFullPath(previousPath, newFullPath);
+	}
+
+	private String extractAbsoluteNewFullPath(Path previousPath, Path newFullPath) {
 		newFullPath = previousPath.resolve(newFullPath).normalize();
 		return newFullPath.toString();
+	}
+
+	private Path extractFullLocalizedPath(Path previousPath, Path nextPath) {
+		Path combinedPath = previousPath.resolve(nextPath);
+		Path newFullPath = previousPath.relativize(combinedPath);
+		return newFullPath.normalize();
 	}
 }

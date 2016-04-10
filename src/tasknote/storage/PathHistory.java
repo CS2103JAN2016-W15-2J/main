@@ -49,9 +49,13 @@ public class PathHistory{
 		if(history.isEmpty()){
 			return null;
 		}
+		setUpUndo();
+		return history.pop();
+	}
+
+	private void setUpUndo() {
 		backup.push(current);
 		current = history.peek();
-		return history.pop();
 	}
 	
 	/**
@@ -63,8 +67,12 @@ public class PathHistory{
 		if(backup.isEmpty()){
 			return null;
 		}
+		setUpRedo();
+		return backup.pop();
+	}
+
+	private void setUpRedo() {
 		history.push(current);
 		current = backup.peek();
-		return backup.pop();
 	}
 }

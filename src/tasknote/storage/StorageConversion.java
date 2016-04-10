@@ -5,6 +5,10 @@ import java.io.IOException;
 import tasknote.shared.TaskObject;
 
 //@@author A0126172M
+/**
+ * StorageConversion class is a helper class for FileManipulation. It takes the Strings that are read
+ * from the textFile and convert it into a TaskObject OR do it in the reverse manner
+ */
 public class StorageConversion{
 	private StorageConstants constants;
 	private StorageDeadlineUpdater deadlineUpdater;
@@ -45,7 +49,7 @@ public class StorageConversion{
 	}
 	
 	/**
-	 * To convert a series of String into one taskObject
+	 * To convert a series of Strings into one taskObject
 	 * @param tasks
 	 * @return ArrayList<TaskObject>
 	 * @throws IOException 
@@ -139,7 +143,7 @@ public class StorageConversion{
 				return titleIndex;
 			}
 		}
-		return -1;
+		return CASE_TASK_END;
 	}
 	
 	private String[] extractContent(int index, String string) {

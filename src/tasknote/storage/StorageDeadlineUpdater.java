@@ -5,6 +5,10 @@ import java.util.GregorianCalendar;
 
 import tasknote.shared.TaskObject;
 //@@author A0126172M
+/**
+ * StorageDeadlineUpdater class checks if the deadline of the task is overdue when the user first opens
+ * the application
+ */
 public class StorageDeadlineUpdater{
 	
 	private final GregorianCalendar clock = new GregorianCalendar();
@@ -39,18 +43,13 @@ public class StorageDeadlineUpdater{
 	 */
 	public void updateTaskStatus(TaskObject taskObject){
 		setTaskObject(taskObject);
-		assert(this.taskObject!=null);
+		assert isValidTaskObject();
 		updateTime();
 		updateTaskObject();
 	}
-	
-	/**
-	 * update the taskObject that is in the class
-	 */
-	public void update(){
-		assert(this.taskObject!=null);
-		updateTime();
-		updateTaskObject();
+
+	private boolean isValidTaskObject() {
+		return this.taskObject!=null;
 	}
 	
 	private void updateTime() {
