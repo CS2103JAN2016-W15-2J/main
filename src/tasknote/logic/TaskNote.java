@@ -953,6 +953,17 @@ public class TaskNote {
 		}
 		return isValid;
 	}
+	
+	private static int getLatestTaskIndex(TaskObject taskObject) {
+		int latestIndex = -1;
+		for (int i = 0; i < taskList.size(); i++) {
+			TaskObject currentTaskObject = taskList.get(i);
+			if(taskObject.equals(currentTaskObject)){
+				latestIndex = i;
+			}
+		}
+		return latestIndex;
+	}
 
 	/**
 	 * This operation sorts the list of Tasks and saves them to Storage
@@ -1196,7 +1207,8 @@ public class TaskNote {
 	}
 	
 	private static String getFeedbackName(String feedback, TaskObject taskObject) {
-		int taskIndex = taskList.indexOf(taskObject);
+		//int taskIndex = taskList.indexOf(taskObject);
+		int taskIndex = getLatestTaskIndex(taskObject);
 		String taskName = taskObject.getTaskName();
 		String feedbackName = String.format(Constants.STRING_TASK_NAME_INDEX, ++taskIndex, taskName);
 		feedback = feedback.concat(feedbackName);
