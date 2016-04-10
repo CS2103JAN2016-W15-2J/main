@@ -43,7 +43,7 @@ public class TaskNote {
 	private static Storage storage = new Storage();
 
 	/*
-	 * This is used to store the filePath
+	 * This variable is used to store the filePath
 	 */
 	private static String filePath;
 
@@ -253,33 +253,11 @@ public class TaskNote {
 	 */
 	public String undoLastCommand() {
 		boolean isSuccess = true;
-		int undoCount = 0;
 		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekUndoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
-			taskObject = commandObject.getTaskObject();
-			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-			setUndoCommandType(commandType);
-
-			while (undoCount <= numPrecedingObjects) {
-				commandObject = history.popUndoStack();
-				commandType = commandObject.getRevertCommandType();
-				if (commandType == COMMAND_TYPE.ADD) {
-					undoDelete(commandObject);
-				} else if (commandType == COMMAND_TYPE.DELETE) {
-					//deleteIdSize = numPrecedingObjects + Constants.INCREMENT_COUNT_CONSTANT;
-					undoAdd(commandObject);
-				} else if (commandType == COMMAND_TYPE.UPDATE) {
-					undoUpdate(commandObject);
-				} else if (commandType == COMMAND_TYPE.DONE) {
-					undoDone(commandObject);
-				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
-					undoChangeFilePath();
-				}
-				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
-				undoCount++;
-			}
+			recoverByUndo(numPrecedingObjects);
 			sortAndSave(taskList);
 			logger.log(Level.INFO, Constants.INFO_UNDO_SUCCESSFUL);
 		} catch (Exception e) {
@@ -289,39 +267,26 @@ public class TaskNote {
 
 		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, taskObject);
 	}
-
+	
+	/**
+	 * This operation reverts the last action reverted by Undo command
+	 * 
+	 * @return status of the operation
+	 */
 	public String redoLastUndoCommand() {
 		boolean isSuccess = true;
-		int redoCount = 0;
+		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekRedoStack();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
-
-			while (redoCount <= numPrecedingObjects) {
-				commandObject = history.popRedoStack();
-				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				setRedoCommandType(commandType);
-				if (commandType == COMMAND_TYPE.ADD) {
-					redoAdd(commandObject);
-				} else if (commandType == COMMAND_TYPE.DELETE) {
-					redoDelete(commandObject);
-				} else if (commandType == COMMAND_TYPE.UPDATE) {
-					redoUpdate(commandObject);
-				} else if (commandType == COMMAND_TYPE.DONE) {
-					redoDone(commandObject);
-				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
-					redoChangeFilePath();
-				}
-				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
-				redoCount++;
-			}
+			recoverByRedo(numPrecedingObjects);
 			sortAndSave(taskList);
 			logger.log(Level.INFO, Constants.INFO_REDO_SUCCESSFUL);
 		} catch (Exception e) {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_REDO, e));
 		}
-		return showFeedback(COMMAND_TYPE.REDO, isSuccess, null);
+		return showFeedback(COMMAND_TYPE.REDO, isSuccess, taskObject);
 	}
 
 	/**
@@ -396,6 +361,7 @@ public class TaskNote {
 		}
 		return showFeedback(COMMAND_TYPE.CHANGE_FILE_PATH, isSuccess, null);
 	}
+	
 	/**
 	 * This operation shows the tasks within the specified time interval
 	 *
@@ -426,7 +392,7 @@ public class TaskNote {
 				showType = ShowInterval.WEEK;
 				break;
 			case ALL:
-				getAllTasks();
+				getAllTasksInInterval();
 				showType = ShowInterval.ALL;
 				break;
 			default:
@@ -455,7 +421,7 @@ public class TaskNote {
 			assert (category != null);
 			switch (category) {
 			case ALL:
-				displayAllTasks();
+				displayAllTasksInInterval();
 				taskCategory = ShowCategory.ALL;
 				break;
 			case OUTSTANDING:
@@ -537,6 +503,77 @@ public class TaskNote {
 		return helpMessage;
 	}
 	
+	/**
+	 * This operation recovers the previous status of the tasks
+	 * by executing the Undo operation
+	 *
+	 * @param numPrecedingObjects
+	 * @throws Exception
+	 */
+	private void recoverByUndo(int numPrecedingObjects) throws Exception {
+		int undoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
+		try{
+			while (undoCount <= numPrecedingObjects) {
+				CommandObject commandObject = history.popUndoStack();
+				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				setUndoCommandType(commandType);
+				if (commandType == COMMAND_TYPE.ADD) {
+					undoDelete(commandObject);
+				} else if (commandType == COMMAND_TYPE.DELETE) {
+					undoAdd(commandObject);
+				} else if (commandType == COMMAND_TYPE.UPDATE) {
+					undoUpdate(commandObject);
+				} else if (commandType == COMMAND_TYPE.DONE) {
+					undoDone(commandObject);
+				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+					undoChangeFilePath();
+				}
+				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
+				undoCount++;
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * This operation recovers the previous status of the tasks
+	 * by executing the Undo operation
+	 *
+	 * @param numPrecedingObjects
+	 * @throws Exception 
+	 */
+	private void recoverByRedo(int numPrecedingObjects) throws Exception {
+		int redoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
+		try {
+			while (redoCount <= numPrecedingObjects) {
+				CommandObject commandObject = history.popRedoStack();
+				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				setRedoCommandType(commandType);
+				if (commandType == COMMAND_TYPE.ADD) {
+					redoAdd(commandObject);
+				} else if (commandType == COMMAND_TYPE.DELETE) {
+					redoDelete(commandObject);
+				} else if (commandType == COMMAND_TYPE.UPDATE) {
+					redoUpdate(commandObject);
+				} else if (commandType == COMMAND_TYPE.DONE) {
+					redoDone(commandObject);
+				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+					redoChangeFilePath();
+				}
+				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
+				redoCount++;
+			}
+		} catch (Exception e) {
+			throw e; 
+		}
+	}
+	
+	/**
+	 * This operation sets the type of Command that has been undone
+	 *
+	 * @param commandType
+	 */
 	private void setUndoCommandType(COMMAND_TYPE commandType) {
 		if(commandType == COMMAND_TYPE.ADD) {
 			undoCommandType = COMMAND_TYPE.DELETE;
@@ -547,6 +584,11 @@ public class TaskNote {
 		}
 	}
 	
+	/**
+	 * This operation sets the type of Command that has been redone
+	 *
+	 * @param commandType
+	 */
 	private void setRedoCommandType(COMMAND_TYPE commandType) {
 		if(commandType == COMMAND_TYPE.ADD) {
 			redoCommandType = COMMAND_TYPE.DELETE;
@@ -634,7 +676,6 @@ public class TaskNote {
 	 */
 	private void undoChangeFilePath() throws Exception {
 		try {
-			//TODO: Storage returns true if undo successful; otherwise throw error
 			boolean isPathUndone = storage.undoPath();
 			if (isPathUndone) {
 				history.pushChangeFilePathToRedo();
@@ -725,7 +766,6 @@ public class TaskNote {
 	 */
 	private void redoChangeFilePath() throws Exception {
 		try{
-			//TODO: Storage returns true if redo successful; otherwise throw error
 			boolean isPathRedone = storage.redoPath();
 			if (isPathRedone) {
 				history.pushChangeFilePathToUndo();
@@ -818,8 +858,13 @@ public class TaskNote {
 			throw er;
 		}
 	}
-
-	private void getAllTasks() {
+	
+	/**
+	 * This operation retrieves all the tasks from the Task List
+	 * and populates the showInterval List
+	 *
+	 */
+	private void getAllTasksInInterval() {
 		try {
 			for (int i = 0; i < taskList.size(); i++) {
 				TaskObject taskObject = taskList.get(i);
@@ -830,8 +875,8 @@ public class TaskNote {
 		}
 	}
 
-	private void displayAllTasks() {
-		getAllTasks();
+	private void displayAllTasksInInterval() {
+		getAllTasksInInterval();
 		refreshDisplay(showIntervalList);
 	}
 
@@ -853,6 +898,12 @@ public class TaskNote {
 		refreshDisplay(list);
 	}
 
+	/**
+	 * This operation populates tasks that are either due today
+	 * or tomorrow based on the calling method
+	 * 
+	 * @param: year, month, day
+	 */
 	private void populateTdyTmrShowList(int year, int month, int day) {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
@@ -868,7 +919,13 @@ public class TaskNote {
 			}
 		}
 	}
-
+	
+	/**
+	 * This operation populates tasks that are either due within 
+	 * a specified number of days or weeks
+	 * 
+	 * @param: startDateTime, endDateTime
+	 */
 	private void populateDayWeekShowList(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject taskObject = taskList.get(i);
@@ -882,7 +939,14 @@ public class TaskNote {
 			}
 		}
 	}
-
+	
+	/**
+	 * This operation returns a date time object based on the
+	 * taskObject's date time if specified. Otherwise it assigns
+	 * the latest hour and minute possible on the given day.
+	 * 
+	 * @param: taskObject
+	 */
 	private LocalDateTime getTaskDateTime(TaskObject taskObject) {
 		int taskDay = taskObject.getDateDay();
 		int taskMonth = taskObject.getDateMonth();
@@ -914,9 +978,15 @@ public class TaskNote {
 		return isValid;
 	}
 
+	/**
+	 * This operation returns True if all IDs are valid;
+	 * Otherwise False
+	 * 
+	 * @param: ID List
+	 */
 	private boolean isValidIdList(ArrayList<Integer> idList) {
 		boolean isValid = true;
-		if (deleteIdSize > 0) {
+		if (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT) {
 			logger.log(Level.FINE, String.format(Constants.FINE_DELETE_LIST_VALIDITY, idList.size()));
 			for (int i = 0; i < idList.size(); i++) {
 				int taskId = idList.get(i);
@@ -933,7 +1003,13 @@ public class TaskNote {
 		}
 		return isValid;
 	}
-
+	
+	/**
+	 * This operation deletes the corresponding tasks based on IDs
+	 * from the taskList
+	 * 
+	 * @param: deleteIdList
+	 */
 	private static void deleteFromTaskList(ArrayList<Integer> deleteIds) {
 		for (int i = 0; i < deleteIds.size(); i++) {
 			TaskObject taskObject = displayList.get(deleteIds.get(i));
@@ -955,7 +1031,7 @@ public class TaskNote {
 	}
 	
 	private static int getLatestTaskIndex(TaskObject taskObject) {
-		int latestIndex = -1;
+		int latestIndex = Constants.INVALID_VALUE_CONSTANT;
 		for (int i = 0; i < taskList.size(); i++) {
 			TaskObject currentTaskObject = taskList.get(i);
 			if(taskObject.equals(currentTaskObject)){
@@ -994,7 +1070,6 @@ public class TaskNote {
 			// Sort by Date-Time
 			Collections.sort(list);
 		} catch (Exception e) {
-			// System.out.println("Sort by date has an error");
 			throw e;
 		}
 	}
@@ -1073,13 +1148,11 @@ public class TaskNote {
 	private static String getUpdateFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
 		if (isSuccess && taskObject != null) {
-			// TODO: Feedback which fields were updated
 			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
 			feedback = getFeedbackDetails(feedback, taskObject);
 		} else if (isSuccess && taskObject == null) {
 			feedback =  Constants.MESSAGE_UPDATE_SUCCESSFUL;
 		} else {
-			// TODO
 			feedback = Constants.MESSAGE_UPDATE_UNSUCCESSFUL;
 		}
 		return feedback;
@@ -1088,11 +1161,9 @@ public class TaskNote {
 	private static String getUndoFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
 		if (isSuccess) {
-			// TODO: Feedback what was undone
 			feedback = Constants.MESSAGE_UNDO_SUCCESSFUL;
-			feedback = getUndoFeedbackDetails(feedback, taskObject);
+			feedback = getUndoFeedbackDetails(feedback);
 		} else {
-			// TODO
 			feedback = Constants.MESSAGE_UNDO_UNSUCCESSFUL;
 		}
 		return feedback;
@@ -1101,11 +1172,9 @@ public class TaskNote {
 	private static String getRedoFeedback(boolean isSuccess, TaskObject taskObject) {
 		String feedback = new String();
 		if (isSuccess) {
-			// TODO: Feedback what was re-did
 			feedback = Constants.MESSAGE_REDO_SUCCESSFUL;
-			feedback = getRedoFeedbackDetails(feedback, taskObject);
+			feedback = getRedoFeedbackDetails(feedback);
 		} else {
-			// TODO
 			feedback = Constants.MESSAGE_REDO_UNSUCCESSFUL;
 		}
 		return feedback;
@@ -1147,7 +1216,7 @@ public class TaskNote {
 		String feedback = new String();
 		if (isSuccess) {
 			int numTasks = showIntervalList.size();
-			if (numTasks > 0) {
+			if (numTasks > Constants.EMPTY_LIST_SIZE_CONSTANT) {
 				if (showType == ShowInterval.ALL) {
 					feedback = Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
 				} else {
@@ -1187,12 +1256,12 @@ public class TaskNote {
 		return feedback;
 	}
 	
-	private static String getUndoFeedbackDetails(String feedback, TaskObject taskObject) {
+	private static String getUndoFeedbackDetails(String feedback) {
 		String feedbackUndoOperation = String.format(feedback, undoCommandType);
 		return feedbackUndoOperation;
 	}
 	
-	private static String getRedoFeedbackDetails(String feedback, TaskObject taskObject) {
+	private static String getRedoFeedbackDetails(String feedback) {
 		String feedbackUndoOperation = String.format(feedback, redoCommandType);
 		return feedbackUndoOperation;
 	}
