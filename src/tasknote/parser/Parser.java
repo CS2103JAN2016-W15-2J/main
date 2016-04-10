@@ -405,7 +405,7 @@ public class Parser {
 		}
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
+		int listPointer = 1;
 		int phraseCount = allPhrases.size();
 
 		ArrayList<Integer> list = new ArrayList<Integer>();
