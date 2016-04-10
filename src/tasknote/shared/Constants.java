@@ -212,6 +212,7 @@ public class Constants {
 	 */
 	public static final int EMPTY_LIST_SIZE_CONSTANT = 0;
 	public static final int ZERO_TIME_INTERVAL_CONSTANT = 0;
+	public static final int PRECEDING_OBJECTS_CONSTANT = 2;
 	public static final int DECREMENT_PRECEDING_OBJECTS_CONSTANT = 1;
 	public static final int INCREMENT_DAY_TOMORROW_CONSTANT = 1;
 	public static final int INCREMENT_COUNT_CONSTANT = 1;
