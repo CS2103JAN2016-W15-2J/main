@@ -25,11 +25,13 @@ import java.util.ArrayList;
 
 /**
  * This class is used to interact directly with the UI to process and execute
- * User Commands. The Command object will be used to create a new instance of
- * the corresponding Command Class. This Class interacts with the Parser
- * Component, which parses the User Command and returns relevant data. Once each
- * command is executed, the task list will be updated with the relevant task
- * objects to be displayed to the User. Each method in this class that executes
+ * User Commands. 
+ * The Command object will be used to create a new instance of
+ * the corresponding Command Class. 
+ * This Class interacts with the Parser Component, which parses the User Command 
+ * and returns relevant data. 
+ * Once each command is executed, the task list will be updated with the relevant 
+ * task objects to be displayed to the User. Each method in this class that executes
  * a command returns a feedback String to the caller.
  *
  * @author Murali Girish Narayanan
@@ -46,7 +48,12 @@ public class TaskNoteControl {
 		parser = new Parser();
 		taskNote.loadTasks();
 	}
-
+	
+	/**
+	 * This operation returns the list to be displayed to the user
+	 *
+	 * @return List of TaskObjects
+	 */
 	public ArrayList<TaskObject> getDisplayList() {
 		return taskNote.getDisplayList();
 	}
@@ -116,7 +123,7 @@ public class TaskNoteControl {
 		case CHANGE_CATEGORY:
 			// TODO: Parser
 			response = executeChangeCategory(userCommand);
-			//response = "";
+			// response = "";
 			break;
 		case HELP:
 			// TODO: Parser
@@ -322,7 +329,7 @@ public class TaskNoteControl {
 		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
-	
+
 	/**
 	 * This operation executes the User's Mark As Incomplete command
 	 *
@@ -456,7 +463,7 @@ public class TaskNoteControl {
 		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
 	}
-
+	
 	private static ShowCategory parseChangeCategory(String userCommand) {
 		String[] parts = userCommand.split("\\s+");
 		String category = parts[1];
@@ -472,7 +479,15 @@ public class TaskNoteControl {
 			return ShowCategory.COMPLETED;
 		}
 	}
-	
+
+	/**
+	 * This operation executes the User's request to show the General 
+	 * Help message as well as the Help message for specific commands
+	 *
+	 * @param User
+	 *            Command
+	 * @return Status of Operation
+	 */
 	private static String executeHelp(String userCommand) {
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
