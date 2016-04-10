@@ -76,8 +76,7 @@ public class Parser {
 
 		// Make sure that the COMMAND_TYPE is accurate
 		if (this.getCommandType() != COMMAND_TYPE.HELP) {
-			throw new RuntimeException(
-					"Wrong method used for non-help type input!");
+			throw new RuntimeException("Wrong method used for non-help type input!");
 		}
 
 		ArrayList<String> allPhrase = this.getAllPhrases();
@@ -101,49 +100,71 @@ public class Parser {
 
 		return returnValue;
 	}
-	
+
 	public TaskObject parseAdd(boolean throwException) {
-		
+
 		if (this.getCommandType() != COMMAND_TYPE.ADD) {
-			throw new RuntimeException(
-					"Wrong method used for non-add type input!");
+			throw new RuntimeException("Wrong method used for non-add type input!");
 		}
+
+		TaskObject objectCreated = constructObject(false);
+		return objectCreated;
+	}
+
+	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
+
+		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
+			throw new RuntimeException("Wrong method used for non-edit type input!");
+		}
+
+		TaskObject objectCreated = constructObject(true);
+		objectCreated = overlayTaskObject(reallyOldTaskObject, objectCreated);
+
+		return objectCreated;
+	}
+
+	private TaskObject constructObject(boolean isEdit) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
-		this.setListPointer(1);
-		
-		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(allPhrases);
+
+		if (isEdit) {
+			this.setListPointer(2);
+		} else {
+			this.setListPointer(1);
+		}
+
+		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
+				allPhrases);
 		String[] allMarks = forwardChecker.getAllPhraseTypes();
-		
+
 		StringBuilder nameBuilder = new StringBuilder();
 		StringBuilder locationBuilder = new StringBuilder();
 		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
-		
+
 		boolean toStartDate = true;
 		boolean toStartTime = true;
-		
+
 		ArrayList<String> allStartDateInfo = new ArrayList<>();
 		ArrayList<String> allEndDateInfo = new ArrayList<>();
 
 		ArrayList<String> allStartTimeInfo = new ArrayList<>();
 		ArrayList<String> allEndTimeInfo = new ArrayList<>();
-		
-		
+
 		for (int i = this.getListPointer(); i < phraseCount; i++) {
-			
+
 			currentPhrase = allPhrases.get(i);
-			
+
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_NAME)) {
 				nameBuilder.append(currentPhrase);
 				nameBuilder.append(Constants.STRING_CONSTANT_SPACE);
 				continue;
 			}
-			
+
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)
 					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
 					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-				
+
 				// Only push to endDate or endTime if they are already filled
 				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
 					if (!allStartDateInfo.isEmpty()) {
@@ -155,7 +176,7 @@ public class Parser {
 				}
 				continue;
 			}
-			
+
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATE)) {
 				if (toStartDate) {
 					allStartDateInfo.add(currentPhrase);
@@ -164,7 +185,7 @@ public class Parser {
 				}
 				continue;
 			}
-			
+
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_TIME)) {
 				if (toStartTime) {
 					allStartTimeInfo.add(currentPhrase);
@@ -173,33 +194,33 @@ public class Parser {
 				}
 				continue;
 			}
-			
+
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATION)) {
 				locationBuilder.append(currentPhrase);
 				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
 				continue;
 			}
 		}
-		
+
 		DateMessage startDate = tryToParseDate(allStartDateInfo);
 		DateMessage endDate = tryToParseDate(allEndDateInfo);
-		
+
 		TimeMessage startTime = tryToParseTime(allStartTimeInfo);
 		TimeMessage endTime = tryToParseTime(allEndTimeInfo);
-		
+
 		String finalTaskName = nameBuilder.toString().trim();
 		String finalLocation = locationBuilder.toString().trim();
-		
+
 		this.objectForThisCommand.setTaskName(finalTaskName);
 		this.objectForThisCommand.setLocation(finalLocation);
-		
+
 		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
 			this.objectForThisCommand.setDateHour(startTime.getHour());
 			this.objectForThisCommand.setDateMinute(startTime.getMinute());
 			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 		}
-		
+
 		if (startDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				&& startDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				&& startDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
@@ -210,19 +231,26 @@ public class Parser {
 		} else {
 			if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 					&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				
+
 				GregorianCalendar today = new GregorianCalendar();
 				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
 				int setTime = startTime.getHour() * 60 + startTime.getMinute();
-				
+
 				if (todayTime > setTime) {
 					today = DateParser.rollByDays(today, 1);
 				}
-				
+
 				this.objectForThisCommand.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-				this.objectForThisCommand.setDateMonth(today.get(Calendar.MONTH));
+				this.objectForThisCommand.setDateMonth(today.get(Calendar.MONTH) + 1);
 				this.objectForThisCommand.setDateYear(today.get(Calendar.YEAR));
 			}
+		}
+
+		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateHour(endTime.getHour());
+			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
 		}
 
 		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
@@ -232,43 +260,73 @@ public class Parser {
 			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
 			this.objectForThisCommand.setEndDateYear(endDate.getYear());
 			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		} else {
+			if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				this.objectForThisCommand.setEndDateDay(this.objectForThisCommand.getDateDay());
+				this.objectForThisCommand.setEndDateMonth(this.objectForThisCommand.getDateMonth());
+				this.objectForThisCommand.setEndDateYear(this.objectForThisCommand.getDateYear());
+			}
 		}
-		
-		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-			 && endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setEndDateHour(endTime.getHour());
-			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
-		}
-		
+
 		return this.objectForThisCommand;
 	}
 
-	
-	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
-		
-		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
-			throw new RuntimeException(
-					"Wrong method used for non-edit type input!");
-		}
+	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
+		int listPointer = 2;
 		int phraseCount = allPhrases.size();
-		this.setListPointer(2);
+		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
+				allPhrases);
+		String[] allMarks = forwardChecker.getAllPhraseTypes();
+		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
 
-		return null;
-	}
-	
-	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		
+		for (int i = listPointer; i < phraseCount; i++) {
+			currentPhrase = allPhrases.get(i);
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_REMOVE)) {
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_REMOVE)) {
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_TIME)) {
+					oldTaskObject.setDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_DATE)) {
+					oldTaskObject.setDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_NAME)) {
+					oldTaskObject.setTaskName(Constants.STRING_CONSTANT_EMPTY);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_LOCATION)) {
+					oldTaskObject.setLocation(Constants.STRING_CONSTANT_EMPTY);
+					continue;
+				}
+			}
+		}
+
 		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
 			newTaskObject.setTaskName(oldTaskObject.getTaskName());
 		}
-		
+
 		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
-			newTaskObject.setTaskName(oldTaskObject.getLocation());
+			newTaskObject.setLocation(oldTaskObject.getLocation());
 		}
-		
+
 		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
@@ -276,13 +334,13 @@ public class Parser {
 			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
 			newTaskObject.setDateYear(oldTaskObject.getDateYear());
 		}
-		
+
 		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
 			newTaskObject.setDateHour(oldTaskObject.getDateHour());
 			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
 		}
-		
+
 		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
@@ -290,18 +348,52 @@ public class Parser {
 			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
 			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
 		}
-		
+
 		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setEndDateHour(oldTaskObject.getDateHour());
-			newTaskObject.setDateMinute(oldTaskObject.getEndDateMinute());
+			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
+			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
 		}
 		
+		// If date is *still* invalid and time exists
+		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			
+			if (newTaskObject.getDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& newTaskObject.getDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				
+				GregorianCalendar today = new GregorianCalendar();
+				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
+				int setTime = newTaskObject.getDateHour() * 60 + newTaskObject.getDateMinute();
+
+				if (todayTime > setTime) {
+					today = DateParser.rollByDays(today, 1);
+				}
+
+				newTaskObject.setDateDay(today.get(Calendar.DAY_OF_MONTH));
+				newTaskObject.setDateMonth(today.get(Calendar.MONTH) + 1);
+				newTaskObject.setDateYear(today.get(Calendar.YEAR));
+			}
+		}
+		
+		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			
+			if (newTaskObject.getEndDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& newTaskObject.getEndDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				newTaskObject.setEndDateDay(newTaskObject.getDateDay());
+				newTaskObject.setEndDateMonth(newTaskObject.getDateMonth());
+				newTaskObject.setEndDateYear(newTaskObject.getDateYear());
+			}
+		}
+
 		return newTaskObject;
 	}
 
 	public ArrayList<Integer> parseDelete(boolean throwException) {
-		
+
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
 			throw new RuntimeException("Wrong method used for non-add type input!");
 		}
@@ -415,8 +507,7 @@ public class Parser {
 			}
 
 			for (int j = 0; j < itemCount; j++) {
-				String currentTaskName = displayList.get(j).getTaskName()
-						.toLowerCase();
+				String currentTaskName = displayList.get(j).getTaskName().toLowerCase();
 
 				if (!exactOnly) {
 
@@ -425,8 +516,7 @@ public class Parser {
 					}
 				} else {
 
-					String[] splitTaskName = currentTaskName
-							.split(Constants.STRING_CONSTANT_SPACE);
+					String[] splitTaskName = currentTaskName.split(Constants.STRING_CONSTANT_SPACE);
 
 					indicesToRemove.add(j);
 
@@ -524,8 +614,7 @@ public class Parser {
 
 					while (forwardCounter < phraseCount) {
 
-						currentPhrase = allPhrases.get(forwardCounter)
-								.toLowerCase();
+						currentPhrase = allPhrases.get(forwardCounter).toLowerCase();
 
 						if (currentPhrase.equals("next")) {
 							nextCount++;
@@ -533,8 +622,7 @@ public class Parser {
 							continue;
 						}
 
-						if (currentPhrase.equals("week")
-								|| currentPhrase.equals("day")) {
+						if (currentPhrase.equals("week") || currentPhrase.equals("day")) {
 							return nextCount;
 						}
 
@@ -578,8 +666,7 @@ public class Parser {
 					}
 
 					int returnValue = Integer.parseInt(currentPhrase);
-					currentPhrase = allPhrases.get(placeOfWeekKeyword)
-							.toLowerCase();
+					currentPhrase = allPhrases.get(placeOfWeekKeyword).toLowerCase();
 
 					if (returnValue <= 0) {
 						NumberFormatException e = new NumberFormatException(
@@ -588,10 +675,8 @@ public class Parser {
 						throw e;
 					}
 
-					if (currentPhrase.equals("week")
-							|| currentPhrase.equals("weeks")
-							|| currentPhrase.equals("day")
-							|| currentPhrase.equals("days")) {
+					if (currentPhrase.equals("week") || currentPhrase.equals("weeks")
+							|| currentPhrase.equals("day") || currentPhrase.equals("days")) {
 						return returnValue;
 					} else {
 						if (throwException) {
@@ -640,9 +725,8 @@ public class Parser {
 
 		if (throwException) {
 			// Consider changing exception type
-			RuntimeException e = new RuntimeException(
-					"Could not identify how far ahead to show. "
-							+ "Use the following command for more details:\n help show");
+			RuntimeException e = new RuntimeException("Could not identify how far ahead to show. "
+					+ "Use the following command for more details:\n help show");
 			System.out.println(e);
 			throw e;
 		} else {
@@ -687,10 +771,9 @@ public class Parser {
 	}
 
 	public int getTaskId(boolean throwException) {
-		
+
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		String currentPhrase = allPhrases.get(listPointer);
+		String currentPhrase = allPhrases.get(1);
 
 		try {
 
@@ -716,11 +799,11 @@ public class Parser {
 
 		int listPointer = 0;
 		int phraseCount = allDateInfo.size();
-		
+
 		if (phraseCount == 0) {
 			return new DateMessage();
 		}
-		
+
 		String currentPhrase = allDateInfo.get(listPointer);
 
 		DateParser dateParser = new DateParser();
@@ -738,11 +821,11 @@ public class Parser {
 
 		int listPointer = 0;
 		int phraseCount = allTimeInfo.size();
-		
+
 		if (phraseCount == 0) {
 			return new TimeMessage();
 		}
-		
+
 		String currentPhrase = allTimeInfo.get(listPointer);
 
 		TimeParser timeParser = new TimeParser();
@@ -768,8 +851,7 @@ public class Parser {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int remainingPhrasesCount = allPhrases.size() - this.getListPointer();
-		int expectedMinimumLength = ParserConstants
-				.getMinimumCommandLength(command);
+		int expectedMinimumLength = ParserConstants.getMinimumCommandLength(command);
 
 		return remainingPhrasesCount >= expectedMinimumLength;
 	}

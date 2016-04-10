@@ -53,6 +53,7 @@ public class ParserConstants {
 	protected static final String SWITCH_STRING_DATE = "date";
 	protected static final String SWITCH_STRING_TIME = "time";
 	protected static final String SWITCH_STRING_LOCATION = "location";
+	protected static final String SWITCH_STRING_REMOVE = "remove";
 	
 	// Here are the valid month words accepted by Parser
 	protected static final String MONTH_LONG_JAN = "january";

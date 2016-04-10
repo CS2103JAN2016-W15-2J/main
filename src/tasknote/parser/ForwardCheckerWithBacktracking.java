@@ -10,10 +10,13 @@ import sun.util.resources.cldr.ss.CurrencyNames_ss;
 import tasknote.shared.Constants;
 
 public class ForwardCheckerWithBacktracking {
+	
+	protected static String SPECIAL_SKIP_TAG = "skip";
 
 	private ArrayList<String> allPhrases;
 	private int listPointer;
 	private String[] allPhraseTypes;
+	private String commandType;
 
 	public ForwardCheckerWithBacktracking(ArrayList<String> allPhrases) {
 		this.allPhrases = allPhrases;
@@ -33,12 +36,14 @@ public class ForwardCheckerWithBacktracking {
 		int phraseCount = allPhrases.size();
 
 		if (currentPhrase.equals(ParserConstants.COMMAND_ADD)) {
+			this.commandType = ParserConstants.COMMAND_ADD;
 			this.listPointer = 1;
-			this.allPhraseTypes[0] = "skip";
+			this.allPhraseTypes[0] = SPECIAL_SKIP_TAG;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_EDIT)) {
+			this.commandType = ParserConstants.COMMAND_EDIT;
 			this.listPointer = 2;
-			this.allPhraseTypes[0] = "skip";
-			this.allPhraseTypes[1] = "skip";
+			this.allPhraseTypes[0] = SPECIAL_SKIP_TAG;
+			this.allPhraseTypes[1] = SPECIAL_SKIP_TAG;
 		} else {
 			throw new RuntimeException(
 					"Forward checking is not necessary for non-add or non-edit commands");
@@ -50,6 +55,20 @@ public class ForwardCheckerWithBacktracking {
 		for (int currentPointer = listPointer; currentPointer < phraseCount; currentPointer++) {
 
 			currentPhrase = this.allPhrases.get(currentPointer).toLowerCase();
+			
+			if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_REMOVE)) {
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_DATE)
+						|| currentPhrase.equals(ParserConstants.SWITCH_STRING_TIME)
+						|| currentPhrase.equals(ParserConstants.SWITCH_STRING_NAME)
+						|| currentPhrase.equals(ParserConstants.SWITCH_STRING_LOCATION)) {
+					this.allPhraseTypes[currentPointer] = currentSwitchString;
+					continue;
+				} else {
+					currentSwitchString = ParserConstants.decideNewSwitchString(currentPhrase);
+					this.allPhraseTypes[currentPointer] = currentSwitchString;
+					continue;
+				}
+			}
 
 			if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_NAME)) {
 				currentSwitchString = ParserConstants.decideNewSwitchString(currentPhrase);
@@ -72,6 +91,13 @@ public class ForwardCheckerWithBacktracking {
 			} else if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_LOCATION)) {
 				currentSwitchString = markLocation(currentPhrase);
 				this.allPhraseTypes[currentPointer] = currentSwitchString;
+			} else if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_REMOVE)){
+				if (this.commandType.equals(ParserConstants.COMMAND_ADD)) {
+					this.allPhraseTypes[currentPointer] = ParserConstants.SWITCH_STRING_NAME;
+				} else {
+					this.allPhraseTypes[currentPointer] = 
+							ParserConstants.SWITCH_STRING_REMOVE;
+				}
 			} else {
 				this.allPhraseTypes[currentPointer] = ParserConstants.SWITCH_STRING_NAME;
 			}
@@ -383,7 +409,7 @@ public class ForwardCheckerWithBacktracking {
 
 	public static void main(String[] args) {
 
-		String randomTestInputOne = "add breakfast by 9pm 22nd";
+		String randomTestInputOne = "edit 1 newtaskname at place remove date remove time by 23:59 on 15th feb";
 		ParserFirstPass pfp = new ParserFirstPass(randomTestInputOne);
 		ArrayList<String> firstAllPhrases = pfp.getFirstPassParsedResult();
 
