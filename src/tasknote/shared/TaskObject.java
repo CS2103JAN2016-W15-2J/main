@@ -66,7 +66,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	 * Constructor for Storage
 	 * @@author A0126172M
 	 */
-	public TaskObject(){
+	public TaskObject() {
 		setTaskName(Constants.STRING_CONSTANT_EMPTY);
 		
 		setDateDay(DEFAULT_DATETIME_VALUE);
@@ -713,20 +713,20 @@ public class TaskObject implements Comparable<TaskObject> {
 	 * setTaskStatus(taskStatus) is for storage to set the taskStatus when read from the file
 	 * @param String of taskStatus to set the current TaskStatus
 	 */
-	public void setTaskStatus(String taskStatus){
-		if(isDefaultTask(taskStatus)){
+	public void setTaskStatus(String taskStatus) {
+		if (isDefaultTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_DEFAULT);
 			return;
-		}else if(isOutstandingTask(taskStatus)){
+		} else if (isOutstandingTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 			return;
-		}else if(isOverdueTask(taskStatus)){
+		} else if(isOverdueTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OVERDUE);
 			return;
-		}else if(isCompletedTask(taskStatus)){
+		} else if(isCompletedTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 			return;
-		}else{
+		} else {
 			setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
 		}
 	}
@@ -786,7 +786,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	/**
 	 * @return produces string for printing for debugging
 	 */
-	public String toString(){
+	public String toString() {
 		return Constants.produceTaskName(taskName)
 				+ Constants.produceDate(dateDay,dateMonth,dateYear)
 				+ Constants.produceEndDate(endDateDay,endDateMonth,endDateYear)

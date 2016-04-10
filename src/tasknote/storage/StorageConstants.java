@@ -4,29 +4,29 @@ package tasknote.storage;
 /**
  * StorageConstants stores magic strings and numbers required for Storage
  */
-public class StorageConstants{
-	
+public class StorageConstants {
+
 	/**
 	 * Magic Strings for TaskObject
 	 */
-	private final String[] STRING_TASKOBJECT = {  "taskName:"
-												, "dateDay:"
-												, "dateMonth:"
-												, "dateYear:"
-												, "dateHour:"
-												, "dateMinute:"
-												, "duration:"
-												, "location:"
-												, "notifyTime:"
-												, "taskStatus:"
-												, "taskType:"
-												, "endDateDay:"
-												, "endDateMonth:"
-												, "endDateYear:"
-												, "endDateHour:"
-												, "endDateMinute:"
-												, "" };
-	
+	private final String[] STRING_TASKOBJECT = {"taskName:", 
+												"dateDay:", 
+												"dateMonth:", 
+												"dateYear:", 
+												"dateHour:",
+												"dateMinute:", 
+												"duration:", 
+												"location:", 
+												"notifyTime:", 
+												"taskStatus:", 
+												"taskType:", 
+												"endDateDay:",
+												"endDateMonth:", 
+												"endDateYear:", 
+												"endDateHour:",
+												"endDateMinute:", 
+												"" };
+
 	/**
 	 * Magic Strings
 	 */
@@ -39,7 +39,7 @@ public class StorageConstants{
 	private final String STRING_TEXT_FILE_END = ".txt";
 	private final String STRING_ALIAS_PAIR = "%1$s %2$s\n";
 	private final String STRING_NULL = "null";
-	
+
 	/**
 	 * Logging messages
 	 */
@@ -52,20 +52,20 @@ public class StorageConstants{
 	private final String LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE = "Failed to write path into path file.";
 	private final String LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED = "Storage Manipulator not intialized. Failed I/O.";
 	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE = "Failed to read from textfile.";
-	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH: %1$s.";		
+	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH: %1$s.";
 	private final String LOGGING_MESSAGE_FAILED_TO_CREATE_FILE = "Failed to create new file: %1$s.";
 	private final String LOGGING_MESSAGE_FAILED_TO_CLOSE_ALIAS_READ = "Failed to close alias read.";
 	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_ALIAS_FILE = "Failed to read alias from alias file.";
-	
+
 	/**
 	 * file/path name
 	 */
 	private final String DEFAULT_FILE_NAME = "taskContents.txt";
 	private final String DEFAULT_PATH_FILE_NAME = "pathContents.txt";
 	private final String DEFAULT_ALIAS_FILE_NAME = "aliasContents.txt";
-	
+
 	private final String FORMAT_PATH_NAME = "%1$s%2$s";
-	
+
 	/**
 	 * Magic Integers
 	 */
@@ -77,122 +77,123 @@ public class StorageConstants{
 	private final int INTEGER_ALIAS_COMMAND_INDEX = 0;
 	private final int INTEGER_COMMAND_INDEX = 1;
 	private final int INTEGER_ZERO = 0;
-	
-	public StorageConstants(){}
-	
-	public String getTaskObjectTitle(int index){
+
+	public StorageConstants() {
+	}
+
+	public String getTaskObjectTitle(int index) {
 		return STRING_TASKOBJECT[index];
 	}
-	
-	public String getSpace(){
+
+	public String getSpace() {
 		return STRING_SPACE;
 	}
-	
-	public String getNewLine(){
+
+	public String getNewLine() {
 		return STRING_NEWLINE;
 	}
-	
-	public String getEmptyString(){
+
+	public String getEmptyString() {
 		return STRING_EMPTY_STRING;
 	}
-	
-	public String getSlash(){
+
+	public String getSlash() {
 		return STRING_SLASH;
 	}
-	
-	public String getPathSlash(){
+
+	public String getPathSlash() {
 		return STRING_PATH_SLASH;
 	}
-	
-	public String getPathDivision(){
+
+	public String getPathDivision() {
 		return STRING_PATH_DIVISION;
 	}
-	
-	public String getTextFileEnding(){
+
+	public String getTextFileEnding() {
 		return STRING_TEXT_FILE_END;
 	}
-	
+
 	public String getAliasPair(String aliasCommand, String command) {
-		return String.format(STRING_ALIAS_PAIR, aliasCommand,command);
+		return String.format(STRING_ALIAS_PAIR, aliasCommand, command);
 	}
-	
+
 	public Object getNullString() {
 		return STRING_NULL;
 	}
-	
-	public String getFailedPathChange(){
+
+	public String getFailedPathChange() {
 		return LOGGING_MESSAGE_FAILED_PATH_CHANGE;
 	}
-	
-	public String getFailedUndo(){
+
+	public String getFailedUndo() {
 		return LOGGING_MESSAGE_FAILED_UNDO;
 	}
-	
-	public String getFailedRedo(){
+
+	public String getFailedRedo() {
 		return LOGGING_MESSAGE_FAILED_REDO;
 	}
-	
-	public String getFailedAliasSave(){
+
+	public String getFailedAliasSave() {
 		return LOGGING_MESSAGE_FAILED_ALIAS_SAVE;
 	}
-	
-	public String getFailedToFindAliasFile(){
+
+	public String getFailedToFindAliasFile() {
 		return LOGGING_MESSAGE_FAILED_TO_FIND_ALIAS_FILE;
 	}
-	
-	public String getFailedToReadPathFile(){
+
+	public String getFailedToReadPathFile() {
 		return LOGGING_MESSAGE_FAILED_TO_READ_PATH_FROM_FILE;
 	}
-	
-	public String getFailedToStorePathFile(){
+
+	public String getFailedToStorePathFile() {
 		return LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE;
 	}
-	
-	public String getStorageManipulatorNotInitialized(){
+
+	public String getStorageManipulatorNotInitialized() {
 		return LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED;
 	}
-	
-	public String getFailedToReadFromTextFile(){
+
+	public String getFailedToReadFromTextFile() {
 		return LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE;
 	}
-	
-	public String getFailedValidPathUsed(String path){
+
+	public String getFailedValidPathUsed(String path) {
 		return String.format(LOGGING_MESSAGE_INVALID_PATH, path);
 	}
-	
-	public String getFailedToCreateNewFile(String file){
+
+	public String getFailedToCreateNewFile(String file) {
 		return String.format(LOGGING_MESSAGE_FAILED_TO_CREATE_FILE, file);
 	}
-	
+
 	public String getFailedToCloseRead() {
 		return LOGGING_MESSAGE_FAILED_TO_CLOSE_ALIAS_READ;
 	}
-	
+
 	public String getFailedToReadFromAliasFile() {
 		return LOGGING_MESSAGE_FAILED_TO_READ_FROM_ALIAS_FILE;
 	}
-	
-	public String getFileName(){
+
+	public String getFileName() {
 		return DEFAULT_FILE_NAME;
 	}
-	
-	public String getPathFileName(){
+
+	public String getPathFileName() {
 		return DEFAULT_PATH_FILE_NAME;
 	}
-	
-	public String getAliasFileName(){
+
+	public String getAliasFileName() {
 		return DEFAULT_ALIAS_FILE_NAME;
 	}
-	
-	public int getBufferSize(){
+
+	public int getBufferSize() {
 		return BUFFERSIZE;
 	}
-	
-	public int getTotalTitles(){
+
+	public int getTotalTitles() {
 		return SUM_OF_TASKOBJECT_ITEMS;
 	}
-	
-	public String addFileNameToPath(String pathName, String fileName){
+
+	public String addFileNameToPath(String pathName, String fileName) {
 		return String.format(FORMAT_PATH_NAME, pathName, fileName);
 	}
 

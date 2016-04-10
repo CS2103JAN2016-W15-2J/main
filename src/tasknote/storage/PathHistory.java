@@ -7,29 +7,30 @@ import java.util.Stack;
  * This class deals with the history of operations of PATH using Stacks
  *
  */
-public class PathHistory{
+public class PathHistory {
 	Stack<String> history;
 	Stack<String> backup;
 	String current;
-	
+
 	/**
 	 * Constructor for PathHistory
 	 */
-	public PathHistory(){
+	public PathHistory() {
 		initializeStackHistory();
 	}
-	
+
 	private void initializeStackHistory() {
 		history = new Stack<String>();
 		backup = new Stack<String>();
 	}
-	
+
 	/**
 	 * add newPath to history Stack
+	 * 
 	 * @param newPath
 	 */
-	public void addHistory(String newPath){
-		if(isCurrentPathExist()){
+	public void addHistory(String newPath) {
+		if (isCurrentPathExist()) {
 			history.push(current);
 		}
 		current = newPath;
@@ -37,16 +38,17 @@ public class PathHistory{
 	}
 
 	private boolean isCurrentPathExist() {
-		return current!=null;
+		return current != null;
 	}
-	
+
 	/**
 	 * undo operation for path
-	 * @return String previous path if undo is available,
-	 * 		   or null when there is nothing to undo
+	 * 
+	 * @return String previous path if undo is available, or null when there is
+	 *         nothing to undo
 	 */
-	public String undo(){
-		if(history.isEmpty()){
+	public String undo() {
+		if (history.isEmpty()) {
 			return null;
 		}
 		setUpUndo();
@@ -57,14 +59,15 @@ public class PathHistory{
 		backup.push(current);
 		current = history.peek();
 	}
-	
+
 	/**
 	 * redo operation for path
-	 * @return String previous path if undo is available,
-	 * 		   or null when there is nothing to undo
+	 * 
+	 * @return String previous path if undo is available, or null when there is
+	 *         nothing to undo
 	 */
-	public String redo(){
-		if(backup.isEmpty()){
+	public String redo() {
+		if (backup.isEmpty()) {
 			return null;
 		}
 		setUpRedo();

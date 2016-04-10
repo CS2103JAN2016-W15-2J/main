@@ -13,224 +13,242 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Storage{
+public class Storage {
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;
 	private AliasManipulation aliasManipulator;
 	private StorageConstants constants;
-	
-	private static final Logger storageLog = Logger.getLogger( Storage.class.getName() );
-	
+
+	private static final Logger storageLog = Logger.getLogger(Storage.class.getName());
+
 	/**
 	 * constructor to construct FileManipulator to manipulate items from/to file
 	 */
-	public Storage(){
+	public Storage() {
 		initializeFamilyClasses();
 		readAndSetAlias();
 	}
-	
+
 	/**
 	 * read all the tasks from file and return to logic
 	 * 
 	 * @return ArrayList/<TaskObject/>
-	 * @throws IOException // there is something wrong with reading from textfile
-	 * @throws TaskListIOException //there is something wrong with contents in the file
+	 * @throws IOException
+	 *             // there is something wrong with reading from textfile
+	 * @throws TaskListIOException
+	 *             //there is something wrong with contents in the file
 	 */
-	public ArrayList<TaskObject> loadTasks() throws IOException, TaskListIOException{
+	public ArrayList<TaskObject> loadTasks() throws IOException, TaskListIOException {
 		ArrayList<TaskObject> tasks = fileManipulator.getTasks();
 		saveTasks(tasks);
 		return tasks;
 	}
-	
+
 	/**
 	 * write all the tasks from logic into file
 	 * 
 	 * @param overrideTasks
-	 * @throws TaskListIOException // there is something wrong with the contents in the overrideTasks
-	 * @throws IOException // there is something wrong with writing into textfile
+	 * @throws TaskListIOException
+	 *             // there is something wrong with the contents in the
+	 *             overrideTasks
+	 * @throws IOException
+	 *             // there is something wrong with writing into textfile
 	 */
-	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException, IOException{
+	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException, IOException {
 		cleanTextFile();
 		fileManipulator.writeTasks(overrideTasks);
 	}
-	
+
 	/**
 	 * clear all the contents in the textfile
 	 */
-	public void cleanTextFile() throws IOException{
+	public void cleanTextFile() throws IOException {
 		fileManipulator.cleanTextFile();
 	}
-	
+
 	/**
 	 * use user entered PATH to change to a new location
+	 * 
 	 * @param newPathName
 	 * @return true if path successfully changed
 	 */
-	public boolean changePath(String newPathName)throws IOException{
+	public boolean changePath(String newPathName) throws IOException {
 		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
-		if(handlePathChangeForMacAndWindows(textFileName)){
+		if (handlePathChangeForMacAndWindows(textFileName)) {
 			pathManipulator.pushHistory(textFileName);
 			return true;
 		}
-		
+
 		return logFailedPathEntered(textFileName);
 	}
-	
+
 	/**
 	 * undo PATH operation
+	 * 
 	 * @return true if successfully undo PATH
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public boolean undoPath() throws InvalidPathException, IOException{
-		try{
-			String previousPath = pathManipulator.extractUndoPathString();		
-			if(pathManipulator.isValidFilePath(previousPath)){
+	public boolean undoPath() throws InvalidPathException, IOException {
+		try {
+			String previousPath = pathManipulator.extractUndoPathString();
+			if (pathManipulator.isValidFilePath(previousPath)) {
 				return fileManipulator.moveFile(previousPath);
 			}
-			throw new InvalidPathException(previousPath,constants.getFailedValidPathUsed(previousPath));
-		}catch(NullPointerException npe){
+			throw new InvalidPathException(previousPath, constants.getFailedValidPathUsed(previousPath));
+		} catch (NullPointerException npe) {
 			return logUndoFailed();
 		}
 	}
-	
+
 	/**
 	 * re-do PATH operation
+	 * 
 	 * @return true if successfully re-do PATH
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public boolean redoPath() throws InvalidPathException, IOException{
-		try{
+	public boolean redoPath() throws InvalidPathException, IOException {
+		try {
 			String nextPath = pathManipulator.extractRedoPathString();
-			if(pathManipulator.isValidFilePath(nextPath)){
+			if (pathManipulator.isValidFilePath(nextPath)) {
 				return fileManipulator.moveFile(nextPath);
 			}
-			throw new InvalidPathException(nextPath,constants.getFailedValidPathUsed(nextPath));
-		}catch(NullPointerException npe){
+			throw new InvalidPathException(nextPath, constants.getFailedValidPathUsed(nextPath));
+		} catch (NullPointerException npe) {
 			return logRedoFailed();
 		}
 	}
-	
+
 	/**
 	 * get alias command with command
+	 * 
 	 * @param command
 	 * @return String aliasCommand
 	 */
-	public String getAlias(String aliasCommand){
+	public String getAlias(String aliasCommand) {
 		return aliasManipulator.getAlias(aliasCommand);
 	}
-	
+
 	/**
 	 * get full alias HashMap
+	 * 
 	 * @return HashMap<String, String> alias
 	 */
-	public HashMap<String, String> getAlias(){
+	public HashMap<String, String> getAlias() {
 		return aliasManipulator.getAlias();
 	}
-	
+
 	/**
 	 * remove an alias command from the alias HashMap
+	 * 
 	 * @param aliasCommand
 	 * @return HashMap<String, String> alias
 	 */
-	public HashMap<String,String> removeAlias(String aliasCommand){
-		HashMap<String,String> alias = aliasManipulator.removeAlias(aliasCommand);
+	public HashMap<String, String> removeAlias(String aliasCommand) {
+		HashMap<String, String> alias = aliasManipulator.removeAlias(aliasCommand);
 		saveModifiedAlias(alias);
 		return alias;
 	}
-	
+
 	/**
 	 * write alias into aliasFile
+	 * 
 	 * @param overrideAlias
-	 * @throws IOException //there is something wrong writing into aliasFile
+	 * @throws IOException
+	 *             //there is something wrong writing into aliasFile
 	 */
-	public void saveAlias(HashMap<String,String> overrideAlias) throws IOException{
+	public void saveAlias(HashMap<String, String> overrideAlias) throws IOException {
 		fileManipulator.writeAlias(overrideAlias);
 		aliasManipulator.setAliasAndPushToHistory(overrideAlias);
 	}
-	
+
 	/**
 	 * add alias command into command in HashMap
+	 * 
 	 * @param command
 	 * @param aliasCommand
 	 * @return current alias HashMap
 	 */
-	public boolean addAlias(String command, String alias) throws AddDuplicateAliasException{
+	public boolean addAlias(String command, String alias) throws AddDuplicateAliasException {
 		aliasManipulator.addAlias(command, alias);
 		saveCurrentAlias();
 		return true;
 	}
-	
+
 	/**
 	 * undo alias operation
+	 * 
 	 * @return true if successfully undo
 	 */
-	public boolean undoAlias() throws IOException{
+	public boolean undoAlias() throws IOException {
 		boolean isUndoSuccessful = aliasManipulator.undo();
-		if(isUndoSuccessful){
+		if (isUndoSuccessful) {
 			setCurrentAlias();
 		}
 		return isUndoSuccessful;
 	}
-	
+
 	/**
 	 * redo alias operation
+	 * 
 	 * @return true if successfully redo
 	 */
-	public boolean redoAlias() throws IOException{
+	public boolean redoAlias() throws IOException {
 		boolean isRedoSuccessful = aliasManipulator.redo();
-		if(isRedoSuccessful){
+		if (isRedoSuccessful) {
 			setCurrentAlias();
 		}
 		return isRedoSuccessful;
 	}
-	
+
 	/**
 	 * clear all the contents in the alias file
 	 */
-	public void cleanAliasFile() throws IOException{
+	public void cleanAliasFile() throws IOException {
 		fileManipulator.cleanAliasFile();
 		aliasManipulator.resetAlias();
 	}
-	
+
 	/*
-	 *  private helper methods
+	 * private helper methods
 	 */
-	
+
 	private void initializeFamilyClasses() {
 		fileManipulator = new FileManipulation();
 		pathManipulator = new PathManipulation();
 		aliasManipulator = new AliasManipulation();
 		constants = new StorageConstants();
 	}
-	
-	private String concatPathIfNeeded(String pathName, String previousTextFileName) throws InvalidPathException, NullPointerException, IOException{
+
+	private String concatPathIfNeeded(String pathName, String previousTextFileName)
+			throws InvalidPathException, NullPointerException, IOException {
 		String textFileName = getFileName(pathName, previousTextFileName);
-		if(!pathManipulator.isAbsolutePath(pathName)){
+		if (!pathManipulator.isAbsolutePath(pathName)) {
 			return produceFullPathWithDirectoryCommand(pathName, previousTextFileName, textFileName);
-		}else if(isPathSlashEnteredAtTheEnd(pathName)){
+		} else if (isPathSlashEnteredAtTheEnd(pathName)) {
 			return addFileNameAndProduceFullPath(pathName, textFileName);
-		}else if(isFileNameEntered(pathName)){
+		} else if (isFileNameEntered(pathName)) {
 			return produceFullPathWithNewFileName(pathName, textFileName);
-		}else{
+		} else {
 			return addSlashAndProduceFullPath(pathName, textFileName);
 		}
 	}
-	
+
 	private boolean isFileNameEntered(String pathName) {
 		return pathName.endsWith(constants.getTextFileEnding());
 	}
-	
+
 	private boolean isPathSlashEnteredAtTheEnd(String pathName) {
 		return pathName.endsWith(constants.getSlash()) || pathName.endsWith(constants.getPathSlash());
 	}
-	
-	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName, String textFileName) throws IOException{
-		if(isFileNameEntered(newPath)){
+
+	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName, String textFileName)
+			throws IOException {
+		if (isFileNameEntered(newPath)) {
 			String newFileName = fileManipulator.extractTextFileName(newPath);
 			newPath = extractCurrentPath(newPath, newFileName);
 		}
 		String currentPath = extractCurrentPath(previousTextFileName);
-		String newFullPath = pathManipulator.extractNewFullPath(newPath,currentPath);
+		String newFullPath = pathManipulator.extractNewFullPath(newPath, currentPath);
 		return addSlashAndProduceFullPath(newFullPath, textFileName);
 	}
 
@@ -242,71 +260,71 @@ public class Storage{
 
 	private String extractCurrentPath(String previousTextFileName) {
 		String currentFullPath = fileManipulator.readFullPathFromPathFile();
-		return extractCurrentPath(currentFullPath,previousTextFileName);
+		return extractCurrentPath(currentFullPath, previousTextFileName);
 	}
-	
+
 	private String extractCurrentPath(String currentFullPath, String previousTextFileName) {
 		return currentFullPath.replace(previousTextFileName, constants.getEmptyString());
 	}
-	
-	private String addFileNameAndProduceFullPath(String pathName, String previousTextFileName) throws IOException{
+
+	private String addFileNameAndProduceFullPath(String pathName, String previousTextFileName) throws IOException {
 		return constants.addFileNameToPath(pathName, previousTextFileName);
 	}
-	
+
 	private String produceFullPathWithNewFileName(String pathName, String previousTextFileName) {
 		String fileName = getFileName(pathName, previousTextFileName);
-		if(fileName.equals(pathName)){
+		if (fileName.equals(pathName)) {
 			String newFullPath = extractNewCurrentFullPath(previousTextFileName, fileName);
 			return newFullPath;
 		}
 		return pathName;
 	}
-	
+
 	private String getFileName(String pathName, String previousTextFileName) {
-		if(isFileNameEntered(pathName)){
+		if (isFileNameEntered(pathName)) {
 			String fileName = fileManipulator.extractTextFileName(pathName);
-			if(isEmptyFileName(fileName)){
+			if (isEmptyFileName(fileName)) {
 				fileName = previousTextFileName;
 			}
 			return fileName;
 		}
 		return previousTextFileName;
 	}
-	
+
 	private boolean isEmptyFileName(String fileName) {
 		return fileName == null;
 	}
-	
-	private String addSlashAndProduceFullPath(String pathName, String previousTextFileName)throws IOException {
+
+	private String addSlashAndProduceFullPath(String pathName, String previousTextFileName) throws IOException {
 		pathName = addSlashToFullPath(pathName);
 		return concatPathIfNeeded(pathName, previousTextFileName);
 	}
-	
+
 	private String addSlashToFullPath(String pathName) {
 		return pathName.concat(constants.getSlash());
 	}
-	
+
 	private boolean handlePathChangeForMacAndWindows(String textFileName) throws IOException {
-		
-		if(isValidFilePath(textFileName)){
+
+		if (isValidFilePath(textFileName)) {
 			return fileManipulator.moveFile(textFileName);
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean isValidFilePath(String textFileName) {
 		return pathManipulator.isValidFilePath(textFileName);
 	}
-	
+
 	// alias related helper methods
-	
+
 	private void readAndSetAlias() {
 		HashMap<String, String> alias = readAlias();
 		aliasManipulator.setAlias(alias);
 	}
-	
-	private HashMap<String, String> readAlias(){
+
+	private HashMap<String, String> readAlias() {
 		try {
 			return fileManipulator.readAliasFromAliasFile();
 		} catch (FileNotFoundException e) {
@@ -314,43 +332,43 @@ public class Storage{
 		}
 		return new HashMap<String, String>();
 	}
-	
-	private void setCurrentAlias() throws IOException{
-		HashMap<String,String> alias = aliasManipulator.getAlias();
+
+	private void setCurrentAlias() throws IOException {
+		HashMap<String, String> alias = aliasManipulator.getAlias();
 		fileManipulator.writeAlias(alias);
 		aliasManipulator.setAlias(alias);
 	}
-	
+
 	private void saveCurrentAlias() {
-		HashMap<String,String> alias = aliasManipulator.getAlias();
+		HashMap<String, String> alias = aliasManipulator.getAlias();
 		saveModifiedAlias(alias);
 	}
-	
+
 	private void saveModifiedAlias(HashMap<String, String> alias) {
-		try{
+		try {
 			saveAlias(alias);
-		}catch(IOException ioe){
+		} catch (IOException ioe) {
 			logSaveModifiedAliasFailed();
 		}
 	}
-	
+
 	// logging methods
-	
+
 	private boolean logFailedPathEntered(String textFileName) {
 		storageLog.log(Level.WARNING, String.format(constants.getFailedPathChange(), textFileName));
 		return false;
 	}
-	
+
 	private boolean logUndoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedUndo());
 		return false;
 	}
-	
+
 	private boolean logRedoFailed() {
 		storageLog.log(Level.FINE, constants.getFailedRedo());
 		return false;
 	}
-	
+
 	private void logSaveModifiedAliasFailed() {
 		storageLog.log(Level.WARNING, constants.getFailedAliasSave());
 	}

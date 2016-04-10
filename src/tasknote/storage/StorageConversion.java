@@ -6,13 +6,14 @@ import java.io.IOException;
 import tasknote.shared.TaskObject;
 
 /**
- * StorageConversion class is a helper class for FileManipulation. It takes the Strings that are read
- * from the textFile and convert it into a TaskObject OR do it in the reverse manner
+ * StorageConversion class is a helper class for FileManipulation. It takes the
+ * Strings that are read from the textFile and convert it into a TaskObject OR
+ * do it in the reverse manner
  */
-public class StorageConversion{
+public class StorageConversion {
 	private StorageConstants constants;
 	private StorageDeadlineUpdater deadlineUpdater;
-	
+
 	/**
 	 * constants for TaskObject cases
 	 */
@@ -33,57 +34,60 @@ public class StorageConversion{
 	private final int CASE_TASK_END_DATE_HOUR = 14;
 	private final int CASE_TASK_END_DATE_MINUTE = 15;
 	private final int CASE_TASK_END = 16;
-	
+
 	/**
 	 * special constants for StorageConversion
 	 */
 	private final int NO_CONTENT = 1;
 	private final int CONTENT = 1;
-	
+
 	/**
 	 * Constructor
 	 */
-	public StorageConversion(){
+	public StorageConversion() {
 		constants = new StorageConstants();
 		deadlineUpdater = new StorageDeadlineUpdater();
 	}
-	
+
 	/**
 	 * To convert a series of Strings into one taskObject
+	 * 
 	 * @param tasks
 	 * @return ArrayList<TaskObject>
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public TaskObject convertStringToTaskObject(String[] taskLinesRead, int linesRead) throws ClassNotFoundException, IOException{
+	public TaskObject convertStringToTaskObject(String[] taskLinesRead, int linesRead)
+			throws ClassNotFoundException, IOException {
 		TaskObject returnObject = new TaskObject();
-		
-		for(int index = 0; index < linesRead; ++index){
+
+		for (int index = 0; index < linesRead; ++index) {
 			storeItemIntoTaskObject(taskLinesRead[index], returnObject);
 		}
-		
+
 		deadlineUpdater.updateTaskStatus(returnObject);
 		return returnObject;
 	}
-	
-	private void storeItemIntoTaskObject(String taskLine, TaskObject returnObject) throws IOException, ClassNotFoundException {		
-		
-		if(isNullString(taskLine)){
+
+	private void storeItemIntoTaskObject(String taskLine, TaskObject returnObject)
+			throws IOException, ClassNotFoundException {
+
+		if (isNullString(taskLine)) {
 			return;
 		}
-		
+
 		int taskOperation = extractTaskOperation(taskLine);
 		String[] content = extractContent(taskOperation, taskLine);
-		
-		if(isNoContentFound(content)){
+
+		if (isNoContentFound(content)) {
 			return;
 		}
-		
+
 		setTaskOperation(returnObject, taskOperation, content);
 	}
 
 	private void setTaskOperation(TaskObject returnObject, int taskOperation, String[] content) {
-		switch(taskOperation){
+		switch (taskOperation) {
 			case CASE_TASK_NAME:
 				setTaskName(returnObject, content);
 				break;
@@ -136,37 +140,37 @@ public class StorageConversion{
 				break;
 		}
 	}
-	
-	private int extractTaskOperation(String taskObjectLine){
-		for(int titleIndex = 0; titleIndex < constants.getTotalTitles(); ++titleIndex){
-			if(taskObjectLine.startsWith(constants.getTaskObjectTitle(titleIndex))){
+
+	private int extractTaskOperation(String taskObjectLine) {
+		for (int titleIndex = 0; titleIndex < constants.getTotalTitles(); ++titleIndex) {
+			if (taskObjectLine.startsWith(constants.getTaskObjectTitle(titleIndex))) {
 				return titleIndex;
 			}
 		}
 		return CASE_TASK_END;
 	}
-	
+
 	private String[] extractContent(int index, String string) {
 		return string.split(constants.getTaskObjectTitle(index));
 	}
-	
+
 	private void setTaskEndDateMinute(TaskObject returnObject, String[] content) {
 		returnObject.setEndDateMinute(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskEndDateHour(TaskObject returnObject, String[] content) {
 		returnObject.setEndDateHour(Integer.parseInt(content[CONTENT].trim()));
-		
+
 	}
 
 	private void setTaskEndDateYear(TaskObject returnObject, String[] content) {
 		returnObject.setEndDateYear(Integer.parseInt(content[CONTENT].trim()));
-		
+
 	}
 
 	private void setTaskEndDateMonth(TaskObject returnObject, String[] content) {
 		returnObject.setEndDateMonth(Integer.parseInt(content[CONTENT].trim()));
-		
+
 	}
 
 	private void setTaskEndDateDay(TaskObject returnObject, String[] content) {
@@ -233,22 +237,23 @@ public class StorageConversion{
 
 	/**
 	 * To convert one task into a string for storage
+	 * 
 	 * @param task
 	 * @return String for store into file
 	 */
-	public String convertTaskObjectToString(TaskObject task){
+	public String convertTaskObjectToString(TaskObject task) {
 		StringBuffer convertedString = new StringBuffer(constants.getEmptyString());
-		
-		for(int index = 0; index < constants.getTotalTitles(); ++index){
+
+		for (int index = 0; index < constants.getTotalTitles(); ++index) {
 			convertedString.append(extractItemFromTaskObject(index, task));
 		}
-		
+
 		return convertedString.toString();
 	}
-	
-	private StringBuffer extractItemFromTaskObject(int taskObjectLine, TaskObject task){
+
+	private StringBuffer extractItemFromTaskObject(int taskObjectLine, TaskObject task) {
 		StringBuffer taskObjectBuffer = initializeTempBufferLine(taskObjectLine);
-		switch(taskObjectLine){
+		switch (taskObjectLine) {
 			case CASE_TASK_NAME:
 				writeTaskNameToStringBuffer(task, taskObjectBuffer);
 				break;
@@ -322,7 +327,7 @@ public class StorageConversion{
 	}
 
 	private void writeGetTaskEndDateYearToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getEndDateYear());	
+		tempBuffer.append(task.getEndDateYear());
 	}
 
 	private void writeGetTaskEndDateMonthToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
