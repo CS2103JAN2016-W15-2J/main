@@ -44,7 +44,7 @@ public class FileManipulation{
 	public FileManipulation(){
 		initializeFamilyClasses();
 		initializeFiles();
-		createFileIfNotExist();
+		createFilesIfNotExist();
 	}
 	
 	private void initializeFamilyClasses() {
@@ -89,7 +89,7 @@ public class FileManipulation{
 		return readFullPathFromPathFile();
 	}
 	
-	private void createFileIfNotExist() {
+	private void createFilesIfNotExist() {
 		createPathFileIfNotExist();
 		createAliasFileIfNotExist();
 		createTextFileIfNotExist();
@@ -122,19 +122,23 @@ public class FileManipulation{
 		try{
 			file.createNewFile(); 
 		}catch(IOException e){
-			System.out.println(e.getMessage());
+			fileLog.log(Level.WARNING, constants.getFailedToCreateNewFile(file.toString()));
 		}
 	}
 	
 	private void storeNewTextFilePath(){
 		try{
 			BufferedOutputStream fileWriter = new BufferedOutputStream(initializePathFileOutputStream());
-			byte[] textFileCanonicalPathName = getByteArrayOfFullPath();
-			fileWriter.write(textFileCanonicalPathName,0,textFileCanonicalPathName.length);
+			writeCanonicalTextPathToPathFile(fileWriter);
 			fileWriter.close();
 		}catch(IOException ioe){
 			fileLog.log(Level.WARNING, constants.getFailedToStorePathFile());
 		}
+	}
+
+	private void writeCanonicalTextPathToPathFile(BufferedOutputStream fileWriter) throws IOException {
+		byte[] textFileCanonicalPathName = getByteArrayOfFullPath();
+		fileWriter.write(textFileCanonicalPathName,0,textFileCanonicalPathName.length);
 	}
 
 	private byte[] getByteArrayOfFullPath() throws IOException {
@@ -148,6 +152,7 @@ public class FileManipulation{
 	
 	/**
 	 * read full path of the current text file from pathFile
+	 * able to handle one round of empty path file read
 	 * @return String of current full path stored
 	 */
 	public String readFullPathFromPathFile() {
@@ -170,9 +175,9 @@ public class FileManipulation{
 
 	private String readPathFromPathFile() throws FileNotFoundException, IOException {
 		BufferedReader fileReader = initializeFileReader();
-		String fileName = fileReader.readLine();
+		String pathFile = fileReader.readLine();
 		fileReader.close();
-		return fileName;
+		return pathFile;
 	}
 	
 	private BufferedReader initializeFileReader() throws FileNotFoundException {
@@ -228,7 +233,7 @@ public class FileManipulation{
 	}
 	
 	private int getLastIndexOfArray(String[] pathListName) {
-		return pathListName.length-1;
+		return constants.getLastIndexOfArray(pathListName.length);
 	}
 	
 	/**
@@ -261,28 +266,47 @@ public class FileManipulation{
 			BufferedReader fileReader) throws IOException,TaskListIOException, NullPointerException{
 		try{
 			while(true){
-				String[] objectRead = new String[constants.getTotalTitles()];
-				int linesRead = iterateOnceToStoreOneObject(fileReader, objectRead);
-				returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead, linesRead));
+				addOneTaskObjectRead(returnTaskList, fileReader);
 			}
 		}catch(ClassNotFoundException cnfe){
 			fileLog.log(Level.WARNING, constants.getStorageManipulatorNotInitialized());
 		}catch(IOException ioe){
 			fileLog.log(Level.WARNING, constants.getFailedToReadFromTextFile());
+			throw new TaskListIOException();
 		}catch(NullPointerException npe){
 			//read success [NOT logged to avoid overcrowd console]
 		}
+	}
+
+	private void addOneTaskObjectRead(ArrayList<TaskObject> returnTaskList, BufferedReader fileReader)
+			throws IOException, ClassNotFoundException {
+		String[] objectRead = new String[constants.getTotalTitles()];
+		int linesRead = iterateOnceToStoreOneObject(fileReader, objectRead);
+		returnTaskList.add(storageManipulator.convertStringToTaskObject(objectRead, linesRead));
 	}
 	
 	private int iterateOnceToStoreOneObject(BufferedReader fileReader, String[] objectRead) throws IOException{
 		int numberOfLinesRead = 0;
 		String lineRead = attemptToReadLineOrEndRead(fileReader);
-		while(!lineRead.equals(constants.getEmptyString()) && !lineRead.startsWith(constants.getSpace()) && numberOfLinesRead < constants.getTotalTitles()){
+		while(isValidRead(numberOfLinesRead, lineRead)){
 			objectRead[numberOfLinesRead] = lineRead;
 			++numberOfLinesRead;
 			lineRead = attemptToReadLineOrEndRead(fileReader);
 		}
 		return numberOfLinesRead;
+	}
+
+	private boolean isValidRead(int numberOfLinesRead, String lineRead) {
+		return !isEndOfTaskObjectRead(lineRead) && isWithinValidLinesRead(numberOfLinesRead);
+	}
+	
+	private boolean isEndOfTaskObjectRead(String lineRead){
+		lineRead = lineRead.trim();
+		return lineRead.equals(constants.getEmptyString());
+	}
+
+	private boolean isWithinValidLinesRead(int numberOfLinesRead) {
+		return numberOfLinesRead < constants.getTotalTitles();
 	}
 
 	private String attemptToReadLineOrEndRead(BufferedReader fileReader) throws IOException {
@@ -315,14 +339,9 @@ public class FileManipulation{
 	
 	private void writeToFile(String stringToFile) throws TaskListIOException{
 		try{
-			//initialize
 			byte[] bufferMemory = stringToFile.getBytes();
-			int totalNumberOfBytesToWrite = bufferMemory.length;
-			int maxWriteLength = constants.getBufferSize();
 			BufferedOutputStream fileWriter = new BufferedOutputStream(initializeContinuousTextFileOutputStream());
-			
-			loopWriteOneObjectToFile(bufferMemory, totalNumberOfBytesToWrite, maxWriteLength, fileWriter);
-			
+			writeOneObjectToFile(bufferMemory, fileWriter);
 			fileWriter.close();
 		}catch(IOException ioe){
 			throw new TaskListIOException();
@@ -333,8 +352,7 @@ public class FileManipulation{
 		return new FileOutputStream(textFile,true);
 	}
 
-	private void loopWriteOneObjectToFile(byte[] bufferMemory, int totalNumberOfBytesToWrite, int maxWriteLength,
-			BufferedOutputStream fileWriter) throws IOException{
+	private void writeOneObjectToFile(byte[] bufferMemory, BufferedOutputStream fileWriter) throws IOException{
 			fileWriter.write(bufferMemory,0,bufferMemory.length);
 			fileWriter.flush();
 	}
@@ -342,51 +360,78 @@ public class FileManipulation{
 	public void writeAlias(HashMap<String,String> alias) throws IOException{
 		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(aliasFile));
 		Map<String,String> aliasMap = alias;
-		for(String command : aliasMap.keySet()){
-			String aliasCommand = alias.get(command);
-			String aliasPair = command + " " + aliasCommand + "\n";
-			byte[] bufferMemory = aliasPair.getBytes();
-			fileWriter.write(bufferMemory,0,bufferMemory.length);
-			fileWriter.flush();
-		}
+		iterateAliasMapToWriteToFile(alias, fileWriter, aliasMap);
 		fileWriter.close();
+	}
+
+	private void iterateAliasMapToWriteToFile(HashMap<String, String> alias, BufferedOutputStream fileWriter,
+			Map<String, String> aliasMap) throws IOException {
+		for(String aliasCommand : aliasMap.keySet()){
+			writeAliasPairToAliasFile(alias, fileWriter, aliasCommand);
+		}
+	}
+
+	private void writeAliasPairToAliasFile(HashMap<String, String> alias, BufferedOutputStream fileWriter,
+			String aliasCommand) throws IOException {
+		String aliasPair = generateAliasPair(alias, aliasCommand);
+		byte[] bufferMemory = aliasPair.getBytes();
+		writeOneObjectToFile(bufferMemory, fileWriter);
+	}
+
+	private String generateAliasPair(HashMap<String, String> alias, String aliasCommand) {
+		String command = alias.get(aliasCommand);
+		return constants.getAliasPair(aliasCommand, command);
 	}
 	
 	public HashMap<String, String> readAliasFromAliasFile() throws FileNotFoundException{
 		HashMap<String, String> alias = new HashMap<String, String>();
 		BufferedReader read = new BufferedReader(new FileReader(aliasFile));
 		try {
-			while(true){
-				String aliasLine = attemptToReadLineOrEndRead(read);
-				String[] aliasPair = aliasLine.split(" ");
-				if(aliasPair.length==2){
-					String command = aliasPair[0];
-					String aliasCommand = aliasPair[1];
-					alias.put(command, aliasCommand);
-				}
-			}
+			loopReadLineToFillAlias(alias, read);
 		}catch(IOException ioe){
-			
+			fileLog.log(Level.WARNING, constants.getFailedToReadFromAliasFile());
 		}catch(NullPointerException npe){
+			//read success [NOT logged to avoid overcrowd console]
 		}
-		
-		try{
-			read.close();
-		}catch(IOException ioe){
-			
-		}
+		closeRead(read);
 		return alias;
 	}
 
+	private void loopReadLineToFillAlias(HashMap<String, String> alias, BufferedReader read) throws IOException {
+		while(true){
+			String aliasLine = attemptToReadLineOrEndRead(read);
+			String[] aliasPair = extractAliasPair(aliasLine);
+			addAliasPairToAlias(alias, aliasPair);
+		}
+	}
+
+	private String[] extractAliasPair(String aliasLine) {
+		return aliasLine.split(constants.getSpace());
+	}
+
+	private void addAliasPairToAlias(HashMap<String, String> alias, String[] aliasPair){
+		if(aliasPair.length==constants.getPairCount()){
+			String aliasCommand = aliasPair[constants.getAliasCommandIndex()];
+			String command = aliasPair[constants.getCommandIndex()];
+			alias.put(aliasCommand, command);
+		}
+	}
+
+	private void closeRead(BufferedReader read) {
+		try{
+			read.close();
+		}catch(IOException ioe){
+			fileLog.log(Level.WARNING, constants.getFailedToCloseRead());
+		}
+	}
+
 	/**
-	 * 
-	 * [OPTIONAL]
-	 * 
-	 * This method attempts to change file name into a new one desired by the user
+	 * This method attempts to change file name into a new one desired by the user and
+	 * move the file to the new path
 	 *
 	 * @param	String desired new file name
-	 * @return	boolean true for success copy of file and false otherwise
-	 *
+	 * @return	boolean true for success copy of file or false if the fileName is not valid
+	 * @throws  IOException when failed to move the file
 	 */
 	
 	public boolean moveFile(String fileName) throws IOException{
@@ -446,16 +491,12 @@ public class FileManipulation{
 	}
 
 	private boolean isPositive(int length){
-		return length > 0;
+		return length > constants.getMaximumNonPositiveValue();
 	}
 
-	private void closeStream(BufferedInputStream inStream, BufferedOutputStream outStream){
-		try{
-			inStream.close();
-			outStream.close();
-		}catch(IOException e){
-			// do nothing
-		}
+	private void closeStream(BufferedInputStream inStream, BufferedOutputStream outStream) throws IOException{
+		inStream.close();
+		outStream.close();
 	}
 	
 	public void cleanFile() throws IOException{

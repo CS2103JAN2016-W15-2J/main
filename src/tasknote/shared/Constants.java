@@ -1,5 +1,7 @@
 package tasknote.shared;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Constants {
 
 	/*
@@ -215,5 +217,64 @@ public class Constants {
 	public static final int INVALID_VALUE_CONSTANT = -1;
 	public static final int TIME_LATEST_HOUR_CONSTANT = 11;
 	public static final int TIME_LATEST_MINUTE_CONSTANT = 59;
+	
+	/*
+	 * These are magic Strings that will be used for toString method
+	 */
+	private static final String STRING_TOSTRING_TASK_NAME = "TaskName = $1%s";
+	private static final String STRING_TOSTRING_TASK_DATE = "\nDate = $1%s/$2%s/$3%s";
+	private static final String STRING_TOSTRING_END_DATE = "\nEndDate = $1%s/$2%s/$3%s";
+	private static final String STRING_TOSTRING_TIME = "\nTime = $1%s $2%s";
+	private static final String STRING_TOSTRING_DURATION = "\nDuration = $1%s";
+	private static final String STRING_TOSTRING_LOCATION = "\nLocation = $1%s";
+	private static final String STRING_TOSTRING_NOTIFY_TIME = "\nNotifyTime = $1%s";
+	private static final String STRING_TOSTRING_IS_NOTIFIED = "\nIsNotified = $1%s";
+	private static final String STRING_TOSTRING_TASK_STATUS = "\nTaskStatus = $1%s";
+	private static final String STRING_TOSTRING_TASK_TYPE = "\nTaskType = $1%s";
+	private static final String STRING_TOSTRING_IS_MARKED_DONE = "\nisMarkedDone = $1%s";
+	
+	public static String produceTaskName(String taskName) {
+		return String.format(STRING_TOSTRING_TASK_NAME, taskName);
+	}
+
+	public static String produceDate(int dateDay, int dateMonth, int dateYear) {
+		return String.format(STRING_TOSTRING_TASK_DATE, dateDay, dateMonth, dateYear);
+	}
+
+	public static String produceEndDate(int endDateDay, int endDateMonth, int endDateYear) {
+		return String.format(STRING_TOSTRING_END_DATE, endDateDay, endDateMonth, endDateYear);
+	}
+
+	public static String produceTime(int dateHour, int dateMinute) {
+		return String.format(STRING_TOSTRING_TIME, dateHour, dateMinute);
+	}
+
+	public static String produceDuration(int duration) {
+		return String.format(STRING_TOSTRING_DURATION, duration);
+	}
+
+	public static String produceLocation(String location) {
+		return String.format(STRING_TOSTRING_LOCATION, location);
+	}
+
+	public static String produceNotifyTime(int notifyTime) {
+		return String.format(STRING_TOSTRING_NOTIFY_TIME, notifyTime);
+	}
+
+	public static String produceIsNotified(boolean isNotified) {
+		return String.format(STRING_TOSTRING_IS_NOTIFIED, isNotified);
+	}
+
+	public static String produceTaskStatus(SimpleStringProperty taskStatus) {
+		return String.format(STRING_TOSTRING_TASK_STATUS, taskStatus);
+	}
+	
+	public static String produceTaskType(String taskType) {
+		return String.format(STRING_TOSTRING_TASK_TYPE, taskType);
+	}
+
+	public static String produceIsMarkedDone(boolean isMarkedDone) {
+		return String.format(STRING_TOSTRING_IS_MARKED_DONE, isMarkedDone);
+	}
 
 }

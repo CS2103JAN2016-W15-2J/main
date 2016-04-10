@@ -29,7 +29,13 @@ public class StorageConversion{
 	private final int CASE_TASK_END_DATE_HOUR = 14;
 	private final int CASE_TASK_END_DATE_MINUTE = 15;
 	private final int CASE_TASK_END = 16;
-    
+	
+	/**
+	 * special constants for StorageConversion
+	 */
+	private final int NO_CONTENT = 1;
+	private final int CONTENT = 1;
+	
 	/**
 	 * Constructor
 	 */
@@ -52,7 +58,7 @@ public class StorageConversion{
 			storeItemIntoTaskObject(taskLinesRead[index], returnObject);
 		}
 		
-		deadlineUpdater.update(returnObject);
+		deadlineUpdater.updateTaskStatus(returnObject);
 		return returnObject;
 	}
 	
@@ -141,84 +147,80 @@ public class StorageConversion{
 	}
 	
 	private void setTaskEndDateMinute(TaskObject returnObject, String[] content) {
-		returnObject.setEndDateMinute(Integer.parseInt(content[1].trim()));
+		returnObject.setEndDateMinute(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskEndDateHour(TaskObject returnObject, String[] content) {
-		returnObject.setEndDateHour(Integer.parseInt(content[1].trim()));
+		returnObject.setEndDateHour(Integer.parseInt(content[CONTENT].trim()));
 		
 	}
 
 	private void setTaskEndDateYear(TaskObject returnObject, String[] content) {
-		returnObject.setEndDateYear(Integer.parseInt(content[1].trim()));
+		returnObject.setEndDateYear(Integer.parseInt(content[CONTENT].trim()));
 		
 	}
 
 	private void setTaskEndDateMonth(TaskObject returnObject, String[] content) {
-		returnObject.setEndDateMonth(Integer.parseInt(content[1].trim()));
+		returnObject.setEndDateMonth(Integer.parseInt(content[CONTENT].trim()));
 		
 	}
 
 	private void setTaskEndDateDay(TaskObject returnObject, String[] content) {
-		returnObject.setEndDateDay(Integer.parseInt(content[1].trim()));
+		returnObject.setEndDateDay(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskType(TaskObject returnObject, String[] content) {
-		returnObject.setTaskType(content[1].trim());
+		returnObject.setTaskType(content[CONTENT].trim());
 	}
 
 	private void setTaskStatus(TaskObject returnObject, String[] content) {
-		String taskStatus = content[1].trim();
-		for(int indexEnum = 0; indexEnum < constants.getTotalTaskStatus(); ++indexEnum){
-			if(taskStatus.equalsIgnoreCase(constants.getTaskStatus(indexEnum))){
-				returnObject.setTaskStatus(constants.getTaskStatus(indexEnum));
-			}
-		}
+		String taskStatus = content[CONTENT].trim();
+		returnObject.setTaskStatus(taskStatus);
 	}
 
 	private void setTaskNotifyTime(TaskObject returnObject, String[] content) {
-		returnObject.setNotifyTime(Integer.parseInt(content[1].trim()));
+		returnObject.setNotifyTime(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskLocation(TaskObject returnObject, String[] content) {
-		returnObject.setLocation(content[1].trim());
+		returnObject.setLocation(content[CONTENT].trim());
 	}
 
 	private void setTaskDuration(TaskObject returnObject, String[] content) {
-		returnObject.setDuration(Integer.parseInt(content[1].trim()));
+		returnObject.setDuration(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskMinute(TaskObject returnObject, String[] content) {
-		returnObject.setDateMinute(Integer.parseInt(content[1].trim()));
+		returnObject.setDateMinute(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskHour(TaskObject returnObject, String[] content) {
-		returnObject.setDateHour(Integer.parseInt(content[1].trim()));
+		returnObject.setDateHour(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskYear(TaskObject returnObject, String[] content) {
-		returnObject.setDateYear(Integer.parseInt(content[1].trim()));
+		returnObject.setDateYear(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskMonth(TaskObject returnObject, String[] content) {
-		returnObject.setDateMonth(Integer.parseInt(content[1].trim()));
+		returnObject.setDateMonth(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskDay(TaskObject returnObject, String[] content) {
-		returnObject.setDateDay(Integer.parseInt(content[1].trim()));
+		returnObject.setDateDay(Integer.parseInt(content[CONTENT].trim()));
 	}
 
 	private void setTaskName(TaskObject returnObject, String[] content) {
-		String name = content[1].trim();
+		String name = content[CONTENT].trim();
 		returnObject.setTaskName(extractNullOrName(name));
 	}
 
 	private String extractNullOrName(String name) {
-		return name.equals("null") ? null : name;
+		return name.equals(constants.getNullString()) ? null : name;
 	}
 
 	private boolean isNoContentFound(String[] content) {
-		return content.length == 1;
+		return content.length == NO_CONTENT;
 	}
 
 	private boolean isNullString(String string) {
@@ -231,7 +233,7 @@ public class StorageConversion{
 	 * @return String for store into file
 	 */
 	public String convertTaskObjectToString(TaskObject task){
-		StringBuffer convertedString = new StringBuffer("");
+		StringBuffer convertedString = new StringBuffer(constants.getEmptyString());
 		
 		for(int index = 0; index < constants.getTotalTitles(); ++index){
 			convertedString.append(extractItemFromTaskObject(index, task));
@@ -241,64 +243,69 @@ public class StorageConversion{
 	}
 	
 	private StringBuffer extractItemFromTaskObject(int taskObjectLine, TaskObject task){
-		StringBuffer tempBuffer = new StringBuffer("");
-		tempBuffer.append(constants.getTaskObjectTitle(taskObjectLine));
-		tempBuffer.append(constants.getSpace());
+		StringBuffer taskObjectBuffer = initializeTempBufferLine(taskObjectLine);
 		switch(taskObjectLine){
 			case CASE_TASK_NAME:
-				writeTaskNameToStringBuffer(task, tempBuffer);
+				writeTaskNameToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DATE_DAY:
-				writeTaskDayToStringBuffer(task, tempBuffer);
+				writeTaskDayToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DATE_MONTH:
-				writeTaskMonthToStringBuffer(task, tempBuffer);
+				writeTaskMonthToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DATE_YEAR:
-				writeTaskYearToStringBuffer(task, tempBuffer);
+				writeTaskYearToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DATE_HOUR:
-				writeTaskHourToStringBuffer(task, tempBuffer);
+				writeTaskHourToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DATE_MINUTE:
-				writeTaskMinuteToStringBuffer(task, tempBuffer);
+				writeTaskMinuteToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_DURATION:
-				writeTaskDurationToStringBuffer(task, tempBuffer);
+				writeTaskDurationToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_LOCATION:
-				writeTaskLocationToStringBuffer(task, tempBuffer);
+				writeTaskLocationToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_NOTIFY_TIME:
-				writeTaskNotifyTimeToStringBuffer(task, tempBuffer);
+				writeTaskNotifyTimeToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_STATUS:
-				writeTaskGetStatusToStringBuffer(task, tempBuffer);
+				writeTaskGetStatusToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_TYPE:
-				writeGetTaskTypeToStringBuffer(task, tempBuffer);
+				writeGetTaskTypeToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END_DATE_DAY:
-				writeGetTaskEndDateDayToStringBuffer(task, tempBuffer);
+				writeGetTaskEndDateDayToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END_DATE_MONTH:
-				writeGetTaskEndDateMonthToStringBuffer(task, tempBuffer);
+				writeGetTaskEndDateMonthToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END_DATE_YEAR:
-				writeGetTaskEndDateYearToStringBuffer(task, tempBuffer);
+				writeGetTaskEndDateYearToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END_DATE_HOUR:
-				writeGetTaskEndDateHourToStringBuffer(task, tempBuffer);
+				writeGetTaskEndDateHourToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END_DATE_MINUTE:
-				writeGetTaskEndDateMinuteToStringBuffer(task, tempBuffer);
+				writeGetTaskEndDateMinuteToStringBuffer(task, taskObjectBuffer);
 				break;
 			case CASE_TASK_END:
 				break;
 			default:
 				break;
 		}
-		tempBuffer.append(constants.getNewLine());
+		taskObjectBuffer.append(constants.getNewLine());
+		return taskObjectBuffer;
+	}
+
+	private StringBuffer initializeTempBufferLine(int taskObjectLine) {
+		StringBuffer tempBuffer = new StringBuffer(constants.getEmptyString());
+		tempBuffer.append(constants.getTaskObjectTitle(taskObjectLine));
+		tempBuffer.append(constants.getSpace());
 		return tempBuffer;
 	}
 

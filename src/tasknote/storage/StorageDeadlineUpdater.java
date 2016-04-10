@@ -37,7 +37,7 @@ public class StorageDeadlineUpdater{
 	 * Update the taskObject given if overdue
 	 * @param taskObject
 	 */
-	public void update(TaskObject taskObject){
+	public void updateTaskStatus(TaskObject taskObject){
 		setTaskObject(taskObject);
 		assert(this.taskObject!=null);
 		updateTime();

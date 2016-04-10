@@ -7,9 +7,20 @@ public class TaskObject implements Comparable<TaskObject> {
     public static final String TASK_TYPE_DEADLINE = "deadline";
     public static final String TASK_TYPE_EVENT = "event";
     
-    public String[] monthInString = {"", "January", "February", "March", "April",
-            "May", "June", "July", "August", "September", "October", "November", "December"
-    };
+    public String[] monthInString = {"",
+    								 "January", 
+    								 "February", 
+    								 "March", 
+    								 "April",
+    								 "May", 
+    								 "June", 
+    								 "July", 
+    								 "August", 
+    								 "September", 
+    								 "October", 
+    								 "November", 
+    								 "December"
+    								 };
     
     public final int DEFAULT_DATETIME_VALUE = -1;
     public final int DEFAULT_DURATION_VALUE = 0;
@@ -51,7 +62,8 @@ public class TaskObject implements Comparable<TaskObject> {
 	private boolean isMarkedDone;
 	
 	/**
-	 * For Storage
+	 * Constructor for Storage
+	 * @@author A0126172M
 	 */
 	public TaskObject(){
 		setTaskName(Constants.STRING_CONSTANT_EMPTY);
@@ -81,6 +93,11 @@ public class TaskObject implements Comparable<TaskObject> {
 		setIsMarkedDone(false);
 	}
 	
+	/**
+	 * Constructor with taskName added
+	 * @@author A0129529W
+	 * @param taskName
+	 */
 	public TaskObject(String taskName) {
 		
 		setTaskName(taskName);
@@ -195,7 +212,8 @@ public class TaskObject implements Comparable<TaskObject> {
 	}
 
 	/**
-	 * @return the taskStatus
+	 * getTaskStatus() extract the current taskStatus this TaskObject has
+	 * @return the current taskStatus of the taskObject
 	 */
 	public TaskStatus getTaskStatus() {
 		String status = this.taskStatus.get();
@@ -217,7 +235,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	}
 
 	/**
-	 * @param taskStatus the taskStatus to set
+	 * @param submit a TaskStatus to replace the current TaskStatus of the object
 	 */
 	public void setTaskStatus(TaskStatus taskStatus) {
 	    switch(taskStatus) {
@@ -241,32 +259,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	    }
 	}
 	
-	/**
-	 * @param string of taskStatus to set
-	 */
-	public void setTaskStatus(String taskStatus){
-		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_DEFAULT)){
-		    setTaskStatus(TaskStatus.TASK_DEFAULT);
-			return;
-		}
-		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING)){
-		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
-			return;
-		}
-		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OVERDUE)){
-		    setTaskStatus(TaskStatus.TASK_OVERDUE);
-			return;
-		}
-		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED)){
-		    setTaskStatus(TaskStatus.TASK_COMPLETED);
-			return;
-		}
-		if(taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_INVALID_STORAGE)){
-		    setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
-			return;
-		}
-	}
-
 	/**
 	 * @return the taskType
 	 */
@@ -370,25 +362,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	
-	
-	/**
-	 * @return the string for printing for debugging
-	 * 
-	 */
-	public String toString(){
-		return "task name = " + taskName
-				+ "\nDate = " + dateDay + "/" + dateMonth + "/" + dateYear
-				+ "\nEndDate = " + endDateDay + "/" + endDateMonth + "/" + endDateYear
-				+ "\nTime = " + dateHour + " " + dateMinute
-				+ "\nDuration = " + duration
-				+ "\nlocation = " + location
-				+ "\nNotify Time = " + notifyTime
-				+ "\nisNotified = " + isNotified
-				+ "\ntaskStatus = " + taskStatus
-				+ "\ntaskType = " + taskType
-				+ "\nisMarkedDone = " + isMarkedDone;
-	}
 
 	@Override
 	public int compareTo(TaskObject otherTaskObject) {
@@ -427,7 +400,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		TaskObject comparingTaskObject = (TaskObject) comparingObject;
 		
-		if (isTaskObjectNameNotSame(comparingTaskObject)) {
+		if (isTaskObjectNameDifferent(comparingTaskObject)) {
 			return false;
 		}
 		
@@ -475,7 +448,7 @@ public class TaskObject implements Comparable<TaskObject> {
 			return false;
 		}
 		
-		if (isTaskObjectLocationNotSame(comparingTaskObject)) {
+		if (isTaskObjectLocationDifferent(comparingTaskObject)) {
 			return false;
 		}
 		
@@ -496,23 +469,6 @@ public class TaskObject implements Comparable<TaskObject> {
 		}
 		
 		return true;
-	}
-	
-	
-	
-	private boolean isTaskObjectLocationNotSame(TaskObject comparingTaskObject) {
-		return (isNull(comparingTaskObject.getLocation()) && isNull(this.getLocation())) ? false : !comparingTaskObject.getLocation().equals(this.getLocation());
-	}
-
-	private boolean isTaskObjectNameNotSame(TaskObject comparingTaskObject) {
-		return (isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName())) ? false : !comparingTaskObject.getTaskName().equals(this.getTaskName());
-	}
-	
-	private boolean isNull(String string) {
-		if(string == null){
-			return true;
-		}
-		return false;
 	}
 
 	public void deepCopy(TaskObject sourceTaskObject) {
@@ -746,18 +702,102 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
+     * isFloatingTask() checks if the taskStatus is floating
      * @@author A0126172M
      * @return true if taskObject is a floating task
      */
     public boolean isFloatingTask() {
         return this.taskType.equals(TASK_TYPE_FLOATING);
     }
+    
+	/**
+	 * setTaskStatus(taskStatus) is for storage to set the taskStatus when read from the file
+	 * @param String of taskStatus to set the current TaskStatus
+	 */
+	public void setTaskStatus(String taskStatus){
+		if(isDefaultTask(taskStatus)){
+		    setTaskStatus(TaskStatus.TASK_DEFAULT);
+			return;
+		}else if(isOutstandingTask(taskStatus)){
+		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
+			return;
+		}else if(isOverdueTask(taskStatus)){
+		    setTaskStatus(TaskStatus.TASK_OVERDUE);
+			return;
+		}else if(isCompletedTask(taskStatus)){
+		    setTaskStatus(TaskStatus.TASK_COMPLETED);
+			return;
+		}else{
+			setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
+		}
+	}
+
+	private boolean isCompletedTask(String taskStatus) {
+		return taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_COMPLETED);
+	}
+
+	private boolean isOverdueTask(String taskStatus) {
+		return taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OVERDUE);
+	}
+
+	private boolean isOutstandingTask(String taskStatus) {
+		return taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_OUTSTANDING);
+	}
+
+	private boolean isDefaultTask(String taskStatus) {
+		return taskStatus.equalsIgnoreCase(Constants.STRING_TASKSTATUS_DEFAULT);
+	}
 
     /**
-     * @@author A0126172M
+     * isCompleted() checks if the taskStatus is completed
      * @return true if taskObject is completed
      */
     public boolean isCompleted() {
         return getTaskStatus() == TaskStatus.TASK_COMPLETED;
     }
+    
+	private boolean isTaskObjectLocationDifferent(TaskObject comparingTaskObject) {
+		return bothLocationsAreInvalid(comparingTaskObject) ? false : bothLocationsAreDifferent(comparingTaskObject);
+	}
+
+	private boolean bothLocationsAreInvalid(TaskObject comparingTaskObject) {
+		return isNull(comparingTaskObject.getLocation()) && isNull(this.getLocation());
+	}
+	
+	private boolean bothLocationsAreDifferent(TaskObject comparingTaskObject) {
+		return !comparingTaskObject.getLocation().equals(this.getLocation());
+	}
+
+	private boolean isTaskObjectNameDifferent(TaskObject comparingTaskObject) {
+		return bothTaskNamesAreInvalid(comparingTaskObject) ? false : bothTaskNamesAreDifferent(comparingTaskObject);
+	}
+
+	private boolean bothTaskNamesAreInvalid(TaskObject comparingTaskObject) {
+		return isNull(comparingTaskObject.getTaskName()) && isNull(this.getTaskName());
+	}
+	
+	private boolean bothTaskNamesAreDifferent(TaskObject comparingTaskObject) {
+		return !comparingTaskObject.getTaskName().equals(this.getTaskName());
+	}
+	
+	private boolean isNull(String string) {
+		return string == null;
+	}
+	
+	/**
+	 * @return produces string for printing for debugging
+	 */
+	public String toString(){
+		return Constants.produceTaskName(taskName)
+				+ Constants.produceDate(dateDay,dateMonth,dateYear)
+				+ Constants.produceEndDate(endDateDay,endDateMonth,endDateYear)
+				+ Constants.produceTime(dateHour,dateMinute)
+				+ Constants.produceDuration(duration)
+				+ Constants.produceLocation(location)
+				+ Constants.produceNotifyTime(notifyTime)
+				+ Constants.produceIsNotified(isNotified)
+				+ Constants.produceTaskStatus(taskStatus)
+				+ Constants.produceTaskType(taskType)
+				+ Constants.produceIsMarkedDone(isMarkedDone);
+	}
 }

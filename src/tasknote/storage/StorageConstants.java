@@ -1,5 +1,9 @@
 package tasknote.storage;
+
 //@@author A0126172M
+/**
+ * StorageConstants stores magic strings and numbers required for Storage
+ */
 public class StorageConstants{
 	
 	/**
@@ -24,14 +28,6 @@ public class StorageConstants{
 												, "" };
 	
 	/**
-	 * Task Status
-	 */
-	private final String[] STRING_TASK_STATUS = {"TASK_DEFAULT",
-												 "TASK_OUTSTANDING",
-												 "TASK_COMPLETED",
-												 "TASK_INVALID_STORAGE"};
-	
-	/**
 	 * Magic Strings
 	 */
 	private final String STRING_SPACE = " ";
@@ -43,6 +39,8 @@ public class StorageConstants{
 	private final String STRING_CURRENT_DIRECTORY = ".";
 	private final String STRING_PARENT_DIRECTORY = "..";
 	private final String STRING_TEXT_FILE_END = ".txt";
+	private final String STRING_ALIAS_PAIR = "%1$s %2$s\n";
+	private final String STRING_NULL = "null";
 	
 	/**
 	 * Logging messages
@@ -55,8 +53,11 @@ public class StorageConstants{
 	private final String LOGGING_MESSAGE_FAILED_TO_READ_PATH_FROM_FILE = "Failed to read path from path file.";
 	private final String LOGGING_MESSAGE_FAILED_TO_WRITE_PATH_TO_FILE = "Failed to write path into path file.";
 	private final String LOGGING_MESSAGE_STORAGE_MANIPULATOR_NOT_INITIALIZED = "Storage Manipulator not intialized. Failed I/O.";
-	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE = "Failed to read from textfile";
-	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH: %1$s";		
+	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_TEXT_FILE = "Failed to read from textfile.";
+	private final String LOGGING_MESSAGE_INVALID_PATH = "Invalid PATH: %1$s.";		
+	private final String LOGGING_MESSAGE_FAILED_TO_CREATE_FILE = "Failed to create new file: %1$s.";
+	private final String LOGGING_MESSAGE_FAILED_TO_CLOSE_ALIAS_READ = "Failed to close alias read.";
+	private final String LOGGING_MESSAGE_FAILED_TO_READ_FROM_ALIAS_FILE = "Failed to read alias from alias file.";
 	
 	/**
 	 * file/path name
@@ -74,15 +75,16 @@ public class StorageConstants{
 	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
 	private final int INTEGER_MONTH_NORMALIZE_CONSTANT = 1;
+	private final int INTEGER_ARRAY_NORMALIZE_INDEX = 1;
+	private final int INTEGER_PAIR_COUNT = 2;
+	private final int INTEGER_ALIAS_COMMAND_INDEX = 0;
+	private final int INTEGER_COMMAND_INDEX = 1;
+	private final int INTEGER_ZERO = 0;
 	
 	public StorageConstants(){}
 	
 	public String getTaskObjectTitle(int index){
 		return STRING_TASKOBJECT[index];
-	}
-	
-	public String getTaskStatus(int index){
-		return STRING_TASK_STATUS[index];
 	}
 	
 	public String getSpace(){
@@ -119,6 +121,14 @@ public class StorageConstants{
 	
 	public String getTextFileEnding(){
 		return STRING_TEXT_FILE_END;
+	}
+	
+	public String getAliasPair(String aliasCommand, String command) {
+		return String.format(STRING_ALIAS_PAIR, aliasCommand,command);
+	}
+	
+	public Object getNullString() {
+		return STRING_NULL;
 	}
 	
 	public String getFailedPathChange(){
@@ -161,6 +171,18 @@ public class StorageConstants{
 		return String.format(LOGGING_MESSAGE_INVALID_PATH, path);
 	}
 	
+	public String getFailedToCreateNewFile(String file){
+		return String.format(LOGGING_MESSAGE_FAILED_TO_CREATE_FILE, file);
+	}
+	
+	public String getFailedToCloseRead() {
+		return LOGGING_MESSAGE_FAILED_TO_CLOSE_ALIAS_READ;
+	}
+	
+	public String getFailedToReadFromAliasFile() {
+		return LOGGING_MESSAGE_FAILED_TO_READ_FROM_ALIAS_FILE;
+	}
+	
 	public String getFileName(){
 		return DEFAULT_FILE_NAME;
 	}
@@ -191,5 +213,25 @@ public class StorageConstants{
 
 	public int getNormalizedMonth(int month) {
 		return month + INTEGER_MONTH_NORMALIZE_CONSTANT;
+	}
+
+	public int getLastIndexOfArray(int length) {
+		return length - INTEGER_ARRAY_NORMALIZE_INDEX;
+	}
+
+	public int getPairCount() {
+		return INTEGER_PAIR_COUNT;
+	}
+
+	public int getAliasCommandIndex() {
+		return INTEGER_ALIAS_COMMAND_INDEX;
+	}
+
+	public int getCommandIndex() {
+		return INTEGER_COMMAND_INDEX;
+	}
+
+	public int getMaximumNonPositiveValue() {
+		return INTEGER_ZERO;
 	}
 }

@@ -5,10 +5,8 @@ import java.util.Stack;
 //@@author A0126172M
 /**
  * This class deals with the history of operations of PATH using Stacks
- * @author 
  *
  */
-
 public class PathHistory{
 	Stack<String> history;
 	Stack<String> backup;
@@ -31,11 +29,15 @@ public class PathHistory{
 	 * @param newPath
 	 */
 	public void addHistory(String newPath){
-		if(current!=null){
+		if(isCurrentPathExist()){
 			history.push(current);
 		}
 		current = newPath;
 		backup.clear();
+	}
+
+	private boolean isCurrentPathExist() {
+		return current!=null;
 	}
 	
 	/**
