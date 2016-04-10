@@ -2,20 +2,14 @@ package tasknote.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 import sun.util.resources.cldr.ss.CurrencyNames_ss;
 import tasknote.shared.Constants;
 
 public class ForwardCheckerWithBacktracking {
-
-	private static String[] VALID_COMBINATION_NEXT = { "mon", "monday", "tue", "tuesday", "wed",
-			"wednesday", "thu", "thursday", "fri", "friday", "sat", "saturday", "sun", "sunday",
-			"day", "days", "dy", "dys", "d", "week", "weeks", "wk", "wks", "w", "month", "months",
-			"mth", "mths", "m", "year", "years", "yr", "yrs", "y" };
-
-	private static HashSet<String> VALID_SET_NEXT = new HashSet<String>(
-			Arrays.asList(VALID_COMBINATION_NEXT));
 
 	private ArrayList<String> allPhrases;
 	private int listPointer;
@@ -176,7 +170,16 @@ public class ForwardCheckerWithBacktracking {
 		}
 
 		if (timeMark.equals(ParserConstants.SWITCH_STRING_TIME)) {
-			return ParserConstants.SWITCH_STRING_LOCATIONTIME;
+			
+			// Paranoid double-checking
+			if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_AM)
+					|| currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)
+					|| currentPhrase.contains(ParserConstants.TIME_SEPARATOR_COLON)
+					|| currentPhrase.contains(ParserConstants.TIME_SEPARATOR_DOT)) {
+				return ParserConstants.SWITCH_STRING_TIME;
+			} else {
+				return ParserConstants.SWITCH_STRING_LOCATIONTIME;
+			}
 		}
 
 		return ParserConstants.SWITCH_STRING_LOCATION;
@@ -206,6 +209,47 @@ public class ForwardCheckerWithBacktracking {
 				|| currentPhrase.equals(ParserConstants.DATE_SHORT_TODAY)) {
 			return ParserConstants.SWITCH_STRING_DATE;
 		}
+		
+		if (currentPhrase.contains(ParserConstants.DATE_SEPARATOR_SLASH)
+				|| currentPhrase.contains(ParserConstants.DATE_SEPARATOR_DASH)) {
+			
+			String[] temporaryDateHolder;
+			
+			if (currentPhrase.contains(ParserConstants.DATE_SEPARATOR_SLASH)) {
+				temporaryDateHolder = currentPhrase.split(ParserConstants.DATE_SEPARATOR_SLASH);
+			} else {
+				temporaryDateHolder = currentPhrase.split(ParserConstants.DATE_SEPARATOR_DASH);
+			}
+			
+			GregorianCalendar today = new GregorianCalendar();
+			
+			String potentialDay = temporaryDateHolder[0];
+			String potentialMonth = Integer.toString(today.get(Calendar.MONTH) + 1);
+			String potentialYear = Integer.toString(today.get(Calendar.YEAR));
+			
+			if (temporaryDateHolder.length > 1) {
+				potentialMonth = temporaryDateHolder[1];
+			}
+			
+			if (temporaryDateHolder.length > 2) {
+				potentialYear = temporaryDateHolder[2];
+			}
+			
+			try {
+				int potentialDayNumeric = Integer.parseInt(potentialDay);
+				int potentialMonthNumeric = Integer.parseInt(potentialMonth);
+				int potentialYearNumeric = Integer.parseInt(potentialYear);
+				
+				if (!ParserConstants.isValidDay(potentialDayNumeric)
+						|| !ParserConstants.isValidMonth(potentialMonthNumeric)) {
+					throw new NumberFormatException();
+				}
+				
+				return ParserConstants.SWITCH_STRING_DATE;
+			} catch (NumberFormatException e) {
+				return ParserConstants.SWITCH_STRING_NAME;
+			}
+		}
 
 		if (currentPhrase.endsWith(ParserConstants.DATE_SUFFIX_ST)
 				|| currentPhrase.endsWith(ParserConstants.DATE_SUFFIX_ND)
@@ -215,6 +259,11 @@ public class ForwardCheckerWithBacktracking {
 
 			try {
 				int potentialDay = Integer.parseInt(currentPhrase);
+				
+				if (!ParserConstants.isValidDay(potentialDay)) {
+					throw new NumberFormatException();
+				}
+				
 				return ParserConstants.SWITCH_STRING_DATE;
 			} catch (NumberFormatException e) {
 				return ParserConstants.SWITCH_STRING_NAME;
@@ -334,7 +383,7 @@ public class ForwardCheckerWithBacktracking {
 
 	public static void main(String[] args) {
 
-		String randomTestInputOne = "add breakfast with mk at 8 redhill st, mcd at 10am tmr to 5pm 7th june";
+		String randomTestInputOne = "add breakfast by 9pm 22nd";
 		ParserFirstPass pfp = new ParserFirstPass(randomTestInputOne);
 		ArrayList<String> firstAllPhrases = pfp.getFirstPassParsedResult();
 

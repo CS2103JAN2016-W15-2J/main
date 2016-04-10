@@ -166,7 +166,7 @@ public class DateParser {
 			// tomorrow's date
 			// Note: Rolling of Calendar is necessary
 			GregorianCalendar tomorrow = new GregorianCalendar();
-			tomorrow = this.rollByDays(tomorrow, 1);
+			tomorrow = DateParser.rollByDays(tomorrow, 1);
 
 			passedMessage.setDay(tomorrow.get(Calendar.DAY_OF_MONTH));
 			passedMessage.setMonth(tomorrow.get(Calendar.MONTH) + 1);
@@ -329,7 +329,7 @@ public class DateParser {
 		return true;
 	}
 
-	protected GregorianCalendar rollByDays(GregorianCalendar initialCalendar,
+	protected static GregorianCalendar rollByDays(GregorianCalendar initialCalendar,
 			int numberOfDaysToRoll) {
 
 		// Maximum values for current calendar

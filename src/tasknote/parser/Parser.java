@@ -1,5 +1,6 @@
 package tasknote.parser;
 
+import sun.awt.datatransfer.ToolkitThreadBlockedHandler;
 import tasknote.logic.ShowInterval;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
@@ -119,7 +120,8 @@ public class Parser {
 		StringBuilder locationBuilder = new StringBuilder();
 		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
 		
-		boolean toStartDateTime = true;
+		boolean toStartDate = true;
+		boolean toStartTime = true;
 		
 		ArrayList<String> allStartDateInfo = new ArrayList<>();
 		ArrayList<String> allEndDateInfo = new ArrayList<>();
@@ -142,16 +144,20 @@ public class Parser {
 					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
 					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
 				
-				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
-					toStartDateTime = true;
-				} else if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-					toStartDateTime = false;
+				// Only push to endDate or endTime if they are already filled
+				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+					if (!allStartDateInfo.isEmpty()) {
+						toStartDate = false;
+					}
+					if (!allStartTimeInfo.isEmpty()) {
+						toStartTime = false;
+					}
 				}
 				continue;
 			}
 			
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATE)) {
-				if (toStartDateTime) {
+				if (toStartDate) {
 					allStartDateInfo.add(currentPhrase);
 				} else {
 					allEndDateInfo.add(currentPhrase);
@@ -160,7 +166,7 @@ public class Parser {
 			}
 			
 			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_TIME)) {
-				if (toStartDateTime) {
+				if (toStartTime) {
 					allStartTimeInfo.add(currentPhrase);
 				} else {
 					allEndTimeInfo.add(currentPhrase);
@@ -184,7 +190,58 @@ public class Parser {
 		String finalTaskName = nameBuilder.toString().trim();
 		String finalLocation = locationBuilder.toString().trim();
 		
-		return null;
+		this.objectForThisCommand.setTaskName(finalTaskName);
+		this.objectForThisCommand.setLocation(finalLocation);
+		
+		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setDateHour(startTime.getHour());
+			this.objectForThisCommand.setDateMinute(startTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		}
+		
+		if (startDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setDateDay(startDate.getDay());
+			this.objectForThisCommand.setDateMonth(startDate.getMonth());
+			this.objectForThisCommand.setDateYear(startDate.getYear());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		} else {
+			if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				
+				GregorianCalendar today = new GregorianCalendar();
+				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
+				int setTime = startTime.getHour() * 60 + startTime.getMinute();
+				
+				if (todayTime > setTime) {
+					today = DateParser.rollByDays(today, 1);
+				}
+				
+				this.objectForThisCommand.setDateDay(today.get(Calendar.DAY_OF_MONTH));
+				this.objectForThisCommand.setDateMonth(today.get(Calendar.MONTH));
+				this.objectForThisCommand.setDateYear(today.get(Calendar.YEAR));
+			}
+		}
+
+		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateDay(endDate.getDay());
+			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
+			this.objectForThisCommand.setEndDateYear(endDate.getYear());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		}
+		
+		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+			 && endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateHour(endTime.getHour());
+			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		}
+		
+		return this.objectForThisCommand;
 	}
 
 	
@@ -659,6 +716,11 @@ public class Parser {
 
 		int listPointer = 0;
 		int phraseCount = allDateInfo.size();
+		
+		if (phraseCount == 0) {
+			return new DateMessage();
+		}
+		
 		String currentPhrase = allDateInfo.get(listPointer);
 
 		DateParser dateParser = new DateParser();
@@ -676,6 +738,11 @@ public class Parser {
 
 		int listPointer = 0;
 		int phraseCount = allTimeInfo.size();
+		
+		if (phraseCount == 0) {
+			return new TimeMessage();
+		}
+		
 		String currentPhrase = allTimeInfo.get(listPointer);
 
 		TimeParser timeParser = new TimeParser();
