@@ -565,7 +565,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	}
 
     /**
-     * @@author A0129561
+     * @@author A0129561A
      * @return Returns the TaskStatus, as represented by a class implementing
      *         the interface ObservableValue.
      */
@@ -601,8 +601,10 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * @@author A0129561 Set the taskType based on its current properties.
-     * @return If TaskObject is set to either floating, deadline, or event.
+     * Set the taskType based on its current properties.
+     * 
+     * @return If TaskObject is set to either floating, deadline, or event based
+     *         on its current properties.
      */
     public boolean isTaskTypeSet() {
         if (isYearMonthDayDefault() && isHourMinuteDefault() && getDuration() == DEFAULT_DURATION_VALUE) {
@@ -620,7 +622,6 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * @@author A0129561
      * @return Get formatted date. If date is not set, will return empty string.
      */
     public String getFormattedDate() {
@@ -637,7 +638,6 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * @@author A0129561
      * @return Get formatted time. If time is not set, will return empty string.
      */
     public String getFormattedTime() {
@@ -660,7 +660,6 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * @@author A0129561
      * @return Get formatted end date. If end date is not set, will return empty
      *         string.
      */
@@ -678,7 +677,6 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * @@author A0129561
      * @return Get formatted end time. If end time is not set, will return empty
      *         string.
      */
@@ -702,7 +700,7 @@ public class TaskObject implements Comparable<TaskObject> {
     }
 
     /**
-     * isFloatingTask() checks if the taskStatus is floating
+     * isFloatingTask() checks if the taskStatus is floating.
      * @@author A0126172M
      * @return true if taskObject is a floating task
      */
