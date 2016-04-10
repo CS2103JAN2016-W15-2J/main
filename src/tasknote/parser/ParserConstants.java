@@ -24,6 +24,7 @@ public class ParserConstants {
 	protected static final String COMMAND_SEARCH = "search";
 	protected static final String COMMAND_SHOW = "show";
 	protected static final String COMMAND_RELOCATE = "relocate";
+	protected static final String COMMAND_CATEGORY = "category";
 	protected static final String COMMAND_HELP = "help";
 	protected static final String COMMAND_UNDONE = "undone";
 
@@ -35,11 +36,10 @@ public class ParserConstants {
 	protected static final String KEYWORD_FROM = "from";
 	protected static final String KEYWORD_TO = "to";
 	protected static final String KEYWORD_IN = "in";
-	protected static final String KEYWORD_NOTIFY = "notify";
 	protected static final String KEYWORD_REMOVE = "remove";
 	
 	protected static final String[] KEYWORDS_ALL = {KEYWORD_BY, KEYWORD_AT, KEYWORD_ON,
-		KEYWORD_FROM, KEYWORD_TO, KEYWORD_IN, KEYWORD_NOTIFY, KEYWORD_REMOVE};
+		KEYWORD_FROM, KEYWORD_TO, KEYWORD_IN, KEYWORD_REMOVE};
 	
 	protected static final HashSet<String> KEYWORD_SET = new HashSet<>(Arrays.asList(KEYWORDS_ALL));
 	protected static final Set<String> KEYWORD_SET_UNMODIFIABLE = 
@@ -186,6 +186,7 @@ public class ParserConstants {
 	protected static final int MINIMUM_HELP = 1;
 	protected static final int MINIMUM_UNDONE = 2;
 	protected static final int MINIMUM_INVALID = 0;
+	protected static final int MINIMUM_CATEGORY = 2;
 
 	protected static int getMinimumCommandLength(COMMAND_TYPE command) {
 		
@@ -219,6 +220,8 @@ public class ParserConstants {
 			case SHOW:
 				returnValue = MINIMUM_SHOW;
 				break;
+			case CHANGE_CATEGORY:
+				returnValue = MINIMUM_CATEGORY;
 			case CHANGE_FILE_PATH:
 				returnValue = MINIMUM_RELOCATE;
 				break;
@@ -260,10 +263,6 @@ public class ParserConstants {
 
 		case ParserConstants.KEYWORD_REMOVE:
 			returnValue = "remove";
-			break;
-
-		case ParserConstants.KEYWORD_NOTIFY:
-			returnValue = "notify";
 			break;
 			
 		default: 

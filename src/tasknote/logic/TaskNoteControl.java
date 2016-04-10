@@ -447,8 +447,7 @@ public class TaskNoteControl {
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
-			// category = Parser.parseChangeCateogry(userCommand,
-			// throwException);
+			category = parser.parseChangeCategory(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();

@@ -1,6 +1,7 @@
 package tasknote.parser;
 
 import sun.awt.datatransfer.ToolkitThreadBlockedHandler;
+import tasknote.logic.ShowCategory;
 import tasknote.logic.ShowInterval;
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
@@ -354,15 +355,15 @@ public class Parser {
 			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
 			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
 		}
-		
+
 		// If date is *still* invalid and time exists
 		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			
+
 			if (newTaskObject.getDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 					&& newTaskObject.getDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				
+
 				GregorianCalendar today = new GregorianCalendar();
 				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
 				int setTime = newTaskObject.getDateHour() * 60 + newTaskObject.getDateMinute();
@@ -376,17 +377,29 @@ public class Parser {
 				newTaskObject.setDateYear(today.get(Calendar.YEAR));
 			}
 		}
-		
+
 		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			
+
 			if (newTaskObject.getEndDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 					&& newTaskObject.getEndDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
 				newTaskObject.setEndDateDay(newTaskObject.getDateDay());
 				newTaskObject.setEndDateMonth(newTaskObject.getDateMonth());
 				newTaskObject.setEndDateYear(newTaskObject.getDateYear());
 			}
+		}
+		
+		if (newTaskObject.getDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		}
+		
+		if (newTaskObject.getEndDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getEndDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getEndDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setTaskType(TaskObject.TASK_TYPE_EVENT);
 		}
 
 		return newTaskObject;
@@ -542,10 +555,9 @@ public class Parser {
 	public ShowInterval parseShow(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		int phraseCount = allPhrases.size();
-		int listPointer = this.getListPointer();
-
-		for (int i = listPointer; i < phraseCount; i++) {
+		this.setListPointer(1);
+		
+		for (int i = this.getListPointer(); i < allPhrases.size(); i++) {
 
 			String currentPhrase = allPhrases.get(i).toLowerCase();
 
@@ -555,6 +567,14 @@ public class Parser {
 
 			if (currentPhrase.equals("tomorrow")) {
 				return ShowInterval.TOMORROW;
+			}
+			
+			if (currentPhrase.equals("year") || currentPhrase.equals("years")) {
+				return ShowInterval.YEAR;
+			}
+			
+			if (currentPhrase.equals("month") || currentPhrase.equals("months")) {
+				return ShowInterval.MONTH;
 			}
 
 			if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
@@ -571,7 +591,46 @@ public class Parser {
 		}
 
 		// Default behaviour - consider throwing exception
-		return ShowInterval.ALL;
+		if (throwException) {
+			throw new RuntimeException("Could not understand what to show!");
+		} else {
+			return ShowInterval.ALL;
+		}
+
+	}
+
+	public ShowCategory parseChangeCategory(boolean throwException) {
+
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int phraseCount = allPhrases.size();
+
+		if (phraseCount >= 2) {
+
+			String currentPhrase = allPhrases.get(1).toLowerCase();
+
+			if (currentPhrase.equals("outstanding")) {
+				return ShowCategory.OUTSTANDING;
+			}
+
+			if (currentPhrase.equals("overdue")) {
+				return ShowCategory.OVERDUE;
+			}
+
+			if (currentPhrase.equals("completed")) {
+				return ShowCategory.COMPLETED;
+			}
+
+			if (currentPhrase.equals("all")) {
+				return ShowCategory.ALL;
+			}
+		}
+
+		// Default behaviour - consider throwing exception
+		if (throwException) {
+			throw new RuntimeException("Could not understand what to show!");
+		} else {
+			return ShowCategory.ALL;
+		}
 	}
 
 	public int getInterval(boolean throwException) {
@@ -893,6 +952,8 @@ public class Parser {
 			return COMMAND_TYPE.HELP;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_UNDONE)) {
 			return COMMAND_TYPE.UNDONE;
+		} else if (currentPhrase.equals(ParserConstants.COMMAND_CATEGORY)) {
+			return COMMAND_TYPE.CHANGE_CATEGORY;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
