@@ -187,6 +187,7 @@ public class Constants {
 	public static final String STRING_TASKTYPE_DEADLINE = "DEADLINE";
 	public static final String STRING_TASKTYPE_FLOATING = "FLOATING";
 	
+	//@@author A0129529
 	/*
 	 * These are the String constants used in the program while executing
 	 * specific user operations
@@ -196,7 +197,7 @@ public class Constants {
 	public static final String STRING_CONSTANT_NEWLINE = "\n";
 	public static final String STRING_CONSTANT_ESCAPED_DOUBLE_QUOTES = "\"";
 	
-	
+	/** @@author A0108371L */
 	/*
 	 * These are the integer constants used in the program while executing
 	 * specific user operations

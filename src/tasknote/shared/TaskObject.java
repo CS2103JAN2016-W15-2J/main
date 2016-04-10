@@ -54,9 +54,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	
 	private String location;
 	
-	private int notifyTime;
-	private boolean isNotified;
-	
 	private SimpleStringProperty taskStatus = new SimpleStringProperty();
 	private String taskType;
 	
@@ -84,9 +81,6 @@ public class TaskObject implements Comparable<TaskObject> {
 		setDuration(DEFAULT_DURATION_VALUE);
 		
 		setLocation(DEFAULT_LOCATION_VALUE);
-		
-		setNotifyTime(0);
-		setIsNotified(false);
 		
 		setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		setTaskType(TASK_TYPE_FLOATING);
@@ -119,15 +113,13 @@ public class TaskObject implements Comparable<TaskObject> {
 		
 		setLocation(DEFAULT_LOCATION_VALUE);
 		
-		setNotifyTime(0);
-		setIsNotified(false);
-		
 		setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		setTaskType(TASK_TYPE_FLOATING);
 		
 		setIsMarkedDone(false);
 	}
 
+	//@@author A0129529-generated
 	/**
 	 * @return the taskName
 	 */
@@ -154,110 +146,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	 */
 	public void setTaskID(int taskID) {
 		this.taskID = taskID;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public int getDateDay() {
-		return this.dateDay;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDateDay(int dateDay) {
-		this.dateDay = dateDay;
-	}
-
-	/**
-	 * @return the location
-	 */
-	public String getLocation() {
-		return this.location;
-	}
-
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	/**
-	 * @return the notifyTime
-	 */
-	public int getNotifyTime() {
-		return this.notifyTime;
-	}
-
-	/**
-	 * @param notifyTime the notifyTime to set
-	 */
-	public void setNotifyTime(int notifyTime) {
-		this.notifyTime = notifyTime;
-	}
-
-	/**
-	 * @return the isNotified
-	 */
-	public boolean getIsNotified() {
-		return this.isNotified;
-	}
-
-	/**
-	 * @param isNotified the isNotified to set
-	 */
-	public void setIsNotified(boolean isNotified) {
-		this.isNotified = isNotified;
-	}
-
-	/**
-	 * getTaskStatus() extract the current taskStatus this TaskObject has
-	 * @return the current taskStatus of the taskObject
-	 */
-	public TaskStatus getTaskStatus() {
-		String status = this.taskStatus.get();
-		
-		switch(status) {
-            case Constants.STRING_TASKSTATUS_DEFAULT:
-                return TaskStatus.TASK_DEFAULT;
-            case Constants.STRING_TASKSTATUS_OUTSTANDING:
-                return TaskStatus.TASK_OUTSTANDING;
-            case Constants.STRING_TASKSTATUS_OVERDUE:
-                return TaskStatus.TASK_OVERDUE;
-            case Constants.STRING_TASKSTATUS_COMPLETED:
-                return TaskStatus.TASK_COMPLETED;
-            case Constants.STRING_TASKSTATUS_INVALID_STORAGE:
-                return TaskStatus.TASK_INVALID_STORAGE;
-            default:
-                return null;
-		}
-	}
-
-	/**
-	 * @param submit a TaskStatus to replace the current TaskStatus of the object
-	 */
-	public void setTaskStatus(TaskStatus taskStatus) {
-	    switch(taskStatus) {
-	        case TASK_DEFAULT:
-	            this.taskStatus.set(Constants.STRING_TASKSTATUS_DEFAULT);
-	            return;
-	        case TASK_OUTSTANDING:
-	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OUTSTANDING);
-	            return;
-	        case TASK_OVERDUE:
-	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OVERDUE);
-	            return;
-	        case TASK_COMPLETED:
-	            this.taskStatus.set(Constants.STRING_TASKSTATUS_COMPLETED);
-	            return;
-	        case TASK_INVALID_STORAGE:
-	            this.taskStatus.set(Constants.STRING_TASKSTATUS_INVALID_STORAGE);
-	            return;
-	        default:
-	            return;
-	    }
 	}
 	
 	/**
@@ -292,8 +180,35 @@ public class TaskObject implements Comparable<TaskObject> {
 		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
 		}
 	}
-	
 
+	/**
+	 * @return the date
+	 */
+	public int getDateDay() {
+		return this.dateDay;
+	}
+
+	/**
+	 * @param date the date to set
+	 */
+	public void setDateDay(int dateDay) {
+		this.dateDay = dateDay;
+	}
+
+	/**
+	 * @return the location
+	 */
+	public String getLocation() {
+		return this.location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
 	/**
 	 * @return the dateMonth
 	 */
@@ -363,7 +278,126 @@ public class TaskObject implements Comparable<TaskObject> {
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
+	
+	/**
+	 * @return the endDateDay
+	 */
+	public int getEndDateDay() {
+		return endDateDay;
+	}
 
+	/**
+	 * @param endDateDay the endDateDay to set
+	 */
+	public void setEndDateDay(int endDateDay) {
+		this.endDateDay = endDateDay;
+	}
+
+	/**
+	 * @return the endDateMonth
+	 */
+	public int getEndDateMonth() {
+		return endDateMonth;
+	}
+
+	/**
+	 * @param endDateMonth the endDateMonth to set
+	 */
+	public void setEndDateMonth(int endDateMonth) {
+		this.endDateMonth = endDateMonth;
+	}
+
+	/**
+	 * @return the endDateYear
+	 */
+	public int getEndDateYear() {
+		return endDateYear;
+	}
+
+	/**
+	 * @param endDateYear the endDateYear to set
+	 */
+	public void setEndDateYear(int endDateYear) {
+		this.endDateYear = endDateYear;
+	}
+	
+	/**
+	 * @return the endDateHour
+	 */
+	public int getEndDateHour() {
+		return endDateHour;
+	}
+
+	/**
+	 * @param endDateHour the endDateHour to set
+	 */
+	public void setEndDateHour(int endDateHour) {
+		this.endDateHour = endDateHour;
+	}
+
+	/**
+	 * @return the endDateMinute
+	 */
+	public int getEndDateMinute() {
+		return endDateMinute;
+	}
+
+	/**
+	 * @param endDateMinute the endDateMinute to set
+	 */
+	public void setEndDateMinute(int endDateMinute) {
+		this.endDateMinute = endDateMinute;
+	}
+
+	/**
+	 * getTaskStatus() extract the current taskStatus this TaskObject has
+	 * @return the current taskStatus of the taskObject
+	 */
+	public TaskStatus getTaskStatus() {
+		String status = this.taskStatus.get();
+		
+		switch(status) {
+            case Constants.STRING_TASKSTATUS_DEFAULT:
+                return TaskStatus.TASK_DEFAULT;
+            case Constants.STRING_TASKSTATUS_OUTSTANDING:
+                return TaskStatus.TASK_OUTSTANDING;
+            case Constants.STRING_TASKSTATUS_OVERDUE:
+                return TaskStatus.TASK_OVERDUE;
+            case Constants.STRING_TASKSTATUS_COMPLETED:
+                return TaskStatus.TASK_COMPLETED;
+            case Constants.STRING_TASKSTATUS_INVALID_STORAGE:
+                return TaskStatus.TASK_INVALID_STORAGE;
+            default:
+                return null;
+		}
+	}
+
+	/**
+	 * @param submit a TaskStatus to replace the current TaskStatus of the object
+	 */
+	public void setTaskStatus(TaskStatus taskStatus) {
+	    switch(taskStatus) {
+	        case TASK_DEFAULT:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_DEFAULT);
+	            return;
+	        case TASK_OUTSTANDING:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OUTSTANDING);
+	            return;
+	        case TASK_OVERDUE:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_OVERDUE);
+	            return;
+	        case TASK_COMPLETED:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_COMPLETED);
+	            return;
+	        case TASK_INVALID_STORAGE:
+	            this.taskStatus.set(Constants.STRING_TASKSTATUS_INVALID_STORAGE);
+	            return;
+	        default:
+	            return;
+	    }
+	}
+
+	//@@author A0129529
 	@Override
 	public int compareTo(TaskObject otherTaskObject) {
 		
@@ -453,14 +487,6 @@ public class TaskObject implements Comparable<TaskObject> {
 			return false;
 		}
 		
-		if (comparingTaskObject.getNotifyTime() != this.getNotifyTime()) {
-			return false;
-		}
-		
-		if (comparingTaskObject.getIsNotified() != this.getIsNotified()) {
-			return false;
-		}
-		
 		if (comparingTaskObject.getTaskStatus() != this.getTaskStatus()) {
 			return false;
 		}
@@ -483,9 +509,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.setDateMinute(sourceTaskObject.getDateMinute());
 		this.setDuration(sourceTaskObject.getDuration());
 		this.setIsMarkedDone(sourceTaskObject.getIsMarkedDone());
-		this.setIsNotified(sourceTaskObject.getIsNotified());
 		this.setLocation(sourceTaskObject.getLocation());
-		this.setNotifyTime(sourceTaskObject.getNotifyTime());
 		this.setTaskStatus(sourceTaskObject.getTaskStatus());
 		this.setTaskType(sourceTaskObject.getTaskType());
 		this.setEndDateDay(sourceTaskObject.getEndDateDay());
@@ -495,75 +519,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		this.setEndDateMinute(sourceTaskObject.getEndDateMinute());
 	}
 
-	/**
-	 * @return the endDateDay
-	 */
-	public int getEndDateDay() {
-		return endDateDay;
-	}
-
-	/**
-	 * @param endDateDay the endDateDay to set
-	 */
-	public void setEndDateDay(int endDateDay) {
-		this.endDateDay = endDateDay;
-	}
-
-	/**
-	 * @return the endDateMonth
-	 */
-	public int getEndDateMonth() {
-		return endDateMonth;
-	}
-
-	/**
-	 * @param endDateMonth the endDateMonth to set
-	 */
-	public void setEndDateMonth(int endDateMonth) {
-		this.endDateMonth = endDateMonth;
-	}
-
-	/**
-	 * @return the endDateYear
-	 */
-	public int getEndDateYear() {
-		return endDateYear;
-	}
-
-	/**
-	 * @param endDateYear the endDateYear to set
-	 */
-	public void setEndDateYear(int endDateYear) {
-		this.endDateYear = endDateYear;
-	}
 	
-	/**
-	 * @return the endDateHour
-	 */
-	public int getEndDateHour() {
-		return endDateHour;
-	}
-
-	/**
-	 * @param endDateHour the endDateHour to set
-	 */
-	public void setEndDateHour(int endDateHour) {
-		this.endDateHour = endDateHour;
-	}
-
-	/**
-	 * @return the endDateMinute
-	 */
-	public int getEndDateMinute() {
-		return endDateMinute;
-	}
-
-	/**
-	 * @param endDateMinute the endDateMinute to set
-	 */
-	public void setEndDateMinute(int endDateMinute) {
-		this.endDateMinute = endDateMinute;
-	}
 
     /**
      * @@author A0129561A
@@ -793,8 +749,6 @@ public class TaskObject implements Comparable<TaskObject> {
 				+ Constants.produceTime(dateHour,dateMinute)
 				+ Constants.produceDuration(duration)
 				+ Constants.produceLocation(location)
-				+ Constants.produceNotifyTime(notifyTime)
-				+ Constants.produceIsNotified(isNotified)
 				+ Constants.produceTaskStatus(taskStatus)
 				+ Constants.produceTaskType(taskType)
 				+ Constants.produceIsMarkedDone(isMarkedDone);
