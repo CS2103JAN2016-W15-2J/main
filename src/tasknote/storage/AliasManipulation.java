@@ -8,9 +8,6 @@ import tasknote.shared.AddDuplicateAliasException;
 /**
  * AliasManipulation stores the alias and interact with the AliasHistory
  * to allow undo/redo
- * 
- * 
- *
  */
 public class AliasManipulation{
 	private AliasHistory aliasHistory;
@@ -51,13 +48,13 @@ public class AliasManipulation{
 	}
 	
 	/**
-	 * add a new alias command with the command and return the whole HashMap<String, String>
+	 * map aliasCommand as KEY and command as VALUE and return the whole HashMap<String, String>
 	 * @param command
 	 * @param aliasCommand
 	 * @return HashMap<String,String> modified alias
 	 */
 	public HashMap<String,String> addAlias(String command, String aliasCommand) throws AddDuplicateAliasException{
-		insertAliasToHashMap(command, aliasCommand);
+		insertAliasToHashMap(aliasCommand, command);
 		aliasHistory.addHistory(this.alias);
 		return this.alias;
 	}
@@ -68,9 +65,9 @@ public class AliasManipulation{
 	 * @return HashMap<String, String> modified alias
 	 */
 	public HashMap<String,String> removeAlias(String aliasCommand){
-		alias.remove(aliasCommand);
-		aliasHistory.addHistory(alias);
-		return alias;
+		this.alias.remove(aliasCommand);
+		aliasHistory.addHistory(this.alias);
+		return this.alias;
 	}
 	
 	/**
@@ -97,7 +94,7 @@ public class AliasManipulation{
 		return false;
 	}
 	
-	private void insertAliasToHashMap(String command, String aliasCommand)throws AddDuplicateAliasException{
+	private void insertAliasToHashMap(String aliasCommand, String command)throws AddDuplicateAliasException{
 		if(alias.containsKey(aliasCommand)){
 			throw new AddDuplicateAliasException();
 		}else{

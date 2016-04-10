@@ -21,6 +21,10 @@ import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
 //@@author A0126172M
+/**
+ * FileManipulation class focuses on reading and writing of the
+ * file
+ */
 public class FileManipulation{
 	
 	private StorageConstants constants;
