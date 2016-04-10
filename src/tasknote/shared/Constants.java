@@ -1,3 +1,4 @@
+/** @@author A0108371L */
 package tasknote.shared;
 
 import javafx.beans.property.SimpleStringProperty;
