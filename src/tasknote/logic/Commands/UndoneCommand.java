@@ -12,6 +12,7 @@ public class UndoneCommand implements Command  {
 	private boolean isComplete;
 	private String statusOfOperation;
 
+	/******************* UndoneCommand Constructor *********************/
 	public UndoneCommand(TaskNote taskNote, TaskObject taskObject) {
 		this.taskObject = taskObject;
 		this.taskNote = taskNote;

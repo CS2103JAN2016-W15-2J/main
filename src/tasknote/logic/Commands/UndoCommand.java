@@ -9,6 +9,7 @@ public class UndoCommand implements Command {
 	private TaskNote taskNote;
 	private String statusOfOperation;
 
+	/******************* UndoCommand Constructor *********************/
 	public UndoCommand(TaskNote taskNote) {
 		this.taskNote = taskNote;
 		statusOfOperation = new String();

@@ -9,7 +9,8 @@ public class ChangeFilePathCommand implements Command {
 	private TaskNote taskNote;
 	private String filePath;
 	private String statusOfOperation;
-
+	
+	/******************* ChangeFilePathCommand Constructor *********************/
 	public ChangeFilePathCommand(TaskNote taskNote, String filePath) {
 		this.filePath = filePath;
 		this.taskNote = taskNote;

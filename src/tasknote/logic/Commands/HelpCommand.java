@@ -11,6 +11,7 @@ public class HelpCommand implements Command {
 	private COMMAND_TYPE commandType;
 	private String statusOfOperation;
 
+	/******************* HelpCommand Constructor *********************/
 	public HelpCommand(TaskNote taskNote, COMMAND_TYPE commandType) {
 		this.taskNote = taskNote;
 		this.commandType = commandType;
@@ -18,7 +19,7 @@ public class HelpCommand implements Command {
 	}
 	
 	public void execute() {
-		statusOfOperation = taskNote.displayHelpMessage(commandType);
+		statusOfOperation = TaskNote.displayHelpMessage(commandType);
 	}
 
 	public void refreshDisplay() {

@@ -11,6 +11,7 @@ public class AddCommand implements Command {
 	private TaskObject taskObject;
 	private String statusOfOperation;
 
+	/******************* AddCommand Constructor *********************/
 	public AddCommand(TaskNote taskNote, TaskObject taskObject) {
 		this.taskObject = taskObject;
 		this.taskNote = taskNote;

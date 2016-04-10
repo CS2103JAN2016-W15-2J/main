@@ -13,6 +13,7 @@ public class DeleteCommand implements Command {
 	private ArrayList<Integer> deleteIds;
 	private String statusOfOperation;
 
+	/******************* DeleteCommand Constructor *********************/
 	public DeleteCommand(TaskNote taskNote, ArrayList<Integer> deleteIds) {
 		this.deleteIds = deleteIds;
 		this.taskNote = taskNote;

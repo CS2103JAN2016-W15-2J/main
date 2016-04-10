@@ -11,6 +11,7 @@ public class ChangeCategoryCommand implements Command {
 	private ShowCategory category;
 	private String statusOfOperation;
 
+	/******************* ChangeCategoryCommand Constructor *********************/
 	public ChangeCategoryCommand(TaskNote taskNote, ShowCategory category) {
 		this.taskNote = taskNote;
 		this.category = category;

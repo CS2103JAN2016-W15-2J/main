@@ -12,6 +12,7 @@ public class DoneCommand implements Command  {
 	private boolean isComplete;
 	private String statusOfOperation;
 
+	/******************* DoneCommand Constructor *********************/
 	public DoneCommand(TaskNote taskNote, TaskObject taskObject) {
 		this.taskObject = taskObject;
 		this.taskNote = taskNote;

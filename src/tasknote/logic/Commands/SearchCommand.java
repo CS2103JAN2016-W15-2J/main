@@ -13,6 +13,7 @@ public class SearchCommand implements Command {
 	private ArrayList<Integer> searchIds;
 	private String statusOfOperation;
 
+	/******************* SearchCommand Constructor *********************/
 	public SearchCommand(TaskNote taskNote, ArrayList<Integer> searchIds) {
 		this.searchIds = searchIds;
 		this.taskNote = taskNote;

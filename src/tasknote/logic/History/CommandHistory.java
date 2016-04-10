@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import tasknote.shared.COMMAND_TYPE;
 import tasknote.shared.TaskObject;
+import tasknote.shared.Constants;
 
 public class CommandHistory {
 	
@@ -21,6 +22,10 @@ public class CommandHistory {
 	private static final COMMAND_TYPE undoTaskCompletionCommand = COMMAND_TYPE.DONE;
 	private static final COMMAND_TYPE undoChangeFilePathCommand = COMMAND_TYPE.CHANGE_FILE_PATH;
 	
+	/*
+	 * These are the COMMAND TYPES for the possible User Commands that 
+	 * Redo function can be used on
+	 */
 	private static final COMMAND_TYPE redoAddCommand = COMMAND_TYPE.ADD;
 	private static final COMMAND_TYPE redoDeleteCommand = COMMAND_TYPE.DELETE;
 	private static final COMMAND_TYPE redoUpdateCommand = COMMAND_TYPE.UPDATE;
@@ -31,9 +36,9 @@ public class CommandHistory {
 	 * This is the Integer Constant for the number of associated preceding 
 	 * tasks for an undo object
 	 */
-	private static final int numPrecedingObjects = 2;
+	private static final int numPrecedingObjects = Constants.PRECEDING_OBJECTS_CONSTANT;
 	
-	
+	/******************* CommandHistoryObject Constructor *********************/
 	public CommandHistory() {
 		undoStack = new Stack<CommandObject>();
 		redoStack = new Stack<CommandObject>();

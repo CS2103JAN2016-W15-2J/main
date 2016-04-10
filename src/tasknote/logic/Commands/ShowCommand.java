@@ -1,8 +1,6 @@
 /** @@author A0108371L */
 package tasknote.logic.Commands;
 
-import java.util.ArrayList;
-
 import tasknote.logic.TaskNote;
 import tasknote.logic.ShowInterval;
 import tasknote.shared.Constants;
@@ -15,6 +13,7 @@ public class ShowCommand implements Command {
 	private int countInterval;
 	private String statusOfOperation;
 
+	/******************* ShowCommand Constructor *********************/
 	public ShowCommand(TaskNote taskNote, ShowInterval timeInterval, int countInterval) {
 		this.taskNote = taskNote;
 		this.timeInterval = timeInterval;

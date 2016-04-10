@@ -12,6 +12,7 @@ public class UpdateCommand implements Command {
 	private TaskObject updatedTaskObject;
 	private String statusOfOperation;
 
+	/******************* UpdateCommand Constructor *********************/
 	public UpdateCommand(TaskNote taskNote, int updateTaskId, TaskObject updatedTaskObject) {
 		this.updateTaskId = updateTaskId;
 		this.updatedTaskObject = updatedTaskObject;
