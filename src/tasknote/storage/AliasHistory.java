@@ -29,11 +29,15 @@ public class AliasHistory{
 	 * @param alias
 	 */
 	public void addHistory(HashMap<String,String> alias){
-		if(current!=null){
+		if(isCurrentAliasExist()){
 			history.push(current);
 		}
 		current = alias;
 		backup.clear();
+	}
+
+	private boolean isCurrentAliasExist() {
+		return current!=null;
 	}
 	
 	/**
@@ -42,12 +46,12 @@ public class AliasHistory{
 	 * 		   or null when there is nothing to undo
 	 */
 	public HashMap<String,String> undo(){
-		if(history.isEmpty()){
-			return null;
+		if(isUndoValid()){
+			backup.push(current);
+			current = history.peek();
+			return history.pop();
 		}
-		backup.push(current);
-		current = history.peek();
-		return history.pop();
+		return null;
 	}
 	
 	/**
@@ -56,12 +60,12 @@ public class AliasHistory{
 	 * 		   or null when there is nothing to redo
 	 */
 	public HashMap<String,String> redo(){
-		if(backup.isEmpty()){
-			return null;
+		if(isRedoValid()){
+			history.push(current);
+			current = backup.peek();
+			return backup.pop();
 		}
-		history.push(current);
-		current = backup.peek();
-		return backup.pop();
+		return null;
 	}
 	
 	/**

@@ -49,15 +49,15 @@ public class Storage{
 	 * @throws IOException // there is something wrong with writing into textfile
 	 */
 	public void saveTasks(ArrayList<TaskObject> overrideTasks) throws TaskListIOException, IOException{
-		cleanFile();
+		cleanTextFile();
 		fileManipulator.writeTasks(overrideTasks);
 	}
 	
 	/**
 	 * clear all the contents in the textfile
 	 */
-	public void cleanFile() throws IOException{
-		fileManipulator.cleanFile();
+	public void cleanTextFile() throws IOException{
+		fileManipulator.cleanTextFile();
 	}
 	
 	/**
@@ -128,11 +128,11 @@ public class Storage{
 	
 	/**
 	 * remove an alias command from the alias HashMap
-	 * @param command
+	 * @param aliasCommand
 	 * @return HashMap<String, String> alias
 	 */
-	public HashMap<String,String> removeAlias(String command){
-		HashMap<String,String> alias = aliasManipulator.removeAlias(command);
+	public HashMap<String,String> removeAlias(String aliasCommand){
+		HashMap<String,String> alias = aliasManipulator.removeAlias(aliasCommand);
 		saveModifiedAlias(alias);
 		return alias;
 	}
@@ -144,6 +144,7 @@ public class Storage{
 	 */
 	public void saveAlias(HashMap<String,String> overrideAlias) throws IOException{
 		fileManipulator.writeAlias(overrideAlias);
+		aliasManipulator.setAliasAndPushToHistory(overrideAlias);
 	}
 	
 	/**
@@ -162,10 +163,10 @@ public class Storage{
 	 * undo alias operation
 	 * @return true if successfully undo
 	 */
-	public boolean undoAlias(){
+	public boolean undoAlias() throws IOException{
 		boolean isUndoSuccessful = aliasManipulator.undo();
 		if(isUndoSuccessful){
-			saveCurrentAlias();
+			setCurrentAlias();
 		}
 		return isUndoSuccessful;
 	}
@@ -174,12 +175,20 @@ public class Storage{
 	 * redo alias operation
 	 * @return true if successfully redo
 	 */
-	public boolean redoAlias(){
+	public boolean redoAlias() throws IOException{
 		boolean isRedoSuccessful = aliasManipulator.redo();
 		if(isRedoSuccessful){
-			saveCurrentAlias();
+			setCurrentAlias();
 		}
 		return isRedoSuccessful;
+	}
+	
+	/**
+	 * clear all the contents in the alias file
+	 */
+	public void cleanAliasFile() throws IOException{
+		fileManipulator.cleanAliasFile();
+		aliasManipulator.resetAlias();
 	}
 	
 	/*
@@ -278,28 +287,14 @@ public class Storage{
 	
 	private boolean handlePathChangeForMacAndWindows(String textFileName) throws IOException {
 		
-		if(isPathForMac(textFileName)){
+		if(isValidFilePath(textFileName)){
 			return fileManipulator.moveFile(textFileName);
-		}
-		
-		String textFileNameForWindows = convertFilePathForWindows(textFileName);
-		
-		if(isPathForWindows(textFileNameForWindows)){
-			return fileManipulator.moveFile(textFileNameForWindows);
 		}
 		
 		return false;
 	}
 	
-	private boolean isPathForMac(String textFileName) {
-		return pathManipulator.isValidFilePath(textFileName);
-	}
-	
-	private String convertFilePathForWindows(String textFileName) {
-		return textFileName.replace(constants.getSlash(), constants.getPathSlash());
-	}
-
-	private boolean isPathForWindows(String textFileName) {
+	private boolean isValidFilePath(String textFileName) {
 		return pathManipulator.isValidFilePath(textFileName);
 	}
 	
@@ -317,6 +312,12 @@ public class Storage{
 			storageLog.log(Level.WARNING, constants.getFailedToFindAliasFile());
 		}
 		return new HashMap<String, String>();
+	}
+	
+	private void setCurrentAlias() throws IOException{
+		HashMap<String,String> alias = aliasManipulator.getAlias();
+		fileManipulator.writeAlias(alias);
+		aliasManipulator.setAlias(alias);
 	}
 	
 	private void saveCurrentAlias() {

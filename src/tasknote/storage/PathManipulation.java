@@ -1,7 +1,6 @@
 package tasknote.storage;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,19 +72,7 @@ public class PathManipulation{
 	 */
 	public String extractRedoPathString(){
 		return pathHistory.redo();
-	}
-	
-	/**
-	 * this method returns the parentPath of the given path string
-	 * @param pathName
-	 * @return path of parent directory
-	 * @throws IOException when failed to get canonical path of parent file
-	 */
-	public String getParentPath(String pathName) throws IOException{
-		File tempFile = new File(pathName);
-		File parentFile = tempFile.getParentFile().getParentFile();
-		return parentFile.getCanonicalPath();
-	}
+	}	
 	
 	/**
 	 * this methods finds the absolute path of the new path with reference to the old path

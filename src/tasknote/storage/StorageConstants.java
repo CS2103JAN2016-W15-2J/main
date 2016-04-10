@@ -36,8 +36,6 @@ public class StorageConstants{
 	private final String STRING_SLASH = "/";
 	private final String STRING_PATH_SLASH = "\\";
 	private final String STRING_PATH_DIVISION = "\\\\";
-	private final String STRING_CURRENT_DIRECTORY = ".";
-	private final String STRING_PARENT_DIRECTORY = "..";
 	private final String STRING_TEXT_FILE_END = ".txt";
 	private final String STRING_ALIAS_PAIR = "%1$s %2$s\n";
 	private final String STRING_NULL = "null";
@@ -72,7 +70,6 @@ public class StorageConstants{
 	 * Magic Integers
 	 */
 	private final int SUM_OF_TASKOBJECT_ITEMS = 17;
-	private final int SUM_OF_TASK_STATUS = 4;
 	private final int BUFFERSIZE = 32768;
 	private final int INTEGER_MONTH_NORMALIZE_CONSTANT = 1;
 	private final int INTEGER_ARRAY_NORMALIZE_INDEX = 1;
@@ -109,14 +106,6 @@ public class StorageConstants{
 	
 	public String getPathDivision(){
 		return STRING_PATH_DIVISION;
-	}
-	
-	public String getCurrentDirectory(){
-		return STRING_CURRENT_DIRECTORY;
-	}
-	
-	public String getParentDirectory(){
-		return STRING_PARENT_DIRECTORY;
 	}
 	
 	public String getTextFileEnding(){
@@ -201,10 +190,6 @@ public class StorageConstants{
 	
 	public int getTotalTitles(){
 		return SUM_OF_TASKOBJECT_ITEMS;
-	}
-	
-	public int getTotalTaskStatus(){
-		return SUM_OF_TASK_STATUS;
 	}
 	
 	public String addFileNameToPath(String pathName, String fileName){

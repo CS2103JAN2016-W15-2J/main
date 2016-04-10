@@ -40,11 +40,28 @@ public class AliasManipulation{
 	}
 	
 	/**
-	 * set current alias with newly created alias
+	 * set current alias with newly created alias or undo/redo methods
 	 * @param alias
 	 */
 	public void setAlias(HashMap<String, String> alias){
 		this.alias = alias;
+	}
+	
+	/**
+	 * set current alias with your modified alias
+	 * @param alias
+	 */
+	public void setAliasAndPushToHistory(HashMap<String,String> alias){
+		this.alias = alias;
+		aliasHistory.addHistory(alias);
+	}
+	
+	/**
+	 * reset the alias into an empty HashMap for cleanAliasFile
+	 */
+	public void resetAlias(){
+		this.alias = new HashMap<String,String>();
+		aliasHistory.addHistory(this.alias);
 	}
 	
 	/**

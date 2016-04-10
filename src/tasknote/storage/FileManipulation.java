@@ -83,7 +83,7 @@ public class FileManipulation{
 	}
 	
 	private String extractCanonicalFileName(){
-		if(isFileNotExist(pathFile)){
+		if(isFileInvalid(pathFile)){
 			return constants.getFileName();
 		}
 		return readFullPathFromPathFile();
@@ -96,25 +96,25 @@ public class FileManipulation{
 	}
 
 	private void createPathFileIfNotExist() {
-		if(isFileNotExist(pathFile)){
+		if(isFileInvalid(pathFile)){
 			createNewFile(pathFile);
 		}
 	}
 	
 	private void createAliasFileIfNotExist() {
-		if(isFileNotExist(aliasFile)){
+		if(isFileInvalid(aliasFile)){
 			createNewFile(aliasFile);
 		}
 	}
 
 	private void createTextFileIfNotExist() {
-		if(isFileNotExist(textFile)){
+		if(isFileInvalid(textFile)){
 			createNewFile(textFile);
 			storeNewTextFilePath();
 		}
 	}
 
-	private boolean isFileNotExist(File file){
+	private boolean isFileInvalid(File file){
 		return !file.exists();
 	}
 
@@ -358,10 +358,14 @@ public class FileManipulation{
 	}
 	
 	public void writeAlias(HashMap<String,String> alias) throws IOException{
-		BufferedOutputStream fileWriter = new BufferedOutputStream(new FileOutputStream(aliasFile));
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
 		Map<String,String> aliasMap = alias;
 		iterateAliasMapToWriteToFile(alias, fileWriter, aliasMap);
 		fileWriter.close();
+	}
+
+	private FileOutputStream initializeAliasFileOutputStream() throws FileNotFoundException {
+		return new FileOutputStream(aliasFile);
 	}
 
 	private void iterateAliasMapToWriteToFile(HashMap<String, String> alias, BufferedOutputStream fileWriter,
@@ -385,7 +389,7 @@ public class FileManipulation{
 	
 	public HashMap<String, String> readAliasFromAliasFile() throws FileNotFoundException{
 		HashMap<String, String> alias = new HashMap<String, String>();
-		BufferedReader read = new BufferedReader(new FileReader(aliasFile));
+		BufferedReader read = new BufferedReader(initializeAliasFileReader());
 		try {
 			loopReadLineToFillAlias(alias, read);
 		}catch(IOException ioe){
@@ -395,6 +399,10 @@ public class FileManipulation{
 		}
 		closeRead(read);
 		return alias;
+	}
+
+	private FileReader initializeAliasFileReader() throws FileNotFoundException {
+		return new FileReader(aliasFile);
 	}
 
 	private void loopReadLineToFillAlias(HashMap<String, String> alias, BufferedReader read) throws IOException {
@@ -450,8 +458,9 @@ public class FileManipulation{
 		try{
 			tempFile.getCanonicalPath();
 			return true;
-		}catch(IOException e){}
-		return false;
+		}catch(IOException e){
+			return false;
+		}
 	}
 
 	private void copyFileAndDeletePrevious(String newFileName) throws IOException{
@@ -499,8 +508,21 @@ public class FileManipulation{
 		outStream.close();
 	}
 	
-	public void cleanFile() throws IOException{
+	/**
+	 * this method cleans the textFile
+	 * @throws IOException
+	 */
+	public void cleanTextFile() throws IOException{
 		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeTextFileOutputStream());
+		fileWriter.close();
+	}
+	
+	/**
+	 * this method cleans the aliasFile
+	 * @throws IOException
+	 */
+	public void cleanAliasFile() throws IOException{
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
 		fileWriter.close();
 	}
 
