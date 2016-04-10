@@ -1,3 +1,4 @@
+//@@author A0126172M
 package tasknote.storage;
 
 import tasknote.shared.TaskObject;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//@@author A0126172M
+
 public class Storage{
 	private FileManipulation fileManipulator;
 	private PathManipulation pathManipulator;

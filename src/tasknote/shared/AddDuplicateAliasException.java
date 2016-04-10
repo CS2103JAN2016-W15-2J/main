@@ -1,5 +1,5 @@
-package tasknote.shared;
 //@@author A0126172M
+package tasknote.shared;
 /**
  * AddDuplicateAliasException is used to handle errors in adding duplicated alias
  */

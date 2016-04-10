@@ -1,6 +1,6 @@
+//@@author A0126172M
 package tasknote.storage;
 
-//@@author A0126172M
 /**
  * StorageConstants stores magic strings and numbers required for Storage
  */

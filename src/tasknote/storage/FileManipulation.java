@@ -1,3 +1,4 @@
+//@@author A0126172M
 package tasknote.storage;
 
 import java.io.BufferedInputStream;
@@ -20,7 +21,6 @@ import java.util.logging.Logger;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
 
-//@@author A0126172M
 /**
  * FileManipulation class focuses on reading and writing of the
  * file

@@ -1,9 +1,9 @@
+//@@author A0126172M
 package tasknote.storage;
 
 import java.util.HashMap;
 import java.util.Stack;
 
-//@@author A0126172M
 /**
  * This class deals with undo/redo of alias command
  */

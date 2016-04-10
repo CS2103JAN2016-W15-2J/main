@@ -1,3 +1,4 @@
+//@@author A0126172M
 package tasknote.storage;
 
 import static org.junit.Assert.*;
@@ -19,7 +20,11 @@ import org.junit.rules.ExpectedException;
 import tasknote.shared.AddDuplicateAliasException;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
-//@@author A0126172M
+
+/**
+ * this class does jUnit testing for the whole Storage Component
+ *
+ */
 public class StorageTest {
 	//various different paths
 	private static final String PATH_NAME_DEFAULT = "C:\\NUS\\CS2103T\\main\\taskContents.txt";
