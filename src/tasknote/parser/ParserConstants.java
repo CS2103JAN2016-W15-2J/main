@@ -237,6 +237,42 @@ public class ParserConstants {
 		return returnValue;
 	}
 	
+	protected static String decideNewSwitchString(String keyword) {
+
+		String returnValue = "name";
+
+		switch (keyword) {
+
+		case ParserConstants.KEYWORD_AT:
+			returnValue = "locationtime";
+			break;
+
+		case ParserConstants.KEYWORD_BY:
+		case ParserConstants.KEYWORD_ON:
+		case ParserConstants.KEYWORD_FROM:
+			returnValue = "datetimestart";
+			break;
+
+		case ParserConstants.KEYWORD_TO:
+			returnValue = "datetimeend";
+			break;
+
+		case ParserConstants.KEYWORD_REMOVE:
+			returnValue = "remove";
+			break;
+
+		case ParserConstants.KEYWORD_NOTIFY:
+			returnValue = "notify";
+			break;
+			
+		default: 
+			returnValue = "name";
+			break;
+		}
+
+		return returnValue;
+	}
+	
 	protected static int getMonthFromString(String lowercaseWord) {
 		
 		int returnValue = Constants.INVALID_VALUE_CONSTANT;

@@ -100,11 +100,9 @@ public class Parser {
 
 		return returnValue;
 	}
-
-	// Fixed command structure: add taskname <on date> <by time> <notify time>
-	// <at location>
+	
 	public TaskObject parseAdd(boolean throwException) {
-
+		
 		if (this.getCommandType() != COMMAND_TYPE.ADD) {
 			throw new RuntimeException(
 					"Wrong method used for non-add type input!");
@@ -113,54 +111,82 @@ public class Parser {
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 		this.setListPointer(1);
-
-		String switchString = ParserConstants.SWITCH_STRING_NAME;
-		String oldSwitchString = ParserConstants.SWITCH_STRING_NAME;
-		String taskType = TaskObject.TASK_TYPE_FLOATING;
 		
-		TaskObject taskObjectToBuild = this.getObjectForThisCommand();
+		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(allPhrases);
+		String[] allMarks = forwardChecker.getAllPhraseTypes();
+		
+		StringBuilder nameBuilder = new StringBuilder();
+		StringBuilder locationBuilder = new StringBuilder();
+		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
+		
+		boolean toStartDateTime = true;
+		
+		ArrayList<String> allStartDateInfo = new ArrayList<>();
+		ArrayList<String> allEndDateInfo = new ArrayList<>();
 
-		while (this.getListPointer() < phraseCount) {
-
-			if (switchString.equals(ParserConstants.SWITCH_STRING_NAME)) {
-				switchString = parseNameUntilSurrender();
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
-				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMESTART);
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMEEND);
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)) {
-				switchString = parseLocationTimeUntilSurrender();
-			} else {
-				this.setListPointer(this.getListPointer() + 1);
+		ArrayList<String> allStartTimeInfo = new ArrayList<>();
+		ArrayList<String> allEndTimeInfo = new ArrayList<>();
+		
+		
+		for (int i = this.getListPointer(); i < phraseCount; i++) {
+			
+			currentPhrase = allPhrases.get(i);
+			
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_NAME)) {
+				nameBuilder.append(currentPhrase);
+				nameBuilder.append(Constants.STRING_CONSTANT_SPACE);
+				continue;
 			}
-		}
-		
-		if (taskObjectToBuild.getDateHour() > ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& taskObjectToBuild.getDateMinute() > ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			if (taskObjectToBuild.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					|| taskObjectToBuild.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					|| taskObjectToBuild.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				GregorianCalendar todayOrTomorrow = new GregorianCalendar();
+			
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)
+					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
+					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
 				
-				int todayMinute = todayOrTomorrow.get(Calendar.HOUR_OF_DAY) * 60 + todayOrTomorrow.get(Calendar.MINUTE);
-				int taskMinute = taskObjectToBuild.getDateHour() * 60 + taskObjectToBuild.getDateMinute();
-				
-				if (todayMinute > taskMinute) {
-					DateParser tomorrowParser = new DateParser();
-					todayOrTomorrow = tomorrowParser.rollByDays(todayOrTomorrow, 1);
+				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
+					toStartDateTime = true;
+				} else if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+					toStartDateTime = false;
 				}
-				
-				taskObjectToBuild.setDateDay(todayOrTomorrow.get(Calendar.DAY_OF_MONTH));
-				taskObjectToBuild.setDateMonth(todayOrTomorrow.get(Calendar.MONTH) + 1);
-				taskObjectToBuild.setDateYear(todayOrTomorrow.get(Calendar.YEAR));
+				continue;
+			}
+			
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATE)) {
+				if (toStartDateTime) {
+					allStartDateInfo.add(currentPhrase);
+				} else {
+					allEndDateInfo.add(currentPhrase);
+				}
+				continue;
+			}
+			
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_TIME)) {
+				if (toStartDateTime) {
+					allStartTimeInfo.add(currentPhrase);
+				} else {
+					allEndTimeInfo.add(currentPhrase);
+				}
+				continue;
+			}
+			
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATION)) {
+				locationBuilder.append(currentPhrase);
+				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
+				continue;
 			}
 		}
-
-		return taskObjectToBuild;
+		
+		DateMessage startDate = tryToParseDate(allStartDateInfo);
+		DateMessage endDate = tryToParseDate(allEndDateInfo);
+		
+		TimeMessage startTime = tryToParseTime(allStartTimeInfo);
+		TimeMessage endTime = tryToParseTime(allEndTimeInfo);
+		
+		String finalTaskName = nameBuilder.toString().trim();
+		String finalLocation = locationBuilder.toString().trim();
+		
+		return null;
 	}
+
 	
 	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
 		
@@ -173,255 +199,7 @@ public class Parser {
 		int phraseCount = allPhrases.size();
 		this.setListPointer(2);
 
-		String switchString = ParserConstants.SWITCH_STRING_NAME;
-		String oldSwitchString = ParserConstants.SWITCH_STRING_NAME;
-		String taskType = TaskObject.TASK_TYPE_FLOATING;
-		
-		TaskObject taskObjectToBuild = this.getObjectForThisCommand();
-
-		while (this.getListPointer() < phraseCount) {
-
-			if (switchString.equals(ParserConstants.SWITCH_STRING_NAME)) {
-				switchString = parseNameUntilSurrender();
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
-				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMESTART);
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-				switchString = parseDateTimeUntilSurrender(ParserConstants.SWITCH_STRING_DATETIMEEND);
-			} else if (switchString
-					.equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)) {
-				switchString = parseLocationTimeUntilSurrender();
-			} else {
-				this.setListPointer(this.getListPointer() + 1);
-			}
-		}
-		
-		// Overlay new TaskObject over old TaskObject
-		taskObjectToBuild = overlayTaskObject(reallyOldTaskObject, taskObjectToBuild);
-		
-		if (taskObjectToBuild.getDateHour() > ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& taskObjectToBuild.getDateMinute() > ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			if (taskObjectToBuild.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					|| taskObjectToBuild.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					|| taskObjectToBuild.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				GregorianCalendar todayOrTomorrow = new GregorianCalendar();
-				
-				int todayMinute = todayOrTomorrow.get(Calendar.HOUR_OF_DAY) * 60 + todayOrTomorrow.get(Calendar.MINUTE);
-				int taskMinute = taskObjectToBuild.getDateHour() * 60 + taskObjectToBuild.getDateMinute();
-				
-				if (todayMinute > taskMinute) {
-					DateParser tomorrowParser = new DateParser();
-					todayOrTomorrow = tomorrowParser.rollByDays(todayOrTomorrow, 1);
-				}
-				
-				taskObjectToBuild.setDateDay(todayOrTomorrow.get(Calendar.DAY_OF_MONTH));
-				taskObjectToBuild.setDateMonth(todayOrTomorrow.get(Calendar.MONTH) + 1);
-				taskObjectToBuild.setDateYear(todayOrTomorrow.get(Calendar.YEAR));
-			}
-		}
-
-		return taskObjectToBuild;
-
-	}
-
-	private String parseNameUntilSurrender() {
-
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		int phraseCount = allPhrases.size();
-		StringBuilder nameBuilder = new StringBuilder();
-		String currentPhrase = allPhrases.get(listPointer);
-
-		do {
-			nameBuilder.append(currentPhrase);
-			nameBuilder.append(Constants.STRING_CONSTANT_SPACE);
-			listPointer++;
-			
-			if (listPointer < phraseCount) {
-				currentPhrase = allPhrases.get(listPointer);
-			}
-		} while (listPointer < phraseCount 
-				&& !ParserConstants.KEYWORD_SET_UNMODIFIABLE.contains(currentPhrase));
-
-		// Clean up the trailing spaces in the name
-		String taskObjectFinalName = nameBuilder.toString().trim();
-		String taskObjectOldName = this.getObjectForThisCommand().getTaskName();
-
-		if (!taskObjectOldName.equals(Constants.STRING_CONSTANT_EMPTY)) {
-			taskObjectOldName = taskObjectOldName
-					+ Constants.STRING_CONSTANT_SPACE;
-		}
-
-		this.setListPointer(listPointer);
-		this.getObjectForThisCommand().setTaskName(
-				taskObjectOldName + taskObjectFinalName);
-
-		// For this specific case, remove keyword should be ignored
-		// and name construction should continue
-		if (this.getCommandType() == COMMAND_TYPE.ADD
-				&& currentPhrase.equals(ParserConstants.KEYWORD_REMOVE)) {
-			return parseNameUntilSurrender();
-		} else {
-			return decideNewSwitchString(currentPhrase);
-		}
-
-	}
-
-	private String parseDateTimeUntilSurrender(String startOrEnd) {
-
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		int phraseCount = allPhrases.size();
-		String currentPhrase = allPhrases.get(listPointer);
-		TaskObject objectToModify = this.getObjectForThisCommand();
-
-		do {
-
-			DateMessage potentialDateMessage = tryToParseDate();
-			TimeMessage potentialTimeMessage = tryToParseTime();
-
-			if (potentialDateMessage.getMessage().equals(
-					ParserConstants.MESSAGE_DATE_SURE)) {
-
-				if (startOrEnd
-						.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
-						&& objectToModify.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-						&& objectToModify.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-						&& objectToModify.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-					objectToModify.setDateDay(potentialDateMessage.getDay());
-					objectToModify
-							.setDateMonth(potentialDateMessage.getMonth());
-					objectToModify.setDateYear(potentialDateMessage.getYear());
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-				} else {
-					objectToModify.setEndDateDay(potentialDateMessage.getDay());
-					objectToModify.setEndDateMonth(potentialDateMessage
-							.getMonth());
-					objectToModify.setEndDateYear(potentialDateMessage
-							.getYear());
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_EVENT);
-				}
-
-				listPointer = listPointer
-						+ potentialDateMessage.getExtraWordsUsed() + 1;
-				this.setListPointer(listPointer);
-				
-				if (listPointer < phraseCount) {
-					currentPhrase = allPhrases.get(listPointer);
-				}
-
-			} else if (potentialTimeMessage.getMessage().equals(
-					ParserConstants.MESSAGE_TIME_SURE)) {
-
-				if (startOrEnd
-						.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
-						&& objectToModify.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-						&& objectToModify.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-					objectToModify.setDateHour(potentialTimeMessage.getHour());
-					objectToModify.setDateMinute(potentialTimeMessage
-							.getMinute());
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-				} else {
-					objectToModify.setEndDateHour(potentialTimeMessage
-							.getHour());
-					objectToModify.setEndDateMinute(potentialTimeMessage
-							.getMinute());
-
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_EVENT);
-				}
-
-				listPointer = listPointer + 1;
-				this.setListPointer(listPointer);
-				
-				if (listPointer < phraseCount) {
-					currentPhrase = allPhrases.get(listPointer);
-				}
-
-			} else {
-
-				listPointer = listPointer + 1;
-				this.setListPointer(listPointer);
-				
-				if (listPointer < phraseCount) {
-					currentPhrase = allPhrases.get(listPointer);
-				}
-
-				return decideNewSwitchString(currentPhrase);
-			}
-		} while (listPointer < phraseCount
-				&& !ParserConstants.KEYWORD_SET_UNMODIFIABLE.contains(currentPhrase));
-		return decideNewSwitchString(currentPhrase);
-	}
-
-	private String parseLocationTimeUntilSurrender() {
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		int phraseCount = allPhrases.size();
-		StringBuilder locationBuilder = new StringBuilder();
-		String currentPhrase = allPhrases.get(listPointer);
-		TaskObject objectToModify = this.getObjectForThisCommand();
-
-		do {
-
-			TimeMessage potentialTimeMessage = tryToParseTime();
-			
-			if ((listPointer + 1) >= phraseCount 
-					&& ParserConstants.isValidHour(potentialTimeMessage.getHour())
-					&& ParserConstants.isValidMinute(potentialTimeMessage.getMinute())) {
-				potentialTimeMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
-			} else {
-				String nextPhrase = allPhrases.get(listPointer + 1);
-				
-				if (ParserConstants.KEYWORD_SET_UNMODIFIABLE.contains(nextPhrase)) {
-					potentialTimeMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
-				}
-			}
-
-			if (potentialTimeMessage.getMessage().equals(
-					ParserConstants.MESSAGE_TIME_SURE)) {
-
-				if (objectToModify.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-						&& objectToModify.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-					objectToModify.setDateHour(potentialTimeMessage.getHour());
-					objectToModify.setDateMinute(potentialTimeMessage
-							.getMinute());
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-				} else {
-					objectToModify.setEndDateHour(potentialTimeMessage
-							.getHour());
-					objectToModify.setEndDateMinute(potentialTimeMessage
-							.getMinute());
-					objectToModify.setTaskType(TaskObject.TASK_TYPE_EVENT);
-				}
-			} else {
-				currentPhrase = allPhrases.get(listPointer);
-				
-				locationBuilder.append(currentPhrase);
-				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
-			}
-			
-			listPointer = listPointer + 1;
-			this.setListPointer(listPointer);
-			
-			if (listPointer < phraseCount) {
-				currentPhrase = allPhrases.get(listPointer);
-			}
-		
-		} while (listPointer < phraseCount
-				&& !ParserConstants.KEYWORD_SET_UNMODIFIABLE.contains(currentPhrase));
-		
-		// Trim the location results of any trailing whitespace
-		String finalLocation = locationBuilder.toString().trim();
-		String oldLocation = objectToModify.getLocation();
-		
-		if (!oldLocation.equals(Constants.STRING_CONSTANT_EMPTY)) {
-			oldLocation = oldLocation + Constants.STRING_CONSTANT_SPACE;
-		}
-		
-		objectToModify.setLocation(oldLocation + finalLocation);
-		
-		return decideNewSwitchString(currentPhrase);
+		return null;
 	}
 	
 	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
@@ -463,43 +241,6 @@ public class Parser {
 		}
 		
 		return newTaskObject;
-	}
-
-	private String decideNewSwitchString(String keyword) {
-
-		String returnValue = "name";
-
-		switch (keyword) {
-
-		case ParserConstants.KEYWORD_AT:
-			returnValue = "locationtime";
-			break;
-
-		case ParserConstants.KEYWORD_BY:
-		case ParserConstants.KEYWORD_ON:
-		case ParserConstants.KEYWORD_FROM:
-			returnValue = "datetimestart";
-			break;
-
-		case ParserConstants.KEYWORD_TO:
-			returnValue = "datetimeend";
-			break;
-
-		case ParserConstants.KEYWORD_REMOVE:
-			returnValue = "remove";
-			break;
-
-		case ParserConstants.KEYWORD_NOTIFY:
-			returnValue = "notify";
-			break;
-		}
-		
-		// If you are deciding on a new switchString, that means
-		// this current keyword would be foregone
-		int listPointer = this.getListPointer();
-		this.setListPointer(listPointer + 1);
-
-		return returnValue;
 	}
 
 	public ArrayList<Integer> parseDelete(boolean throwException) {
@@ -914,15 +655,14 @@ public class Parser {
 		}
 	}
 
-	private DateMessage tryToParseDate() {
+	private DateMessage tryToParseDate(ArrayList<String> allDateInfo) {
 
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		int phraseCount = allPhrases.size();
-		String currentPhrase = allPhrases.get(listPointer);
+		int listPointer = 0;
+		int phraseCount = allDateInfo.size();
+		String currentPhrase = allDateInfo.get(listPointer);
 
 		DateParser dateParser = new DateParser();
-		dateParser.setAllPhrases(allPhrases);
+		dateParser.setAllPhrases(allDateInfo);
 		dateParser.setCurrentPhrase(currentPhrase);
 		dateParser.setListPointer(listPointer);
 		dateParser.setPhraseCount(phraseCount);
@@ -932,12 +672,11 @@ public class Parser {
 		return returnMessage;
 	}
 
-	private TimeMessage tryToParseTime() {
+	private TimeMessage tryToParseTime(ArrayList<String> allTimeInfo) {
 
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = this.getListPointer();
-		int phraseCount = allPhrases.size();
-		String currentPhrase = allPhrases.get(listPointer);
+		int listPointer = 0;
+		int phraseCount = allTimeInfo.size();
+		String currentPhrase = allTimeInfo.get(listPointer);
 
 		TimeParser timeParser = new TimeParser();
 		timeParser.setCurrentPhrase(currentPhrase);
