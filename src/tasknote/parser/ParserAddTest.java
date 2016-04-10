@@ -49,8 +49,7 @@ public class ParserAddTest {
 
 		for (int i = 0; i < validKeywords.length; i++) {
 
-			String userCommand = "add longdeadline " + validKeywords[i]
-					+ " 23:59";
+			String userCommand = "add longdeadline " + validKeywords[i] + " 23:59";
 			this.testParser.setInputString(userCommand);
 
 			TaskObject actualResult = this.testParser.parseAdd(false);
@@ -65,22 +64,25 @@ public class ParserAddTest {
 		// This should generally prevent cases where the add
 		// function automatically rolls the date to the next day
 		// for the purpose of checking
-		
-		String[] validKeywords = {"by", "on", "at"};
-		
+
+		String[] validKeywords = { "by", "on", "at" };
+
 		for (int i = 0; i < validKeywords.length; i++) {
 
 			String userCommand = "add baddeadlinehourminute " + validKeywords[i] + " 76:90";
 			this.testParser.setInputString(userCommand);
-			
-			TaskObject expectedResult = new TaskObject("baddeadlinehourminute");
-			
+
+			TaskObject expectedResult = new TaskObject();
+
 			// For this case, "at" keyword would treat 76:90 as location
 			// since it is not a valid time
 			if (validKeywords[i].equals("at")) {
+				expectedResult.setTaskName("baddeadlinehourminute");
 				expectedResult.setLocation("76:90");
+			} else {
+				expectedResult.setTaskName("baddeadlinehourminute " + validKeywords[i] + " 76:90");
 			}
-			
+
 			TaskObject actualResult = this.testParser.parseAdd(false);
 
 			assertEquals(expectedResult, actualResult);
@@ -96,7 +98,7 @@ public class ParserAddTest {
 		String userCommand = "add baddeadlinehour by 76:31";
 		this.testParser.setInputString(userCommand);
 
-		TaskObject expectedResult = new TaskObject("baddeadlinehour");
+		TaskObject expectedResult = new TaskObject("baddeadlinehour by 76:31");
 		TaskObject actualResult = this.testParser.parseAdd(false);
 
 		assertEquals(expectedResult, actualResult);
@@ -111,7 +113,7 @@ public class ParserAddTest {
 		String userCommand = "add baddeadlineminute by 15:99";
 		this.testParser.setInputString(userCommand);
 
-		TaskObject expectedResult = new TaskObject("baddeadlineminute");
+		TaskObject expectedResult = new TaskObject("baddeadlineminute by 15:99");
 		TaskObject actualResult = this.testParser.parseAdd(false);
 
 		assertEquals(expectedResult, actualResult);
@@ -151,7 +153,7 @@ public class ParserAddTest {
 		String userCommand = "add longerdeadlinebadday on 45/2/2001 by 23:59";
 		this.testParser.setInputString(userCommand);
 
-		TaskObject expectedResult = new TaskObject("longerdeadlinebadday");
+		TaskObject expectedResult = new TaskObject("longerdeadlinebadday on 45/2/2001");
 
 		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(today.get(Calendar.YEAR));
@@ -176,7 +178,7 @@ public class ParserAddTest {
 		String userCommand = "add longerdeadlinebadmonth on 15/22/2001 by 23:59";
 		this.testParser.setInputString(userCommand);
 
-		TaskObject expectedResult = new TaskObject("longerdeadlinebadmonth");
+		TaskObject expectedResult = new TaskObject("longerdeadlinebadmonth on 15/22/2001");
 
 		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(today.get(Calendar.YEAR));
@@ -200,8 +202,7 @@ public class ParserAddTest {
 		String userCommand = "add longerdeadlinebaddaybadmonth on 49/22/2001 by 23:59";
 		this.testParser.setInputString(userCommand);
 
-		TaskObject expectedResult = new TaskObject(
-				"longerdeadlinebaddaybadmonth");
+		TaskObject expectedResult = new TaskObject("longerdeadlinebaddaybadmonth on 49/22/2001");
 
 		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(today.get(Calendar.YEAR));
@@ -236,58 +237,58 @@ public class ParserAddTest {
 
 		assertEquals(expectedResult, actualResult);
 	}
-	
+
 	@Test
 	public void testAddDeadlineJoinDateTime() {
-		
+
 		TaskObject expectedResult = new TaskObject("joineddatetimetask");
 
 		GregorianCalendar today = new GregorianCalendar();
 		expectedResult.setDateYear(today.get(Calendar.YEAR));
 		expectedResult.setDateMonth(today.get(Calendar.MONTH) + 1);
 		expectedResult.setDateDay(15);
-		
+
 		expectedResult.setDateHour(21);
 		expectedResult.setDateMinute(0);
 
-		String[] validKeywords = {"by", "on", "at"};
+		String[] validKeywords = { "by", "on", "at" };
 
 		for (int i = 0; i < validKeywords.length; i++) {
 			String userCommand = "add joineddatetimetask by 9pm 15th";
 			this.testParser.setInputString(userCommand);
-			
+
 			TaskObject actualResult = this.testParser.parseAdd(false);
 
 			assertEquals(expectedResult, actualResult);
 		}
 	}
-	
+
 	@Test
 	public void testSpecialMcdonaldsThatGCalCannotHandle() {
-		
+
 		TaskObject expectedResult = new TaskObject("breakfast with mk");
 
 		GregorianCalendar tomorrow = new GregorianCalendar();
 		DateParser tomorrowRoller = new DateParser();
-	
+
 		tomorrow = tomorrowRoller.rollByDays(tomorrow, 1);
-		
+
 		expectedResult.setDateYear(tomorrow.get(Calendar.YEAR));
 		expectedResult.setDateMonth(tomorrow.get(Calendar.MONTH) + 1);
 		expectedResult.setDateDay(tomorrow.get(Calendar.DAY_OF_MONTH));
-		
+
 		expectedResult.setDateHour(10);
 		expectedResult.setDateMinute(0);
-		
+
 		expectedResult.setLocation("8 redhill st, mcd");
 
-		String[] validKeywords = {"by", "on", "at"};
+		String[] validKeywords = { "by", "on", "at" };
 
 		for (int i = 0; i < validKeywords.length; i++) {
-			String userCommand = "add breakfast with mk at 8 redhill st, mcd " + 
-		validKeywords[i] + " 10am tomorrow";
+			String userCommand = "add breakfast with mk at 8 redhill st, mcd " + validKeywords[i]
+					+ " 10am tomorrow";
 			this.testParser.setInputString(userCommand);
-			
+
 			TaskObject actualResult = this.testParser.parseAdd(false);
 
 			assertEquals(expectedResult, actualResult);
