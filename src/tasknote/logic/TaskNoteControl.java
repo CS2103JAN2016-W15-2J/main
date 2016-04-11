@@ -108,6 +108,7 @@ public class TaskNoteControl {
 	private static String executeAction(COMMAND_TYPE commandType, String userCommand) {
 		String response;
 		taskNote.reIntializeSearchList();
+		setDisplayCategory(ShowCategory.OUTSTANDING);
 		switch (commandType) {
 		case ADD:
 			response = executeAdd(userCommand);
@@ -174,7 +175,6 @@ public class TaskNoteControl {
 			parserFeedback = e.getMessage();
 			taskObject = parser.parseAdd(throwException);
 		}
-		setDisplayCategory(ShowCategory.OUTSTANDING);
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
 		command.refreshDisplay();
@@ -202,7 +202,6 @@ public class TaskNoteControl {
 			//deleteIds = parser.parseDelete(throwException);
 			deleteIds = new ArrayList<Integer>();
 		}
-		setDisplayCategory(ShowCategory.OUTSTANDING);
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
 		command.refreshDisplay();
