@@ -119,7 +119,7 @@ public class TaskObject implements Comparable<TaskObject> {
 		setIsMarkedDone(false);
 	}
 
-	//@@author A0129529-generated
+	//@@author A0129529W-generated
 	/**
 	 * @return the taskName
 	 */
@@ -397,7 +397,7 @@ public class TaskObject implements Comparable<TaskObject> {
 	    }
 	}
 
-	//@@author A0129529
+	//@@author A0129529W
 	@Override
 	public int compareTo(TaskObject otherTaskObject) {
 		
