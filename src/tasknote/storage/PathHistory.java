@@ -49,10 +49,16 @@ public class PathHistory {
 	 */
 	public String undo() {
 		if (history.isEmpty()) {
-			return null;
+			return handleEmptyHistory();
 		}
 		setUpUndo();
 		return history.pop();
+	}
+
+	private String handleEmptyHistory() {
+		String returnPath = current;
+		resetCurrent();
+		return returnPath;
 	}
 
 	private void setUpUndo() {
@@ -72,6 +78,10 @@ public class PathHistory {
 		}
 		setUpRedo();
 		return backup.pop();
+	}
+
+	private void resetCurrent() {
+		current = null;
 	}
 
 	private void setUpRedo() {

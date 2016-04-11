@@ -25,6 +25,8 @@ public class TasksContainer extends HBox {
     private static final String FORMAT_TASK_DATE_PROPERTY = "%n\t%1$s";
     private static final String FORMAT_TASK_LOCATION_PROPERTY = "%n\t%1$s";
     
+    private static final int FONT_SIZE_TASK_MISCELLANEOUS_INFO = 10;
+    
     /** Color(s) are used in formatting task(s) appearance */
     private static final Color LIGHT_GRAY = Color.rgb(150,141,143);
     private static final Color RED = Color.rgb(240, 100, 100);
@@ -135,23 +137,23 @@ public class TasksContainer extends HBox {
 
         if (!taskDate.isEmpty() && !taskTime.isEmpty()) {
             taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskDate, taskTime));
-            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
+            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_TASK_MISCELLANEOUS_INFO));
         } else if (!taskDate.isEmpty() && taskTime.isEmpty()) {
             taskDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskDate));
-            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
+            taskDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_TASK_MISCELLANEOUS_INFO));
         }
 
         if (taskLocation == null || !taskLocation.isEmpty()) {
             taskLocationValue = new Text(String.format(FORMAT_TASK_LOCATION_PROPERTY, taskLocation));
-            taskLocationValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
+            taskLocationValue.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_TASK_MISCELLANEOUS_INFO));
         }
 
         if (!taskEndDate.isEmpty() && !taskEndTime.isEmpty()) {
             taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_TIME_PROPERTY, taskEndDate, taskEndTime));
-            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
+            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_TASK_MISCELLANEOUS_INFO));
         } else if (!taskEndDate.isEmpty() && taskEndTime.isEmpty()) {
             taskEndDateTimeValue = new Text(String.format(FORMAT_TASK_DATE_PROPERTY, taskEndDate));
-            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, 10));
+            taskEndDateTimeValue.setStyle(String.format(PROPERTY_FONT_SIZE, FONT_SIZE_TASK_MISCELLANEOUS_INFO));
         }
 
         return colorise(taskStatus, taskIndex, taskNameValue, taskDateTimeValue, taskLocationValue, taskEndDateTimeValue);

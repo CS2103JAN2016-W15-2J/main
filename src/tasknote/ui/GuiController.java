@@ -309,8 +309,6 @@ public class GuiController extends Application {
     private static void changeViewOfSidebarNavigation(String selected) {
         SidebarContainer sidebarContainer = SidebarContainer.getInstance();
 
-        setVisibilityOfFloatingTaskContainer(selected);
-
         switch (selected) {
             case SidebarContainer.NAVIGATION_TAG_VIEW_ALL:
                 sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_VIEW_ALL_INDEX);
@@ -328,18 +326,6 @@ public class GuiController extends Application {
                 sidebarContainer.selectNavigationCell(SidebarContainer.NAVIGATION_TAG_COMPLETED_INDEX);
                 displayUpdatedTaskList();
                 break;
-        }
-    }
-
-    private static void setVisibilityOfFloatingTaskContainer(String selectedTab) {
-        FloatingTasksContainer floatingTasksContainer = FloatingTasksContainer.getInstance();
-
-        if (selectedTab.equals(SidebarContainer.NAVIGATION_TAG_OVERDUE)) {
-            floatingTasksContainer.setVisible(false);
-            floatingTasksContainer.setManaged(false);
-        } else {
-            floatingTasksContainer.setVisible(true);
-            floatingTasksContainer.setManaged(true);
         }
     }
 
