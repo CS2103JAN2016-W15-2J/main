@@ -67,7 +67,10 @@ public class FileManipulation {
 		return constants.getPathFileName();
 	}
 	
-	//@@author A0126172M-unused
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	private void initializeAliasFile() {
 		aliasFile = new File(getDefaultAliasFileName());
 	}
@@ -364,7 +367,10 @@ public class FileManipulation {
 		fileWriter.flush();
 	}
 	
-	//@@author A0126172M-unused
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	public void writeAlias(HashMap<String, String> alias) throws IOException {
 		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
 		Map<String, String> aliasMap = alias;

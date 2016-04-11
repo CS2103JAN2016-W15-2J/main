@@ -248,6 +248,116 @@ public class AliasManipulation {
 
 }
 ```
+###### \src\tasknote\storage\FileManipulation.java
+``` java
+	 * Unused due to time constraints that alias was not implemented.
+	 */
+	private void initializeAliasFile() {
+		aliasFile = new File(getDefaultAliasFileName());
+	}
+
+	private String getDefaultAliasFileName() {
+		return constants.getAliasFileName();
+	}
+	
+	private void createAliasFileIfNotExist() {
+		if (isFileInvalid(aliasFile)) {
+			createNewFile(aliasFile);
+		}
+	}
+	
+```
+###### \src\tasknote\storage\FileManipulation.java
+``` java
+	 * Unused due to time constraints that alias was not implemented.
+	 */
+	public void writeAlias(HashMap<String, String> alias) throws IOException {
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
+		Map<String, String> aliasMap = alias;
+		iterateAliasMapToWriteToFile(alias, fileWriter, aliasMap);
+		fileWriter.close();
+	}
+
+	private FileOutputStream initializeAliasFileOutputStream() throws FileNotFoundException {
+		return new FileOutputStream(aliasFile);
+	}
+
+	private void iterateAliasMapToWriteToFile(HashMap<String, String> alias, BufferedOutputStream fileWriter,
+			Map<String, String> aliasMap) throws IOException {
+		for (String aliasCommand : aliasMap.keySet()) {
+			writeAliasPairToAliasFile(alias, fileWriter, aliasCommand);
+		}
+	}
+
+	private void writeAliasPairToAliasFile(HashMap<String, String> alias, BufferedOutputStream fileWriter,
+			String aliasCommand) throws IOException {
+		String aliasPair = generateAliasPair(alias, aliasCommand);
+		byte[] bufferMemory = aliasPair.getBytes();
+		writeOneObjectToFile(bufferMemory, fileWriter);
+	}
+
+	private String generateAliasPair(HashMap<String, String> alias, String aliasCommand) {
+		String command = alias.get(aliasCommand);
+		return constants.getAliasPair(aliasCommand, command);
+	}
+
+	public HashMap<String, String> readAliasFromAliasFile() throws FileNotFoundException {
+		HashMap<String, String> alias = new HashMap<String, String>();
+		BufferedReader read = new BufferedReader(initializeAliasFileReader());
+		try {
+			loopReadLineToFillAlias(alias, read);
+		} catch (IOException ioe) {
+			fileLog.log(Level.WARNING, constants.getFailedToReadFromAliasFile());
+		} catch (NullPointerException npe) {
+			// read success [NOT logged to avoid overcrowd console]
+		}
+		closeRead(read);
+		return alias;
+	}
+
+	private FileReader initializeAliasFileReader() throws FileNotFoundException {
+		return new FileReader(aliasFile);
+	}
+
+	private void loopReadLineToFillAlias(HashMap<String, String> alias, BufferedReader read) throws IOException {
+		while (true) {
+			String aliasLine = attemptToReadLineOrEndRead(read);
+			String[] aliasPair = extractAliasPair(aliasLine);
+			addAliasPairToAlias(alias, aliasPair);
+		}
+	}
+
+	private String[] extractAliasPair(String aliasLine) {
+		return aliasLine.split(constants.getSpace());
+	}
+
+	private void addAliasPairToAlias(HashMap<String, String> alias, String[] aliasPair) {
+		if (aliasPair.length == constants.getPairCount()) {
+			String aliasCommand = aliasPair[constants.getAliasCommandIndex()];
+			String command = aliasPair[constants.getCommandIndex()];
+			alias.put(aliasCommand, command);
+		}
+	}
+
+	private void closeRead(BufferedReader read) {
+		try {
+			read.close();
+		} catch (IOException ioe) {
+			fileLog.log(Level.WARNING, constants.getFailedToCloseRead());
+		}
+	}
+	
+	/**
+	 * this method cleans the aliasFile
+	 * 
+	 * @throws IOException
+	 */
+	public void cleanAliasFile() throws IOException {
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
+		fileWriter.close();
+	}
+	
+```
 ###### \src\tasknote\storage\Storage.java
 ``` java
 	 * Unused due to time constraints that alias was not implemented.
