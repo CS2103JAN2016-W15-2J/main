@@ -1,12 +1,18 @@
 /** @@author A0108371L */
 package tasknote.logic.JUnitTests;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import tasknote.logic.TaskNoteControl;
+import tasknote.logic.TaskNote;
 import tasknote.shared.TaskObject;
 import tasknote.shared.Constants;
 
@@ -21,6 +27,9 @@ public class DoneTests {
 	@Test
 	// @condition: Task File must be empty before executing this test
 	public void testMarkAsComplete() {
+		
+		resetTaskContents();
+		
 		String taskName;
 		ArrayList<TaskObject> list;
 		TaskObject task;
@@ -36,12 +45,12 @@ public class DoneTests {
 		
 		list = tnc.getDisplayList();
 		task = list.get(0);
-		//System.out.println(task);
 		
 		output = "Task \"%s\" has been marked as completed Successfully";
 		taskName = task.getTaskName();
 		feedback = feedback.trim();
 		Assert.assertEquals(String.format(output, taskName), feedback);
+		
 		
 		//Second test case
 		command = "done 200";
@@ -52,6 +61,7 @@ public class DoneTests {
 		feedback = feedback.trim();
 		Assert.assertEquals(output, feedback);
 		
+		
 		//Third test case
 		command = "done 0";
 		output = "Mark as complete failed\n\n";
@@ -60,6 +70,7 @@ public class DoneTests {
 		feedback = tnc.executeCommand(command);
 		feedback = feedback.trim();
 		Assert.assertEquals(output, feedback);
+		
 		
 		//Fourth test case
 		command = "done 1";
@@ -74,6 +85,19 @@ public class DoneTests {
 		taskName = task.getTaskName();
 		feedback = feedback.trim();
 		Assert.assertEquals(String.format(output, taskName), feedback);
+		
+		tnc.executeCommand("undone 1");
 	}
-
+	
+	private void resetTaskContents() {
+		Path taskContentsPath = Paths.get("taskContents.txt");
+		ArrayList<String> resetList = new ArrayList<>();
+		
+		try {
+			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

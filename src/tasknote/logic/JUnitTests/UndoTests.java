@@ -1,6 +1,11 @@
 /** @@author A0108371L */
 package tasknote.logic.JUnitTests;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -19,6 +24,8 @@ public class UndoTests {
 
 	@Test
 	public void testUndo() {
+		
+		resetTaskContents();
 		
 		//Test Case 1
 		command = "add breakfast 5pm";
@@ -131,6 +138,18 @@ public class UndoTests {
 		obj = tnc.getDisplayList();
 		print(obj);
 		
+	}
+	
+	private void resetTaskContents() {
+		Path taskContentsPath = Paths.get("taskContents.txt");
+		ArrayList<String> resetList = new ArrayList<>();
+		
+		try {
+			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void print(ArrayList<TaskObject> obj) {

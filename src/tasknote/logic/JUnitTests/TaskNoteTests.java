@@ -192,6 +192,14 @@ public class TaskNoteTests {
 		Assert.assertEquals(output, feedback);
 
 	}
+	
+	@Test
+	public void testUndoCommand() {
+		//TODO
+		feedback = note.addTask(new TaskObject("New Task Object"));
+		output = String.format(Constants.MESSAGE_DONE_UNSUCCESSFUL);
+		Assert.assertEquals(output, feedback);
+	}
 
 	public void populateTasks() {
 		tnc = new TaskNoteControl();

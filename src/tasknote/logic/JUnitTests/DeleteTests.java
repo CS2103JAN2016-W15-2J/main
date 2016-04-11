@@ -3,6 +3,11 @@ package tasknote.logic.JUnitTests;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -22,6 +27,9 @@ public class DeleteTests {
 	
 	@Test
 	public void testDelete() {
+		
+		resetTaskContents();
+		
 		addCommands();
 		
 		command = "delete 1";
@@ -72,6 +80,18 @@ public class DeleteTests {
 		output = "Deletion Failed\n\n";
 		output = output.concat(Constants.WARNING_INVALID_DELETE_INDEX);
 		Assert.assertEquals(output, feedback);
+	}
+	
+	private void resetTaskContents() {
+		Path taskContentsPath = Paths.get("taskContents.txt");
+		ArrayList<String> resetList = new ArrayList<>();
+		
+		try {
+			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void addCommands(){
