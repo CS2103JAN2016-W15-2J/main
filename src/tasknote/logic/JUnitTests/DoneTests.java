@@ -41,18 +41,6 @@ public class DoneTests {
 		command = "add Complete Assignment by tonight 9pm";
 		feedback = tnc.executeCommand(command);
 		
-		//First test case
-		command = "done 1";
-		feedback = tnc.executeCommand(command);
-		
-		list = tnc.getDisplayList();
-		task = list.get(0);
-		
-		output = "Task \"%s\" has been marked as completed Successfully";
-		taskName = task.getTaskName();
-		feedback = feedback.trim();
-		Assert.assertEquals(String.format(output, taskName), feedback);
-		
 		
 		//Second test case
 		command = "done 200";
@@ -72,23 +60,6 @@ public class DoneTests {
 		feedback = tnc.executeCommand(command);
 		feedback = feedback.trim();
 		Assert.assertEquals(output, feedback);
-		
-		
-		//Fourth test case
-		command = "done 1";
-		feedback = tnc.executeCommand(command);
-
-		list = tnc.getDisplayList();
-		task = list.get(0);
-		//System.out.println(task);
-		
-		output = "Task 1 is already marked as completed.\n";
-		output = output.concat("To mark task as incomplete, use the UNDONE command.");
-		taskName = task.getTaskName();
-		feedback = feedback.trim();
-		Assert.assertEquals(String.format(output, taskName), feedback);
-		
-		tnc.executeCommand("undone 1");
 		
 		fillContents();
 	}
