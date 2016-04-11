@@ -84,6 +84,9 @@ public class Parser {
 	// parseHelp should only be called if the COMMAND_TYPE was valid
 	public COMMAND_TYPE parseHelp(boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.HELP);
+		
 		// Make sure that the COMMAND_TYPE is accurate
 		if (this.getCommandType() != COMMAND_TYPE.HELP) {
 			throw new RuntimeException("Wrong method used for non-help type input!");
@@ -114,6 +117,9 @@ public class Parser {
 	// Public parseAdd method that constructs a TaskObject to
 	// return to Logic
 	public TaskObject parseAdd(boolean throwException) {
+		
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.ADD);
 
 		if (this.getCommandType() != COMMAND_TYPE.ADD) {
 			throw new RuntimeException("Wrong method used for non-add type input!");
@@ -127,6 +133,9 @@ public class Parser {
 	// and overlays it over the old TaskObject
 	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.UPDATE);
+		
 		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
 			throw new RuntimeException("Wrong method used for non-edit type input!");
 		}
@@ -141,6 +150,9 @@ public class Parser {
 	// by the user and returns an ArrayList<Integer> containing them
 	public ArrayList<Integer> parseDelete(boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.DELETE);
+		
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
 			throw new RuntimeException("Wrong method used for non-delete type input!");
 		}
@@ -227,6 +239,9 @@ public class Parser {
 	// by the user and returns an ArrayList<Integer> containing them
 	public ArrayList<Integer> parseSearch(ArrayList<TaskObject> displayList, boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.SEARCH);
+		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 		int itemCount = displayList.size();
@@ -302,6 +317,9 @@ public class Parser {
 	// like to see until only, for all his tasks
 	public ShowInterval parseShow(boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.SHOW);
+		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		this.setListPointer(POINTER_NOT_EDIT);
 
@@ -359,6 +377,9 @@ public class Parser {
 	// Tasks to be shown from the command line
 	public ShowCategory parseChangeCategory(boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.CHANGE_CATEGORY);
+		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 
@@ -397,6 +418,9 @@ public class Parser {
 	// allowing users to change the file path of their storage
 	public String parseFilePath(boolean throwException) {
 
+		// Assertions because
+		assert(this.getCommandType() != COMMAND_TYPE.CHANGE_FILE_PATH);
+		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 		int listPointer = POINTER_NOT_EDIT;
