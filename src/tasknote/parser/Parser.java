@@ -85,7 +85,7 @@ public class Parser {
 	public COMMAND_TYPE parseHelp(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.HELP);
+		assert(this.getCommandType() == COMMAND_TYPE.HELP);
 		
 		// Make sure that the COMMAND_TYPE is accurate
 		if (this.getCommandType() != COMMAND_TYPE.HELP) {
@@ -119,7 +119,7 @@ public class Parser {
 	public TaskObject parseAdd(boolean throwException) {
 		
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.ADD);
+		assert(this.getCommandType() == COMMAND_TYPE.ADD);
 
 		if (this.getCommandType() != COMMAND_TYPE.ADD) {
 			throw new RuntimeException("Wrong method used for non-add type input!");
@@ -134,7 +134,7 @@ public class Parser {
 	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.UPDATE);
+		assert(this.getCommandType() == COMMAND_TYPE.UPDATE);
 		
 		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
 			throw new RuntimeException("Wrong method used for non-edit type input!");
@@ -151,7 +151,7 @@ public class Parser {
 	public ArrayList<Integer> parseDelete(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.DELETE);
+		assert(this.getCommandType() == COMMAND_TYPE.DELETE);
 		
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
 			throw new RuntimeException("Wrong method used for non-delete type input!");
@@ -240,7 +240,7 @@ public class Parser {
 	public ArrayList<Integer> parseSearch(ArrayList<TaskObject> displayList, boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.SEARCH);
+		assert(this.getCommandType() == COMMAND_TYPE.SEARCH);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
@@ -318,7 +318,7 @@ public class Parser {
 	public ShowInterval parseShow(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.SHOW);
+		assert(this.getCommandType() == COMMAND_TYPE.SHOW);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		this.setListPointer(POINTER_NOT_EDIT);
@@ -378,7 +378,7 @@ public class Parser {
 	public ShowCategory parseChangeCategory(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.CHANGE_CATEGORY);
+		assert(this.getCommandType() == COMMAND_TYPE.CHANGE_CATEGORY);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
@@ -419,7 +419,7 @@ public class Parser {
 	public String parseFilePath(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() != COMMAND_TYPE.CHANGE_FILE_PATH);
+		assert(this.getCommandType() == COMMAND_TYPE.CHANGE_FILE_PATH);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
