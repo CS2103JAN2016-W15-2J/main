@@ -286,13 +286,13 @@ public class TaskNoteTests {
 		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "DONE");
 		Assert.assertEquals(output, feedback);
 		
-		/*
+		
 		note.changeFilePath("/Users/Girish/");
 		note.undoLastCommand();
 		feedback = note.redoLastUndoCommand();
 		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "CHANGE_FILE_PATH");
 		Assert.assertEquals(output, feedback);
-		*/
+		
 		
 		fillContents();
 	}
