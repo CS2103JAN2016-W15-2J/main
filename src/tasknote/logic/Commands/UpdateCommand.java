@@ -25,7 +25,7 @@ public class UpdateCommand implements Command {
 	}
 	
 	public void refreshDisplay() {
-		taskNote.refreshDisplay(taskNote.getTaskList());
+		taskNote.refreshDisplay(taskNote.getOutstandingTasksList());
 	}
 
 	public String getFeedBack() {

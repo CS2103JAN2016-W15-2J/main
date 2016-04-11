@@ -428,6 +428,9 @@ public class TaskNoteControl {
 			parserIntervalFeedback = e.getMessage();
 			countInterval = parser.getInterval(throwException);
 		}
+		if(timeInterval == ShowInterval.ALL) {
+			setDisplayCategory(ShowCategory.ALL);
+		}
 		command = new ShowCommand(taskNote, timeInterval, countInterval);
 		command.execute();
 		command.refreshDisplay();

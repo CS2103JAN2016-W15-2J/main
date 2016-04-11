@@ -141,6 +141,17 @@ public class TaskNote {
 			displayList.add(list.get(i));
 		}
 	}
+	
+	public ArrayList<TaskObject> getOutstandingTasksList() {
+		ArrayList<TaskObject> list = new ArrayList<TaskObject>();
+		for(int i = 0; i < taskList.size(); i++) {
+			TaskObject taskObject = taskList.get(i);
+			if(taskObject.getTaskStatus() == TaskStatus.TASK_OUTSTANDING) {
+			list.add(taskObject);
+			}
+		}
+		return list;
+	}
 
 	/**
 	 * This operation adds a taskObject to the ArrayList of TaskObjects, sorts
@@ -927,6 +938,7 @@ public class TaskNote {
 	 *
 	 */
 	private void getAllTasksInInterval() {
+		showIntervalList = new ArrayList<TaskObject>();
 		try {
 			for (int i = 0; i < taskList.size(); i++) {
 				TaskObject taskObject = taskList.get(i);
