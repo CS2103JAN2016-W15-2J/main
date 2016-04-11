@@ -3,8 +3,14 @@ package tasknote.logic.JUnitTests;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,6 +30,8 @@ public class AddTests {
 	
 	@Test
 	public void testAdd() {
+		
+		resetTaskContents();
 		
 		command = "add breakfast 5pm";
 		feedback = tnc.executeCommand(command);
@@ -82,6 +90,7 @@ public class AddTests {
 	}
 	
 	private static String getDate(int hour, int min){
+		
 		LocalDateTime now = LocalDateTime.now();
 		if(now.getHour() >= hour && now.getMinute() > min){
 			now = now.plusDays(1);
@@ -114,6 +123,18 @@ public class AddTests {
 		String time = "%02d:%02d%s";
 		time = String.format(time, hour, minute, period);
 		return time;
+	}
+	
+	private static void resetTaskContents() {
+		Path taskContentsPath = Paths.get("taskContents.txt");
+		ArrayList<String> resetList = new ArrayList<>();
+		
+		try {
+			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

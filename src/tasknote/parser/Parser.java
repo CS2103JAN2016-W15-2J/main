@@ -227,7 +227,7 @@ public class Parser {
 					&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
 
 				GregorianCalendar today = new GregorianCalendar();
-				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
+				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
 				int setTime = startTime.getHour() * 60 + startTime.getMinute();
 
 				if (todayTime > setTime) {
@@ -358,7 +358,7 @@ public class Parser {
 					&& newTaskObject.getDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
 
 				GregorianCalendar today = new GregorianCalendar();
-				int todayTime = today.get(Calendar.HOUR) * 60 + today.get(Calendar.MINUTE);
+				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
 				int setTime = newTaskObject.getDateHour() * 60 + newTaskObject.getDateMinute();
 
 				if (todayTime > setTime) {
