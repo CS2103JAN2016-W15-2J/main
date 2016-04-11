@@ -9,22 +9,9 @@ public class StorageConstants {
 	/**
 	 * Magic Strings for TaskObject
 	 */
-	private final String[] STRING_TASKOBJECT = {"taskName:", 
-												"dateDay:", 
-												"dateMonth:", 
-												"dateYear:", 
-												"dateHour:",
-												"dateMinute:", 
-												"duration:", 
-												"location:", 
-												"taskStatus:", 
-												"taskType:", 
-												"endDateDay:",
-												"endDateMonth:", 
-												"endDateYear:", 
-												"endDateHour:",
-												"endDateMinute:", 
-												"" };
+	private final String[] STRING_TASKOBJECT = { "taskName:", "dateDay:", "dateMonth:", "dateYear:", "dateHour:",
+			"dateMinute:", "duration:", "location:", "taskStatus:", "taskType:", "endDateDay:", "endDateMonth:",
+			"endDateYear:", "endDateHour:", "endDateMinute:", "" };
 
 	/**
 	 * Magic Strings

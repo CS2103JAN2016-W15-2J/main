@@ -229,17 +229,17 @@ public class Constants {
 	/*
 	 * These are magic Strings that will be used for toString method
 	 */
-	private static final String STRING_TOSTRING_TASK_NAME = "TaskName = $1%s";
-	private static final String STRING_TOSTRING_TASK_DATE = "\nDate = $1%s/$2%s/$3%s";
-	private static final String STRING_TOSTRING_END_DATE = "\nEndDate = $1%s/$2%s/$3%s";
-	private static final String STRING_TOSTRING_TIME = "\nTime = $1%s $2%s";
-	private static final String STRING_TOSTRING_DURATION = "\nDuration = $1%s";
-	private static final String STRING_TOSTRING_LOCATION = "\nLocation = $1%s";
-	private static final String STRING_TOSTRING_NOTIFY_TIME = "\nNotifyTime = $1%s";
-	private static final String STRING_TOSTRING_IS_NOTIFIED = "\nIsNotified = $1%s";
-	private static final String STRING_TOSTRING_TASK_STATUS = "\nTaskStatus = $1%s";
-	private static final String STRING_TOSTRING_TASK_TYPE = "\nTaskType = $1%s";
-	private static final String STRING_TOSTRING_IS_MARKED_DONE = "\nisMarkedDone = $1%s";
+	private static final String STRING_TOSTRING_TASK_NAME = "TaskName = %1$s";
+	private static final String STRING_TOSTRING_TASK_DATE = "\nDate = %1$s/%2$s/%3$s";
+	private static final String STRING_TOSTRING_END_DATE = "\nEndDate = %1$s/%2$s/%3$s";
+	private static final String STRING_TOSTRING_TIME = "\nTime = %1$s %2$s";
+	private static final String STRING_TOSTRING_DURATION = "\nDuration = %1$s";
+	private static final String STRING_TOSTRING_LOCATION = "\nLocation = %1$s";
+	private static final String STRING_TOSTRING_NOTIFY_TIME = "\nNotifyTime = %1$s";
+	private static final String STRING_TOSTRING_IS_NOTIFIED = "\nIsNotified = %1$s";
+	private static final String STRING_TOSTRING_TASK_STATUS = "\nTaskStatus = %1$s";
+	private static final String STRING_TOSTRING_TASK_TYPE = "\nTaskType = %1$s";
+	private static final String STRING_TOSTRING_IS_MARKED_DONE = "\nisMarkedDone = %1$s";
 	
 	public static String produceTaskName(String taskName) {
 		return String.format(STRING_TOSTRING_TASK_NAME, taskName);
