@@ -20,6 +20,7 @@ public abstract class GuiConstant {
     public static final String COMMAND_SEARCH = "search";
     public static final String COMMAND_SHOW = "show";
     public static final String COMMAND_RELOCATE = "relocate";
+    public static final String COMMAND_CATEGORY = "category";
     public static final String COMMAND_HELP = "help";
     public static final String COMMAND_UNDONE = "undone";
 

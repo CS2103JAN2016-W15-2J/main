@@ -792,7 +792,7 @@ public class Parser {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
-		int listPointer = this.getListPointer();
+		int listPointer = 1;
 
 		for (int i = listPointer; i < phraseCount; i++) {
 

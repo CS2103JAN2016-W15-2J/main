@@ -10,6 +10,7 @@ import static tasknote.ui.GuiConstant.COMMAND_HELP;
 import static tasknote.ui.GuiConstant.COMMAND_REDO;
 import static tasknote.ui.GuiConstant.COMMAND_RELOCATE;
 import static tasknote.ui.GuiConstant.COMMAND_SEARCH;
+import static tasknote.ui.GuiConstant.COMMAND_CATEGORY;
 import static tasknote.ui.GuiConstant.COMMAND_SHOW;
 import static tasknote.ui.GuiConstant.COMMAND_UNDO;
 import static tasknote.ui.GuiConstant.COMMAND_UNDONE;
@@ -323,6 +324,10 @@ public class CommandLineContainer extends HBox {
                 commandLine.setText(COMMAND_RELOCATE);
                 commandLine.end();
                 return true;
+            case (DEFAULT_COMMAND + COMMAND_CATEGORY):
+            	commandLine.setText(COMMAND_CATEGORY);
+	            commandLine.end();
+	            return true;
             case (DEFAULT_COMMAND + COMMAND_SHOW):
                 commandLine.setText(COMMAND_SHOW);
                 commandLine.end();

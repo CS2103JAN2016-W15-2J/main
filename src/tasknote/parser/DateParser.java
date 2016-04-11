@@ -41,7 +41,8 @@ public class DateParser {
 				|| this.getPhraseCount() == UNINITIALIZED_INT;
 	}
 
-	//@@author A0129529W-generated
+
+	//@@author generated
 	/**
 	 * @return the allPhrases
 	 */
