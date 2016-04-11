@@ -2,7 +2,6 @@
 package tasknote.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -34,6 +33,8 @@ public class ForwardCheckerWithBacktracking {
 		return this.allPhraseTypes;
 	}
 
+	// This method performs the forward checking, followed by the backtracking
+	// to mark all the user input as accurately as possible
 	private void approximateForwardCheck() {
 
 		String currentPhrase = this.allPhrases.get(listPointer).toLowerCase();
@@ -78,11 +79,35 @@ public class ForwardCheckerWithBacktracking {
 				currentSwitchString = ParserConstants.decideNewSwitchString(currentPhrase);
 				this.allPhraseTypes[currentPointer] = currentSwitchString;
 			} else if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
+				
 				currentSwitchString = markDateTime(currentPhrase, currentSwitchString);
-				this.allPhraseTypes[currentPointer] = currentSwitchString;
+				
+				// A special consideration is used here
+				// In this case, if it currentPhrase is a raw number that passes both date and time
+				// marking, and it is the last phrase in all the phrases, then we give precedence
+				// to time over date
+				if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
+						&& currentPointer + 1 >= phraseCount) {
+					this.allPhraseTypes[currentPointer] = ParserConstants.SWITCH_STRING_TIME;
+				} else {
+					this.allPhraseTypes[currentPointer] = currentSwitchString;
+				}
+				
 			} else if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+				
 				currentSwitchString = markDateTime(currentPhrase, currentSwitchString);
-				this.allPhraseTypes[currentPointer] = currentSwitchString;
+				
+				// A special consideration is used here
+				// In this case, if it currentPhrase is a raw number that passes both date and time
+				// marking, and it is the last phrase in all the phrases, then we give precedence
+				// to time over date
+				if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)
+						&& currentPointer + 1 >= phraseCount) {
+					this.allPhraseTypes[currentPointer] = ParserConstants.SWITCH_STRING_TIME;
+				} else {
+					this.allPhraseTypes[currentPointer] = currentSwitchString;
+				}
+				
 			} else if (currentSwitchString.equals(ParserConstants.SWITCH_STRING_DATE)) {
 				currentSwitchString = markDate(currentPhrase, true);
 				this.allPhraseTypes[currentPointer] = currentSwitchString;
@@ -111,7 +136,7 @@ public class ForwardCheckerWithBacktracking {
 		String currentSeen = ParserConstants.SWITCH_STRING_NAME;
 		
 		// Backtracking
-		for (int currentPointer = phraseCount - 1; currentPointer >= 0; currentPointer --) {
+		for (int currentPointer = phraseCount - 1; currentPointer >= 0; currentPointer--) {
 			
 			if (currentPointer == (phraseCount - 1)) {
 				lastSeen = this.allPhraseTypes[currentPointer];
@@ -130,6 +155,20 @@ public class ForwardCheckerWithBacktracking {
 				// Keyword was not used as a keyword
 				if (lastSeen.equals(ParserConstants.SWITCH_STRING_NAME)) {
 					this.allPhraseTypes[currentPointer] = ParserConstants.SWITCH_STRING_NAME;
+				}
+				
+				// In the event where we have returned to the by/on/from/to keyword
+				// and we have not encountered a date but have seen an ambiguous datetime value
+				// we give precedence to time
+				if (currentPhrase.equals(ParserConstants.KEYWORD_BY)
+						|| currentPhrase.equals(ParserConstants.KEYWORD_ON)
+						|| currentPhrase.equals(ParserConstants.KEYWORD_FROM)
+						|| currentPhrase.equals(ParserConstants.KEYWORD_TO)) {
+					
+					if (lastSeen.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
+							|| lastSeen.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+						this.allPhraseTypes[currentPointer + 1] = ParserConstants.SWITCH_STRING_TIME;
+					}
 				}
 			}
 			
@@ -168,6 +207,8 @@ public class ForwardCheckerWithBacktracking {
 		}
 	}
 
+	// This method is used when the by/on keyword was most frequently encountered,
+	// and the program has not discerned whether it is a date or time yet
 	private String markDateTime(String currentPhrase, String globalSwitchString) {
 
 		String dateMark = markDate(currentPhrase, true);
@@ -175,7 +216,22 @@ public class ForwardCheckerWithBacktracking {
 
 		if (dateMark.equals(ParserConstants.SWITCH_STRING_DATE)
 				&& timeMark.equals(ParserConstants.SWITCH_STRING_TIME)) {
-			return globalSwitchString;
+			
+			// In the case of a raw number, try to guess that it is time if the value
+			// is particularly small
+			try {
+				int guessTimeOrYear = Integer.parseInt(currentPhrase);
+				int goodYearCutOff = 2000;
+				
+				if (guessTimeOrYear < goodYearCutOff) {
+					return ParserConstants.SWITCH_STRING_TIME;
+				} else {
+					return globalSwitchString;
+				}
+			} catch (NumberFormatException e) {
+				return globalSwitchString;
+			}
+			
 		}
 
 		if (dateMark.equals(ParserConstants.SWITCH_STRING_DATE)) {
@@ -185,11 +241,18 @@ public class ForwardCheckerWithBacktracking {
 		if (timeMark.equals(ParserConstants.SWITCH_STRING_TIME)) {
 			return ParserConstants.SWITCH_STRING_TIME;
 		}
+		
+		if (dateMark.equals(ParserConstants.SWITCH_STRING_DATETIMEEND)
+				&& globalSwitchString.equals(ParserConstants.SWITCH_STRING_DATETIMESTART)) {
+			return ParserConstants.SWITCH_STRING_DATETIMEEND;
+		}
 
 		return ParserConstants.SWITCH_STRING_NAME;
 
 	}
 
+	// This method is used when the at keyword was most frequently encountered,
+	// and the program has not discerned whether it is a location or time yet
 	private String markLocationTime(String currentPhrase) {
 
 		String locationMark = markLocation(currentPhrase);
@@ -215,6 +278,7 @@ public class ForwardCheckerWithBacktracking {
 		return ParserConstants.SWITCH_STRING_LOCATION;
 	}
 
+	// This method is used when the last keyword found was definitely a date
 	private String markDate(String currentPhrase, boolean firstCheck) {
 
 		String defaultSwitchString = ParserConstants.SWITCH_STRING_NAME;
@@ -314,10 +378,11 @@ public class ForwardCheckerWithBacktracking {
 			Integer.parseInt(currentPhrase);
 			return ParserConstants.SWITCH_STRING_DATE;
 		} catch (NumberFormatException e) {
-			return ParserConstants.SWITCH_STRING_NAME;
+			return defaultSwitchString;
 		}
 	}
 
+	// This method is used when the last keyword found was definitely a time
 	private String markTime(String currentPhrase, boolean firstCheck) {
 
 		String defaultSwitchString = ParserConstants.SWITCH_STRING_NAME;
@@ -413,18 +478,6 @@ public class ForwardCheckerWithBacktracking {
 
 	public void setListPointer(int listPointer) {
 		this.listPointer = listPointer;
-	}
-
-	public static void main(String[] args) {
-
-		String randomTestInputOne = "edit 1 newtaskname at place remove date remove time by 23:59 on 15th feb";
-		UserStringProcessor pfp = new UserStringProcessor(randomTestInputOne);
-		ArrayList<String> firstAllPhrases = pfp.getProcessedInput();
-
-		ForwardCheckerWithBacktracking fc = new ForwardCheckerWithBacktracking(firstAllPhrases);
-		String[] resultOne = fc.getAllPhraseTypes();
-
-		System.out.println(Arrays.toString(resultOne));
 	}
 
 }

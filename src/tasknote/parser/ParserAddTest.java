@@ -29,10 +29,6 @@ public class ParserAddTest {
 	@Test
 	public void testAddBasicDeadline() {
 
-		// This should generally prevent cases where the add
-		// function automatically rolls the date to the next day
-		// for the purpose of checking
-
 		TaskObject expectedResult = new TaskObject("longdeadline");
 
 		GregorianCalendar today = new GregorianCalendar();
@@ -49,6 +45,9 @@ public class ParserAddTest {
 
 		for (int i = 0; i < validKeywords.length; i++) {
 
+			// This should generally prevent cases where the add
+			// function automatically rolls the date to the next day
+			// for the purpose of checking
 			String userCommand = "add longdeadline " + validKeywords[i] + " 23:59";
 			this.testParser.setInputString(userCommand);
 
@@ -60,10 +59,6 @@ public class ParserAddTest {
 
 	@Test
 	public void testAddBasicDeadlineBadHourBadMinute() {
-
-		// This should generally prevent cases where the add
-		// function automatically rolls the date to the next day
-		// for the purpose of checking
 
 		String[] validKeywords = { "by", "on", "at" };
 
@@ -92,9 +87,6 @@ public class ParserAddTest {
 	@Test
 	public void testAddBasicDeadlineBadHour() {
 
-		// This should generally prevent cases where the add
-		// function automatically rolls the date to the next day
-		// for the purpose of checking
 		String userCommand = "add baddeadlinehour by 76:31";
 		this.testParser.setInputString(userCommand);
 
@@ -107,9 +99,6 @@ public class ParserAddTest {
 	@Test
 	public void testAddBasicDeadlineBadMinute() {
 
-		// This should generally prevent cases where the add
-		// function automatically rolls the date to the next day
-		// for the purpose of checking
 		String userCommand = "add baddeadlineminute by 15:99";
 		this.testParser.setInputString(userCommand);
 
@@ -122,9 +111,6 @@ public class ParserAddTest {
 	@Test
 	public void testAddBasicDeadlineWithDate() {
 
-		// This should generally prevent cases where the add
-		// function automatically rolls the date to the next day
-		// for the purpose of checking
 		String userCommand = "add longerdeadline on 1/2/2001 by 5:30";
 		this.testParser.setInputString(userCommand);
 
@@ -221,8 +207,6 @@ public class ParserAddTest {
 	@Test
 	public void testAddBadTaskWithDateWithoutTime() {
 
-		// In this case, the TaskObject is still assigned
-		// the date field, but the GUI will ignore it
 		String userCommand = "add badtask on 2/3/2002";
 		this.testParser.setInputString(userCommand);
 

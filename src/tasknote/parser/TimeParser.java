@@ -43,6 +43,7 @@ public class TimeParser {
 		TimeMessage returnMessage = new TimeMessage();
 		int givenHour = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
 		int givenMinute = ParserConstants.DEFAULT_INVALID_INT_DATETIME;
+		boolean hadAMPM = false;
 
 		String currentPhrase = this.getCurrentPhrase();
 		int extraHours = 0;
@@ -54,6 +55,7 @@ public class TimeParser {
 
 		if (currentPhrase.endsWith(ParserConstants.HOUR_MOD_AM)
 				|| currentPhrase.endsWith(ParserConstants.HOUR_MOD_PM)) {
+			hadAMPM = true;
 			currentPhrase = currentPhrase.substring(0,
 					currentPhrase.length() - 2);
 			returnMessage.setMessage(ParserConstants.MESSAGE_TIME_SURE);
@@ -114,9 +116,12 @@ public class TimeParser {
 
 		}
 
-		if (givenHour == 24) {
+		// This check inverts 12pm (which becomes 12 + 12 = 24)
+		// back into the normal 12 value, and 12am (which becomes 12 + 0 = 12)
+		// back into the normal 0 value
+		if (givenHour == 24 && hadAMPM) {
 			givenHour = 12;
-		} else if (givenHour == 12) {
+		} else if (givenHour == 12 && hadAMPM) {
 			givenHour = 0;
 		}
 
