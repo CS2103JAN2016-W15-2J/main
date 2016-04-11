@@ -1,12 +1,15 @@
 /** @@author A0108371L */
 package tasknote.logic.JUnitTests;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,6 +21,7 @@ public class UndoTests {
 	
 	TaskNoteControl tnc = new TaskNoteControl();
 	ArrayList<TaskObject> obj;
+	ArrayList<String> contents;
 	String command;
 	String feedback;
 	String output;
@@ -25,7 +29,8 @@ public class UndoTests {
 	@Test
 	public void testUndo() {
 		
-		resetTaskContents();
+		storeContents();
+		
 		
 		//Test Case 1
 		command = "add breakfast 5pm";
@@ -138,14 +143,67 @@ public class UndoTests {
 		obj = tnc.getDisplayList();
 		print(obj);
 		
+		fillContents();
+		
 	}
 	
-	private void resetTaskContents() {
-		Path taskContentsPath = Paths.get("taskContents.txt");
-		ArrayList<String> resetList = new ArrayList<>();
+	private void storeContents() {
+		try{
+			String path = getFilePath();
+			contents = copyFileContents(path);
+			resetTaskContents(new ArrayList<String>());
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	private void fillContents() {
+		try{
+			resetTaskContents(contents);
+		} catch(Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	private String getFilePath() {
+		String defaultPath = new String();
+		try{
+			Path correctPath = Paths.get("pathContents.txt");
+			List<String> pathInList = Files.readAllLines(correctPath);
+			for(int i  = 0; i < pathInList.size(); i++) {
+				System.out.println(pathInList.get(i));
+			}
+			defaultPath = pathInList.get(0); // Get first line
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return defaultPath;
+	}
+	
+	private ArrayList<String> copyFileContents(String path) {
+		ArrayList<String> resetList = new ArrayList<String>();
+		try {
+			Scanner s = new Scanner(new File(path));
+			while (s.hasNextLine()){
+			    resetList.add(s.nextLine());
+			}
+			s.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resetList;
+	}
+	
+	private void resetTaskContents(ArrayList<String> list) throws IOException {
+		Path correctPath = Paths.get("pathContents.txt");
+		List<String> pathInList = Files.readAllLines(correctPath);
+		String defaultPath = pathInList.get(0); // Get first line
+		//System.out.println(defaultPath);
+		Path intendedPath = Paths.get(defaultPath);
+		//System.out.println(intendedPath.toString());
 		
 		try {
-			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+			Files.write(intendedPath, list, Charset.forName("UTF-8"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
