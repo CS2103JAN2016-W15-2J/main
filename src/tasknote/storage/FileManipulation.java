@@ -66,7 +66,8 @@ public class FileManipulation {
 	private String getDefaultPathFileName() {
 		return constants.getPathFileName();
 	}
-
+	
+	//@@author A0126172M-unused
 	private void initializeAliasFile() {
 		aliasFile = new File(getDefaultAliasFileName());
 	}
@@ -74,7 +75,14 @@ public class FileManipulation {
 	private String getDefaultAliasFileName() {
 		return constants.getAliasFileName();
 	}
-
+	
+	private void createAliasFileIfNotExist() {
+		if (isFileInvalid(aliasFile)) {
+			createNewFile(aliasFile);
+		}
+	}
+	
+	//@@author A0126172M
 	private String extractFileName() {
 		String fileName = extractCanonicalFileName();
 		fileName = handleEmptyFileNameExtracted(fileName);
@@ -97,12 +105,6 @@ public class FileManipulation {
 	private void createPathFileIfNotExist() {
 		if (isFileInvalid(pathFile)) {
 			createNewFile(pathFile);
-		}
-	}
-
-	private void createAliasFileIfNotExist() {
-		if (isFileInvalid(aliasFile)) {
-			createNewFile(aliasFile);
 		}
 	}
 
@@ -361,7 +363,8 @@ public class FileManipulation {
 		fileWriter.write(bufferMemory, 0, bufferMemory.length);
 		fileWriter.flush();
 	}
-
+	
+	//@@author A0126172M-unused
 	public void writeAlias(HashMap<String, String> alias) throws IOException {
 		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
 		Map<String, String> aliasMap = alias;
@@ -437,7 +440,18 @@ public class FileManipulation {
 			fileLog.log(Level.WARNING, constants.getFailedToCloseRead());
 		}
 	}
-
+	
+	/**
+	 * this method cleans the aliasFile
+	 * 
+	 * @throws IOException
+	 */
+	public void cleanAliasFile() throws IOException {
+		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
+		fileWriter.close();
+	}
+	
+	//@@author A0126172M
 	/**
 	 * This method attempts to change file name into a new one desired by the
 	 * user and move the file to the new path
@@ -543,16 +557,6 @@ public class FileManipulation {
 	 */
 	public void cleanTextFile() throws IOException {
 		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeTextFileOutputStream());
-		fileWriter.close();
-	}
-
-	/**
-	 * this method cleans the aliasFile
-	 * 
-	 * @throws IOException
-	 */
-	public void cleanAliasFile() throws IOException {
-		BufferedOutputStream fileWriter = new BufferedOutputStream(initializeAliasFileOutputStream());
 		fileWriter.close();
 	}
 
