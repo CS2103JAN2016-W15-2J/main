@@ -13,10 +13,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
 import tasknote.shared.AddDuplicateAliasException;
 import tasknote.shared.TaskListIOException;
 import tasknote.shared.TaskObject;
