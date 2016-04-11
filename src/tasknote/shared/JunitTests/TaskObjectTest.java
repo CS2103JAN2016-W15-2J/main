@@ -76,53 +76,6 @@ public class TaskObjectTest {
         assertEquals(30, testTaskObject.getDateMonth());
     }
 
-    @Test
-    public void getTaskFormattedDate() {
-        TaskObject testTaskObject = new TaskObject("Task 1");
-        assertEquals("", testTaskObject.getFormattedDate());
-
-        testTaskObject.setDateYear(2000);
-        testTaskObject.setDateMonth(1);
-        testTaskObject.setDateDay(1);
-        assertEquals("1 January 2000", testTaskObject.getFormattedDate());
-
-        testTaskObject.setDateDay(2);
-        assertEquals("2 January 2000", testTaskObject.getFormattedDate());
-
-        testTaskObject.setDateMonth(2);
-        assertEquals("2 February 2000", testTaskObject.getFormattedDate());
-
-        testTaskObject.setDateYear(2010);
-        assertEquals("2 February 2010", testTaskObject.getFormattedDate());
-
-        exception.expect(AssertionError.class);
-        testTaskObject.setDateDay(32);
-        testTaskObject.getFormattedDate();
-    }
-
-    @Test
-    public void getTaskFormattedEndDate() {
-        TaskObject testTaskObject = new TaskObject("Task 1");
-        assertEquals("", testTaskObject.getFormattedEndDate());
-
-        testTaskObject.setEndDateYear(2000);
-        testTaskObject.setEndDateMonth(1);
-        testTaskObject.setEndDateDay(1);
-        assertEquals("1 January 2000", testTaskObject.getFormattedEndDate());
-
-        testTaskObject.setEndDateDay(2);
-        assertEquals("2 January 2000", testTaskObject.getFormattedEndDate());
-
-        testTaskObject.setEndDateMonth(2);
-        assertEquals("2 February 2000", testTaskObject.getFormattedEndDate());
-
-        testTaskObject.setEndDateYear(2010);
-        assertEquals("2 February 2010", testTaskObject.getFormattedEndDate());
-
-        exception.expect(AssertionError.class);
-        testTaskObject.setEndDateDay(32);
-        testTaskObject.getFormattedEndDate();
-    }
 
     @Test
     public void getTaskFormattedTime() {
