@@ -1,4 +1,4 @@
-//@@author A0129529
+//@@author A0129529W
 package tasknote.parser; 
 
 import java.util.ArrayList;
@@ -41,7 +41,8 @@ public class DateParser {
 				|| this.getPhraseCount() == UNINITIALIZED_INT;
 	}
 
-	//@@author A0129529-generated
+
+	//@@author generated
 	/**
 	 * @return the allPhrases
 	 */
@@ -117,7 +118,7 @@ public class DateParser {
 		this.dateMessage = dateMessage;
 	}
 
-	//@@author A0129529
+	//@@author A0129529W
 	public DateMessage tryToParseDate() {
 
 		if (this.isNotReady()) {

@@ -201,7 +201,7 @@ public class Storage {
 	}
 
 	/**
-	 * clear all the contents in the alias file
+	 * clear all the contents in the alias file and reset alias
 	 */
 	public void cleanAliasFile() throws IOException {
 		fileManipulator.cleanAliasFile();
@@ -243,13 +243,18 @@ public class Storage {
 
 	private String produceFullPathWithDirectoryCommand(String newPath, String previousTextFileName, String textFileName)
 			throws IOException {
-		if (isFileNameEntered(newPath)) {
-			String newFileName = fileManipulator.extractTextFileName(newPath);
-			newPath = extractCurrentPath(newPath, newFileName);
-		}
+		newPath = removeFileNameFromNewPath(newPath);
 		String currentPath = extractCurrentPath(previousTextFileName);
 		String newFullPath = pathManipulator.extractNewFullPath(newPath, currentPath);
 		return addSlashAndProduceFullPath(newFullPath, textFileName);
+	}
+
+	private String removeFileNameFromNewPath(String newPath) {
+		if (isFileNameEntered(newPath)) {
+			String newFileName = fileManipulator.extractTextFileName(newPath);
+			return extractCurrentPath(newPath, newFileName);
+		}
+		return newPath;
 	}
 
 	private String extractNewCurrentFullPath(String previousTextFileName, String fileName) {
@@ -273,6 +278,11 @@ public class Storage {
 
 	private String produceFullPathWithNewFileName(String pathName, String previousTextFileName) {
 		String fileName = getFileName(pathName, previousTextFileName);
+		pathName = getPathIfOnlyFileNameEntered(pathName, previousTextFileName, fileName);
+		return pathName;
+	}
+
+	private String getPathIfOnlyFileNameEntered(String pathName, String previousTextFileName, String fileName) {
 		if (fileName.equals(pathName)) {
 			String newFullPath = extractNewCurrentFullPath(previousTextFileName, fileName);
 			return newFullPath;
@@ -282,13 +292,17 @@ public class Storage {
 
 	private String getFileName(String pathName, String previousTextFileName) {
 		if (isFileNameEntered(pathName)) {
-			String fileName = fileManipulator.extractTextFileName(pathName);
-			if (isEmptyFileName(fileName)) {
-				fileName = previousTextFileName;
-			}
-			return fileName;
+			return extractCorrectTextFileName(pathName, previousTextFileName);
 		}
 		return previousTextFileName;
+	}
+
+	private String extractCorrectTextFileName(String pathName, String previousTextFileName) {
+		String fileName = fileManipulator.extractTextFileName(pathName);
+		if (isEmptyFileName(fileName)) {
+			return previousTextFileName;
+		}
+		return fileName;
 	}
 
 	private boolean isEmptyFileName(String fileName) {
@@ -305,11 +319,11 @@ public class Storage {
 	}
 
 	private boolean handlePathChangeForMacAndWindows(String textFileName) throws IOException {
-
+		
 		if (isValidFilePath(textFileName)) {
 			return fileManipulator.moveFile(textFileName);
 		}
-
+		
 		return false;
 	}
 
@@ -328,7 +342,7 @@ public class Storage {
 		try {
 			return fileManipulator.readAliasFromAliasFile();
 		} catch (FileNotFoundException e) {
-			storageLog.log(Level.WARNING, constants.getFailedToFindAliasFile());
+			logFailedToFindAliasFile();
 		}
 		return new HashMap<String, String>();
 	}
@@ -371,5 +385,9 @@ public class Storage {
 
 	private void logSaveModifiedAliasFailed() {
 		storageLog.log(Level.WARNING, constants.getFailedAliasSave());
+	}
+	
+	private void logFailedToFindAliasFile() {
+		storageLog.log(Level.WARNING, constants.getFailedToFindAliasFile());
 	}
 }

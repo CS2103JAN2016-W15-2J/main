@@ -1,4 +1,4 @@
-//@@author A0129529
+//@@author A0129529W
 package tasknote.parser;
 
 public class TimeMessage {
@@ -22,7 +22,7 @@ public class TimeMessage {
 		this.setMessage(ParserConstants.MESSAGE_TIME_UNSURE);
 	}
 
-	//@@author A0129529-generated
+	//@@author A0129529W-generated
 	/**
 	 * @return the hour
 	 */

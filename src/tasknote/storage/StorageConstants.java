@@ -17,7 +17,6 @@ public class StorageConstants {
 												"dateMinute:", 
 												"duration:", 
 												"location:", 
-												"notifyTime:", 
 												"taskStatus:", 
 												"taskType:", 
 												"endDateDay:",
@@ -69,7 +68,7 @@ public class StorageConstants {
 	/**
 	 * Magic Integers
 	 */
-	private final int SUM_OF_TASKOBJECT_ITEMS = 17;
+	private final int SUM_OF_TASKOBJECT_ITEMS = 16;
 	private final int BUFFERSIZE = 32768;
 	private final int INTEGER_MONTH_NORMALIZE_CONSTANT = 1;
 	private final int INTEGER_ARRAY_NORMALIZE_INDEX = 1;

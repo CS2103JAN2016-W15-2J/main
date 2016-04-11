@@ -1,4 +1,4 @@
-//@@author A0129529
+//@@author A0129529W
 package tasknote.parser;
 
 import tasknote.logic.ShowCategory;
@@ -792,7 +792,7 @@ public class Parser {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
-		int listPointer = this.getListPointer();
+		int listPointer = 1;
 
 		for (int i = listPointer; i < phraseCount; i++) {
 
@@ -959,7 +959,7 @@ public class Parser {
 
 	}
 
-	//@@author A0129529-generated
+	//@@author A0129529W-generated
 	/**
 	 * @return the allPhrases
 	 */

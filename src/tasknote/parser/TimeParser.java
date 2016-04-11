@@ -1,4 +1,4 @@
-//@@author A0129529
+//@@author A0129529W
 package tasknote.parser;
 
 public class TimeParser {
@@ -17,7 +17,7 @@ public class TimeParser {
 		return this.getCurrentPhrase().equals(UNINITIALIZED_STRING);
 	}
 
-	//@@author A0129529-generated
+	//@@author A0129529W-generated
 	/**
 	 * @return the currentPhrase
 	 */
@@ -33,7 +33,7 @@ public class TimeParser {
 		this.currentPhrase = currentPhrase;
 	}
 
-	//@@author A0129529
+	//@@author A0129529W
 	public TimeMessage tryToParseTime() {
 
 		if (this.isNotReady()) {

@@ -25,15 +25,14 @@ public class StorageConversion {
 	private final int CASE_TASK_DATE_MINUTE = 5;
 	private final int CASE_TASK_DURATION = 6;
 	private final int CASE_TASK_LOCATION = 7;
-	private final int CASE_TASK_NOTIFY_TIME = 8;
-	private final int CASE_TASK_STATUS = 9;
-	private final int CASE_TASK_TYPE = 10;
-	private final int CASE_TASK_END_DATE_DAY = 11;
-	private final int CASE_TASK_END_DATE_MONTH = 12;
-	private final int CASE_TASK_END_DATE_YEAR = 13;
-	private final int CASE_TASK_END_DATE_HOUR = 14;
-	private final int CASE_TASK_END_DATE_MINUTE = 15;
-	private final int CASE_TASK_END = 16;
+	private final int CASE_TASK_STATUS = 8;
+	private final int CASE_TASK_TYPE = 9;
+	private final int CASE_TASK_END_DATE_DAY = 10;
+	private final int CASE_TASK_END_DATE_MONTH = 11;
+	private final int CASE_TASK_END_DATE_YEAR = 12;
+	private final int CASE_TASK_END_DATE_HOUR = 13;
+	private final int CASE_TASK_END_DATE_MINUTE = 14;
+	private final int CASE_TASK_END = 15;
 
 	/**
 	 * special constants for StorageConversion
@@ -112,12 +111,6 @@ public class StorageConversion {
 			case CASE_TASK_LOCATION:
 				setTaskLocation(returnObject, content);
 				break;
-			//TODO
-			/*
-			case CASE_TASK_NOTIFY_TIME:
-				setTaskNotifyTime(returnObject, content);
-				break;
-			*/
 			case CASE_TASK_STATUS:
 				setTaskStatus(returnObject, content);
 				break;
@@ -188,13 +181,6 @@ public class StorageConversion {
 		String taskStatus = content[CONTENT].trim();
 		returnObject.setTaskStatus(taskStatus);
 	}
-
-	//TODO
-	/*
-	private void setTaskNotifyTime(TaskObject returnObject, String[] content) {
-		returnObject.setNotifyTime(Integer.parseInt(content[CONTENT].trim()));
-	}
-	*/
 
 	private void setTaskLocation(TaskObject returnObject, String[] content) {
 		returnObject.setLocation(content[CONTENT].trim());
@@ -284,13 +270,6 @@ public class StorageConversion {
 			case CASE_TASK_LOCATION:
 				writeTaskLocationToStringBuffer(task, taskObjectBuffer);
 				break;
-				
-			//TODO
-			/*
-			case CASE_TASK_NOTIFY_TIME:
-				writeTaskNotifyTimeToStringBuffer(task, taskObjectBuffer);
-				break;
-			*/
 			case CASE_TASK_STATUS:
 				writeTaskGetStatusToStringBuffer(task, taskObjectBuffer);
 				break;
@@ -355,13 +334,6 @@ public class StorageConversion {
 	private void writeTaskGetStatusToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
 		tempBuffer.append(task.getTaskStatus());
 	}
-
-	//TODO
-	/*
-	private void writeTaskNotifyTimeToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
-		tempBuffer.append(task.getNotifyTime());
-	}
-	*/
 
 	private void writeTaskLocationToStringBuffer(TaskObject task, StringBuffer tempBuffer) {
 		tempBuffer.append(task.getLocation());

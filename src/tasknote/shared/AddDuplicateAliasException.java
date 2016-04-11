@@ -7,6 +7,8 @@ package tasknote.shared;
  */
 public class AddDuplicateAliasException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
 	public AddDuplicateAliasException() {
 	}
 
