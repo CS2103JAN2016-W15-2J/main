@@ -95,8 +95,8 @@ public class TaskObjectTest {
         testTaskObject.setDateYear(2010);
         assertEquals("2 February 2010", testTaskObject.getFormattedDate());
 
-        exception.expect(IndexOutOfBoundsException.class);
-        testTaskObject.setDateMonth(13);
+        exception.expect(AssertionError.class);
+        testTaskObject.setDateDay(32);
         testTaskObject.getFormattedDate();
     }
 
@@ -119,8 +119,8 @@ public class TaskObjectTest {
         testTaskObject.setEndDateYear(2010);
         assertEquals("2 February 2010", testTaskObject.getFormattedEndDate());
 
-        exception.expect(IndexOutOfBoundsException.class);
-        testTaskObject.setEndDateMonth(13);
+        exception.expect(AssertionError.class);
+        testTaskObject.setEndDateDay(32);
         testTaskObject.getFormattedEndDate();
     }
 
