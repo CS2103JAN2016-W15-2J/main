@@ -325,37 +325,38 @@ public class StorageTest {
 	}
 	
 	@Test
-	public final void testAddAliasFile() throws AddDuplicateAliasException{
+	public final void testCleanAliasFile() throws IOException, AddDuplicateAliasException{
+		storage.cleanAliasFile();
 		storage.addAlias(COMMAND_ADD, ALIAS_ADD_INCLUDE);
-		assertTrue(storage.getAlias(ALIAS_ADD_INCLUDE).equals(COMMAND_ADD));
-	}
-	
-	@Test
-	public final void testCleanAliasFile() throws IOException{
 		storage.cleanAliasFile();
 		HashMap<String, String> emptyAlias = storage.getAlias();
 		assertTrue(emptyAlias.isEmpty());
 	}
 	
 	@Test
-	public final void testDuplicateAliasAdded() throws IOException, AddDuplicateAliasException{
-		storage.saveAlias(new HashMap<String,String>());
-		storage.addAlias(COMMAND_CHANGE_PATH, ALIAS_ADD_INCLUDE);
-		
+	public final void testAddAliasFile() throws AddDuplicateAliasException, IOException{
+		storage.cleanAliasFile();
+		storage.addAlias(COMMAND_ADD, ALIAS_ADD_INCLUDE);
+		assertTrue(storage.getAlias(ALIAS_ADD_INCLUDE).equals(COMMAND_ADD));
 	}
 	
-	private void testAliasManipulation() throws IOException {
+	@Test
+	public final void testDuplicateAliasAdded() throws IOException, AddDuplicateAliasException{
 		boolean isAddExceptionThrown = false;
-		try {
-			// case 4: test duplicate alias added (Only tested outside try-catch
-			// block)
+		try{
+			storage.cleanAliasFile();
 			storage.addAlias(COMMAND_CHANGE_PATH, ALIAS_ADD_INCLUDE);
-		} catch (AddDuplicateAliasException e) {
+			storage.addAlias(COMMAND_DELETE, ALIAS_ADD_INCLUDE);
+		}catch(AddDuplicateAliasException e){
 			isAddExceptionThrown = true;
 		}
 		assertTrue(isAddExceptionThrown);
-
-		// case 5: fillup fullAlias and test saveAlias
+	}
+	
+	@Test
+	public final void testSaveAlias() throws IOException{
+		storage.cleanAliasFile();
+		fullAlias = new HashMap<String,String>();
 		fullAlias.put(ALIAS_ADD_INCLUDE, COMMAND_ADD);
 		fullAlias.put(ALIAS_CHANGE_PATH_CD, COMMAND_CHANGE_PATH);
 		fullAlias.put(ALIAS_ADD_PUSH, COMMAND_ADD);
@@ -364,26 +365,65 @@ public class StorageTest {
 
 		storage.saveAlias(fullAlias);
 		assertTrue(storage.getAlias().equals(fullAlias));
-
-		// case 6: test remove an alias
+	}
+	
+	@Test
+	public final void testRemoveAnAlias() throws IOException{
+		storage.cleanAliasFile();
+		fullAlias.put(ALIAS_EDIT_MODIFY, COMMAND_EDIT);
 		storage.removeAlias(ALIAS_EDIT_MODIFY);
 		HashMap<String, String> aliasRemovedContent = storage.getAlias();
 		assertFalse(aliasRemovedContent.containsKey(ALIAS_EDIT_MODIFY));
-
-		// case 7: test undo command for alias
+	}
+	
+	@Test
+	public final void testUndoAlias() throws IOException{
+		storage.cleanAliasFile();
+		fullAlias = new HashMap<String,String>();
+		fullAlias.put(ALIAS_ADD_INCLUDE, COMMAND_ADD);
+		fullAlias.put(ALIAS_CHANGE_PATH_CD, COMMAND_CHANGE_PATH);
+		fullAlias.put(ALIAS_ADD_PUSH, COMMAND_ADD);
+		fullAlias.put(ALIAS_EDIT_MODIFY, COMMAND_EDIT);
+		fullAlias.put(ALIAS_DELETE_REMOVE, COMMAND_DELETE);
+		storage.saveAlias(fullAlias);
+		storage.removeAlias(ALIAS_EDIT_MODIFY);	
 		assertTrue(storage.undoAlias());
 		HashMap<String, String> undoedAlias = storage.getAlias();
 		assertTrue(undoedAlias.equals(fullAlias));
-
-		// case 8: test redo command for alias
+	}
+	
+	@Test
+	public final void testRedoAlias() throws IOException{
+		storage.cleanAliasFile();
+		fullAlias = new HashMap<String,String>();
+		fullAlias.put(ALIAS_ADD_INCLUDE, COMMAND_ADD);
+		fullAlias.put(ALIAS_CHANGE_PATH_CD, COMMAND_CHANGE_PATH);
+		fullAlias.put(ALIAS_ADD_PUSH, COMMAND_ADD);
+		fullAlias.put(ALIAS_EDIT_MODIFY, COMMAND_EDIT);
+		fullAlias.put(ALIAS_DELETE_REMOVE, COMMAND_DELETE);
+		storage.saveAlias(fullAlias);
+		storage.removeAlias(ALIAS_EDIT_MODIFY);	
+		HashMap<String, String> aliasRemovedContent = storage.getAlias();
+		storage.undoAlias();
 		assertTrue(storage.redoAlias());
 		HashMap<String, String> redoedAlias = storage.getAlias();
 		assertTrue(redoedAlias.equals(aliasRemovedContent));
-
-		// case 9: test redo command when there isn't any
-		assertFalse(storage.redoAlias());
-		redoedAlias = storage.getAlias();
+	}
+	
+	@Test
+	public final void testRedoCommandWhenThereIsNot() throws IOException{
+		storage.cleanAliasFile();
+		fullAlias = new HashMap<String,String>();
+		fullAlias.put(ALIAS_ADD_INCLUDE, COMMAND_ADD);
+		fullAlias.put(ALIAS_CHANGE_PATH_CD, COMMAND_CHANGE_PATH);
+		fullAlias.put(ALIAS_ADD_PUSH, COMMAND_ADD);
+		fullAlias.put(ALIAS_EDIT_MODIFY, COMMAND_EDIT);
+		fullAlias.put(ALIAS_DELETE_REMOVE, COMMAND_DELETE);
+		storage.saveAlias(fullAlias);
+		storage.removeAlias(ALIAS_EDIT_MODIFY);
+		HashMap<String, String> aliasRemovedContent = storage.getAlias();
+		storage.redoAlias();
+		HashMap<String, String> redoedAlias = storage.getAlias();
 		assertTrue(redoedAlias.equals(aliasRemovedContent));
-
 	}
 }

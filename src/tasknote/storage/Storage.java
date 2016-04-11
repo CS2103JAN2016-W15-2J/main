@@ -123,15 +123,7 @@ public class Storage {
 			return logRedoFailed();
 		}
 	}
-	
-	/**
-	 * this methods get the current text file's absolute path
-	 * @return absolute path of the current text file
-	 */
-	public String getCurrentTextFilePath(){
-		return fileManipulator.readFullPathFromPathFile();
-	}
-	
+
 	/*
 	 * @@author A0126172M-unused
 	 * Unused due to time constraints that alias was not implemented.

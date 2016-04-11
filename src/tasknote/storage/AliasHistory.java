@@ -52,11 +52,25 @@ public class AliasHistory {
 	 */
 	public HashMap<String, String> undo() {
 		if (isUndoValid()) {
-			backup.push(current);
-			current = history.peek();
-			return history.pop();
+			return handleUndo();
 		}
-		return null;
+		return handleInvalidUndo();
+	}
+
+	private HashMap<String, String> handleUndo() {
+		backup.push(current);
+		current = history.peek();
+		return history.pop();
+	}
+
+	private HashMap<String, String> handleInvalidUndo() {
+		HashMap<String, String> returningAlias = current;
+		resetCurrent();
+		return returningAlias;
+	}
+
+	private void resetCurrent() {
+		current = null;
 	}
 
 	/**
@@ -67,11 +81,15 @@ public class AliasHistory {
 	 */
 	public HashMap<String, String> redo() {
 		if (isRedoValid()) {
-			history.push(current);
-			current = backup.peek();
-			return backup.pop();
+			return handleRedo();
 		}
 		return null;
+	}
+
+	private HashMap<String, String> handleRedo() {
+		history.push(current);
+		current = backup.peek();
+		return backup.pop();
 	}
 
 	/**
