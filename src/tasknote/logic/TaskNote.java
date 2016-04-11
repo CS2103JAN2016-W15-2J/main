@@ -267,7 +267,6 @@ public class TaskNote {
 			CommandObject commandObject = history.peekUndoStack();
 			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
 			setUndoCommandType(commandType);
-			//System.out.println("COMMAND TYPE = " + commandType);
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByUndo(numPrecedingObjects);
 			sortAndSave(taskList);
@@ -291,7 +290,6 @@ public class TaskNote {
 		try {
 			CommandObject commandObject = history.peekRedoStack();
 			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-			setRedoCommandType(commandType);
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByRedo(numPrecedingObjects);
 			sortAndSave(taskList);
@@ -580,7 +578,6 @@ public class TaskNote {
 			while (undoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popUndoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				//setUndoCommandType(commandType);
 				if (commandType == COMMAND_TYPE.ADD) {
 					undoDelete(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
@@ -613,7 +610,7 @@ public class TaskNote {
 			while (redoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				//setRedoCommandType(commandType);
+				setRedoCommandType(commandType);
 				if (commandType == COMMAND_TYPE.ADD) {
 					redoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
