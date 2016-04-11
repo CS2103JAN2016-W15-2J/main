@@ -15,6 +15,12 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 public class Parser {
+	
+	// Constants that are applicable to Parser
+	private static final int POINTER_NOT_INITIALIZED = -1;
+	private static final int POINTER_INITIALIZED = 0;
+	private static final int POINTER_NOT_EDIT = 1;
+	private static final int POINTER_EDIT = 2;
 
 	// Private fields
 	private ArrayList<String> allPhrases;
@@ -22,17 +28,22 @@ public class Parser {
 	private COMMAND_TYPE commandType;
 	private TaskObject objectForThisCommand;
 
+	// Public constructor for Parser
+	// Only the default constructor is supported
 	public Parser() {
 		this.setAllPhrases(null);
-		this.setListPointer(-1);
+		this.setListPointer(POINTER_NOT_INITIALIZED);
 		this.setCommandType(COMMAND_TYPE.INVALID);
 		this.setObjectForThisCommand(null);
 	}
 
+	// Important command for users of parser
+	// setInputString must be the first command called, or 
+    // parser object will not run
 	public void setInputString(String userCommand) {
 		UserStringProcessor parserFirstPass = new UserStringProcessor(userCommand);
 		this.setAllPhrases(parserFirstPass.getProcessedInput());
-		this.setListPointer(0);
+		this.setListPointer(POINTER_INITIALIZED);
 		this.setCommandType(matchCommandType());
 
 		// Create a new TaskObject only if it makes sense
@@ -95,6 +106,8 @@ public class Parser {
 		return returnValue;
 	}
 
+	// Public parseAdd method that constructs a TaskObject to
+	// return to Logic
 	public TaskObject parseAdd(boolean throwException) {
 
 		if (this.getCommandType() != COMMAND_TYPE.ADD) {
@@ -105,6 +118,8 @@ public class Parser {
 		return objectCreated;
 	}
 
+	// Public parseUpdate method that constructs a TaskObject as revision
+	// and overlays it over the old TaskObject
 	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
 
 		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
@@ -123,9 +138,9 @@ public class Parser {
 		int phraseCount = allPhrases.size();
 
 		if (isEdit) {
-			this.setListPointer(2);
+			this.setListPointer(POINTER_EDIT);
 		} else {
-			this.setListPointer(1);
+			this.setListPointer(POINTER_NOT_EDIT);
 		}
 
 		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
@@ -208,13 +223,53 @@ public class Parser {
 		this.objectForThisCommand.setTaskName(finalTaskName);
 		this.objectForThisCommand.setLocation(finalLocation);
 
-		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setDateHour(startTime.getHour());
-			this.objectForThisCommand.setDateMinute(startTime.getMinute());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-		}
+		setStartTime(startTime);
+		setStartDate(startDate, startTime);
+		setEndTime(endTime);
+		setEndDate(endDate, endTime);
 
+		return this.objectForThisCommand;
+	}
+
+	/**
+	 * @param endDate
+	 * @param endTime
+	 */
+	private void setEndDate(DateMessage endDate, TimeMessage endTime) {
+		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateDay(endDate.getDay());
+			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
+			this.objectForThisCommand.setEndDateYear(endDate.getYear());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		} else {
+			if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				this.objectForThisCommand.setEndDateDay(this.objectForThisCommand.getDateDay());
+				this.objectForThisCommand.setEndDateMonth(this.objectForThisCommand.getDateMonth());
+				this.objectForThisCommand.setEndDateYear(this.objectForThisCommand.getDateYear());
+			}
+		}
+	}
+
+	/**
+	 * @param endTime
+	 */
+	private void setEndTime(TimeMessage endTime) {
+		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateHour(endTime.getHour());
+			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		}
+	}
+
+	/**
+	 * @param startDate
+	 * @param startTime
+	 */
+	private void setStartDate(DateMessage startDate, TimeMessage startTime) {
 		if (startDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				&& startDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
 				&& startDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
@@ -239,37 +294,24 @@ public class Parser {
 				this.objectForThisCommand.setDateYear(today.get(Calendar.YEAR));
 			}
 		}
+	}
 
-		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setEndDateHour(endTime.getHour());
-			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+	/**
+	 * @param startTime
+	 */
+	private void setStartTime(TimeMessage startTime) {
+		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setDateHour(startTime.getHour());
+			this.objectForThisCommand.setDateMinute(startTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
 		}
-
-		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setEndDateDay(endDate.getDay());
-			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
-			this.objectForThisCommand.setEndDateYear(endDate.getYear());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
-		} else {
-			if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				this.objectForThisCommand.setEndDateDay(this.objectForThisCommand.getDateDay());
-				this.objectForThisCommand.setEndDateMonth(this.objectForThisCommand.getDateMonth());
-				this.objectForThisCommand.setEndDateYear(this.objectForThisCommand.getDateYear());
-			}
-		}
-
-		return this.objectForThisCommand;
 	}
 
 	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = 2;
+		int listPointer = POINTER_EDIT;
 		int phraseCount = allPhrases.size();
 		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
 				allPhrases);
@@ -313,41 +355,12 @@ public class Parser {
 			}
 		}
 
-		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
-			newTaskObject.setTaskName(oldTaskObject.getTaskName());
-		}
-
-		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
-			newTaskObject.setLocation(oldTaskObject.getLocation());
-		}
-
-		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setDateDay(oldTaskObject.getDateDay());
-			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
-			newTaskObject.setDateYear(oldTaskObject.getDateYear());
-		}
-
-		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setDateHour(oldTaskObject.getDateHour());
-			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
-		}
-
-		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setEndDateDay(oldTaskObject.getEndDateDay());
-			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
-			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
-		}
-
-		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
-			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
-		}
+		overlayTaskName(oldTaskObject, newTaskObject);
+		overlayLocation(oldTaskObject, newTaskObject);
+		overlayStartDate(oldTaskObject, newTaskObject);
+		overlayStartTime(oldTaskObject, newTaskObject);
+		overlayEndDate(oldTaskObject, newTaskObject);
+		overlayEndTime(oldTaskObject, newTaskObject);
 
 		// If date is *still* invalid and time exists
 		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
@@ -398,6 +411,78 @@ public class Parser {
 		return newTaskObject;
 	}
 
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayEndTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
+			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayEndDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateDay(oldTaskObject.getEndDateDay());
+			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
+			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayStartTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateHour(oldTaskObject.getDateHour());
+			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayStartDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateDay(oldTaskObject.getDateDay());
+			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
+			newTaskObject.setDateYear(oldTaskObject.getDateYear());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayLocation(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setLocation(oldTaskObject.getLocation());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayTaskName(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setTaskName(oldTaskObject.getTaskName());
+		}
+	}
+
 	public ArrayList<Integer> parseDelete(boolean throwException) {
 
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
@@ -405,7 +490,7 @@ public class Parser {
 		}
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = 1;
+		int listPointer = POINTER_NOT_EDIT;
 		int phraseCount = allPhrases.size();
 
 		ArrayList<Integer> list = new ArrayList<Integer>();
@@ -488,7 +573,7 @@ public class Parser {
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 		int itemCount = displayList.size();
-		int listPointer = this.getListPointer();
+		int listPointer = POINTER_NOT_EDIT;
 
 		HashSet<Integer> indicesToRemove = new HashSet<>();
 		HashSet<Integer> indicesToReturn = new HashSet<>();
@@ -548,7 +633,7 @@ public class Parser {
 	public ShowInterval parseShow(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		this.setListPointer(1);
+		this.setListPointer(POINTER_NOT_EDIT);
 		
 		for (int i = this.getListPointer(); i < allPhrases.size(); i++) {
 
@@ -792,7 +877,7 @@ public class Parser {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
-		int listPointer = 1;
+		int listPointer = POINTER_NOT_EDIT;
 
 		for (int i = listPointer; i < phraseCount; i++) {
 
@@ -825,7 +910,7 @@ public class Parser {
 	public int getTaskId(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
-		String currentPhrase = allPhrases.get(1);
+		String currentPhrase = allPhrases.get(POINTER_NOT_EDIT);
 
 		try {
 
@@ -849,7 +934,7 @@ public class Parser {
 
 	private DateMessage tryToParseDate(ArrayList<String> allDateInfo) {
 
-		int listPointer = 0;
+		int listPointer = POINTER_INITIALIZED;
 		int phraseCount = allDateInfo.size();
 
 		if (phraseCount == 0) {
@@ -871,7 +956,7 @@ public class Parser {
 
 	private TimeMessage tryToParseTime(ArrayList<String> allTimeInfo) {
 
-		int listPointer = 0;
+		int listPointer = POINTER_INITIALIZED;
 		int phraseCount = allTimeInfo.size();
 
 		if (phraseCount == 0) {

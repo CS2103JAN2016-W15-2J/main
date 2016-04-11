@@ -73,13 +73,19 @@ public class Storage {
 	 * @return true if path successfully changed
 	 */
 	public boolean changePath(String newPathName) throws IOException {
-		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
+		String textFileName = getNormalizedFullPath(newPathName);
 		if (handlePathChangeForMacAndWindows(textFileName)) {
 			pathManipulator.pushHistory(textFileName);
 			return true;
 		}
 
 		return logFailedPathEntered(textFileName);
+	}
+
+	private String getNormalizedFullPath(String newPathName) throws IOException {
+		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
+		textFileName = pathManipulator.normalizePath(textFileName);
+		return textFileName;
 	}
 
 	/**
@@ -117,7 +123,11 @@ public class Storage {
 			return logRedoFailed();
 		}
 	}
-
+	
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	/**
 	 * get alias command with command
 	 * 
@@ -207,6 +217,7 @@ public class Storage {
 		fileManipulator.cleanAliasFile();
 		aliasManipulator.resetAlias();
 	}
+	//@@author A0126172M
 
 	/*
 	 * private helper methods
@@ -330,7 +341,11 @@ public class Storage {
 	private boolean isValidFilePath(String textFileName) {
 		return pathManipulator.isValidFilePath(textFileName);
 	}
-
+	
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	// alias related helper methods
 
 	private void readAndSetAlias() {
@@ -365,7 +380,7 @@ public class Storage {
 			logSaveModifiedAliasFailed();
 		}
 	}
-
+	//@@author A0126172M
 	// logging methods
 
 	private boolean logFailedPathEntered(String textFileName) {

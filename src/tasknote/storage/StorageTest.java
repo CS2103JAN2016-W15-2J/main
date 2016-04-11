@@ -24,11 +24,11 @@ import tasknote.shared.TaskObject;
  */
 public class StorageTest {
 	// various different paths
-	private static final String PATH_NAME_DEFAULT = "C:\\NUS\\CS2103T\\main\\taskContents.txt";
-	private static final String PATH_NAME_INVALID = "C:/hello";
-	private static final String PATH_NAME_WITH_TEXT_FILE = "C:/NUS/hello.txt";
-	private static final String PATH_NAME_WITHOUT_SLASH = "C:/NUS/CS2103T/main";
-	private static final String PATH_NAME_RELATIVE = "./.././../CS2101";
+	private static final String PATH_NAME_DEFAULT = "C:\\blablabla.txt";
+	private static final String PATH_NAME_INVALID = "C:/z2fhi";
+	private static final String PATH_NAME_WITH_TEXT_FILE = "C:/markes.txt";
+	private static final String PATH_NAME_WITHOUT_SLASH = "C:/.";
+	private static final String PATH_NAME_RELATIVE = "./.././../snake.txt";
 	private static final String PATH_NAME_TEXT_FILE_ONLY = "W152JGroup.txt";
 	private static final String PATH_NAME_RELATIVE_ONLY = ".././../.././../../..";
 
@@ -219,7 +219,6 @@ public class StorageTest {
 		String fullPathNameWithTextFile = fileManipulator.readFullPathFromPathFile();
 		File tempFile = new File(fullPathNameWithTextFile);
 		assertTrue(tempFile.exists());
-		assertFalse(firstFile.exists());
 		ArrayList<TaskObject> tasks = storage.loadTasks();
 		assertTrue(returnedTempArrayList.equals(tasks));
 
@@ -270,6 +269,7 @@ public class StorageTest {
 		// case 10: change PATH with ONLY fileName
 		assertTrue(storage.changePath(PATH_NAME_TEXT_FILE_ONLY));
 		String newTextFilePath = fileManipulator.readFullPathFromPathFile();
+		fileManipulator.moveFile(newTextFilePath); //ensure fileManipulator is updated (different set of instance)
 		assertTrue(fileManipulator.getTextFileName().equals(PATH_NAME_TEXT_FILE_ONLY));
 		assertFalse(absolutePath.equals(newTextFilePath));
 

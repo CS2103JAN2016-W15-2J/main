@@ -42,7 +42,7 @@ public class DateParser {
 	}
 
 
-	//@@author generated
+	//@@author A0129529W-generated
 	/**
 	 * @return the allPhrases
 	 */
@@ -177,6 +177,33 @@ public class DateParser {
 			passedMessage.setYear(tomorrow.get(Calendar.YEAR));
 			passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
 
+			return passedMessage;
+		} else {
+
+			return tryToParseAsDay(passedMessage);
+		}
+	}
+	
+	private DateMessage tryToParseAsDay(DateMessage passedMessage) {
+		
+		String currentPhrase = this.getCurrentPhrase();
+		
+		if (ParserConstants.DAY_SET_UNMODIFIABLE.contains(currentPhrase)) {
+			
+			GregorianCalendar day = new GregorianCalendar();
+			int dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+			int targetDayOfWeek = ParserConstants.getDayFromString(currentPhrase);
+			
+			while (dayOfWeek != targetDayOfWeek) {
+				day = DateParser.rollByDays(day, 1);
+				dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+			}
+			
+			passedMessage.setDay(day.get(Calendar.DAY_OF_MONTH));
+			passedMessage.setMonth(day.get(Calendar.MONTH) + 1);
+			passedMessage.setYear(day.get(Calendar.YEAR));
+			passedMessage.setMessage(ParserConstants.MESSAGE_DATE_SURE);
+			
 			return passedMessage;
 		} else {
 

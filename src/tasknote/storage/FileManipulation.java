@@ -475,14 +475,31 @@ public class FileManipulation {
 	}
 
 	private void copyFileAndDeletePrevious(String newFileName) throws IOException {
-		File tempFile = new File(newFileName);
-		BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(textFile));
-		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(tempFile));
+		String previousTextFileName = readFullPathFromPathFile();
+		if(isDifferentPathEntered(newFileName, previousTextFileName)){
+			duplicateFileContents(newFileName);
+			deleteOldFile();
+		}
+	}
 
+	private void duplicateFileContents(String newFileName) throws FileNotFoundException, IOException {
+		File newFile = new File(newFileName);
+		BufferedInputStream inputStream = new BufferedInputStream(initializeTextFileInputStream());
+		BufferedOutputStream outputStream = new BufferedOutputStream(initializeNewFileOutputStream(newFile));
 		copyFileContents(inputStream, outputStream);
 		closeStream(inputStream, outputStream);
-		deleteOldFile();
+	}
 
+	private FileOutputStream initializeNewFileOutputStream(File newFile) throws FileNotFoundException {
+		return new FileOutputStream(newFile);
+	}
+
+	private FileInputStream initializeTextFileInputStream() throws FileNotFoundException {
+		return new FileInputStream(textFile);
+	}
+
+	private boolean isDifferentPathEntered(String newFileName, String previousTextFileName) {
+		return !previousTextFileName.equals(newFileName);
 	}
 
 	private void copyFileContents(BufferedInputStream inputStream, BufferedOutputStream outputStream)
