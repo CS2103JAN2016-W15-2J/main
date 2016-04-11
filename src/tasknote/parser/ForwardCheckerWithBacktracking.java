@@ -232,6 +232,10 @@ public class ForwardCheckerWithBacktracking {
 		if (!keywordCheck.equals(ParserConstants.SWITCH_STRING_NAME)) {
 			return keywordCheck;
 		}
+		
+		if (ParserConstants.DAY_SET_UNMODIFIABLE.contains(currentPhrase)) {
+			return ParserConstants.SWITCH_STRING_DATE;
+		}
 
 		if (currentPhrase.equals(ParserConstants.DATE_LONG_TOMORRROW)
 				|| currentPhrase.equals(ParserConstants.DATE_SHORT_TOMORROW)

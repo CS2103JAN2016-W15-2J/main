@@ -56,6 +56,34 @@ public class ParserConstants {
 	protected static final String SWITCH_STRING_LOCATION = "location";
 	protected static final String SWITCH_STRING_REMOVE = "remove";
 	
+	// Here are the valid day words accepted by Parser
+	protected static final String DAY_LONG_SUN = "sunday";
+	protected static final String DAY_LONG_MON = "monday";
+	protected static final String DAY_LONG_TUE = "tuesday";
+	protected static final String DAY_LONG_WED = "wednesday";
+	protected static final String DAY_LONG_THU = "thursday";
+	protected static final String DAY_LONG_FRI = "friday";
+	protected static final String DAY_LONG_SAT = "saturday";
+	
+
+	protected static final String DAY_SHORT_SUN = "sun";
+	protected static final String DAY_SHORT_MON = "mon";
+	protected static final String DAY_SHORT_TUE = "tue";
+	protected static final String DAY_SHORT_WED = "wed";
+	protected static final String DAY_SHORT_THU = "thu";
+	protected static final String DAY_SHORT_FRI = "fri";
+	protected static final String DAY_SHORT_SAT = "sat";
+
+	protected static final int DAY_WEEK_MAX = 7;
+	
+	protected static final String[] DAYS_ALL = {DAY_LONG_SUN, DAY_LONG_MON, DAY_LONG_TUE, 
+		DAY_LONG_WED, DAY_LONG_THU, DAY_LONG_FRI, DAY_LONG_SAT, DAY_SHORT_SUN, DAY_SHORT_MON,
+		DAY_SHORT_TUE, DAY_SHORT_WED, DAY_SHORT_THU, DAY_SHORT_FRI, DAY_SHORT_SAT};
+	
+	protected static final HashSet<String> DAY_SET = new HashSet<>(Arrays.asList(DAYS_ALL));
+	protected static final Set<String> DAY_SET_UNMODIFIABLE = 
+			Collections.unmodifiableSet(DAY_SET);
+	
 	// Here are the valid month words accepted by Parser
 	protected static final String MONTH_LONG_JAN = "january";
 	protected static final String MONTH_LONG_FEB = "february";
@@ -289,6 +317,23 @@ public class ParserConstants {
 					// => (Modulo 12) from 0 to 11
 					// Need to add 1 to make month value from 1 to 12
 					returnValue = (i % MONTH_MAX) + 1;
+					break;
+				}
+			}
+		}
+		
+		return returnValue;
+	}
+	
+	protected static int getDayFromString(String lowercaseWord) {
+		
+		int returnValue = Constants.INVALID_VALUE_CONSTANT;
+		
+		if (DAY_SET_UNMODIFIABLE.contains(lowercaseWord)) {
+			
+			for (int i = 0; i < DAYS_ALL.length; i++) {
+				if (lowercaseWord.equals(DAYS_ALL[i])) {
+					returnValue = (i % DAY_WEEK_MAX) + 1;
 					break;
 				}
 			}
