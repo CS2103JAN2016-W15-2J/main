@@ -42,8 +42,8 @@ public class AddTests {
 		output = Constants.MESSAGE_ADD_SUCCESSFUL;
 		String name = String.format(Constants.STRING_TASK_NAME_INDEX, 1, "breakfast 5pm");
 		output = output.concat(name);
-		System.out.println(feedback);
-		System.out.println("X" + output);
+		//System.out.println(feedback);
+		//System.out.println("X" + output);
 		Assert.assertEquals(output, feedback);
 		
 		command = "add do work    at 9am";
@@ -54,17 +54,17 @@ public class AddTests {
 		details = details.concat(String.format(Constants.STRING_TASK_DATE, getDate(9, 0)));
 		details = details.concat(String.format(Constants.STRING_TASK_TIME, formatTime(9, 00, "AM")));
 		output = output.concat(details);
-		System.out.println(feedback);
-		System.out.println(output);
+		//System.out.println(feedback);
+		//System.out.println(output);
 		Assert.assertEquals(output, feedback);
 		
-		command = "add Complete Assignment by 8pm";
+		command = "add Complete Assignment by 9am";
 		feedback = tnc.executeCommand(command);
 		feedback = feedback.trim();
 		output = Constants.MESSAGE_ADD_SUCCESSFUL;
 		details = String.format(Constants.STRING_TASK_NAME_INDEX, 2, "Complete Assignment");
-		details = details.concat(String.format(Constants.STRING_TASK_DATE, getDate(20, 0)));
-		details = details.concat(String.format(Constants.STRING_TASK_TIME, formatTime(8, 00, "PM")));
+		details = details.concat(String.format(Constants.STRING_TASK_DATE, getDate(9, 0)));
+		details = details.concat(String.format(Constants.STRING_TASK_TIME, formatTime(9, 00, "AM")));
 		output = output.concat(details);
 		Assert.assertEquals(output, feedback);
 		
