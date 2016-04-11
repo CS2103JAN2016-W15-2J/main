@@ -140,12 +140,9 @@ public class TaskNoteControl {
 			response = executeShow(userCommand);
 			break;
 		case CHANGE_CATEGORY:
-			// TODO: Parser
 			response = executeChangeCategory(userCommand);
-			// response = "";
 			break;
 		case HELP:
-			// TODO: Parser
 			response = executeHelp(userCommand);
 			break;
 		case INVALID:
@@ -177,6 +174,7 @@ public class TaskNoteControl {
 			parserFeedback = e.getMessage();
 			taskObject = parser.parseAdd(throwException);
 		}
+		setDisplayCategory(ShowCategory.OUTSTANDING);
 		command = new AddCommand(taskNote, taskObject);
 		command.execute();
 		command.refreshDisplay();
@@ -204,6 +202,7 @@ public class TaskNoteControl {
 			//deleteIds = parser.parseDelete(throwException);
 			deleteIds = new ArrayList<Integer>();
 		}
+		setDisplayCategory(ShowCategory.OUTSTANDING);
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
 		command.refreshDisplay();
