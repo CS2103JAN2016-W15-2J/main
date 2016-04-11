@@ -8,22 +8,10 @@ public class TaskObject implements Comparable<TaskObject> {
     public static final String TASK_TYPE_DEADLINE = "deadline";
     public static final String TASK_TYPE_EVENT = "event";
     public static final boolean ISCOMPLETE = true;
-    
-    public String[] monthInString = {"",
-    								 "January", 
-    								 "February", 
-    								 "March", 
-    								 "April",
-    								 "May", 
-    								 "June", 
-    								 "July", 
-    								 "August", 
-    								 "September", 
-    								 "October", 
-    								 "November", 
-    								 "December"
-    								 };
-    
+
+    public String[] monthInString = { "", "January", "February", "March", "April", "May", "June", "July", "August",
+            "September", "October", "November", "December" };
+
     public final int DEFAULT_DATETIME_VALUE = -1;
     public final int DEFAULT_DURATION_VALUE = 0;
     public final String DEFAULT_LOCATION_VALUE = "";
@@ -57,9 +45,6 @@ public class TaskObject implements Comparable<TaskObject> {
 	
 	private SimpleStringProperty taskStatus = new SimpleStringProperty();
 	private String taskType;
-	
-	private boolean isMarkedDone;
-	
 	/**
 	 * Constructor for Storage
 	 * @@author A0126172M
@@ -167,14 +152,13 @@ public class TaskObject implements Comparable<TaskObject> {
 	 * @return the markedDone
 	 */
 	public boolean getIsMarkedDone() {
-		return this.isMarkedDone;
+		return getTaskStatus() == TaskStatus.TASK_COMPLETED;
 	}
 
 	/**
 	 * @param markedDone the markedDone to set
 	 */
 	public void setIsMarkedDone(boolean isMarkedDone) {
-		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 		} else {
@@ -676,15 +660,12 @@ public class TaskObject implements Comparable<TaskObject> {
 			return;
 		} else if (isOutstandingTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
-		    setIsMarkedDone(!ISCOMPLETE);
 			return;
 		} else if(isOverdueTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OVERDUE);
-		    setIsMarkedDone(!ISCOMPLETE);
 			return;
 		} else if(isCompletedTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
-		    setIsMarkedDone(ISCOMPLETE);
 			return;
 		} else {
 			setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);
@@ -754,7 +735,6 @@ public class TaskObject implements Comparable<TaskObject> {
 				+ Constants.produceDuration(duration)
 				+ Constants.produceLocation(location)
 				+ Constants.produceTaskStatus(taskStatus)
-				+ Constants.produceTaskType(taskType)
-				+ Constants.produceIsMarkedDone(isMarkedDone);
+				+ Constants.produceTaskType(taskType);
 	}
 }
