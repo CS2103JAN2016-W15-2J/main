@@ -87,6 +87,14 @@ public class Storage {
 		textFileName = pathManipulator.normalizePath(textFileName);
 		return textFileName;
 	}
+	
+	/**
+	 * this method returns the string of the current absolute path of the textFile
+	 * @return string of text file absolute path
+	 */
+	public String getCurrentAbsoluteTextFilePath(){
+		return fileManipulator.readFullPathFromPathFile();
+	}
 
 	/**
 	 * undo PATH operation
