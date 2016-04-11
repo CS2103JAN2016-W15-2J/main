@@ -8,13 +8,18 @@ import java.util.GregorianCalendar;
 
 public class ForwardCheckerWithBacktracking {
 	
+	// This contain the constant that is only useful for ForwardCheckerWithBacktracking
 	protected static String SPECIAL_SKIP_TAG = "skip";
 
+	// This are the private date fields used by this class
 	private ArrayList<String> allPhrases;
 	private int listPointer;
 	private String[] allPhraseTypes;
 	private String commandType;
 
+	// The default constructor is not supported here
+	// Constructor requires the entire processed user input for a meaningful check
+	// The forward checker checks immediately upon object construction
 	public ForwardCheckerWithBacktracking(ArrayList<String> allPhrases) {
 		this.allPhrases = allPhrases;
 		this.listPointer = 0;
@@ -23,6 +28,8 @@ public class ForwardCheckerWithBacktracking {
 		approximateForwardCheck();
 	}
 
+	// This returns a String array containing all the marks assigned
+	// to each phrase in the user input, mapped index to index
 	public String[] getAllPhraseTypes() {
 		return this.allPhraseTypes;
 	}
@@ -407,8 +414,8 @@ public class ForwardCheckerWithBacktracking {
 	public static void main(String[] args) {
 
 		String randomTestInputOne = "edit 1 newtaskname at place remove date remove time by 23:59 on 15th feb";
-		ParserFirstPass pfp = new ParserFirstPass(randomTestInputOne);
-		ArrayList<String> firstAllPhrases = pfp.getFirstPassParsedResult();
+		UserStringProcessor pfp = new UserStringProcessor(randomTestInputOne);
+		ArrayList<String> firstAllPhrases = pfp.getProcessedInput();
 
 		ForwardCheckerWithBacktracking fc = new ForwardCheckerWithBacktracking(firstAllPhrases);
 		String[] resultOne = fc.getAllPhraseTypes();

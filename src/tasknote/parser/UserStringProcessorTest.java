@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.ArrayList;
 
-public class ParserFirstPassTest {
+public class UserStringProcessorTest {
 
 	@Test
 	public void basicWordTest() {
 
 		String userCommand = "add task1 by 5pm";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("add");
@@ -19,7 +19,7 @@ public class ParserFirstPassTest {
 		expected.add("by");
 		expected.add("5pm");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}
@@ -28,7 +28,7 @@ public class ParserFirstPassTest {
 	public void testWithExtraSpaces() {
 
 		String userCommand = "  delete   task   object by 9       ";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("delete");
@@ -37,7 +37,7 @@ public class ParserFirstPassTest {
 		expected.add("by");
 		expected.add("9");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}
@@ -46,7 +46,7 @@ public class ParserFirstPassTest {
 	public void basicTestWithQuotes() {
 
 		String userCommand = "add \"another task for tomorrow\" by 5pm";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("add");
@@ -54,7 +54,7 @@ public class ParserFirstPassTest {
 		expected.add("by");
 		expected.add("5pm");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}
@@ -63,7 +63,7 @@ public class ParserFirstPassTest {
 	public void testQuotesWithSpaces() {
 
 		String userCommand = "add \"  another    task     again for tomorrow   \" by 5pm";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("add");
@@ -71,7 +71,7 @@ public class ParserFirstPassTest {
 		expected.add("by");
 		expected.add("5pm");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}
@@ -80,7 +80,7 @@ public class ParserFirstPassTest {
 	public void basicMultiQuoteTest() {
 
 		String userCommand = "add \"here at here\" at \"there by there\"";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("add");
@@ -88,7 +88,7 @@ public class ParserFirstPassTest {
 		expected.add("at");
 		expected.add("there by there");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}
@@ -97,7 +97,7 @@ public class ParserFirstPassTest {
 	public void multiQuoteWithSpacesTest() {
 
 		String userCommand = "add   \" here   at here \" at \"   there  by there    \"  ";
-		ParserFirstPass firstPassUserCommand = new ParserFirstPass(userCommand);
+		UserStringProcessor processedInput = new UserStringProcessor(userCommand);
 
 		ArrayList<String> expected = new ArrayList<>();
 		expected.add("add");
@@ -105,7 +105,7 @@ public class ParserFirstPassTest {
 		expected.add("at");
 		expected.add("   there  by there    ");
 
-		ArrayList<String> actual = firstPassUserCommand.getFirstPassParsedResult();
+		ArrayList<String> actual = processedInput.getProcessedInput();
 
 		assertEquals(expected, actual);
 	}

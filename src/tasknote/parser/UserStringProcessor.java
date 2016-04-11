@@ -3,12 +3,12 @@ package tasknote.parser;
 
 import java.util.ArrayList;
 
-public class ParserFirstPass {
+public class UserStringProcessor {
 
 	private String command;
 	private ArrayList<String> parsedCommandWords;
 	
-	public ParserFirstPass(String command) {
+	public UserStringProcessor(String command) {
 		this.command = command;
 		this.parsedCommandWords = new ArrayList<String>();
 		
@@ -64,7 +64,7 @@ public class ParserFirstPass {
 		}
 	}
 	
-	public ArrayList<String> getFirstPassParsedResult() {
+	public ArrayList<String> getProcessedInput() {
 		return this.parsedCommandWords;
 	}
 }

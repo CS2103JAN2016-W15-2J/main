@@ -30,8 +30,8 @@ public class Parser {
 	}
 
 	public void setInputString(String userCommand) {
-		ParserFirstPass parserFirstPass = new ParserFirstPass(userCommand);
-		this.setAllPhrases(parserFirstPass.getFirstPassParsedResult());
+		UserStringProcessor parserFirstPass = new UserStringProcessor(userCommand);
+		this.setAllPhrases(parserFirstPass.getProcessedInput());
 		this.setListPointer(0);
 		this.setCommandType(matchCommandType());
 
