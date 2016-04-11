@@ -1,4 +1,7 @@
-//@@author A0126172M
+/*
+ * @@author A0126172M-unused
+ * Unused due to time constraints that alias was not implemented.
+ */
 package tasknote.storage;
 
 import java.util.HashMap;

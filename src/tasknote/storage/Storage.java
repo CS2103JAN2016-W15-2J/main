@@ -123,7 +123,11 @@ public class Storage {
 			return logRedoFailed();
 		}
 	}
-
+	
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	/**
 	 * get alias command with command
 	 * 
@@ -213,6 +217,7 @@ public class Storage {
 		fileManipulator.cleanAliasFile();
 		aliasManipulator.resetAlias();
 	}
+	//@@author A0126172M
 
 	/*
 	 * private helper methods
@@ -336,7 +341,11 @@ public class Storage {
 	private boolean isValidFilePath(String textFileName) {
 		return pathManipulator.isValidFilePath(textFileName);
 	}
-
+	
+	/*
+	 * @@author A0126172M-unused
+	 * Unused due to time constraints that alias was not implemented.
+	 */
 	// alias related helper methods
 
 	private void readAndSetAlias() {
@@ -371,7 +380,7 @@ public class Storage {
 			logSaveModifiedAliasFailed();
 		}
 	}
-
+	//@@author A0126172M
 	// logging methods
 
 	private boolean logFailedPathEntered(String textFileName) {
