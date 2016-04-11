@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
+import tasknote.shared.Constants;
 
 public class DeleteTests {
 
@@ -31,33 +32,45 @@ public class DeleteTests {
 		
 		command = "  delete 1 ";
 		feedback = tnc.executeCommand(command);
+		feedback = feedback.trim();
 		output = "Deleted 1 task(s) Successfully";
 		Assert.assertEquals(output, feedback);
 		
-		command = "  delete 1, 3-5";
+		command = "  delete 1 3 - 5";
 		feedback = tnc.executeCommand(command);
+		feedback = feedback.trim();
 		output = "Deleted 4 task(s) Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		/*The following are boundary cases for the ‘negative value’ partitions */
 		command = "  delete    99";
 		feedback = tnc.executeCommand(command);
-		output = "Deletion Failed";
+		feedback = feedback.trim();
+		output = "Deletion Failed\n\n";
+		output = output.concat(Constants.WARNING_INVALID_DELETE_INDEX);
+		System.out.println(feedback);
+		System.out.println(output);
 		Assert.assertEquals(output, feedback);
 		
 		command = "  delete    1 3 99";
 		feedback = tnc.executeCommand(command);
-		output = "Deletion Failed";
+		feedback = feedback.trim();
+		output = "Deletion Failed\n\n";
+		output = output.concat(Constants.WARNING_INVALID_DELETE_INDEX);
 		Assert.assertEquals(output, feedback);
 
 		command = "  delete    ";
 		feedback = tnc.executeCommand(command);
-		output = "Deletion Failed";
+		feedback = feedback.trim();
+		output = "Deletion Failed\n\n";
+		output = output.concat(Constants.WARNING_EMPTY_DELETEID_LIST);
 		Assert.assertEquals(output, feedback);
 		
 		command = "  delete 1 2 3";
 		feedback = tnc.executeCommand(command);
-		output = "Deletion Failed";
+		feedback = feedback.trim();
+		output = "Deletion Failed\n\n";
+		output = output.concat(Constants.WARNING_INVALID_DELETE_INDEX);
 		Assert.assertEquals(output, feedback);
 	}
 	

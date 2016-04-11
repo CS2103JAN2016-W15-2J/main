@@ -59,6 +59,7 @@ public class TaskNoteTests {
 		ids.add(-200);
 		feedback = note.deleteTask(ids);
 		output = Constants.MESSAGE_DELETE_UNSUCCESSFUL;
+		output = output.concat("\n\nInvalid Deletion Index found. Please enter valid task IDs to delete tasks.");
 		Assert.assertEquals(output, feedback);
 
 		// Case 2
@@ -66,6 +67,7 @@ public class TaskNoteTests {
 		ids.add(200);
 		feedback = note.deleteTask(ids);
 		output = Constants.MESSAGE_DELETE_UNSUCCESSFUL;
+		output = output.concat("\n\nInvalid Deletion Index found. Please enter valid task IDs to delete tasks.");
 		Assert.assertEquals(output, feedback);
 
 		/*
@@ -76,6 +78,7 @@ public class TaskNoteTests {
 		ids.add(1);
 		ids.add(2);
 		feedback = note.deleteTask(ids);
+		feedback = feedback.trim();
 		output = String.format(Constants.MESSAGE_DELETE_SUCCESSFUL, 2);
 		Assert.assertEquals(output, feedback);
 
@@ -83,6 +86,7 @@ public class TaskNoteTests {
 		ids = new ArrayList<Integer>();
 		feedback = note.deleteTask(ids);
 		output = Constants.MESSAGE_DELETE_UNSUCCESSFUL;
+		output = output.concat("\n\n• No Delete IDs specified to Delete Tasks.\n• Please specify Task ID(s) to delete corresponding Task(s).");
 		Assert.assertEquals(output, feedback);
 	}
 

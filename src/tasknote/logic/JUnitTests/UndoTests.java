@@ -26,7 +26,8 @@ public class UndoTests {
 		
 		command = "undo";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last ADD Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		
@@ -43,7 +44,8 @@ public class UndoTests {
 		
 		command = "undo";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last ADD Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		//obj = tnc.getDisplayList();
@@ -65,7 +67,8 @@ public class UndoTests {
 		
 		command = "undo   ";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last DELETE Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		obj = tnc.getDisplayList();
 		print(obj);
@@ -84,12 +87,14 @@ public class UndoTests {
 		
 		command = "      undo   ";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last DELETE Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		command = "undo   ";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last DELETE Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		obj = tnc.getDisplayList();
@@ -102,7 +107,8 @@ public class UndoTests {
 		
 		command = "undo   ";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last DELETE Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		obj = tnc.getDisplayList();
@@ -118,7 +124,8 @@ public class UndoTests {
 		
 		command = "undo   ";
 		feedback = tnc.executeCommand(command);
-		output = "The Last Operation has been Undone Successfully";
+		feedback = feedback.trim();
+		output = "The Last UPDATE Operation has been Undone Successfully";
 		Assert.assertEquals(output, feedback);
 		
 		obj = tnc.getDisplayList();

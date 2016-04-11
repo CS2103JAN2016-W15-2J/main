@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import tasknote.logic.TaskNoteControl;
 import tasknote.shared.TaskObject;
+import tasknote.shared.Constants;
 
 public class DoneTests {
 
@@ -39,18 +40,25 @@ public class DoneTests {
 		
 		output = "Task \"%s\" has been marked as completed Successfully";
 		taskName = task.getTaskName();
+		feedback = feedback.trim();
 		Assert.assertEquals(String.format(output, taskName), feedback);
 		
 		//Second test case
 		command = "done 200";
-		output = "Mark as complete failed";
+		output = "Mark as complete failed\n\n";
+		output = output.concat("Invalid task ID specified: 200.\n");
+		output = output.concat("Please Specify a valid TaskID to mark Task as Completed.");
 		feedback = tnc.executeCommand(command);
+		feedback = feedback.trim();
 		Assert.assertEquals(output, feedback);
 		
 		//Third test case
 		command = "done 0";
-		output = "Mark as complete failed";
+		output = "Mark as complete failed\n\n";
+		output = output.concat("Invalid task ID specified: 0.\n");
+		output = output.concat("Please Specify a valid TaskID to mark Task as Completed.");
 		feedback = tnc.executeCommand(command);
+		feedback = feedback.trim();
 		Assert.assertEquals(output, feedback);
 		
 		//Fourth test case
@@ -61,8 +69,10 @@ public class DoneTests {
 		task = list.get(0);
 		//System.out.println(task);
 		
-		output = "Task \"%s\" has been marked as completed Successfully";
+		output = "Task 1 is already marked as completed.\n";
+		output = output.concat("To mark task as incomplete, use the UNDONE command.");
 		taskName = task.getTaskName();
+		feedback = feedback.trim();
 		Assert.assertEquals(String.format(output, taskName), feedback);
 	}
 
