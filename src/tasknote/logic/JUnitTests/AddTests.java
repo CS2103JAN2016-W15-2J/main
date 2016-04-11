@@ -21,7 +21,7 @@ import tasknote.shared.TaskObject;
 
 public class AddTests {
 
-	TaskNoteControl tnc = new TaskNoteControl();
+	TaskNoteControl tnc;
 	ArrayList<TaskObject> obj;
 	String command;
 	String feedback;
@@ -32,6 +32,8 @@ public class AddTests {
 	public void testAdd() {
 		
 		resetTaskContents();
+		
+		tnc = new TaskNoteControl();
 		
 		command = "add breakfast 5pm";
 		feedback = tnc.executeCommand(command);
@@ -89,6 +91,18 @@ public class AddTests {
 		
 	}
 	
+	private void resetTaskContents() {
+		Path taskContentsPath = Paths.get("taskContents.txt");
+		ArrayList<String> resetList = new ArrayList<>();
+		
+		try {
+			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private static String getDate(int hour, int min){
 		
 		LocalDateTime now = LocalDateTime.now();
@@ -125,16 +139,5 @@ public class AddTests {
 		return time;
 	}
 	
-	private static void resetTaskContents() {
-		Path taskContentsPath = Paths.get("taskContents.txt");
-		ArrayList<String> resetList = new ArrayList<>();
-		
-		try {
-			Files.write(taskContentsPath, resetList, Charset.forName("UTF-8"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 }
