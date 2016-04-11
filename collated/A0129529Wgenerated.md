@@ -324,14 +324,13 @@
 	 * @return the markedDone
 	 */
 	public boolean getIsMarkedDone() {
-		return this.isMarkedDone;
+		return getTaskStatus() == TaskStatus.TASK_COMPLETED;
 	}
 
 	/**
 	 * @param markedDone the markedDone to set
 	 */
 	public void setIsMarkedDone(boolean isMarkedDone) {
-		this.isMarkedDone = isMarkedDone;
 		if(isMarkedDone) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
 		} else {

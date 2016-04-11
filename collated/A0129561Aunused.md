@@ -1,0 +1,295 @@
+# A0129561Aunused
+###### \bin\tasknote\ui\resources\css\theme-monotone-dark.css
+``` css
+/** CSS unused as a new CSS layout was preferred*/
+
+/**************************************************
+ * Theme: Monotone-dark
+ **************************************************/
+* {
+	-fx-commandline-container-background: #1e2123;
+	-fx-commandline-node: #313437;
+	-fx-task-container-background: #26292c;
+	-fx-task-item-node: #313437;
+	-fx-notification-exit-node: #888888;
+	-fx-notification-background: #1e2123;
+	-fx-sidebar-container-background: #26292c;
+	-fx-sidebar-selected-node: #313437;
+	-fx-default-text-color: #ffffff;
+}
+
+.root {
+	-fx-font-size: 12pt;
+}
+
+/**************************************************
+ * COMMAND LINE CONTAINER
+ **************************************************/
+.commandline-container {
+	-fx-background-color: -fx-commandline-container-background;
+	-fx-padding: 10 15 10 15;
+}
+
+.commandline {
+	-fx-background-color: -fx-commandline-node;
+	-fx-text-inner-color: -fx-default-text-color;
+}
+
+.commandline-enter-button {
+	-fx-background-color: -fx-commandline-node;
+	-fx-font-weight: bold;
+	-fx-text-fill: -fx-default-text-color;
+}
+
+/**************************************************
+ * TASKS CONTAINER
+ **************************************************/
+ .tasks-container {
+ 	-fx-background-color: -fx-task-container-background;
+ 	-fx-padding: 10 15 10 15;
+ }
+ 
+ .tasks-list {
+ 	-fx-background-color: -fx-task-item-node;
+ 	-fx-background-radius: 5;
+ }
+ 
+ .tasks-list-cell {
+ 	-fx-background-color: -fx-task-item-node;
+ }
+ 
+/**************************************************
+ * SIDEBAR CONTAINER
+ **************************************************/
+ .sidebar-container {
+ 	-fx-padding: 10 15 10 15;
+ 	-fx-background-color: -fx-sidebar-container-background;
+ }
+ 
+ #sidebar-separator {
+ 	-fx-padding: 10 0 0 0;
+ }
+ 
+ #sidebar-navigation {
+ 	-fx-padding: 40 0 0 0;
+ 	-fx-background-color: -fx-sidebar-container-background;
+ }
+ 
+ #sidebar-navigation .list-cell:empty {
+ 	-fx-background-color: inherit;
+ }
+ 
+ #sidebar-navigation:focused .list-cell:filled:selected,
+ #sidebar-navigation:focused .list-cell:filled:selected .label,
+ #sidebar-navigation .list-cell:selected, 
+ #sidebar-navigation .list-cell:selected .label {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-background-color: -fx-sidebar-selected-node;
+ }
+ 
+ .sidebar-navigation-cell {
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+/**************************************************
+ * CLOCK CONTAINER
+ **************************************************/
+ .clock-container {
+ 	
+ }
+ 
+ .clock-label-month-date {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-hour-minute-second {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-day-of-week {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 25pt;
+	-fx-font-weight: bold;
+ }
+ 
+/**************************************************
+ * NOTIFICATION
+ **************************************************/
+ .notification-content {
+	-fx-background-color: -fx-notification-background;
+ 	-fx-background-radius: 10;
+ 	-fx-padding: 20 20 20 20;
+ }
+ 
+ .notification-title {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button {
+ 	-fx-fill: -fx-notification-exit-node;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button:hover {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-weight: bold;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-alert-message {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-size: 12pt;
+ }
+```
+###### \src\tasknote\ui\resources\css\theme-monotone-dark.css
+``` css
+/** CSS unused as a new CSS layout was preferred*/
+
+/**************************************************
+ * Theme: Monotone-dark
+ **************************************************/
+* {
+	-fx-commandline-container-background: #1e2123;
+	-fx-commandline-node: #313437;
+	-fx-task-container-background: #26292c;
+	-fx-task-item-node: #313437;
+	-fx-notification-exit-node: #888888;
+	-fx-notification-background: #1e2123;
+	-fx-sidebar-container-background: #26292c;
+	-fx-sidebar-selected-node: #313437;
+	-fx-default-text-color: #ffffff;
+}
+
+.root {
+	-fx-font-size: 12pt;
+}
+
+/**************************************************
+ * COMMAND LINE CONTAINER
+ **************************************************/
+.commandline-container {
+	-fx-background-color: -fx-commandline-container-background;
+	-fx-padding: 10 15 10 15;
+}
+
+.commandline {
+	-fx-background-color: -fx-commandline-node;
+	-fx-text-inner-color: -fx-default-text-color;
+}
+
+.commandline-enter-button {
+	-fx-background-color: -fx-commandline-node;
+	-fx-font-weight: bold;
+	-fx-text-fill: -fx-default-text-color;
+}
+
+/**************************************************
+ * TASKS CONTAINER
+ **************************************************/
+ .tasks-container {
+ 	-fx-background-color: -fx-task-container-background;
+ 	-fx-padding: 10 15 10 15;
+ }
+ 
+ .tasks-list {
+ 	-fx-background-color: -fx-task-item-node;
+ 	-fx-background-radius: 5;
+ }
+ 
+ .tasks-list-cell {
+ 	-fx-background-color: -fx-task-item-node;
+ }
+ 
+/**************************************************
+ * SIDEBAR CONTAINER
+ **************************************************/
+ .sidebar-container {
+ 	-fx-padding: 10 15 10 15;
+ 	-fx-background-color: -fx-sidebar-container-background;
+ }
+ 
+ #sidebar-separator {
+ 	-fx-padding: 10 0 0 0;
+ }
+ 
+ #sidebar-navigation {
+ 	-fx-padding: 40 0 0 0;
+ 	-fx-background-color: -fx-sidebar-container-background;
+ }
+ 
+ #sidebar-navigation .list-cell:empty {
+ 	-fx-background-color: inherit;
+ }
+ 
+ #sidebar-navigation:focused .list-cell:filled:selected,
+ #sidebar-navigation:focused .list-cell:filled:selected .label,
+ #sidebar-navigation .list-cell:selected, 
+ #sidebar-navigation .list-cell:selected .label {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-background-color: -fx-sidebar-selected-node;
+ }
+ 
+ .sidebar-navigation-cell {
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+/**************************************************
+ * CLOCK CONTAINER
+ **************************************************/
+ .clock-container {
+ 	
+ }
+ 
+ .clock-label-month-date {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-hour-minute-second {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 16pt;
+ }
+ 
+ .clock-label-day-of-week {
+ 	-fx-text-fill: -fx-default-text-color;
+ 	-fx-font-size: 25pt;
+	-fx-font-weight: bold;
+ }
+ 
+/**************************************************
+ * NOTIFICATION
+ **************************************************/
+ .notification-content {
+	-fx-background-color: -fx-notification-background;
+ 	-fx-background-radius: 10;
+ 	-fx-padding: 20 20 20 20;
+ }
+ 
+ .notification-title {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-weight: bold;
+	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button {
+ 	-fx-fill: -fx-notification-exit-node;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-exit-button:hover {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-weight: bold;
+ 	-fx-font-size: 12pt;
+ }
+ 
+ .notification-alert-message {
+ 	-fx-fill: -fx-default-text-color;
+ 	-fx-font-size: 12pt;
+ }
+```
