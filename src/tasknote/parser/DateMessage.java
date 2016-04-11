@@ -14,6 +14,8 @@ public class DateMessage {
 	
 	private String message;
 	
+	// The default constructor is the only constructor that is valid
+	// for DateMessage - which sets all values to invalid
 	public DateMessage() {
 		this.setDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
 		this.setMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);

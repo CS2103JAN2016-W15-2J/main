@@ -158,7 +158,7 @@ public class DateParser {
 		}
 	}
 
-	// Chain of responsibility => Today => Tomorrow => SlashDot
+	// Chain of responsibility => Today => Tomorrow => Day
 	private DateMessage tryToParseAsTomorrow(DateMessage passedMessage) {
 
 		String currentPhrase = this.getCurrentPhrase();
@@ -184,6 +184,7 @@ public class DateParser {
 		}
 	}
 	
+	// Chain of responsibility => Tomorrow => Day => SlashDot
 	private DateMessage tryToParseAsDay(DateMessage passedMessage) {
 		
 		String currentPhrase = this.getCurrentPhrase();

@@ -175,6 +175,19 @@ public class ParserConstants {
 	protected static final String INTERVAL_LONG_TOMORROW = "tomorrow";
 	protected static final String INTERVAL_LONG_ALL = "all";
 	
+	protected static final String INTERVAL_SHORT_TODAY = "tdy";
+	protected static final String INTERVAL_SHORT_TOMORROW = "tmr";
+	
+	protected static final String INTERVAL_SINGULAR_DAY = "day";
+	protected static final String INTERVAL_SINGULAR_WEEK = "week";
+	protected static final String INTERVAL_SINGULAR_MONTH = "month";
+	protected static final String INTERVAL_SINGULAR_YEAR = "year";
+	
+	protected static final String INTERVAL_PLURAL_DAYS = "days";
+	protected static final String INTERVAL_PLURAL_WEEKS = "weeks";
+	protected static final String INTERVAL_PLURAL_MONTHS = "months";
+	protected static final String INTERVAL_PLURAL_YEARS = "years";
+	
 	// Here is the date modification qualifier
 	protected static final String DATE_MOD_NEXT = "next";
 	
@@ -201,6 +214,12 @@ public class ParserConstants {
 	protected static final String MESSAGE_TIME_UNSURE = "maybeNotTime";
 	protected static final String MESSAGE_TIME_SURE = "isTime";
 	
+	// Here are the constants used for category command
+	protected static final String CATEGORY_OUTSTANDING = "outstanding";
+	protected static final String CATEGORY_OVERDUE = "overdue";
+	protected static final String CATEGORY_COMPLETED = "completed";
+	protected static final String CATEGORY_ALL = "all";
+	
 	// Here are all the minimum length of the expected user command
 	protected static final int MINIMUM_ADD = 2;
 	protected static final int MINIMUM_EDIT = 3;
@@ -217,6 +236,8 @@ public class ParserConstants {
 	protected static final int MINIMUM_INVALID = 0;
 	protected static final int MINIMUM_CATEGORY = 2;
 
+	// This is a "getter" method for the minimum user input length expected
+	// of any COMMAND_TYPE
 	protected static int getMinimumCommandLength(COMMAND_TYPE command) {
 		
 		int returnValue = MINIMUM_INVALID;
@@ -270,38 +291,40 @@ public class ParserConstants {
 		return returnValue;
 	}
 	
+	// This method serves to decide the next switchString to use
 	protected static String decideNewSwitchString(String keyword) {
 
-		String returnValue = "name";
+		String returnValue = SWITCH_STRING_NAME;
 
 		switch (keyword) {
 
 		case ParserConstants.KEYWORD_AT:
-			returnValue = "locationtime";
+			returnValue = SWITCH_STRING_LOCATIONTIME;
 			break;
 
 		case ParserConstants.KEYWORD_BY:
 		case ParserConstants.KEYWORD_ON:
 		case ParserConstants.KEYWORD_FROM:
-			returnValue = "datetimestart";
+			returnValue = SWITCH_STRING_DATETIMESTART;
 			break;
 
 		case ParserConstants.KEYWORD_TO:
-			returnValue = "datetimeend";
+			returnValue = SWITCH_STRING_DATETIMEEND;
 			break;
 
 		case ParserConstants.KEYWORD_REMOVE:
-			returnValue = "remove";
+			returnValue = SWITCH_STRING_REMOVE;
 			break;
 			
 		default: 
-			returnValue = "name";
+			returnValue = SWITCH_STRING_NAME;
 			break;
 		}
 
 		return returnValue;
 	}
 	
+	// This method serves to help decode Month in Strings into their integer form
 	protected static int getMonthFromString(String lowercaseWord) {
 		
 		int returnValue = Constants.INVALID_VALUE_CONSTANT;
@@ -325,6 +348,7 @@ public class ParserConstants {
 		return returnValue;
 	}
 	
+	// This method serves to help decode Week of Days in Strings into their integer form
 	protected static int getDayFromString(String lowercaseWord) {
 		
 		int returnValue = Constants.INVALID_VALUE_CONSTANT;
@@ -342,18 +366,22 @@ public class ParserConstants {
 		return returnValue;
 	}
 	
+	// The method serves to ensure that the given month int makes sense
 	protected static boolean isValidMonth(int monthValue) {
 		return (monthValue >= MONTH_MIN) && (monthValue <= MONTH_MAX);
 	}
 	
+	// The method serves to ensure that the given day int makes sense
 	protected static boolean isValidDay(int dayValue) {
 		return (dayValue >= DAY_MIN) && (dayValue <= DAY_MAX);
 	}
 	
+	// The method serves to ensure that the given hour int makes sense
 	protected static boolean isValidHour(int hourValue) {
 		return (hourValue >= HOUR_MIN) && (hourValue <= HOUR_MAX);
 	}
 	
+	// The method serves to ensure that the given minute int makes sense
 	protected static boolean isValidMinute(int minuteValue) {
 		return (minuteValue >= MINUTE_MIN) && (minuteValue <= MINUTE_MAX);
 	}

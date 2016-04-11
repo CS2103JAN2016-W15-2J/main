@@ -15,7 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 public class Parser {
-	
+
 	// Constants that are applicable to Parser
 	private static final int POINTER_NOT_INITIALIZED = -1;
 	private static final int POINTER_INITIALIZED = 0;
@@ -36,10 +36,15 @@ public class Parser {
 		this.setCommandType(COMMAND_TYPE.INVALID);
 		this.setObjectForThisCommand(null);
 	}
+	
+	/***********************************************************
+	 * Abstraction level one - Top level abstraction
+	 * containing all Public methods that serves as a Facade
+	 ***********************************************************/
 
 	// Important command for users of parser
-	// setInputString must be the first command called, or 
-    // parser object will not run
+	// setInputString must be the first command called, or
+	// parser object will not run
 	public void setInputString(String userCommand) {
 		UserStringProcessor parserFirstPass = new UserStringProcessor(userCommand);
 		this.setAllPhrases(parserFirstPass.getProcessedInput());
@@ -132,361 +137,12 @@ public class Parser {
 		return objectCreated;
 	}
 
-	private TaskObject constructObject(boolean isEdit) {
-
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int phraseCount = allPhrases.size();
-
-		if (isEdit) {
-			this.setListPointer(POINTER_EDIT);
-		} else {
-			this.setListPointer(POINTER_NOT_EDIT);
-		}
-
-		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
-				allPhrases);
-		String[] allMarks = forwardChecker.getAllPhraseTypes();
-
-		StringBuilder nameBuilder = new StringBuilder();
-		StringBuilder locationBuilder = new StringBuilder();
-		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
-
-		boolean toStartDate = true;
-		boolean toStartTime = true;
-
-		ArrayList<String> allStartDateInfo = new ArrayList<>();
-		ArrayList<String> allEndDateInfo = new ArrayList<>();
-
-		ArrayList<String> allStartTimeInfo = new ArrayList<>();
-		ArrayList<String> allEndTimeInfo = new ArrayList<>();
-
-		for (int i = this.getListPointer(); i < phraseCount; i++) {
-
-			currentPhrase = allPhrases.get(i);
-
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_NAME)) {
-				nameBuilder.append(currentPhrase);
-				nameBuilder.append(Constants.STRING_CONSTANT_SPACE);
-				continue;
-			}
-
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)
-					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
-					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-
-				// Only push to endDate or endTime if they are already filled
-				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
-					if (!allStartDateInfo.isEmpty()) {
-						toStartDate = false;
-					}
-					if (!allStartTimeInfo.isEmpty()) {
-						toStartTime = false;
-					}
-				}
-				continue;
-			}
-
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATE)) {
-				if (toStartDate) {
-					allStartDateInfo.add(currentPhrase);
-				} else {
-					allEndDateInfo.add(currentPhrase);
-				}
-				continue;
-			}
-
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_TIME)) {
-				if (toStartTime) {
-					allStartTimeInfo.add(currentPhrase);
-				} else {
-					allEndTimeInfo.add(currentPhrase);
-				}
-				continue;
-			}
-
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATION)) {
-				locationBuilder.append(currentPhrase);
-				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
-				continue;
-			}
-		}
-
-		DateMessage startDate = tryToParseDate(allStartDateInfo);
-		DateMessage endDate = tryToParseDate(allEndDateInfo);
-
-		TimeMessage startTime = tryToParseTime(allStartTimeInfo);
-		TimeMessage endTime = tryToParseTime(allEndTimeInfo);
-
-		String finalTaskName = nameBuilder.toString().trim();
-		String finalLocation = locationBuilder.toString().trim();
-
-		this.objectForThisCommand.setTaskName(finalTaskName);
-		this.objectForThisCommand.setLocation(finalLocation);
-
-		setStartTime(startTime);
-		setStartDate(startDate, startTime);
-		setEndTime(endTime);
-		setEndDate(endDate, endTime);
-
-		return this.objectForThisCommand;
-	}
-
-	/**
-	 * @param endDate
-	 * @param endTime
-	 */
-	private void setEndDate(DateMessage endDate, TimeMessage endTime) {
-		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setEndDateDay(endDate.getDay());
-			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
-			this.objectForThisCommand.setEndDateYear(endDate.getYear());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
-		} else {
-			if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				this.objectForThisCommand.setEndDateDay(this.objectForThisCommand.getDateDay());
-				this.objectForThisCommand.setEndDateMonth(this.objectForThisCommand.getDateMonth());
-				this.objectForThisCommand.setEndDateYear(this.objectForThisCommand.getDateYear());
-			}
-		}
-	}
-
-	/**
-	 * @param endTime
-	 */
-	private void setEndTime(TimeMessage endTime) {
-		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setEndDateHour(endTime.getHour());
-			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
-		}
-	}
-
-	/**
-	 * @param startDate
-	 * @param startTime
-	 */
-	private void setStartDate(DateMessage startDate, TimeMessage startTime) {
-		if (startDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& startDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& startDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setDateDay(startDate.getDay());
-			this.objectForThisCommand.setDateMonth(startDate.getMonth());
-			this.objectForThisCommand.setDateYear(startDate.getYear());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-		} else {
-			if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-
-				GregorianCalendar today = new GregorianCalendar();
-				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
-				int setTime = startTime.getHour() * 60 + startTime.getMinute();
-
-				if (todayTime > setTime) {
-					today = DateParser.rollByDays(today, 1);
-				}
-
-				this.objectForThisCommand.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-				this.objectForThisCommand.setDateMonth(today.get(Calendar.MONTH) + 1);
-				this.objectForThisCommand.setDateYear(today.get(Calendar.YEAR));
-			}
-		}
-	}
-
-	/**
-	 * @param startTime
-	 */
-	private void setStartTime(TimeMessage startTime) {
-		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			this.objectForThisCommand.setDateHour(startTime.getHour());
-			this.objectForThisCommand.setDateMinute(startTime.getMinute());
-			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-		}
-	}
-
-	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
-
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int listPointer = POINTER_EDIT;
-		int phraseCount = allPhrases.size();
-		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
-				allPhrases);
-		String[] allMarks = forwardChecker.getAllPhraseTypes();
-		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
-
-		for (int i = listPointer; i < phraseCount; i++) {
-			currentPhrase = allPhrases.get(i);
-			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_REMOVE)) {
-				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_REMOVE)) {
-					continue;
-				}
-
-				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_TIME)) {
-					oldTaskObject.setDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setEndDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setEndDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					continue;
-				}
-
-				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_DATE)) {
-					oldTaskObject.setDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setEndDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setEndDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					oldTaskObject.setEndDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
-					continue;
-				}
-
-				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_NAME)) {
-					oldTaskObject.setTaskName(Constants.STRING_CONSTANT_EMPTY);
-					continue;
-				}
-
-				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_LOCATION)) {
-					oldTaskObject.setLocation(Constants.STRING_CONSTANT_EMPTY);
-					continue;
-				}
-			}
-		}
-
-		overlayTaskName(oldTaskObject, newTaskObject);
-		overlayLocation(oldTaskObject, newTaskObject);
-		overlayStartDate(oldTaskObject, newTaskObject);
-		overlayStartTime(oldTaskObject, newTaskObject);
-		overlayEndDate(oldTaskObject, newTaskObject);
-		overlayEndTime(oldTaskObject, newTaskObject);
-
-		// If date is *still* invalid and time exists
-		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-
-			if (newTaskObject.getDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					&& newTaskObject.getDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-
-				GregorianCalendar today = new GregorianCalendar();
-				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
-				int setTime = newTaskObject.getDateHour() * 60 + newTaskObject.getDateMinute();
-
-				if (todayTime > setTime) {
-					today = DateParser.rollByDays(today, 1);
-				}
-
-				newTaskObject.setDateDay(today.get(Calendar.DAY_OF_MONTH));
-				newTaskObject.setDateMonth(today.get(Calendar.MONTH) + 1);
-				newTaskObject.setDateYear(today.get(Calendar.YEAR));
-			}
-		}
-
-		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-
-			if (newTaskObject.getEndDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-					&& newTaskObject.getEndDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-				newTaskObject.setEndDateDay(newTaskObject.getDateDay());
-				newTaskObject.setEndDateMonth(newTaskObject.getDateMonth());
-				newTaskObject.setEndDateYear(newTaskObject.getDateYear());
-			}
-		}
-		
-		if (newTaskObject.getDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& newTaskObject.getDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& newTaskObject.getDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
-		}
-		
-		if (newTaskObject.getEndDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& newTaskObject.getEndDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				&& newTaskObject.getEndDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setTaskType(TaskObject.TASK_TYPE_EVENT);
-		}
-
-		return newTaskObject;
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayEndTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
-			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
-		}
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayEndDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setEndDateDay(oldTaskObject.getEndDateDay());
-			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
-			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
-		}
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayStartTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setDateHour(oldTaskObject.getDateHour());
-			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
-		}
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayStartDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
-				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
-			newTaskObject.setDateDay(oldTaskObject.getDateDay());
-			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
-			newTaskObject.setDateYear(oldTaskObject.getDateYear());
-		}
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayLocation(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
-			newTaskObject.setLocation(oldTaskObject.getLocation());
-		}
-	}
-
-	/**
-	 * @param oldTaskObject
-	 * @param newTaskObject
-	 */
-	private void overlayTaskName(TaskObject oldTaskObject, TaskObject newTaskObject) {
-		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
-			newTaskObject.setTaskName(oldTaskObject.getTaskName());
-		}
-	}
-
+	// Public parseDelete method that looks for all the IDs specified
+	// by the user and returns an ArrayList<Integer> containing them
 	public ArrayList<Integer> parseDelete(boolean throwException) {
 
 		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
-			throw new RuntimeException("Wrong method used for non-add type input!");
+			throw new RuntimeException("Wrong method used for non-delete type input!");
 		}
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
@@ -567,7 +223,8 @@ public class Parser {
 		return list;
 	}
 
-	// Ahead of SuperParser
+	// Public parseDelete method that looks for all the IDs specified
+	// by the user and returns an ArrayList<Integer> containing them
 	public ArrayList<Integer> parseSearch(ArrayList<TaskObject> displayList, boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
@@ -578,6 +235,7 @@ public class Parser {
 		HashSet<Integer> indicesToRemove = new HashSet<>();
 		HashSet<Integer> indicesToReturn = new HashSet<>();
 
+		// Start with all indices being potential candidates to return
 		for (int i = 0; i < itemCount; i++) {
 			indicesToReturn.add(i);
 		}
@@ -585,6 +243,8 @@ public class Parser {
 		String testKeyWord = allPhrases.get(listPointer).toLowerCase();
 		boolean exactOnly = false;
 
+		// Accept the "exact" keyword only if there are more search terms that comes
+		// after it
 		if (phraseCount > 2 && testKeyWord.equals("exact")) {
 			exactOnly = true;
 		}
@@ -593,10 +253,13 @@ public class Parser {
 
 			String currentPhrase = allPhrases.get(i).toLowerCase();
 
+			// If we are searching for exact, then the "exact" term should
+			// not be part of our search terms
 			if (exactOnly && i == 1) {
 				continue;
 			}
 
+			// Iterate through all TaskObjects to look for the search term
 			for (int j = 0; j < itemCount; j++) {
 				String currentTaskName = displayList.get(j).getTaskName().toLowerCase();
 
@@ -621,49 +284,64 @@ public class Parser {
 
 			}
 
+			// Use asymmetric set difference to return the remaining
+			// TaskObjects that will join us for the next search term
+			// filtering
 			indicesToReturn.removeAll(indicesToRemove);
 		}
 
+		// Because an ArrayList<Integer> is expected, a quick conversion
+		// back from HashSet to ArrayList is done here
 		ArrayList<Integer> listToReturn = new ArrayList<>();
 		listToReturn.addAll(indicesToReturn);
 
 		return listToReturn;
 	}
 
+	// Public parseShow method that determines how far ahead would the user
+	// like to see until only, for all his tasks
 	public ShowInterval parseShow(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		this.setListPointer(POINTER_NOT_EDIT);
-		
+
+		// We try to be a little lenient here, by ignoring any invalid
+		// inputs from the user until we find the keyword that fits
 		for (int i = this.getListPointer(); i < allPhrases.size(); i++) {
 
 			String currentPhrase = allPhrases.get(i).toLowerCase();
 
-			if (currentPhrase.equals("today")) {
+			if (currentPhrase.equals(ParserConstants.INTERVAL_LONG_TODAY)
+					|| currentPhrase.equals(ParserConstants.INTERVAL_SHORT_TODAY)) {
 				return ShowInterval.TODAY;
 			}
 
-			if (currentPhrase.equals("tomorrow")) {
+			if (currentPhrase.equals(ParserConstants.INTERVAL_LONG_TOMORROW)
+					|| currentPhrase.equals(ParserConstants.INTERVAL_SHORT_TOMORROW)) {
 				return ShowInterval.TOMORROW;
 			}
-			
-			if (currentPhrase.equals("year") || currentPhrase.equals("years")) {
+
+			if (currentPhrase.equals(ParserConstants.INTERVAL_SINGULAR_YEAR) 
+					|| currentPhrase.equals(ParserConstants.INTERVAL_PLURAL_YEARS)) {
 				return ShowInterval.YEAR;
 			}
-			
-			if (currentPhrase.equals("month") || currentPhrase.equals("months")) {
+
+			if (currentPhrase.equals(ParserConstants.INTERVAL_SINGULAR_MONTH) 
+					|| currentPhrase.equals(ParserConstants.INTERVAL_PLURAL_MONTHS)) {
 				return ShowInterval.MONTH;
 			}
 
-			if (currentPhrase.equals("week") || currentPhrase.equals("weeks")) {
+			if (currentPhrase.equals(ParserConstants.INTERVAL_SINGULAR_WEEK) 
+					|| currentPhrase.equals(ParserConstants.INTERVAL_PLURAL_WEEKS)) {
 				return ShowInterval.WEEK;
 			}
 
-			if (currentPhrase.equals("day") || currentPhrase.equals("days")) {
+			if (currentPhrase.equals(ParserConstants.INTERVAL_SINGULAR_DAY) 
+					|| currentPhrase.equals(ParserConstants.INTERVAL_PLURAL_DAYS)) {
 				return ShowInterval.DAY;
 			}
 
-			if (currentPhrase.equals("all")) {
+			if (currentPhrase.equals(ParserConstants.INTERVAL_LONG_ALL)) {
 				return ShowInterval.ALL;
 			}
 		}
@@ -677,28 +355,32 @@ public class Parser {
 
 	}
 
+	// Public parseChangeCategory method is useful for changing the category of
+	// Tasks to be shown from the command line
 	public ShowCategory parseChangeCategory(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
 
-		if (phraseCount >= 2) {
+		// Again, we try to be a little lenient here, by ignoring any invalid
+		// input written by the user
+		for (int i = POINTER_NOT_EDIT; i < phraseCount; i++) {
 
-			String currentPhrase = allPhrases.get(1).toLowerCase();
+			String currentPhrase = allPhrases.get(i).toLowerCase();
 
-			if (currentPhrase.equals("outstanding")) {
+			if (currentPhrase.equals(ParserConstants.CATEGORY_OUTSTANDING)) {
 				return ShowCategory.OUTSTANDING;
 			}
 
-			if (currentPhrase.equals("overdue")) {
+			if (currentPhrase.equals(ParserConstants.CATEGORY_OVERDUE)) {
 				return ShowCategory.OVERDUE;
 			}
 
-			if (currentPhrase.equals("completed")) {
+			if (currentPhrase.equals(ParserConstants.CATEGORY_COMPLETED)) {
 				return ShowCategory.COMPLETED;
 			}
 
-			if (currentPhrase.equals("all")) {
+			if (currentPhrase.equals(ParserConstants.CATEGORY_ALL)) {
 				return ShowCategory.ALL;
 			}
 		}
@@ -710,7 +392,50 @@ public class Parser {
 			return ShowCategory.ALL;
 		}
 	}
+	
+	// Public parseFilePath method works with the "relocate" command
+	// allowing users to change the file path of their storage
+	public String parseFilePath(boolean throwException) {
 
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int phraseCount = allPhrases.size();
+		int listPointer = POINTER_NOT_EDIT;
+
+		// We try to be lenient here, by ignoring any invalid path string given
+		// until we find one that works
+		for (int i = listPointer; i < phraseCount; i++) {
+
+			String currentPhrase = allPhrases.get(i);
+
+			try {
+
+				Paths.get(currentPhrase);
+				return currentPhrase;
+
+			} catch (InvalidPathException | NullPointerException e) {
+				continue;
+			}
+		}
+
+		// Realise that if a valid path was found, the return statement above
+		// would have been called. Hence, it is only possible to come here
+		// if no valid path was found in the entire user input
+		if (throwException) {
+
+			RuntimeException e = new RuntimeException(
+					"Could not find valid file path in command supplied. "
+							+ "Consult the following for more details:\n help relocate");
+			System.out.println(e);
+			throw e;
+		} else {
+
+			// Default value
+			return Constants.STRING_CONSTANT_EMPTY;
+		}
+	}
+	
+	// Public getInterval method returns the interval that was called together with the show
+	// command. This method is used by Logic to determine how far ahead to show.
 	public int getInterval(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
@@ -873,40 +598,9 @@ public class Parser {
 		}
 	}
 
-	public String parseFilePath(boolean throwException) {
-
-		ArrayList<String> allPhrases = this.getAllPhrases();
-		int phraseCount = allPhrases.size();
-		int listPointer = POINTER_NOT_EDIT;
-
-		for (int i = listPointer; i < phraseCount; i++) {
-
-			String currentPhrase = allPhrases.get(i);
-
-			try {
-
-				Paths.get(currentPhrase);
-				return currentPhrase;
-
-			} catch (InvalidPathException | NullPointerException e) {
-				continue;
-			}
-		}
-
-		if (throwException) {
-
-			RuntimeException e = new RuntimeException(
-					"Could not find valid file path in command supplied. "
-							+ "Consult the following for more details:\n help relocate");
-			System.out.println(e);
-			throw e;
-		} else {
-
-			// Default value
-			return Constants.STRING_CONSTANT_EMPTY;
-		}
-	}
-
+	// Public getTaskId method gets the very next phrase that is currently pointed to, as a number
+	// If it is not a number, an exception can be thrown if throwException is true.
+	// This method is called by Logic to complement the edit command.
 	public int getTaskId(boolean throwException) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
@@ -929,6 +623,371 @@ public class Parser {
 			} else {
 				return -1;
 			}
+		}
+	}
+	
+	/*************************************************************
+	 * Abstraction level two - Private and Protected methods 
+	 * called directly by Public methods
+	 *************************************************************/
+
+	// This private method constructs the object from scratch, using all the information
+	// supplied in the user input
+	private TaskObject constructObject(boolean isEdit) {
+
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int phraseCount = allPhrases.size();
+
+		if (isEdit) {
+			this.setListPointer(POINTER_EDIT);
+		} else {
+			this.setListPointer(POINTER_NOT_EDIT);
+		}
+
+		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
+				allPhrases);
+		String[] allMarks = forwardChecker.getAllPhraseTypes();
+
+		StringBuilder nameBuilder = new StringBuilder();
+		StringBuilder locationBuilder = new StringBuilder();
+		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
+
+		boolean toStartDate = true;
+		boolean toStartTime = true;
+
+		ArrayList<String> allStartDateInfo = new ArrayList<>();
+		ArrayList<String> allEndDateInfo = new ArrayList<>();
+
+		ArrayList<String> allStartTimeInfo = new ArrayList<>();
+		ArrayList<String> allEndTimeInfo = new ArrayList<>();
+
+		for (int i = this.getListPointer(); i < phraseCount; i++) {
+
+			currentPhrase = allPhrases.get(i);
+
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_NAME)) {
+				nameBuilder.append(currentPhrase);
+				nameBuilder.append(Constants.STRING_CONSTANT_SPACE);
+				continue;
+			}
+
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATIONTIME)
+					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMESTART)
+					|| allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+
+				// Only push to endDate or endTime if they are already filled
+				if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATETIMEEND)) {
+					if (!allStartDateInfo.isEmpty()) {
+						toStartDate = false;
+					}
+					if (!allStartTimeInfo.isEmpty()) {
+						toStartTime = false;
+					}
+				}
+				continue;
+			}
+
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_DATE)) {
+				if (toStartDate) {
+					allStartDateInfo.add(currentPhrase);
+				} else {
+					allEndDateInfo.add(currentPhrase);
+				}
+				continue;
+			}
+
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_TIME)) {
+				if (toStartTime) {
+					allStartTimeInfo.add(currentPhrase);
+				} else {
+					allEndTimeInfo.add(currentPhrase);
+				}
+				continue;
+			}
+
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_LOCATION)) {
+				locationBuilder.append(currentPhrase);
+				locationBuilder.append(Constants.STRING_CONSTANT_SPACE);
+				continue;
+			}
+		}
+
+		DateMessage startDate = tryToParseDate(allStartDateInfo);
+		DateMessage endDate = tryToParseDate(allEndDateInfo);
+
+		TimeMessage startTime = tryToParseTime(allStartTimeInfo);
+		TimeMessage endTime = tryToParseTime(allEndTimeInfo);
+
+		String finalTaskName = nameBuilder.toString().trim();
+		String finalLocation = locationBuilder.toString().trim();
+
+		this.objectForThisCommand.setTaskName(finalTaskName);
+		this.objectForThisCommand.setLocation(finalLocation);
+
+		setStartTime(startTime);
+		setStartDate(startDate, startTime);
+		setEndTime(endTime);
+		setEndDate(endDate, endTime);
+
+		return this.objectForThisCommand;
+	}
+
+	// This method overlays the newer task object over the older task object like how
+	// you might replay changes to files
+	private TaskObject overlayTaskObject(TaskObject oldTaskObject, TaskObject newTaskObject) {
+
+		ArrayList<String> allPhrases = this.getAllPhrases();
+		int listPointer = POINTER_EDIT;
+		int phraseCount = allPhrases.size();
+		ForwardCheckerWithBacktracking forwardChecker = new ForwardCheckerWithBacktracking(
+				allPhrases);
+		String[] allMarks = forwardChecker.getAllPhraseTypes();
+		String currentPhrase = Constants.STRING_CONSTANT_EMPTY;
+
+		for (int i = listPointer; i < phraseCount; i++) {
+			currentPhrase = allPhrases.get(i);
+			if (allMarks[i].equals(ParserConstants.SWITCH_STRING_REMOVE)) {
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_REMOVE)) {
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_TIME)) {
+					oldTaskObject.setDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_DATE)) {
+					oldTaskObject.setDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateDay(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateMonth(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					oldTaskObject.setEndDateYear(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_NAME)) {
+					oldTaskObject.setTaskName(Constants.STRING_CONSTANT_EMPTY);
+					continue;
+				}
+
+				if (currentPhrase.equals(ParserConstants.SWITCH_STRING_LOCATION)) {
+					oldTaskObject.setLocation(Constants.STRING_CONSTANT_EMPTY);
+					continue;
+				}
+			}
+		}
+
+		overlayTaskName(oldTaskObject, newTaskObject);
+		overlayLocation(oldTaskObject, newTaskObject);
+		overlayStartDate(oldTaskObject, newTaskObject);
+		overlayStartTime(oldTaskObject, newTaskObject);
+		overlayEndDate(oldTaskObject, newTaskObject);
+		overlayEndTime(oldTaskObject, newTaskObject);
+
+		// If date is *still* invalid and time exists
+		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+
+			if (newTaskObject.getDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& newTaskObject.getDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+
+				GregorianCalendar today = new GregorianCalendar();
+				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
+				int setTime = newTaskObject.getDateHour() * 60 + newTaskObject.getDateMinute();
+
+				if (todayTime > setTime) {
+					today = DateParser.rollByDays(today, 1);
+				}
+
+				newTaskObject.setDateDay(today.get(Calendar.DAY_OF_MONTH));
+				newTaskObject.setDateMonth(today.get(Calendar.MONTH) + 1);
+				newTaskObject.setDateYear(today.get(Calendar.YEAR));
+			}
+		}
+
+		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+
+			if (newTaskObject.getEndDateHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& newTaskObject.getEndDateMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				newTaskObject.setEndDateDay(newTaskObject.getDateDay());
+				newTaskObject.setEndDateMonth(newTaskObject.getDateMonth());
+				newTaskObject.setEndDateYear(newTaskObject.getDateYear());
+			}
+		}
+
+		if (newTaskObject.getDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		}
+
+		if (newTaskObject.getEndDateDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getEndDateMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& newTaskObject.getEndDateYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		}
+
+		return newTaskObject;
+	}
+	
+	/************************************************************
+	 * Abstraction level three - private and protected methods 
+	 * called directly by private and protected methods
+	 ************************************************************/
+	
+	/**
+	 * @param endDate
+	 * @param endTime
+	 */
+	private void setEndDate(DateMessage endDate, TimeMessage endTime) {
+		if (endDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateDay(endDate.getDay());
+			this.objectForThisCommand.setEndDateMonth(endDate.getMonth());
+			this.objectForThisCommand.setEndDateYear(endDate.getYear());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		} else {
+			if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+				this.objectForThisCommand.setEndDateDay(this.objectForThisCommand.getDateDay());
+				this.objectForThisCommand.setEndDateMonth(this.objectForThisCommand.getDateMonth());
+				this.objectForThisCommand.setEndDateYear(this.objectForThisCommand.getDateYear());
+			}
+		}
+	}
+
+	/**
+	 * @param endTime
+	 */
+	private void setEndTime(TimeMessage endTime) {
+		if (endTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& endTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setEndDateHour(endTime.getHour());
+			this.objectForThisCommand.setEndDateMinute(endTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_EVENT);
+		}
+	}
+
+	/**
+	 * @param startDate
+	 * @param startTime
+	 */
+	private void setStartDate(DateMessage startDate, TimeMessage startTime) {
+		if (startDate.getDay() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startDate.getMonth() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startDate.getYear() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setDateDay(startDate.getDay());
+			this.objectForThisCommand.setDateMonth(startDate.getMonth());
+			this.objectForThisCommand.setDateYear(startDate.getYear());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		} else {
+			if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+					&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+
+				GregorianCalendar today = new GregorianCalendar();
+				int todayTime = today.get(Calendar.HOUR_OF_DAY) * 60 + today.get(Calendar.MINUTE);
+				int setTime = startTime.getHour() * 60 + startTime.getMinute();
+
+				if (todayTime > setTime) {
+					today = DateParser.rollByDays(today, 1);
+				}
+
+				this.objectForThisCommand.setDateDay(today.get(Calendar.DAY_OF_MONTH));
+				this.objectForThisCommand.setDateMonth(today.get(Calendar.MONTH) + 1);
+				this.objectForThisCommand.setDateYear(today.get(Calendar.YEAR));
+			}
+		}
+	}
+
+	/**
+	 * @param startTime
+	 */
+	private void setStartTime(TimeMessage startTime) {
+		if (startTime.getHour() != ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				&& startTime.getMinute() != ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			this.objectForThisCommand.setDateHour(startTime.getHour());
+			this.objectForThisCommand.setDateMinute(startTime.getMinute());
+			this.objectForThisCommand.setTaskType(TaskObject.TASK_TYPE_DEADLINE);
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayEndTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getEndDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateHour(oldTaskObject.getEndDateHour());
+			newTaskObject.setEndDateMinute(oldTaskObject.getEndDateMinute());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayEndDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getEndDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getEndDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setEndDateDay(oldTaskObject.getEndDateDay());
+			newTaskObject.setEndDateMonth(oldTaskObject.getEndDateMonth());
+			newTaskObject.setEndDateYear(oldTaskObject.getEndDateYear());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayStartTime(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getDateHour() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMinute() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateHour(oldTaskObject.getDateHour());
+			newTaskObject.setDateMinute(oldTaskObject.getDateMinute());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayStartDate(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getDateDay() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateMonth() == ParserConstants.DEFAULT_INVALID_INT_DATETIME
+				|| newTaskObject.getDateYear() == ParserConstants.DEFAULT_INVALID_INT_DATETIME) {
+			newTaskObject.setDateDay(oldTaskObject.getDateDay());
+			newTaskObject.setDateMonth(oldTaskObject.getDateMonth());
+			newTaskObject.setDateYear(oldTaskObject.getDateYear());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayLocation(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getLocation().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setLocation(oldTaskObject.getLocation());
+		}
+	}
+
+	/**
+	 * @param oldTaskObject
+	 * @param newTaskObject
+	 */
+	private void overlayTaskName(TaskObject oldTaskObject, TaskObject newTaskObject) {
+		if (newTaskObject.getTaskName().equals(Constants.STRING_CONSTANT_EMPTY)) {
+			newTaskObject.setTaskName(oldTaskObject.getTaskName());
 		}
 	}
 
@@ -973,6 +1032,10 @@ public class Parser {
 		return returnMessage;
 
 	}
+	
+	/************************************************************
+	 * Abstraction level four - Lowest level private and protected methods meant for utility purposes
+	 ************************************************************/
 
 	protected boolean isNumber(String stringToTest) {
 
@@ -1043,8 +1106,12 @@ public class Parser {
 		return returnValue;
 
 	}
+	
+	/************************************************************
+	 * All auto-generated code
+	 ************************************************************/
 
-	//@@author A0129529W-generated
+	// @@author A0129529W-generated
 	/**
 	 * @return the allPhrases
 	 */

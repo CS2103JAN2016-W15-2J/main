@@ -13,6 +13,8 @@ public class TimeMessage {
 	
 	private String message;
 	
+	// The default constructor is the only constructor supported
+	// for TimeMessage - which sets all values to invalid
 	public TimeMessage() {
 		this.setHour(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
 		this.setMinute(ParserConstants.DEFAULT_INVALID_INT_DATETIME);
