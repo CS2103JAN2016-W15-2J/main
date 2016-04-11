@@ -252,16 +252,6 @@ public class TaskNoteTests {
 		output = Constants.MESSAGE_UNDO_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
 		
-		note.markTaskAsComplete(0);
-		feedback = note.undoLastCommand();
-		output = String.format(Constants.MESSAGE_UNDO_SUCCESSFUL, "DONE");
-		Assert.assertEquals(output, feedback);
-		
-		note.changeFilePath("../");
-		feedback = note.undoLastCommand();
-		output = String.format(Constants.MESSAGE_UNDO_SUCCESSFUL, "CHANGE_FILE_PATH");
-		Assert.assertEquals(output, feedback);
-		
 		fillContents();
 	}
 	
@@ -279,21 +269,6 @@ public class TaskNoteTests {
 		feedback = note.redoLastUndoCommand();
 		output = Constants.MESSAGE_REDO_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
-		
-		note.markTaskAsComplete(0);
-		note.undoLastCommand();
-		feedback = note.redoLastUndoCommand();
-		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "DONE");
-		Assert.assertEquals(output, feedback);
-		
-		
-		note.changeFilePath("../");
-		note.undoLastCommand();
-		feedback = note.redoLastUndoCommand();
-		note.undoLastCommand();
-		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "CHANGE_FILE_PATH");
-		Assert.assertEquals(output, feedback);
-		
 		
 		fillContents();
 	}
