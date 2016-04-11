@@ -451,14 +451,17 @@ public class FileManipulation {
 	 */
 
 	public boolean moveFile(String fileName) throws IOException {
+
 		assert (isFileNameEntered(fileName));
 		assert (isFilePathValid(fileName));
-			
-		copyFileAndDeletePrevious(fileName);
-		initializeTextFile(fileName);
-		createTextFileIfNotExist();
-		storeNewTextFilePath();
-		return true;
+		if (isFilePathValid(fileName)) {
+			copyFileAndDeletePrevious(fileName);
+			initializeTextFile(fileName);
+			createTextFileIfNotExist();
+			storeNewTextFilePath();
+			return true;
+		}
+		return false;
 	}
 
 	private boolean isFilePathValid(String fileName) {

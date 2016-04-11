@@ -56,6 +56,7 @@ public class PathHistory {
 	}
 
 	private String handleEmptyHistory() {
+		backup.push(current);
 		String returnPath = current;
 		resetCurrent();
 		return returnPath;

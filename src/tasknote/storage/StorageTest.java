@@ -264,6 +264,7 @@ public class StorageTest {
 	public final void testUndoPath() throws IOException {
 		storage.changePath(PATH_NAME_WITHOUT_SLASH);
 		String fullPathNameWithoutSlash = storage.getCurrentAbsoluteTextFilePath();
+		storage.changePath(PATH_NAME_WITH_TEXT_FILE);
 		storage.changePath(PATH_NAME_INVALID);
 		assertTrue(storage.undoPath());
 		String path = storage.getCurrentAbsoluteTextFilePath();

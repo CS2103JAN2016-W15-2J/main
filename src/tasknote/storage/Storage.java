@@ -74,12 +74,25 @@ public class Storage {
 	 */
 	public boolean changePath(String newPathName) throws IOException {
 		String textFileName = getNormalizedFullPath(newPathName);
+		handlesEmptyHistory();
 		if (handlePathChangeForMacAndWindows(textFileName)) {
 			pathManipulator.pushHistory(textFileName);
 			return true;
 		}
 
 		return logFailedPathEntered(textFileName);
+	}
+
+	private void handlesEmptyHistory() throws InvalidPathException, IOException {
+		if(isInvalidUndo()){
+			pathManipulator.pushHistory(getCurrentAbsoluteTextFilePath());
+		}else{
+			redoPath();
+		}
+	}
+
+	private boolean isInvalidUndo() {
+		return pathManipulator.extractUndoPathString()==null;
 	}
 
 	private String getNormalizedFullPath(String newPathName) throws IOException {
