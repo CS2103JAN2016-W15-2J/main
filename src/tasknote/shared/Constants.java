@@ -187,7 +187,7 @@ public class Constants {
 	public static final String STRING_TASKTYPE_DEADLINE = "DEADLINE";
 	public static final String STRING_TASKTYPE_FLOATING = "FLOATING";
 	
-	//@@author A0129529
+	//@@author A0129529W
 	/*
 	 * These are the String constants used in the program while executing
 	 * specific user operations
