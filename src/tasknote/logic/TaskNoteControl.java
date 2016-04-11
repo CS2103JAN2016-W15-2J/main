@@ -42,11 +42,13 @@ public class TaskNoteControl {
 	private static TaskNote taskNote;
 	private static Command command;
 	private static Parser parser;
+	private static ShowCategory displayCategory;
 
 	public TaskNoteControl() {
 		taskNote = new TaskNote();
 		parser = new Parser();
 		taskNote.loadTasks();
+		displayCategory = ShowCategory.OUTSTANDING;
 	}
 	
 	/**
@@ -56,6 +58,24 @@ public class TaskNoteControl {
 	 */
 	public ArrayList<TaskObject> getDisplayList() {
 		return taskNote.getDisplayList();
+	}
+	
+	/**
+	 * This operation shows the correct category of tasks to the user
+	 *
+	 * @return display category type
+	 */
+	public ShowCategory getDisplayCategory() {
+		return displayCategory;
+	}
+	
+	/**
+	 * This operation sets the displayCategory to the correct category
+	 * of tasks to be shown to the user
+	 * 
+	 */
+	public static void setDisplayCategory(ShowCategory showCategory) {
+		displayCategory = showCategory;
 	}
 
 	/**
@@ -342,15 +362,6 @@ public class TaskNoteControl {
 			taskId = parser.getTaskId(throwException);
 		}
 		command = new UndoneCommand(taskNote, taskId);
-		/*TaskObject taskObject;
-		if (taskNote.isValidTaskId(taskId)) {
-			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-			taskObject = displayList.get(taskId);
-		} else {
-			taskObject = null;
-		}
-		command = new UndoneCommand(taskNote, taskObject);
-		*/
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
@@ -448,6 +459,7 @@ public class TaskNoteControl {
 			// throwException);
 		}
 		category = parseChangeCategory(userCommand);
+		setDisplayCategory(category);
 		command = new ChangeCategoryCommand(taskNote, category);
 		command.execute();
 		command.refreshDisplay();
