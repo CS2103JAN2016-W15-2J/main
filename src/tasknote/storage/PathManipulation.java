@@ -109,4 +109,14 @@ public class PathManipulation {
 		Path newFullPath = previousPath.relativize(combinedPath);
 		return newFullPath.normalize();
 	}
+	
+	public String normalizePath(String userPath){
+		Path path = Paths.get(userPath);
+		return normalizedPathString(path);
+	}
+
+	private String normalizedPathString(Path path) {
+		path = path.normalize();
+		return path.toString();
+	}
 }

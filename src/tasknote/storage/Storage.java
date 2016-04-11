@@ -73,13 +73,19 @@ public class Storage {
 	 * @return true if path successfully changed
 	 */
 	public boolean changePath(String newPathName) throws IOException {
-		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
+		String textFileName = getNormalizedFullPath(newPathName);
 		if (handlePathChangeForMacAndWindows(textFileName)) {
 			pathManipulator.pushHistory(textFileName);
 			return true;
 		}
 
 		return logFailedPathEntered(textFileName);
+	}
+
+	private String getNormalizedFullPath(String newPathName) throws IOException {
+		String textFileName = concatPathIfNeeded(newPathName, fileManipulator.getTextFileName());
+		textFileName = pathManipulator.normalizePath(textFileName);
+		return textFileName;
 	}
 
 	/**
