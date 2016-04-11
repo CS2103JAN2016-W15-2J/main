@@ -31,11 +31,12 @@ public class StorageTest {
 	private static final String PATH_NAME_RELATIVE = "./.././../snake.txt";
 	private static final String PATH_NAME_TEXT_FILE_ONLY = "W152JGroup.txt";
 	private static final String PATH_NAME_RELATIVE_ONLY = ".././../.././../../..";
+	private static final String PATH_NAME_UNIQUE_FILE_NAME = "C:/uniqueName.txt";
 
 	// To set up random dates
 	private static final int BASE_MINUTE = 1;
 	private static final int BASE_DATE = 1;
-	private static final int BASE_YEAR = 2017;
+	private static final int BASE_YEAR = 2100;
 	private static final int RAND_RANGE_MINUTE = 60;
 	private static final int RAND_RANGE_HOUR = 24;
 	private static final int RAND_RANGE_DAY = 28;
@@ -66,10 +67,10 @@ public class StorageTest {
 	private static final String ALIAS_EDIT_MODIFY = "modify";
 	private static final String ALIAS_DELETE_REMOVE = "remove";
 
-	Storage storage;
-	FileManipulation fileManipulator;
-	PathManipulation pathManipulator;
-	Random random;
+	private Storage storage;
+	private FileManipulation fileManipulator;
+	private PathManipulation pathManipulator;
+	private Random random;
 
 	// local variables
 	private int year;
@@ -80,7 +81,6 @@ public class StorageTest {
 	private ArrayList<TaskObject> tempArrayList1;
 	private ArrayList<TaskObject> tempArrayList2;
 	private ArrayList<TaskObject> tempArrayList3;
-	private ArrayList<TaskObject> returnedTempArrayList;
 	private TaskObject randomFutureTaskObject;
 	private TaskObject overdueTaskObject;
 	private int tempArrayList2Size;
@@ -149,51 +149,47 @@ public class StorageTest {
 		return tempTaskObject;
 	}
 
+	/*
+	 * TEST TEXT FILE MANIPULATION
+	 */
 	@Test
-	public final void test() throws IOException, TaskListIOException, InvalidPathException {
-		try {
-			testReadAndWriteTaskObjects();
-			testPathManipulation();
-			testAliasManipulation();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (TaskListIOException tlioe) {
-			tlioe.printStackTrace();
-		}
-	}
-
-	private void testReadAndWriteTaskObjects() throws TaskListIOException, IOException {
-		// case 1: test loadTasks() is able to load something
+	public final void testLoadTasks() throws TaskListIOException, IOException {
 		storage.saveTasks(tempArrayList3);
 		assertEquals(tempArrayList3.size(), tempArrayList3Size);
+	}
 
-		// case 2: test cleanFile()
+	@Test
+	public final void testCleanup() throws IOException, TaskListIOException {
 		storage.cleanTextFile();
 		assertTrue(storage.loadTasks().isEmpty());
+	}
 
-		// case 2: test if add empty ArrayList will return the same list
+	@Test
+	public final void testAddingAnEmptyArrayList() throws TaskListIOException, IOException {
 		ArrayList<TaskObject> emptyArrayList = new ArrayList<TaskObject>();
 		storage.saveTasks(emptyArrayList);
 		assertTrue(storage.loadTasks().equals(emptyArrayList));
+	}
 
-		// case 3: test if add a random generated ArrayList<TaskObject> will
-		// return the same arrayList
+	@Test
+	public final void testAddingRandomGeneratedArrayList() throws TaskListIOException, IOException {
 		storage.saveTasks(tempArrayList1);
 		assertTrue(storage.loadTasks().equals(tempArrayList1));
+	}
 
-		// case 4: test if add n items into storage and retrieval equals same
-		// list
+	@Test
+	public final void testAddNItems() throws TaskListIOException, IOException {
 		storage.saveTasks(tempArrayList2);
-		returnedTempArrayList = storage.loadTasks();
+		ArrayList<TaskObject> returnedTempArrayList = storage.loadTasks();
 		assertTrue(returnedTempArrayList.equals(tempArrayList2));
+	}
 
-		// case 5: test if StorageDeadlineUpdater successfully updated the task
-		// if overdued
-
+	@Test
+	public final void testStorageDeadlineUpdater() throws TaskListIOException, IOException {
 		// Firstly, check the previous taskObject is TASK_OUTSTANDING
 		assertTrue(overdueTaskObject.getTaskStatus().equals(TaskObject.TaskStatus.TASK_OUTSTANDING));
 		storage.saveTasks(tempArrayList3);
-		returnedTempArrayList = storage.loadTasks();
+		ArrayList<TaskObject> returnedTempArrayList = storage.loadTasks();
 		// Next, check that the arrayList has changed
 		assertFalse(returnedTempArrayList.equals(tempArrayList3));
 		TaskObject overduedTask = returnedTempArrayList.get(tempArrayList3Size - OVERDUE_TASK_SIZE);
@@ -202,102 +198,155 @@ public class StorageTest {
 		assertTrue(overduedTask.getTaskStatus().equals(TaskObject.TaskStatus.TASK_OVERDUE));
 	}
 
-	private void testPathManipulation() throws IOException, TaskListIOException {
-		// case 1: undo PATH where there is no history
+	@Test
+	public final void testUndoPathWhenNoHistory() throws InvalidPathException, IOException {
+		while(storage.undoPath()){}
 		assertFalse(storage.undoPath());
+	}
 
-		// case 2: change absolute PATH with a correct PATH but without slash
+	@Test
+	public final void testChangeAbsolutePathWithoutSlash() throws IOException {
 		assertTrue(storage.changePath(PATH_NAME_WITHOUT_SLASH));
 		String fullPathNameWithoutSlash = fileManipulator.readFullPathFromPathFile();
 		File firstFile = new File(fullPathNameWithoutSlash);
 		assertTrue(firstFile.exists());
+	}
 
-		// case 3: change absolute PATH with a different file
-		// also test that the previous file is deleted
-		// additional test that the items inside the storage is still there
+	@Test
+	public final void testChangeAbsolutePathWithSlash() throws IOException {
+		assertTrue(storage.changePath(PATH_NAME_WITHOUT_SLASH));
+		String fullPathNameWithoutSlash = fileManipulator.readFullPathFromPathFile();
+		File tempFile = new File(fullPathNameWithoutSlash);
+		assertTrue(tempFile.exists());
+	}
+
+	@Test
+	public final void testChangeAbsolutePathWithDifferentFile() throws IOException, TaskListIOException {
+		storage.saveTasks(tempArrayList2);
 		assertTrue(storage.changePath(PATH_NAME_WITH_TEXT_FILE));
 		String fullPathNameWithTextFile = fileManipulator.readFullPathFromPathFile();
 		File tempFile = new File(fullPathNameWithTextFile);
 		assertTrue(tempFile.exists());
 		ArrayList<TaskObject> tasks = storage.loadTasks();
-		assertTrue(returnedTempArrayList.equals(tasks));
 
-		// case 4: change PATH to an invalid PATH
-		// also check that the current path is still retained at the previous
-		// path
+		assertTrue(tempArrayList2.equals(tasks));
+	}
+
+	@Test
+	public final void testPreviousFileIsDeleted() throws IOException {
+		File previousFile = new File(fileManipulator.readFullPathFromPathFile());
+		assertTrue(storage.changePath(PATH_NAME_UNIQUE_FILE_NAME));
+		assertFalse(previousFile.exists());
+	}
+
+	@Test
+	public final void testChangeToInvalidPath() throws IOException {
+		assertTrue(storage.changePath(PATH_NAME_WITH_TEXT_FILE));
+		String fullPathNameWithTextFile = fileManipulator.readFullPathFromPathFile();
 		assertFalse(storage.changePath(PATH_NAME_INVALID));
 		String path = fileManipulator.readFullPathFromPathFile();
+		File tempFile = new File(path);
 		assertTrue(path.equals(fullPathNameWithTextFile));
-		assertTrue(tempFile.exists());
-
-		// case 5: undo PATH
-		assertTrue(storage.undoPath());
-		path = fileManipulator.readFullPathFromPathFile();
-		assertTrue(path.equals(fullPathNameWithoutSlash));
-
-		// case 6: redo PATH
-		assertTrue(storage.redoPath());
-		path = fileManipulator.readFullPathFromPathFile();
-		assertTrue(path.equals(fullPathNameWithTextFile));
-
-		// case 7: redo PATH when there is no future history
-		assertFalse(storage.redoPath());
-		path = fileManipulator.readFullPathFromPathFile();
-		assertTrue(path.equals(fullPathNameWithTextFile));
-
-		// case 8: test if storage undo and does a valid change PATH does the
-		// redo PATH remains
-		// test with previous passed tests
-		storage.undoPath(); // expect to the path without slash
-		storage.changePath(PATH_NAME_WITHOUT_SLASH);
-		assertFalse(storage.redoPath()); // if it exist would be the path with
-											// text file
-		path = fileManipulator.readFullPathFromPathFile();
-		assertTrue(path.equals(fullPathNameWithoutSlash));
-
-		// case 8: change PATH to original PATH
-		assertTrue(storage.changePath(PATH_NAME_DEFAULT));
-		String fullPathNameDefault = fileManipulator.readFullPathFromPathFile();
-		tempFile = new File(fullPathNameDefault);
-		assertTrue(tempFile.exists());
-
-		// case 9: change PATH with relative PATH
-		assertTrue(storage.changePath(PATH_NAME_RELATIVE));
-		String absolutePath = fileManipulator.readFullPathFromPathFile();
-		assertTrue(pathManipulator.isAbsolutePath(absolutePath));
-
-		// case 10: change PATH with ONLY fileName
-		assertTrue(storage.changePath(PATH_NAME_TEXT_FILE_ONLY));
-		String newTextFilePath = fileManipulator.readFullPathFromPathFile();
-		fileManipulator.moveFile(newTextFilePath); //ensure fileManipulator is updated (different set of instance)
-		assertTrue(fileManipulator.getTextFileName().equals(PATH_NAME_TEXT_FILE_ONLY));
-		assertFalse(absolutePath.equals(newTextFilePath));
-
-		// case 11: change PATH with multiple local PATHS
-		assertTrue(storage.changePath(PATH_NAME_RELATIVE_ONLY));
-		String relativePath = fileManipulator.readFullPathFromPathFile();
-		tempFile = new File(relativePath);
 		assertTrue(tempFile.exists());
 	}
 
+	@Test
+	public final void testUndoPath() throws IOException {
+		storage.changePath(PATH_NAME_WITHOUT_SLASH);
+		String fullPathNameWithoutSlash = fileManipulator.readFullPathFromPathFile();
+		storage.changePath(PATH_NAME_INVALID);
+		assertTrue(storage.undoPath());
+		String path = fileManipulator.readFullPathFromPathFile();
+		assertTrue(path.equals(fullPathNameWithoutSlash));
+	}
+
+	@Test
+	public final void testRedoPath() throws IOException {
+		storage.changePath(PATH_NAME_WITH_TEXT_FILE);
+		storage.changePath(PATH_NAME_WITHOUT_SLASH);
+		String fullPathNameWithoutSlash = fileManipulator.readFullPathFromPathFile();
+		storage.undoPath();
+		assertTrue(storage.redoPath());
+		String path = fileManipulator.readFullPathFromPathFile();
+		assertTrue(path.equals(fullPathNameWithoutSlash));
+	}
+	
+	@Test
+	public final void testRedoPathWhenNoFuture() throws InvalidPathException, IOException{
+		while(storage.redoPath()){}
+		assertFalse(storage.redoPath());
+	}
+	
+	//Test if storage undo and does a valid change PATH does redo PATH remains
+	@Test
+	public final void testStorageUndoAndRedo() throws IOException{
+		storage.changePath(PATH_NAME_WITHOUT_SLASH);
+		storage.changePath(PATH_NAME_WITH_TEXT_FILE);
+		storage.undoPath();
+		storage.changePath(PATH_NAME_UNIQUE_FILE_NAME);
+		String newFilePath = fileManipulator.readFullPathFromPathFile();
+		assertFalse(storage.redoPath()); // if it exist would be the path with
+		String path = fileManipulator.readFullPathFromPathFile();
+		assertTrue(path.equals(newFilePath));
+	}
+	
+	@Test
+	public final void testChangePathWithRelativePath() throws IOException{
+		assertTrue(storage.changePath(PATH_NAME_RELATIVE));
+		String absolutePath = fileManipulator.readFullPathFromPathFile();
+		assertTrue(pathManipulator.isAbsolutePath(absolutePath));
+	}
+	
+	@Test
+	public final void changePathWithOnlyFileName() throws IOException{
+		storage.changePath(PATH_NAME_RELATIVE);
+		String absolutePath = fileManipulator.readFullPathFromPathFile();
+		assertTrue(storage.changePath(PATH_NAME_TEXT_FILE_ONLY));
+		String newTextFilePath = fileManipulator.readFullPathFromPathFile();
+		fileManipulator.moveFile(newTextFilePath); // ensure fileManipulator is
+													// updated (different set of
+													// instance)
+		assertTrue(fileManipulator.getTextFileName().equals(PATH_NAME_TEXT_FILE_ONLY));
+		assertFalse(absolutePath.equals(newTextFilePath));
+	}
+	
+	@Test
+	public final void changePathWithMultipleLocalPaths() throws IOException{
+		assertTrue(storage.changePath(PATH_NAME_RELATIVE_ONLY));
+		String relativePath = fileManipulator.readFullPathFromPathFile();
+		File tempFile = new File(relativePath);
+		assertTrue(tempFile.exists());
+	}
+	
+	@Test
+	public final void testUndoCommandWhenNothingThere() throws IOException{
+		while(storage.undoAlias()){}
+		assertFalse(storage.undoAlias());
+	}
+	
+	@Test
+	public final void testAddAliasFile() throws AddDuplicateAliasException{
+		storage.addAlias(COMMAND_ADD, ALIAS_ADD_INCLUDE);
+		assertTrue(storage.getAlias(ALIAS_ADD_INCLUDE).equals(COMMAND_ADD));
+	}
+	
+	@Test
+	public final void testCleanAliasFile() throws IOException{
+		storage.cleanAliasFile();
+		HashMap<String, String> emptyAlias = storage.getAlias();
+		assertTrue(emptyAlias.isEmpty());
+	}
+	
+	@Test
+	public final void testDuplicateAliasAdded() throws IOException, AddDuplicateAliasException{
+		storage.saveAlias(new HashMap<String,String>());
+		storage.addAlias(COMMAND_CHANGE_PATH, ALIAS_ADD_INCLUDE);
+		
+	}
+	
 	private void testAliasManipulation() throws IOException {
 		boolean isAddExceptionThrown = false;
 		try {
-			// case 1: test undo command when there isn't any
-			storage.undoAlias();
-			storage.undoAlias();
-			assertFalse(storage.undoAlias());
-
-			// case 2: clean the alias file and check that it gets a valid empty
-			// HasMap
-			storage.cleanAliasFile();
-			HashMap<String, String> emptyAlias = storage.getAlias();
-			assertTrue(emptyAlias.isEmpty());
-
-			// case 3: test addAlias
-			storage.addAlias(COMMAND_ADD, ALIAS_ADD_INCLUDE);
-			assertTrue(storage.getAlias(ALIAS_ADD_INCLUDE).equals(COMMAND_ADD));
-
 			// case 4: test duplicate alias added (Only tested outside try-catch
 			// block)
 			storage.addAlias(COMMAND_CHANGE_PATH, ALIAS_ADD_INCLUDE);
