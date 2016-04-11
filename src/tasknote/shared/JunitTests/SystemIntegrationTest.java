@@ -204,6 +204,40 @@ public class SystemIntegrationTest {
     }
 
     @Test
+    public void testSettingDoneTask() {
+        // Get all the components here
+        TasksContainer events = TasksContainer.getInstance();
+        ObservableList<TaskObject> observableEventList = events.getTasksList();
+        FloatingTasksContainer floating = FloatingTasksContainer.getInstance();
+        ObservableList<TaskObject> observableFloatList = floating.getFloatingTasksList();
+        TaskNoteControl logic = new TaskNoteControl();
+        Parser parser = new Parser();
+        Storage storage = new Storage();
+
+        String commandAddFloatingTask = "add floating task 0";
+
+        GuiController.executeCommand(commandAddFloatingTask);
+        GuiController.executeCommand("done 1");
+        // Check Parser
+        parser.setInputString(commandAddFloatingTask);
+        TaskObject floatingTask1 = parser.parseAdd(true);
+        floatingTask1.setIsMarkedDone(true);
+
+        // Check Storage
+        try {
+            assertTrue(storage.loadTasks().contains(floatingTask1));
+        } catch (IOException | TaskListIOException e) {
+            e.printStackTrace();
+        }
+        // Check logic
+        assertTrue(logic.getDisplayList().contains(floatingTask1));
+        // Check Gui
+        assertTrue(observableFloatList.contains(floatingTask1));
+        assertTrue(observableFloatList.size() == 1);
+        assertTrue(observableEventList.isEmpty());
+    }
+
+    @Test
     public void testUndoAndRedoOfTask() {
         TasksContainer events = TasksContainer.getInstance();
         ObservableList<TaskObject> observableEventList = events.getTasksList();
