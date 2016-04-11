@@ -24,14 +24,14 @@ public abstract class GuiConstant {
     public static final String COMMAND_HELP = "help";
     public static final String COMMAND_UNDONE = "undone";
 
-    public static final String DEFAULT_COMMAND = COMMAND_ADD + " ";
+    public static final String UNINITIALIZED_STRING = "";
+    
+    public static final String DEFAULT_COMMAND = UNINITIALIZED_STRING;
     
     public static final String COMMAND_CATEGORY_ALL = "category all";
     public static final String COMMAND_CATEGORY_OUTSTANDING = "category outstanding";
     public static final String COMMAND_CATEGORY_OVERDUE = "category overdue";
     public static final String COMMAND_CATGEORY_COMPLETED = "category completed";
-
-    public static final String UNINITIALIZED_STRING = "";
 
     public static final List<String> commands = Collections.unmodifiableList(Arrays.asList(
             UNINITIALIZED_STRING, COMMAND_ADD, COMMAND_EDIT, COMMAND_DONE, 
