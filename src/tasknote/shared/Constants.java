@@ -22,9 +22,9 @@ public class Constants {
 	public static final String MESSAGE_REDO_SUCCESSFUL = "The Last %s Operation has been re-done Successfully\n\n";
 	public static final String MESSAGE_REDO_UNSUCCESSFUL = "Redo Command Failed to be executed";
 	public static final String MESSAGE_DONE_SUCCESSFUL = "Task \"%s\" has been marked as completed Successfully";
-	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed";
+	public static final String MESSAGE_DONE_UNSUCCESSFUL = "Mark as complete failed\n";
 	public static final String MESSAGE_UNDONE_SUCCESSFUL = "Task \"%s\" has been marked as Incomplete Successfully";
-	public static final String MESSAGE_UNDONE_UNSUCCESSFUL = "Mark as Incomplete failed";
+	public static final String MESSAGE_UNDONE_UNSUCCESSFUL = "Mark as Incomplete failed\n";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL = "%d Deadline Task(s) due [ %d %s ]";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_DEADLINE = "%d Deadline Task(s) due [ %s ]";
 	public static final String MESSAGE_SHOW_SUCCESSFUL_ALL = "All Tasks are displayed";
@@ -133,13 +133,17 @@ public class Constants {
 	 */
 	public static final String WARNING_NULL_COMMAND = "Command type string cannot be null!";
 	public static final String WARNING_INVALID_COMMAND = "Invalid Command. Please try again.";
-	public static final String WARNING_INVALID_DELETE_INDEX = "Invalid Deletion Index. Please try again.";
+	public static final String WARNING_INVALID_DELETE_INDEX = "Invalid Deletion Index found. Please enter valid task IDs to delete tasks.";
+	public static final String WARNING_EMPTY_DELETEID_LIST = "• No Delete IDs specified to Delete Tasks.\n• Please specify Task ID(s) to delete corresponding Task(s).";
 	public static final String WARNING_EXECUTE_ADD_FAILURE = "Error occured while ADDING task: %s";
 	public static final String WARNING_EXECUTE_ADD_INVALID_OBJECT = "Invalid object (NULL) passed to be added. Add failure: %s";
 	public static final String WARNING_EXECUTE_DELETE_FAILURE = "Error occured while DELETING task(s): %s";
 	public static final String WARNING_EXECUTE_DELETE_INVALID_LIST = "Delete ID list is either EMPTY or contains INVALID IDs: %s";
 	public static final String WARNING_EXECUTE_UPDATE_FAILURE = "Error occured while UPDATING task(s): %s";
 	public static final String WARNING_EXECUTE_UPDATE_INVALID_OBJECTID = "Task object Update Error: Either Update ID is INVALID or updated object is NULL: %s";
+	public static final String WARNING_EXECUTE_DONE_INVALID_ID = "Invalid task ID specified: %d.\nPlease Specify a valid TaskID to mark Task as Completed.";
+	public static final String WARNING_EXECUTE_DONE_TASK_COMPLETED = "Task %d is already marked as completed.\nTo mark task as incomplete, use the UNDONE command.";
+	public static final String WARNING_EXECUTE_DONE_TASK_INCOMPLETE = "Task %d is still outstanding.\nTo mark task as complete, use the DONE command.";
 	public static final String WARNING_EXECUTE_SEARCH_FAILURE = "Error occured while SEARCHING and RETRIEVING results from task list: %s";
 	public static final String WARNING_EXECUTE_SEARCH_NO_RESULT = "No valid search results due to empty Search ID list received: %s";
 	public static final String WARNING_EXECUTE_COMPLETE_FAILURE = "Error occured while marking task as DONE: %s";

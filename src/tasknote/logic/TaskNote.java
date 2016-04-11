@@ -178,6 +178,7 @@ public class TaskNote {
 	 */
 	public String deleteTask(ArrayList<Integer> deleteIds) {
 		deleteIdSize = deleteIds.size();
+		String deletionErrorFeedback = new String();
 		boolean isSuccess = true;
 		try {
 			assert (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT && isValidIdList(deleteIds));
@@ -188,9 +189,17 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_FAILURE, ex));
 		} catch (Error er) {
 			isSuccess = false;
+			if(deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT) {
+				deletionErrorFeedback = Constants.WARNING_INVALID_DELETE_INDEX;
+			} else {
+				deletionErrorFeedback = Constants.WARNING_EMPTY_DELETEID_LIST;
+			}
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_INVALID_LIST, er));
 		}
-		return showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
+		String feedback = showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
+		feedback = feedback.concat(Constants.STRING_CONSTANT_NEWLINE).concat(Constants.STRING_CONSTANT_NEWLINE);
+		feedback = feedback.concat(deletionErrorFeedback);
+		return feedback;
 	}
 
 	/**
@@ -256,6 +265,9 @@ public class TaskNote {
 		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekUndoStack();
+			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+			setUndoCommandType(commandType);
+			//System.out.println("COMMAND TYPE = " + commandType);
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByUndo(numPrecedingObjects);
 			sortAndSave(taskList);
@@ -278,6 +290,8 @@ public class TaskNote {
 		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekRedoStack();
+			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+			setRedoCommandType(commandType);
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByRedo(numPrecedingObjects);
 			sortAndSave(taskList);
@@ -287,6 +301,56 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_REDO, e));
 		}
 		return showFeedback(COMMAND_TYPE.REDO, isSuccess, taskObject);
+	}
+	
+	/**
+	 * This operation marks a task as completed if it's
+	 * current task status is set to be false (outstanding or overdue)
+	 *
+	 * @param taksId
+	 * @return status of the operation
+	 */
+	public String markTaskAsComplete(int taskId) {
+		TaskObject taskObject;
+		String doneFeedback = new String();
+		int enteredTaskId = taskId + Constants.INCREMENT_COUNT_CONSTANT;
+		boolean markAsComplete = true;
+		if (isValidTaskId(taskId)) {
+			ArrayList<TaskObject> displayList = getDisplayList();
+			taskObject = displayList.get(taskId);
+			if(taskObject.getIsMarkedDone()) {
+				doneFeedback = String.format(Constants.WARNING_EXECUTE_DONE_TASK_COMPLETED, enteredTaskId);
+			} else {
+				doneFeedback = setTaskCompletionStatus(taskObject, markAsComplete);
+			}
+		} else {
+			taskObject = null;
+			doneFeedback = Constants.MESSAGE_DONE_UNSUCCESSFUL.concat(Constants.STRING_CONSTANT_NEWLINE);
+			doneFeedback = doneFeedback.concat(String.format(Constants.WARNING_EXECUTE_DONE_INVALID_ID, enteredTaskId));
+		}
+		return doneFeedback;
+	}
+	
+	public String markTaskAsIncomplete(int taskId) {
+		TaskObject taskObject;
+		String undoneFeedback = new String();
+		int enteredTaskId = taskId + Constants.INCREMENT_COUNT_CONSTANT;
+		boolean markAsComplete = false;
+		if (isValidTaskId(taskId)) {
+			ArrayList<TaskObject> displayList = getDisplayList();
+			taskObject = displayList.get(taskId);
+			if(!taskObject.getIsMarkedDone()) {
+				System.out.println(taskObject.getIsMarkedDone());
+				undoneFeedback = String.format(Constants.WARNING_EXECUTE_DONE_TASK_INCOMPLETE, enteredTaskId);
+			} else {
+				undoneFeedback = setTaskCompletionStatus(taskObject, markAsComplete);
+			}
+		} else {
+			taskObject = null;
+			undoneFeedback = Constants.MESSAGE_UNDONE_UNSUCCESSFUL.concat(Constants.STRING_CONSTANT_NEWLINE);
+			undoneFeedback = undoneFeedback.concat(String.format(Constants.WARNING_EXECUTE_DONE_INVALID_ID, enteredTaskId));
+		}
+		return undoneFeedback;
 	}
 
 	/**
@@ -516,7 +580,7 @@ public class TaskNote {
 			while (undoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popUndoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				setUndoCommandType(commandType);
+				//setUndoCommandType(commandType);
 				if (commandType == COMMAND_TYPE.ADD) {
 					undoDelete(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {
@@ -549,7 +613,7 @@ public class TaskNote {
 			while (redoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popRedoStack();
 				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				setRedoCommandType(commandType);
+				//setRedoCommandType(commandType);
 				if (commandType == COMMAND_TYPE.ADD) {
 					redoAdd(commandObject);
 				} else if (commandType == COMMAND_TYPE.DELETE) {

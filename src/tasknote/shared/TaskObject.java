@@ -7,6 +7,7 @@ public class TaskObject implements Comparable<TaskObject> {
     public static final String TASK_TYPE_FLOATING = "floating";
     public static final String TASK_TYPE_DEADLINE = "deadline";
     public static final String TASK_TYPE_EVENT = "event";
+    public static final boolean ISCOMPLETE = true;
     
     public String[] monthInString = {"",
     								 "January", 
@@ -675,12 +676,15 @@ public class TaskObject implements Comparable<TaskObject> {
 			return;
 		} else if (isOutstandingTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OUTSTANDING);
+		    setIsMarkedDone(!ISCOMPLETE);
 			return;
 		} else if(isOverdueTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_OVERDUE);
+		    setIsMarkedDone(!ISCOMPLETE);
 			return;
 		} else if(isCompletedTask(taskStatus)) {
 		    setTaskStatus(TaskStatus.TASK_COMPLETED);
+		    setIsMarkedDone(ISCOMPLETE);
 			return;
 		} else {
 			setTaskStatus(TaskStatus.TASK_INVALID_STORAGE);

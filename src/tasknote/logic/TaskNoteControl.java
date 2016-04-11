@@ -66,13 +66,12 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	public String executeCommand(String userCommand) {
-		boolean throwException = true;
+
 		COMMAND_TYPE commandType;
 		try {
 			parser.setInputString(userCommand);
 			commandType = parser.getCommandType();
 		} catch (Exception e) {
-			throwException = false;
 			commandType = parser.getCommandType();
 		}
 		String feedback = executeAction(commandType, userCommand);
@@ -182,7 +181,8 @@ public class TaskNoteControl {
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
-			deleteIds = parser.parseDelete(throwException);
+			//deleteIds = parser.parseDelete(throwException);
+			deleteIds = new ArrayList<Integer>();
 		}
 		command = new DeleteCommand(taskNote, deleteIds);
 		command.execute();
@@ -315,14 +315,7 @@ public class TaskNoteControl {
 			parserFeedback = e.getMessage();
 			taskId = parser.getTaskId(throwException);
 		}
-		TaskObject taskObject;
-		if (taskNote.isValidTaskId(taskId)) {
-			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
-			taskObject = displayList.get(taskId);
-		} else {
-			taskObject = null;
-		}
-		command = new DoneCommand(taskNote, taskObject);
+		command = new DoneCommand(taskNote, taskId);
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();
@@ -338,19 +331,18 @@ public class TaskNoteControl {
 	 * @return Status of Operation
 	 */
 	private static String executeMarkAsIncomplete(String userCommand) {
-		// TODO:Parser - change method name to getTaskId
 		int taskId;
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
 		try {
-			// TODO:Parser - change method name to getTaskId
 			taskId = parser.getTaskId(throwException);
 		} catch (Exception e) {
 			throwException = false;
 			parserFeedback = e.getMessage();
 			taskId = parser.getTaskId(throwException);
 		}
-		TaskObject taskObject;
+		command = new UndoneCommand(taskNote, taskId);
+		/*TaskObject taskObject;
 		if (taskNote.isValidTaskId(taskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			taskObject = displayList.get(taskId);
@@ -358,6 +350,7 @@ public class TaskNoteControl {
 			taskObject = null;
 		}
 		command = new UndoneCommand(taskNote, taskObject);
+		*/
 		command.execute();
 		command.refreshDisplay();
 		String response = command.getFeedBack();

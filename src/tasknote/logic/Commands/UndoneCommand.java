@@ -9,19 +9,20 @@ public class UndoneCommand implements Command  {
 	
 	private TaskNote taskNote;
 	private TaskObject taskObject;
+	private int taskId;
 	private boolean isComplete;
 	private String statusOfOperation;
 
 	/******************* UndoneCommand Constructor *********************/
-	public UndoneCommand(TaskNote taskNote, TaskObject taskObject) {
-		this.taskObject = taskObject;
+	public UndoneCommand(TaskNote taskNote, int taskId) {
+		this.taskId = taskId;
 		this.taskNote = taskNote;
-		isComplete = false;
 		statusOfOperation = new String();
 	}
 	
 	public void execute() {
-		statusOfOperation = taskNote.setTaskCompletionStatus(taskObject, isComplete);
+		//statusOfOperation = taskNote.setTaskCompletionStatus(taskObject, isComplete);
+		statusOfOperation = taskNote.markTaskAsIncomplete(taskId);
 	}
 
 	public void refreshDisplay() {

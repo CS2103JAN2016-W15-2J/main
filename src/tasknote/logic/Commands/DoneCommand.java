@@ -8,20 +8,18 @@ import tasknote.shared.TaskObject;
 public class DoneCommand implements Command  {
 	
 	private TaskNote taskNote;
-	private TaskObject taskObject;
-	private boolean isComplete;
+	private int taskId;
 	private String statusOfOperation;
 
 	/******************* DoneCommand Constructor *********************/
-	public DoneCommand(TaskNote taskNote, TaskObject taskObject) {
-		this.taskObject = taskObject;
+	public DoneCommand(TaskNote taskNote, int taskId) {
+		this.taskId = taskId;
 		this.taskNote = taskNote;
-		isComplete = true;
 		statusOfOperation = new String();
 	}
 	
 	public void execute() {
-		statusOfOperation = taskNote.setTaskCompletionStatus(taskObject, isComplete);
+		statusOfOperation = taskNote.markTaskAsComplete(taskId);
 	}
 
 	public void refreshDisplay() {
