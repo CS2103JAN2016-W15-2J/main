@@ -8,6 +8,7 @@ import tasknote.shared.Constants;
 import tasknote.shared.TaskObject;
 import tasknote.logic.TaskNote;
 import tasknote.logic.TaskNoteControl;
+import tasknote.logic.ShowInterval;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -235,6 +236,16 @@ public class TaskNoteTests {
 		feedback = note.undoLastCommand();
 		output = Constants.MESSAGE_UNDO_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
+		
+		note.markTaskAsComplete(0);
+		feedback = note.undoLastCommand();
+		output = String.format(Constants.MESSAGE_UNDO_SUCCESSFUL, "DONE");
+		Assert.assertEquals(output, feedback);
+		
+		note.changeFilePath("/Users/Girish/");
+		feedback = note.undoLastCommand();
+		output = String.format(Constants.MESSAGE_UNDO_SUCCESSFUL, "CHANGE_FILE_PATH");
+		Assert.assertEquals(output, feedback);
 	}
 	
 	@Test
@@ -251,6 +262,20 @@ public class TaskNoteTests {
 		feedback = note.redoLastUndoCommand();
 		output = Constants.MESSAGE_REDO_UNSUCCESSFUL;
 		Assert.assertEquals(output, feedback);
+		
+		note.markTaskAsComplete(0);
+		note.undoLastCommand();
+		feedback = note.redoLastUndoCommand();
+		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "DONE");
+		Assert.assertEquals(output, feedback);
+		
+		/*
+		note.changeFilePath("/Users/Girish/");
+		note.undoLastCommand();
+		feedback = note.redoLastUndoCommand();
+		output = String.format(Constants.MESSAGE_REDO_SUCCESSFUL, "CHANGE_FILE_PATH");
+		Assert.assertEquals(output, feedback);
+		*/
 	}
 	
 	@Test
@@ -316,9 +341,32 @@ public class TaskNoteTests {
 		output = String.format(Constants.MESSAGE_CHANGE_PATH_UNSUCCESSFUL, "/Users/Girish92/");
 		Assert.assertEquals(output, feedback);
 		
+	}
+	
+	@Test
+	public void testShowTasks() {
+		
+		resetTaskContents();
+		
+		populateTasks();
+		
+		feedback = note.showTasks(ShowInterval.TODAY, -1);
+		output = feedback = String.format(Constants.MESSAGE_SHOW_SUCCESSFUL_DEADLINE_INTERVAL, 0, 
+				0, ShowInterval.TODAY);
 		System.out.println(feedback);
 		System.out.println(output);
+		Assert.assertEquals(output, feedback);
 		
+		feedback = note.showTasks(null, -1);
+		output = String.format(Constants.MESSAGE_SHOW_UNSUCCESSFUL, ShowInterval.ALL);
+		Assert.assertEquals(output, feedback);
+		
+		
+		feedback = note.showTasks(ShowInterval.ALL, -1);
+		output = Constants.MESSAGE_SHOW_SUCCESSFUL_ALL;
+		Assert.assertEquals(output, feedback);
+		
+
 	}
 
 	

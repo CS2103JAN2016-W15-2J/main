@@ -742,6 +742,7 @@ public class TaskNote {
 				history.pushChangeFilePathToRedo();
 			}
 		} catch (Exception e) {
+			System.out.println("ERROR THROWN BY STORAGE = " + e);
 			throw e;
 		}
 	}
