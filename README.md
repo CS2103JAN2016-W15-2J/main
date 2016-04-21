@@ -12,7 +12,7 @@ What exactly is TaskNote capable of?
 
 <br>
 <hr>
-Contributors: [Girish] (Logic) | [Curtis] (Parser) | [Daphne] (Storage) | [MunKeat] (UI)
+Contributors: [Girish] \(Logic\) | [Curtis] \(Parser\) | [Daphne] \(Storage\) | [MunKeat] \(GUI\)
 
 
 [Girish]: https://github.com/girish92
