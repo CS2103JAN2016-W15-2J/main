@@ -8,7 +8,7 @@ TaskNote is a desktop application that requires JDK 8u73 or later to run. As suc
 
 * [Download Java](https://www.java.com/en/download/)
 
-Once you have ensured that you are running JDK 8u73, and above, <a href="https://github.com/CS2103JAN2016-W15-2J/main/raw/master/%5BW15-2J%5D%5BV0.5%5D.jar" target="_blank">download TaskNote</a>, then launch by double clicking on the **.jar** file.
+Once you have ensured that you are running JDK 8u73 (or higher), <a href="https://github.com/CS2103JAN2016-W15-2J/main/raw/master/%5BW15-2J%5D%5BV0.5%5D.jar" target="_blank">download TaskNote</a>, then launch by double clicking on the **.jar** file.
 
 ####Features
 * What exactly is TaskNote capable of?
