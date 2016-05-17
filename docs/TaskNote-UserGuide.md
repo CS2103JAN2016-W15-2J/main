@@ -1,7 +1,7 @@
 ##TaskNote User Guide
 TaskNote is a desktop application that keeps track of your task. In this user guide, we will delve into the commands that TaskNote uses, so that you can get up to speed with using TaskNote.
 
-You may notice that the content page is somewhat long, so do use the [table of content](.#Table-of-Content) to help navigate your way through this user guide.
+You may notice that the content page is somewhat long, so do use the [table of content](.#table-of-content) to help navigate your way through this user guide.
 ###Table of Content
 -------------------
 - __1. Commands__
@@ -37,22 +37,22 @@ There are times when you would like to take note of tasks without any deadline a
 
 or more generally,
 
-`    add <Floating Task’s Name>`
+`    add <Floating Taskâ€™s Name>`
 
 Note that each task will be allocated a _unique task index_ to allow you to specify the task without ambiguity when you are editing the task in TaskNote.
 
-(Return to Table of Content)
+[(Return to Table of Content)](.#table-of-content)
 
 ##### 1.1.2. Adding Deadline Tasks
 TaskNote also allows you to keep track of deadlines by using the `add` keyword with the `on` and/or `by` keywords, for date and/or time, respectively. For instance:
 
-`    add Buy friend’s birthday gift on 12/10/2016 by 12:00`
+`    add Buy friendâ€™s birthday gift on 12/10/2016 by 12:00`
 
 or more generally,
 
-`    add <Deadline Task’s Name> on <Date> by <Time>`
+`    add <Deadline Taskâ€™s Name> on <Date> by <Time>`
 
-(Return to Table of Content)
+[(Return to Table of Content)](.#table-of-content)
 
 ##### 1.1.3. Adding Event-Based Tasks
 Occasionally, you may find yourself keeping track of the various events happening in your life, for instance movie dates, birthday parties, etc. To add an event in TaskNote, use the `add` keyword with the `from` and `to` keyword, for start and end time, respectively. For instance:
@@ -61,9 +61,9 @@ Occasionally, you may find yourself keeping track of the various events happenin
 
 or more generally,
 
-`    add <Task’s Name> on <Date> from <Start Time> to <End Time>`
+`    add <Taskâ€™s Name> on <Date> from <Start Time> to <End Time>`
 
-(Return to Table of Content)
+[(Return to Table of Content)](.#table-of-content)
 
 ##### 1.1.4. Adding Location to Task(s)
 TaskNote allows you to tag any floating tasks, deadline tasks, and event-based tasks with their relevant location. To tag the task with their location, use the `at` keyword, followed by the actual location:
@@ -76,4 +76,4 @@ or more generally, for each type of task,
 `    add <Deadline> on <Date> by <Time> at <Location>`
 `    add <Event> on <Date> from <Start Time> to <End Time> at <Location>`
 
-(Return to Table of Content)
+[(Return to Table of Content)](.#table-of-content)
