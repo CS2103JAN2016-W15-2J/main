@@ -6,28 +6,28 @@ You may notice that the content page is somewhat long, so do use the [table of c
 
 ### Table of Content
 -------------------
-- __1. Commands__
-  - __1.1. Adding Tasks__
-    - 1.1.1. Adding Floating Tasks
-    - 1.1.2. Adding Deadline Tasks
-    - 1.1.3. Adding Event-Based Tasks
-    - 1.1.4. Adding Location to Task(s)
-  - __1.2. Editing Tasks__
-    - 1.2.1. Editing Task Properties
-    - 1.2.2. Renaming Task
-  - __1.3. Marking Tasks as Done__
-  - __1.4. Deleting Tasks__
-    - 1.4.1. Deleting a Single Task
-    - 1.4.2. Deleting Multiple Tasks
-  - __1.5. Undo__
-  - __1.6. Redo__
-  - __1.7. Search Tasks__
-  - __1.8. Exiting TaskNote__
-- __2. Hotkeys and Shortcuts__
-- __3. Command Cheatsheet__
-- __4. Troubleshooting__
-  - 4.1. How Do I Add Task Containing Keywords Like 'on', 'by', etc.?
-  - 4.2. How Do I Undo Commands After Closing The Application?
+- [__1. Commands__](TaskNote-UserGuide.md#1-commands)
+  - [__1.1. Adding Tasks__](TaskNote-UserGuide.md#11-adding-tasks)
+    - [1.1.1. Adding Floating Tasks](TaskNote-UserGuide.md#111-adding-floating-tasks)
+    - [1.1.2. Adding Deadline Tasks](TaskNote-UserGuide.md#112-adding-deadline-tasks)
+    - [1.1.3. Adding Event-Based Tasks](TaskNote-UserGuide.md#113-adding-event-based-tasks)
+    - [1.1.4. Adding Location to Task(s)](TaskNote-UserGuide.md##114-adding-location-to-tasks)
+  - [__1.2. Editing Tasks__](TaskNote-UserGuide.md#12-editing-tasks)
+    - [1.2.1. Editing Task Properties](TaskNote-UserGuide.md#121-editing-task-properties)
+    - [1.2.2. Renaming Task](TaskNote-UserGuide.md#122-renaming-task)
+  - [__1.3. Marking Tasks as Done__](TaskNote-UserGuide.md#13-marking-tasks-as-done)
+  - [__1.4. Deleting Tasks__](TaskNote-UserGuide.md#14-deleting-tasks)
+    - [1.4.1. Deleting a Single Task](TaskNote-UserGuide.md#141-deleting-a-single-task)
+    - [1.4.2. Deleting Multiple Tasks](TaskNote-UserGuide.md#142-deleting-multiple-tasks)
+  - [__1.5. Undo__](TaskNote-UserGuide.md#15-undo)
+  - [__1.6. Redo__](TaskNote-UserGuide.md#16-redo)
+  - [__1.7. Search Tasks__](TaskNote-UserGuide.md#17-search-tasks)
+  - [__1.8. Exiting TaskNote__](TaskNote-UserGuide.md#18-exiting-tasknote)
+- [__2. Hotkeys and Shortcuts__](TaskNote-UserGuide.md#2-hotkeys-and-shortcuts)
+- [__3. Command Cheatsheet__](TaskNote-UserGuide.md#3-command-cheatsheet)
+- [__4. Troubleshooting__](TaskNote-UserGuide.md#4-troubleshooting)
+  - [4.1. How Do I Add Task Containing Keywords Like 'on', 'by', etc.?](TaskNote-UserGuide.md#41-how-do-i-add-task-containing-keywords-like-on-by-etc)
+  - [4.2. How Do I Undo Commands After Closing The Application?](TaskNote-UserGuide.md#42-how-do-i-undo-commands-after-closing-the-application)
 
 ### 1. Commands
 ---------------
@@ -207,12 +207,16 @@ Using the above command, you will exit the program. When you exit, TaskNote will
 ### 2. Hotkeys and Shortcuts
 ----------------------------
 
-<<To be Filled In>>
+<To be Filled In>
+
+[(Return to Table of Content)]
 
 ###  3. Command Cheatsheet
 --------------------------
 
-<<To be Filled In>>
+<To be Filled In>
+
+[(Return to Table of Content)]
 
 ### 4. Troubleshooting
 ----------------------
