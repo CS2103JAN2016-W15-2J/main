@@ -206,8 +206,21 @@ Using the above command, you will exit the program. When you exit, TaskNote will
 
 ### 2. Hotkeys and Shortcuts
 ----------------------------
+We have decided that the guiding principles which we develop TaskNote GUI may be summed as such:
 
-<To be Filled In>
+The user should be allowed to perform the same operation in different ways within reasonable limits.
+
+What this means for you, as our user, is that you are able type certain commands directly in the command line, or press certain hotkeys to execute the same command. This is intentional - we believe that you should be allowed to decide for yourself how you want to use the program.
+
+We have thus compiled a list of hotkeys for your convenience, so that you can use TaskNote the way you want to.
+
+| Key Combination | What Does It Do?                                                                                                                                                                                                                                                                                                                       |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Ctrl + Up       | The up key pressed with the Control key, when applied to TaskNote’s command line, will cycle through a list of available commands. Pressing on the up key will result in the following appearing on the command line:   add, edit, done, delete, undo, search, exit and finally, clearing the command line.                            |
+| Ctrl + Down     | The down key pressed with the Control key, when applied to TaskNote’s command line, will likewise cycle though a list of available commands, but in reverse order.Pressing the down key once when you have entered a command will clear the command line. You may also think of the down key as a shortcut to clear your command line. |
+| Ctrl + Z        | The key combination Ctrl + Z is equivalent to inputting undo in the command line. This will undo the latest edit, done, or delete operation performed, if any.                                                                                                                                                                         |
+| Ctrl + Y        | The key combination Ctrl + Y is equivalent to inputting redo in the command line.                                                                                                                                                                                                                                                      |
+| Ctrl + F        | The key combination Ctrl + F will set the command line to the 'search' keyword.                                                                                                                                                                                                                                                        |
 
 [(Return to Table of Content)]
 
