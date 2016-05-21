@@ -191,22 +191,23 @@ public class TaskNote {
 		deleteIdSize = deleteIds.size();
 		String deletionErrorFeedback = new String();
 		boolean isSuccess = true;
-		try {
-			assert (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT && isValidIdList(deleteIds));
-			deleteFromTaskList(deleteIds);
-			storage.saveTasks(taskList);
-		} catch (Exception ex) {
-			isSuccess = false;
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_FAILURE, ex));
-		} catch (Error er) {
-			isSuccess = false;
-			if(deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT) {
-				deletionErrorFeedback = Constants.WARNING_INVALID_DELETE_INDEX;
-			} else {
-				deletionErrorFeedback = Constants.WARNING_EMPTY_DELETEID_LIST;
-			}
-			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_INVALID_LIST, er));
-		}
+        
+        if (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT && isValidIdList(deleteIds)) {
+            try {
+                deleteFromTaskList(deleteIds);
+                storage.saveTasks(taskList);
+            } catch (Exception ex) {
+                isSuccess = false;
+                logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_FAILURE, ex));
+            }
+        } else {
+            isSuccess = false;
+            deletionErrorFeedback = (deleteIdSize > Constants.EMPTY_LIST_SIZE_CONSTANT) 
+                                    ? Constants.WARNING_INVALID_DELETE_INDEX 
+                                    : Constants.WARNING_EMPTY_DELETEID_LIST;
+            logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_INVALID_LIST));
+        }
+
 		String feedback = showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
 		feedback = feedback.concat(Constants.STRING_CONSTANT_NEWLINE).concat(Constants.STRING_CONSTANT_NEWLINE);
 		feedback = feedback.concat(deletionErrorFeedback);
