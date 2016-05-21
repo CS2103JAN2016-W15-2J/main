@@ -585,8 +585,7 @@ public class TaskNote {
 	 * @throws Exception
 	 */
     private void recoverByUndo(int numPrecedingObjects) throws Exception {
-        int undoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
-        while (undoCount <= numPrecedingObjects) {
+        for (int undoCount = Constants.EMPTY_LIST_SIZE_CONSTANT; undoCount <= numPrecedingObjects; undoCount++) {
             CommandObject commandObject = history.popUndoStack();
             CommandType commandType = commandObject.getRevertCommandType();
             if (commandType == CommandType.ADD) {
@@ -601,7 +600,6 @@ public class TaskNote {
                 undoChangeFilePath();
             }
             history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
-            undoCount++;
         }
     }
 	
@@ -613,8 +611,7 @@ public class TaskNote {
 	 * @throws Exception 
 	 */
 	private void recoverByRedo(int numPrecedingObjects) throws Exception {
-		int redoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
-        while (redoCount <= numPrecedingObjects) {
+		for (int redoCount = Constants.EMPTY_LIST_SIZE_CONSTANT; redoCount <= numPrecedingObjects; redoCount++) {
             CommandObject commandObject = history.popRedoStack();
             CommandType commandType = commandObject.getRevertCommandType();
             setRedoCommandType(commandType);
@@ -630,7 +627,6 @@ public class TaskNote {
                 redoChangeFilePath();
             }
             history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
-            redoCount++;
         }
 	}
 	
