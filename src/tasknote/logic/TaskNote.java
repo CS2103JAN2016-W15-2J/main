@@ -941,10 +941,9 @@ public class TaskNote {
 	private void getAllTasksInInterval() {
 		showIntervalList = new ArrayList<TaskObject>();
 		try {
-			for (int i = 0; i < taskList.size(); i++) {
-				TaskObject taskObject = taskList.get(i);
-				showIntervalList.add(taskObject);
-			}
+		    for(TaskObject taskObject : taskList) {
+		        showIntervalList.add(taskObject);
+		    }
 		} catch (Exception e) {
 			throw e;
 		}
