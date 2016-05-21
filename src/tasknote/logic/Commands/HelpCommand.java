@@ -3,16 +3,16 @@ package tasknote.logic.Commands;
 
 import tasknote.logic.TaskNote;
 import tasknote.shared.Constants;
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 
 public class HelpCommand implements Command {
 	
 	private TaskNote taskNote;
-	private COMMAND_TYPE commandType;
+	private CommandType commandType;
 	private String statusOfOperation;
 
 	/******************* HelpCommand Constructor *********************/
-	public HelpCommand(TaskNote taskNote, COMMAND_TYPE commandType) {
+	public HelpCommand(TaskNote taskNote, CommandType commandType) {
 		this.taskNote = taskNote;
 		this.commandType = commandType;
 		statusOfOperation = new String();

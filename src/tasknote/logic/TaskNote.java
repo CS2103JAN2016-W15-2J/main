@@ -4,7 +4,7 @@ package tasknote.logic;
 import tasknote.storage.Storage;
 import tasknote.shared.TaskObject;
 import tasknote.shared.TaskObject.TaskStatus;
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 import tasknote.shared.Constants;
 import tasknote.logic.History.CommandHistory;
 import tasknote.logic.History.CommandObject;
@@ -32,8 +32,8 @@ public class TaskNote {
 	private static ShowInterval showType;
 	private static ShowCategory taskCategory;
 	
-	private static COMMAND_TYPE undoCommandType;
-	private static COMMAND_TYPE redoCommandType;
+	private static CommandType undoCommandType;
+	private static CommandType redoCommandType;
 
 	/*
 	 * This is the storage object that will be used to load tasks into the
@@ -176,7 +176,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_ADD_INVALID_OBJECT, er));
 		}
-		return showFeedback(COMMAND_TYPE.ADD, isSuccess, taskObject);
+		return showFeedback(CommandType.ADD, isSuccess, taskObject);
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class TaskNote {
             logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_DELETE_INVALID_LIST));
         }
 
-		String feedback = showFeedback(COMMAND_TYPE.DELETE, isSuccess, null);
+		String feedback = showFeedback(CommandType.DELETE, isSuccess, null);
 		feedback = feedback.concat(Constants.STRING_CONSTANT_NEWLINE).concat(Constants.STRING_CONSTANT_NEWLINE);
 		feedback = feedback.concat(deletionErrorFeedback);
 		return feedback;
@@ -238,7 +238,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SEARCH_NO_RESULT, er));
 		}
-		return showFeedback(COMMAND_TYPE.SEARCH, isSuccess, null);
+		return showFeedback(CommandType.SEARCH, isSuccess, null);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UPDATE_INVALID_OBJECTID, er));
 		}
 
-		return showFeedback(COMMAND_TYPE.UPDATE, isSuccess, updatedTaskObject);
+		return showFeedback(CommandType.UPDATE, isSuccess, updatedTaskObject);
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class TaskNote {
 		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekUndoStack();
-			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+			CommandType commandType = commandObject.getRevertCommandType();
 			setUndoCommandType(commandType);
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByUndo(numPrecedingObjects);
@@ -288,7 +288,7 @@ public class TaskNote {
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_UNDO, e));
 		}
 
-		return showFeedback(COMMAND_TYPE.UNDO, isSuccess, taskObject);
+		return showFeedback(CommandType.UNDO, isSuccess, taskObject);
 	}
 	
 	/**
@@ -301,7 +301,7 @@ public class TaskNote {
 		TaskObject taskObject = null;
 		try {
 			CommandObject commandObject = history.peekRedoStack();
-			COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+			CommandType commandType = commandObject.getRevertCommandType();
 			int numPrecedingObjects = commandObject.getPrecedingObjects();
 			recoverByRedo(numPrecedingObjects);
 			sortAndSave(taskList);
@@ -310,7 +310,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_REDO, e));
 		}
-		return showFeedback(COMMAND_TYPE.REDO, isSuccess, taskObject);
+		return showFeedback(CommandType.REDO, isSuccess, taskObject);
 	}
 	
 	/**
@@ -398,9 +398,9 @@ public class TaskNote {
 			}
 		}
 		if(isComplete) {
-			feedback = showFeedback(COMMAND_TYPE.DONE, isSuccess, taskObject);
+			feedback = showFeedback(CommandType.DONE, isSuccess, taskObject);
 		} else {
-			feedback = showFeedback(COMMAND_TYPE.UNDONE, isSuccess, taskObject);
+			feedback = showFeedback(CommandType.UNDONE, isSuccess, taskObject);
 		}
 		return feedback;
 	}
@@ -433,7 +433,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_INVALID_FILEPATH, er));
 		}
-		return showFeedback(COMMAND_TYPE.CHANGE_FILE_PATH, isSuccess, null);
+		return showFeedback(CommandType.CHANGE_FILE_PATH, isSuccess, null);
 	}
 	
 	/**
@@ -479,7 +479,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_INVALID_INTERVAL, er));
 		}
-		return showFeedback(COMMAND_TYPE.SHOW, isSuccess, null);
+		return showFeedback(CommandType.SHOW, isSuccess, null);
 	}
 
 	/**
@@ -520,7 +520,7 @@ public class TaskNote {
 			isSuccess = false;
 			logger.log(Level.WARNING, String.format(Constants.WARNING_EXECUTE_SHOW_CATEGORY_INVALID, er));
 		}
-		return showFeedback(COMMAND_TYPE.CHANGE_CATEGORY, isSuccess, null);
+		return showFeedback(CommandType.CHANGE_CATEGORY, isSuccess, null);
 	}
 	
 	/**
@@ -529,7 +529,7 @@ public class TaskNote {
 	 * @param commandType
 	 * @return help message for requested command
 	 */
-	public static String displayHelpMessage(COMMAND_TYPE commandType) {
+	public static String displayHelpMessage(CommandType commandType) {
 		String helpMessage;
 		switch(commandType) {
 		case ADD:
@@ -589,16 +589,16 @@ public class TaskNote {
 		try{
 			while (undoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popUndoStack();
-				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
-				if (commandType == COMMAND_TYPE.ADD) {
+				CommandType commandType = commandObject.getRevertCommandType();
+				if (commandType == CommandType.ADD) {
 					undoDelete(commandObject);
-				} else if (commandType == COMMAND_TYPE.DELETE) {
+				} else if (commandType == CommandType.DELETE) {
 					undoAdd(commandObject);
-				} else if (commandType == COMMAND_TYPE.UPDATE) {
+				} else if (commandType == CommandType.UPDATE) {
 					undoUpdate(commandObject);
-				} else if (commandType == COMMAND_TYPE.DONE) {
+				} else if (commandType == CommandType.DONE) {
 					undoDone(commandObject);
-				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+				} else if (commandType == CommandType.CHANGE_FILE_PATH) {
 					undoChangeFilePath();
 				}
 				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
@@ -621,17 +621,17 @@ public class TaskNote {
 		try {
 			while (redoCount <= numPrecedingObjects) {
 				CommandObject commandObject = history.popRedoStack();
-				COMMAND_TYPE commandType = commandObject.getRevertCommandType();
+				CommandType commandType = commandObject.getRevertCommandType();
 				setRedoCommandType(commandType);
-				if (commandType == COMMAND_TYPE.ADD) {
+				if (commandType == CommandType.ADD) {
 					redoAdd(commandObject);
-				} else if (commandType == COMMAND_TYPE.DELETE) {
+				} else if (commandType == CommandType.DELETE) {
 					redoDelete(commandObject);
-				} else if (commandType == COMMAND_TYPE.UPDATE) {
+				} else if (commandType == CommandType.UPDATE) {
 					redoUpdate(commandObject);
-				} else if (commandType == COMMAND_TYPE.DONE) {
+				} else if (commandType == CommandType.DONE) {
 					redoDone(commandObject);
-				} else if (commandType == COMMAND_TYPE.CHANGE_FILE_PATH) {
+				} else if (commandType == CommandType.CHANGE_FILE_PATH) {
 					redoChangeFilePath();
 				}
 				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
@@ -647,11 +647,11 @@ public class TaskNote {
 	 *
 	 * @param commandType
 	 */
-	private void setUndoCommandType(COMMAND_TYPE commandType) {
-		if(commandType == COMMAND_TYPE.ADD) {
-			undoCommandType = COMMAND_TYPE.DELETE;
-		} else if(commandType == COMMAND_TYPE.DELETE) {
-			undoCommandType = COMMAND_TYPE.ADD;
+	private void setUndoCommandType(CommandType commandType) {
+		if(commandType == CommandType.ADD) {
+			undoCommandType = CommandType.DELETE;
+		} else if(commandType == CommandType.DELETE) {
+			undoCommandType = CommandType.ADD;
 		}else {
 			undoCommandType = commandType;
 		}
@@ -662,11 +662,11 @@ public class TaskNote {
 	 *
 	 * @param commandType
 	 */
-	private void setRedoCommandType(COMMAND_TYPE commandType) {
-		if(commandType == COMMAND_TYPE.ADD) {
-			redoCommandType = COMMAND_TYPE.DELETE;
-		} else if(commandType == COMMAND_TYPE.DELETE) {
-			redoCommandType = COMMAND_TYPE.ADD;
+	private void setRedoCommandType(CommandType commandType) {
+		if(commandType == CommandType.ADD) {
+			redoCommandType = CommandType.DELETE;
+		} else if(commandType == CommandType.DELETE) {
+			redoCommandType = CommandType.ADD;
 		}else {
 			redoCommandType = commandType;
 		}
@@ -1159,7 +1159,7 @@ public class TaskNote {
 	 *
 	 * @return Feedback to the User
 	 */
-	private static String showFeedback(COMMAND_TYPE commandType, boolean isSuccess, TaskObject taskObject) {
+	private static String showFeedback(CommandType commandType, boolean isSuccess, TaskObject taskObject) {
 
 		switch (commandType) {
 		case ADD:

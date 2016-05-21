@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 import tasknote.shared.Constants;
 
 // Utility class
@@ -237,8 +237,8 @@ public class ParserConstants {
 	protected static final int MINIMUM_CATEGORY = 2;
 
 	// This is a "getter" method for the minimum user input length expected
-	// of any COMMAND_TYPE
-	protected static int getMinimumCommandLength(COMMAND_TYPE command) {
+	// of any CommandType
+	protected static int getMinimumCommandLength(CommandType command) {
 		
 		int returnValue = MINIMUM_INVALID;
 		
@@ -282,7 +282,7 @@ public class ParserConstants {
 				returnValue = MINIMUM_UNDONE;
 				break;
 				
-			// default includes the case for which COMMAND_TYPE is INVALID
+			// default includes the case for which CommandType is INVALID
 			default:
 				returnValue = MINIMUM_INVALID;
 				break;

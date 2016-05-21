@@ -18,7 +18,7 @@ import tasknote.logic.ShowCategory;
 import tasknote.logic.ShowInterval;
 import tasknote.parser.Parser;
 import tasknote.shared.TaskObject;
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 import tasknote.shared.Constants;
 
 import java.util.ArrayList;
@@ -87,7 +87,7 @@ public class TaskNoteControl {
 	 */
 	public String executeCommand(String userCommand) {
 
-		COMMAND_TYPE commandType;
+		CommandType commandType;
 		try {
 			parser.setInputString(userCommand);
 			commandType = parser.getCommandType();
@@ -105,7 +105,7 @@ public class TaskNoteControl {
 	 *            Command
 	 * @return Status of Operation
 	 */
-	private static String executeAction(COMMAND_TYPE commandType, String userCommand) {
+	private static String executeAction(CommandType commandType, String userCommand) {
 		String response;
 		taskNote.reIntializeSearchList();
 		setDisplayCategory(ShowCategory.OUTSTANDING);
@@ -496,7 +496,7 @@ public class TaskNoteControl {
 	private static String executeHelp(String userCommand) {
 		boolean throwException = true;
 		String parserFeedback = new String(Constants.STRING_CONSTANT_SPACE);
-		COMMAND_TYPE commandType;
+		CommandType commandType;
 		try {
 			commandType = parser.parseHelp(throwException);
 		} catch (Exception e) {

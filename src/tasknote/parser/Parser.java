@@ -3,7 +3,7 @@ package tasknote.parser;
 
 import tasknote.logic.ShowCategory;
 import tasknote.logic.ShowInterval;
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 import tasknote.shared.TaskObject;
 import tasknote.shared.Constants;
 
@@ -25,7 +25,7 @@ public class Parser {
 	// Private fields
 	private ArrayList<String> allPhrases;
 	private int listPointer;
-	private COMMAND_TYPE commandType;
+	private CommandType commandType;
 	private TaskObject objectForThisCommand;
 
 	// Public constructor for Parser
@@ -33,7 +33,7 @@ public class Parser {
 	public Parser() {
 		this.setAllPhrases(null);
 		this.setListPointer(POINTER_NOT_INITIALIZED);
-		this.setCommandType(COMMAND_TYPE.INVALID);
+		this.setCommandType(CommandType.INVALID);
 		this.setObjectForThisCommand(null);
 	}
 	
@@ -52,63 +52,63 @@ public class Parser {
 		this.setCommandType(matchCommandType());
 
 		// Create a new TaskObject only if it makes sense
-		if (this.getCommandType() == COMMAND_TYPE.ADD
-				|| this.getCommandType() == COMMAND_TYPE.UPDATE) {
+		if (this.getCommandType() == CommandType.ADD
+				|| this.getCommandType() == CommandType.UPDATE) {
 			this.setObjectForThisCommand(new TaskObject());
 		}
 	}
 
 	/**
 	 * This method accepts an entire String passed from the user through his
-	 * command line, and returns the matching COMMAND_TYPE
+	 * command line, and returns the matching CommandType
 	 * 
 	 * @param userCommand
 	 *            This refers to the entire String that is passed by the user
 	 *            through the command line
 	 * 
-	 * @return A COMMAND_TYPE enum value is returned. All the COMMAND_TYPE enums
+	 * @return A CommandType enum value is returned. All the CommandType enums
 	 *         can be found in the tasknote.shared package
 	 * 
 	 *         In the event where the command supplied by the user, does not
-	 *         match any of the valid COMMAND_TYPES, the INVALID COMMAND_TYPE
+	 *         match any of the valid COMMAND_TYPES, the INVALID CommandType
 	 *         value is returned instead
 	 */
-	public COMMAND_TYPE getCommandType() {
+	public CommandType getCommandType() {
 		return this.commandType;
 	}
 
-	private void setCommandType(COMMAND_TYPE commandType) {
+	private void setCommandType(CommandType commandType) {
 		this.commandType = commandType;
 	}
 
-	// parseHelp should only be called if the COMMAND_TYPE was valid
-	public COMMAND_TYPE parseHelp(boolean throwException) {
+	// parseHelp should only be called if the CommandType was valid
+	public CommandType parseHelp(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.HELP);
+		assert(this.getCommandType() == CommandType.HELP);
 		
-		// Make sure that the COMMAND_TYPE is accurate
-		if (this.getCommandType() != COMMAND_TYPE.HELP) {
+		// Make sure that the CommandType is accurate
+		if (this.getCommandType() != CommandType.HELP) {
 			throw new RuntimeException("Wrong method used for non-help type input!");
 		}
 
 		ArrayList<String> allPhrase = this.getAllPhrases();
 		int allPhraseCount = allPhrase.size();
-		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
+		CommandType returnValue = CommandType.INVALID;
 
 		// This handles the case where "help" is the only
 		// input supplied by the user
 		if (allPhraseCount == 1) {
-			return COMMAND_TYPE.HELP;
+			return CommandType.HELP;
 		} else {
 			int nextPhrasePointer = this.getListPointer() + 1;
 			this.setListPointer(nextPhrasePointer);
 		}
 
-		// Finally, we check to see which COMMAND_TYPE
+		// Finally, we check to see which CommandType
 		// matches the command given by the user
-		// If none of the COMMAND_TYPE matches, the
-		// INVALID COMMAND_TYPE is returned instead
+		// If none of the CommandType matches, the
+		// INVALID CommandType is returned instead
 		returnValue = matchCommandType();
 
 		return returnValue;
@@ -119,9 +119,9 @@ public class Parser {
 	public TaskObject parseAdd(boolean throwException) {
 		
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.ADD);
+		assert(this.getCommandType() == CommandType.ADD);
 
-		if (this.getCommandType() != COMMAND_TYPE.ADD) {
+		if (this.getCommandType() != CommandType.ADD) {
 			throw new RuntimeException("Wrong method used for non-add type input!");
 		}
 
@@ -134,9 +134,9 @@ public class Parser {
 	public TaskObject parseUpdate(TaskObject reallyOldTaskObject, boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.UPDATE);
+		assert(this.getCommandType() == CommandType.UPDATE);
 		
-		if (this.getCommandType() != COMMAND_TYPE.UPDATE) {
+		if (this.getCommandType() != CommandType.UPDATE) {
 			throw new RuntimeException("Wrong method used for non-edit type input!");
 		}
 
@@ -151,9 +151,9 @@ public class Parser {
 	public ArrayList<Integer> parseDelete(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.DELETE);
+		assert(this.getCommandType() == CommandType.DELETE);
 		
-		if (this.getCommandType() != COMMAND_TYPE.DELETE) {
+		if (this.getCommandType() != CommandType.DELETE) {
 			throw new RuntimeException("Wrong method used for non-delete type input!");
 		}
 
@@ -240,7 +240,7 @@ public class Parser {
 	public ArrayList<Integer> parseSearch(ArrayList<TaskObject> displayList, boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.SEARCH);
+		assert(this.getCommandType() == CommandType.SEARCH);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
@@ -318,7 +318,7 @@ public class Parser {
 	public ShowInterval parseShow(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.SHOW);
+		assert(this.getCommandType() == CommandType.SHOW);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		this.setListPointer(POINTER_NOT_EDIT);
@@ -378,7 +378,7 @@ public class Parser {
 	public ShowCategory parseChangeCategory(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.CHANGE_CATEGORY);
+		assert(this.getCommandType() == CommandType.CHANGE_CATEGORY);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
@@ -419,7 +419,7 @@ public class Parser {
 	public String parseFilePath(boolean throwException) {
 
 		// Assertions because
-		assert(this.getCommandType() == COMMAND_TYPE.CHANGE_FILE_PATH);
+		assert(this.getCommandType() == CommandType.CHANGE_FILE_PATH);
 		
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int phraseCount = allPhrases.size();
@@ -1071,7 +1071,7 @@ public class Parser {
 		}
 	}
 
-	private boolean hasValidInputLength(COMMAND_TYPE command) {
+	private boolean hasValidInputLength(CommandType command) {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int remainingPhrasesCount = allPhrases.size() - this.getListPointer();
@@ -1081,50 +1081,50 @@ public class Parser {
 	}
 
 	// This method does not throw exceptions or check for userCommand length
-	private COMMAND_TYPE matchCommandType() {
+	private CommandType matchCommandType() {
 
 		ArrayList<String> allPhrases = this.getAllPhrases();
 		int listPointer = this.getListPointer();
 		String currentPhrase = allPhrases.get(listPointer).toLowerCase();
 
-		COMMAND_TYPE returnValue = COMMAND_TYPE.INVALID;
+		CommandType returnValue = CommandType.INVALID;
 
-		// Finally, we check to see which COMMAND_TYPE
+		// Finally, we check to see which CommandType
 		// matches the command given by the user
-		// If none of the COMMAND_TYPE matches, the
-		// INVALID COMMAND_TYPE is returned instead
+		// If none of the CommandType matches, the
+		// INVALID CommandType is returned instead
 		if (currentPhrase.equals(ParserConstants.COMMAND_ADD)) {
-			returnValue = COMMAND_TYPE.ADD;
+			returnValue = CommandType.ADD;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_EDIT)) {
-			return COMMAND_TYPE.UPDATE;
+			return CommandType.UPDATE;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_DELETE)) {
-			return COMMAND_TYPE.DELETE;
+			return CommandType.DELETE;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_SEARCH)) {
-			return COMMAND_TYPE.SEARCH;
+			return CommandType.SEARCH;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_EXIT)) {
-			return COMMAND_TYPE.EXIT;
+			return CommandType.EXIT;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_DONE)) {
-			return COMMAND_TYPE.DONE;
+			return CommandType.DONE;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_REDO)) {
-			return COMMAND_TYPE.REDO;
+			return CommandType.REDO;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_UNDO)) {
-			return COMMAND_TYPE.UNDO;
+			return CommandType.UNDO;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_SHOW)) {
-			return COMMAND_TYPE.SHOW;
+			return CommandType.SHOW;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_RELOCATE)) {
-			return COMMAND_TYPE.CHANGE_FILE_PATH;
+			return CommandType.CHANGE_FILE_PATH;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_HELP)) {
-			return COMMAND_TYPE.HELP;
+			return CommandType.HELP;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_UNDONE)) {
-			return COMMAND_TYPE.UNDONE;
+			return CommandType.UNDONE;
 		} else if (currentPhrase.equals(ParserConstants.COMMAND_CATEGORY)) {
-			return COMMAND_TYPE.CHANGE_CATEGORY;
+			return CommandType.CHANGE_CATEGORY;
 		} else {
-			return COMMAND_TYPE.INVALID;
+			return CommandType.INVALID;
 		}
 
 		if (!hasValidInputLength(returnValue)) {
-			returnValue = COMMAND_TYPE.INVALID;
+			returnValue = CommandType.INVALID;
 		}
 
 		return returnValue;
