@@ -584,30 +584,26 @@ public class TaskNote {
 	 * @param numPrecedingObjects
 	 * @throws Exception
 	 */
-	private void recoverByUndo(int numPrecedingObjects) throws Exception {
-		int undoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
-		try{
-			while (undoCount <= numPrecedingObjects) {
-				CommandObject commandObject = history.popUndoStack();
-				CommandType commandType = commandObject.getRevertCommandType();
-				if (commandType == CommandType.ADD) {
-					undoDelete(commandObject);
-				} else if (commandType == CommandType.DELETE) {
-					undoAdd(commandObject);
-				} else if (commandType == CommandType.UPDATE) {
-					undoUpdate(commandObject);
-				} else if (commandType == CommandType.DONE) {
-					undoDone(commandObject);
-				} else if (commandType == CommandType.CHANGE_FILE_PATH) {
-					undoChangeFilePath();
-				}
-				history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
-				undoCount++;
-			}
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+    private void recoverByUndo(int numPrecedingObjects) throws Exception {
+        int undoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
+        while (undoCount <= numPrecedingObjects) {
+            CommandObject commandObject = history.popUndoStack();
+            CommandType commandType = commandObject.getRevertCommandType();
+            if (commandType == CommandType.ADD) {
+                undoDelete(commandObject);
+            } else if (commandType == CommandType.DELETE) {
+                undoAdd(commandObject);
+            } else if (commandType == CommandType.UPDATE) {
+                undoUpdate(commandObject);
+            } else if (commandType == CommandType.DONE) {
+                undoDone(commandObject);
+            } else if (commandType == CommandType.CHANGE_FILE_PATH) {
+                undoChangeFilePath();
+            }
+            history.peekRedoStack().setPrecedingObjects(numPrecedingObjects);
+            undoCount++;
+        }
+    }
 	
 	/**
 	 * This operation recovers the previous status of the tasks
@@ -618,28 +614,24 @@ public class TaskNote {
 	 */
 	private void recoverByRedo(int numPrecedingObjects) throws Exception {
 		int redoCount = Constants.EMPTY_LIST_SIZE_CONSTANT;
-		try {
-			while (redoCount <= numPrecedingObjects) {
-				CommandObject commandObject = history.popRedoStack();
-				CommandType commandType = commandObject.getRevertCommandType();
-				setRedoCommandType(commandType);
-				if (commandType == CommandType.ADD) {
-					redoAdd(commandObject);
-				} else if (commandType == CommandType.DELETE) {
-					redoDelete(commandObject);
-				} else if (commandType == CommandType.UPDATE) {
-					redoUpdate(commandObject);
-				} else if (commandType == CommandType.DONE) {
-					redoDone(commandObject);
-				} else if (commandType == CommandType.CHANGE_FILE_PATH) {
-					redoChangeFilePath();
-				}
-				history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
-				redoCount++;
-			}
-		} catch (Exception e) {
-			throw e; 
-		}
+        while (redoCount <= numPrecedingObjects) {
+            CommandObject commandObject = history.popRedoStack();
+            CommandType commandType = commandObject.getRevertCommandType();
+            setRedoCommandType(commandType);
+            if (commandType == CommandType.ADD) {
+                redoAdd(commandObject);
+            } else if (commandType == CommandType.DELETE) {
+                redoDelete(commandObject);
+            } else if (commandType == CommandType.UPDATE) {
+                redoUpdate(commandObject);
+            } else if (commandType == CommandType.DONE) {
+                redoDone(commandObject);
+            } else if (commandType == CommandType.CHANGE_FILE_PATH) {
+                redoChangeFilePath();
+            }
+            history.peekUndoStack().setPrecedingObjects(numPrecedingObjects);
+            redoCount++;
+        }
 	}
 	
 	/**
