@@ -232,6 +232,10 @@ public class TaskNoteControl {
 		command = new SearchCommand(taskNote, searchIds);
 		command.execute();
 		command.refreshDisplay();
+		displayList = taskNote.getDisplayList();
+		for(int i = 0; i < displayList.size(); i++) {
+			System.out.println(displayList.get(i).getTaskName());
+		}
 		String response = command.getFeedBack();
 		response = response.concat(Constants.STRING_CONSTANT_NEWLINE).concat(parserFeedback);
 		return response;
@@ -260,22 +264,26 @@ public class TaskNoteControl {
 		}
 
 		TaskObject oldTaskObject = null;
+		TaskObject copyOfOldTaskObject = null;
 		throwException = true;
 		if (taskNote.isValidTaskId(updateTaskId)) {
 			ArrayList<TaskObject> displayList = taskNote.getDisplayList();
 			oldTaskObject = displayList.get(updateTaskId);
+			copyOfOldTaskObject = new TaskObject();
+			copyOfOldTaskObject.deepCopy(oldTaskObject);
 			try {
-				updatedTaskObject = parser.parseUpdate(oldTaskObject, throwException);
+				updatedTaskObject = parser.parseUpdate(copyOfOldTaskObject, throwException);
 			} catch (Exception e) {
 				throwException = false;
 				parserUpdateObjectFeedback = e.getMessage();
-				updatedTaskObject = parser.parseUpdate(oldTaskObject, throwException);
+				updatedTaskObject = parser.parseUpdate(copyOfOldTaskObject, throwException);
 			}
 		} else {
 			updatedTaskObject = null;
 		}
 		ArrayList<TaskObject> taskList = taskNote.getTaskList();
 		int originalUpdateTaskId = taskList.indexOf(oldTaskObject);
+		System.out.println(originalUpdateTaskId);
 		command = new UpdateCommand(taskNote, originalUpdateTaskId, updatedTaskObject);
 		command.execute();
 		command.refreshDisplay();
