@@ -138,7 +138,7 @@ public class Constants {
 	public static final String WARNING_EXECUTE_ADD_FAILURE = "Error occured while ADDING task: %s";
 	public static final String WARNING_EXECUTE_ADD_INVALID_OBJECT = "Invalid object (NULL) passed to be added. Add failure: %s";
 	public static final String WARNING_EXECUTE_DELETE_FAILURE = "Error occured while DELETING task(s): %s";
-	public static final String WARNING_EXECUTE_DELETE_INVALID_LIST = "Delete ID list is either EMPTY or contains INVALID IDs: %s";
+	public static final String WARNING_EXECUTE_DELETE_INVALID_LIST = "Delete ID list is either EMPTY or contains INVALID IDs";
 	public static final String WARNING_EXECUTE_UPDATE_FAILURE = "Error occured while UPDATING task(s): %s";
 	public static final String WARNING_EXECUTE_UPDATE_INVALID_OBJECTID = "Task object Update Error: Either Update ID is INVALID or updated object is NULL: %s";
 	public static final String WARNING_EXECUTE_DONE_INVALID_ID = "Invalid task ID specified: %d.\nPlease Specify a valid TaskID to mark Task as Completed.";

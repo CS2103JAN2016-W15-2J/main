@@ -3,7 +3,7 @@ package tasknote.logic.History;
 
 import java.util.Stack;
 
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 import tasknote.shared.TaskObject;
 import tasknote.shared.Constants;
 
@@ -16,21 +16,21 @@ public class CommandHistory {
 	 * These are the COMMAND TYPES for the possible User Commands that 
 	 * Undo function can be used on
 	 */
-	private static final COMMAND_TYPE undoAddCommand = COMMAND_TYPE.DELETE;
-	private static final COMMAND_TYPE undoDeleteCommand = COMMAND_TYPE.ADD;
-	private static final COMMAND_TYPE undoUpdateCommand = COMMAND_TYPE.UPDATE;
-	private static final COMMAND_TYPE undoTaskCompletionCommand = COMMAND_TYPE.DONE;
-	private static final COMMAND_TYPE undoChangeFilePathCommand = COMMAND_TYPE.CHANGE_FILE_PATH;
+	private static final CommandType undoAddCommand = CommandType.DELETE;
+	private static final CommandType undoDeleteCommand = CommandType.ADD;
+	private static final CommandType undoUpdateCommand = CommandType.UPDATE;
+	private static final CommandType undoTaskCompletionCommand = CommandType.DONE;
+	private static final CommandType undoChangeFilePathCommand = CommandType.CHANGE_FILE_PATH;
 	
 	/*
 	 * These are the COMMAND TYPES for the possible User Commands that 
 	 * Redo function can be used on
 	 */
-	private static final COMMAND_TYPE redoAddCommand = COMMAND_TYPE.ADD;
-	private static final COMMAND_TYPE redoDeleteCommand = COMMAND_TYPE.DELETE;
-	private static final COMMAND_TYPE redoUpdateCommand = COMMAND_TYPE.UPDATE;
-	private static final COMMAND_TYPE redoTaskCompletionCommand = COMMAND_TYPE.DONE;
-	private static final COMMAND_TYPE redoChangeFilePathCommand = COMMAND_TYPE.CHANGE_FILE_PATH;
+	private static final CommandType redoAddCommand = CommandType.ADD;
+	private static final CommandType redoDeleteCommand = CommandType.DELETE;
+	private static final CommandType redoUpdateCommand = CommandType.UPDATE;
+	private static final CommandType redoTaskCompletionCommand = CommandType.DONE;
+	private static final CommandType redoChangeFilePathCommand = CommandType.CHANGE_FILE_PATH;
 	
 	/*
 	 * This is the Integer Constant for the number of associated preceding 

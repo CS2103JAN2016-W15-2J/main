@@ -4,7 +4,7 @@ package tasknote.parser;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import tasknote.shared.COMMAND_TYPE;
+import tasknote.shared.CommandType;
 
 public class ParserCommandReturnTest {
 	
@@ -16,8 +16,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "add some task";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.ADD;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -28,8 +28,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "AdD sOmE TaSK";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.ADD;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.ADD;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -40,8 +40,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "search stuff";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.SEARCH;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.SEARCH;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -52,8 +52,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "edit 3 morestuff";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.UPDATE;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.UPDATE;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -64,8 +64,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "delete 1 2 3";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.DELETE;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.DELETE;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -76,8 +76,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "exit";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.EXIT;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.EXIT;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -88,8 +88,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "sgnsdnsgioapgo";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.INVALID;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.INVALID;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
@@ -102,8 +102,8 @@ public class ParserCommandReturnTest {
 		String userCommand = "add";
 		this.testParser.setInputString(userCommand);
 		
-		COMMAND_TYPE expectedResult = COMMAND_TYPE.INVALID;
-		COMMAND_TYPE actualResult = this.testParser.getCommandType();
+		CommandType expectedResult = CommandType.INVALID;
+		CommandType actualResult = this.testParser.getCommandType();
 		
 		assertEquals(expectedResult, actualResult);
 	}
